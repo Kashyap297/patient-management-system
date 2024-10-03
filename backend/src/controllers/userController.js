@@ -382,12 +382,14 @@ exports.changePassword = async (req, res) => {
 // @access  Private (Logged in users)
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password"); // Select all fields except password
+    // Find user by ID, excluding the password field
+    const user = await User.findById(req.user._id).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Return all fields, including role-specific ones
     res.status(200).json({
       _id: user._id,
       firstName: user.firstName,
@@ -398,7 +400,7 @@ exports.getUserProfile = async (req, res) => {
       country: user.country,
       state: user.state,
       city: user.city,
-      doctorDetails: user.doctorDetails,
+      // Patient-specific fields
       age: user.age,
       height: user.height,
       weight: user.weight,
@@ -406,11 +408,16 @@ exports.getUserProfile = async (req, res) => {
       bloodGroup: user.bloodGroup,
       dateOfBirth: user.dateOfBirth,
       address: user.address,
+      // Doctor-specific fields
+      doctorDetails: user.doctorDetails,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
 // @desc    Update User Profile (Partial Update)
 // @route   PATCH /api/users/profile
 // @access  Private (Logged in users)
@@ -430,16 +437,18 @@ exports.updateUserProfile = async (req, res) => {
     bloodGroup,
     dateOfBirth,
     address,
+    doctorDetails,
   } = req.body;
 
   try {
+    // Find the user by ID
     const user = await User.findById(req.user._id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update only the fields provided in the request body (partial update)
+    // Update only the fields provided in the request body
     if (firstName !== undefined) user.firstName = firstName;
     if (lastName !== undefined) user.lastName = lastName;
     if (email !== undefined) user.email = email;
@@ -447,6 +456,8 @@ exports.updateUserProfile = async (req, res) => {
     if (country !== undefined) user.country = country;
     if (state !== undefined) user.state = state;
     if (city !== undefined) user.city = city;
+
+    // Patient-specific fields
     if (age !== undefined) user.age = age;
     if (height !== undefined) user.height = height;
     if (weight !== undefined) user.weight = weight;
@@ -455,14 +466,57 @@ exports.updateUserProfile = async (req, res) => {
     if (dateOfBirth !== undefined) user.dateOfBirth = dateOfBirth;
     if (address !== undefined) user.address = address;
 
+    // Doctor-specific fields (updating nested doctorDetails object)
+    if (doctorDetails !== undefined) {
+      if (doctorDetails.qualification !== undefined)
+        user.doctorDetails.qualification = doctorDetails.qualification;
+      if (doctorDetails.specialtyType !== undefined)
+        user.doctorDetails.specialtyType = doctorDetails.specialtyType;
+      if (doctorDetails.workingHours !== undefined) {
+        if (doctorDetails.workingHours.checkupTime !== undefined)
+          user.doctorDetails.workingHours.checkupTime =
+            doctorDetails.workingHours.checkupTime;
+        if (doctorDetails.workingHours.breakTime !== undefined)
+          user.doctorDetails.workingHours.breakTime =
+            doctorDetails.workingHours.breakTime;
+      }
+      if (doctorDetails.experience !== undefined)
+        user.doctorDetails.experience = doctorDetails.experience;
+      if (doctorDetails.zipCode !== undefined)
+        user.doctorDetails.zipCode = doctorDetails.zipCode;
+      if (doctorDetails.onlineConsultationRate !== undefined)
+        user.doctorDetails.onlineConsultationRate =
+          doctorDetails.onlineConsultationRate;
+      if (doctorDetails.hospital !== undefined) {
+        if (doctorDetails.hospital.currentHospital !== undefined)
+          user.doctorDetails.hospital.currentHospital =
+            doctorDetails.hospital.currentHospital;
+        if (doctorDetails.hospital.hospitalName !== undefined)
+          user.doctorDetails.hospital.hospitalName =
+            doctorDetails.hospital.hospitalName;
+        if (doctorDetails.hospital.hospitalAddress !== undefined)
+          user.doctorDetails.hospital.hospitalAddress =
+            doctorDetails.hospital.hospitalAddress;
+        if (doctorDetails.hospital.websiteLink !== undefined)
+          user.doctorDetails.hospital.websiteLink =
+            doctorDetails.hospital.websiteLink;
+        if (doctorDetails.hospital.emergencyContactNumber !== undefined)
+          user.doctorDetails.hospital.emergencyContactNumber =
+            doctorDetails.hospital.emergencyContactNumber;
+      }
+    }
+
+    // Save the updated user data
     const updatedUser = await user.save();
 
+    // Return updated profile data
     res.status(200).json({
       _id: updatedUser._id,
       firstName: updatedUser.firstName,
       lastName: updatedUser.lastName,
       email: updatedUser.email,
       phoneNumber: updatedUser.phoneNumber,
+      role: updatedUser.role,
       country: updatedUser.country,
       state: updatedUser.state,
       city: updatedUser.city,
@@ -473,6 +527,7 @@ exports.updateUserProfile = async (req, res) => {
       bloodGroup: updatedUser.bloodGroup,
       dateOfBirth: updatedUser.dateOfBirth,
       address: updatedUser.address,
+      doctorDetails: updatedUser.doctorDetails,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
