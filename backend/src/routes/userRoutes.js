@@ -8,6 +8,7 @@ const {
   forgotPassword,
   verifyOtp,
   resetPassword,
+  changePassword,
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 
@@ -31,5 +32,8 @@ router.post("/verify-otp", verifyOtp);
 
 // Reset Password
 router.post("/reset-password", resetPassword);
+
+// Change Password route
+router.post("/change-password", protect, changePassword);
 
 module.exports = router;
