@@ -9,6 +9,8 @@ const {
   verifyOtp,
   resetPassword,
   changePassword,
+  getUserProfile,
+  updateUserProfile,
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 
@@ -35,5 +37,11 @@ router.post("/reset-password", resetPassword);
 
 // Change Password route
 router.post("/change-password", protect, changePassword);
+
+// Get User Profile
+router.get("/profile", protect, getUserProfile);
+
+// Update User Profile with PATCH
+router.patch("/profile", protect, updateUserProfile);
 
 module.exports = router;

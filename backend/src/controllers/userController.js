@@ -376,3 +376,105 @@ exports.changePassword = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+// @desc    Get User Profile
+// @route   GET /api/users/profile
+// @access  Private (Logged in users)
+exports.getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password"); // Select all fields except password
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+      country: user.country,
+      state: user.state,
+      city: user.city,
+      doctorDetails: user.doctorDetails,
+      age: user.age,
+      height: user.height,
+      weight: user.weight,
+      gender: user.gender,
+      bloodGroup: user.bloodGroup,
+      dateOfBirth: user.dateOfBirth,
+      address: user.address,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+// @desc    Update User Profile (Partial Update)
+// @route   PATCH /api/users/profile
+// @access  Private (Logged in users)
+exports.updateUserProfile = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    country,
+    state,
+    city,
+    age,
+    height,
+    weight,
+    gender,
+    bloodGroup,
+    dateOfBirth,
+    address,
+  } = req.body;
+
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update only the fields provided in the request body (partial update)
+    if (firstName !== undefined) user.firstName = firstName;
+    if (lastName !== undefined) user.lastName = lastName;
+    if (email !== undefined) user.email = email;
+    if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
+    if (country !== undefined) user.country = country;
+    if (state !== undefined) user.state = state;
+    if (city !== undefined) user.city = city;
+    if (age !== undefined) user.age = age;
+    if (height !== undefined) user.height = height;
+    if (weight !== undefined) user.weight = weight;
+    if (gender !== undefined) user.gender = gender;
+    if (bloodGroup !== undefined) user.bloodGroup = bloodGroup;
+    if (dateOfBirth !== undefined) user.dateOfBirth = dateOfBirth;
+    if (address !== undefined) user.address = address;
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      _id: updatedUser._id,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      phoneNumber: updatedUser.phoneNumber,
+      country: updatedUser.country,
+      state: updatedUser.state,
+      city: updatedUser.city,
+      age: updatedUser.age,
+      height: updatedUser.height,
+      weight: updatedUser.weight,
+      gender: updatedUser.gender,
+      bloodGroup: updatedUser.bloodGroup,
+      dateOfBirth: updatedUser.dateOfBirth,
+      address: updatedUser.address,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
