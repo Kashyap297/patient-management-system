@@ -1,31 +1,35 @@
 const express = require("express");
+const router = express.Router();
 const {
-  registerUser,
+  registerAdmin,
+  registerPatient,
   loginUser,
-  getViewData,
-  getUserProfile,
-  getforgetpass,
+  addDoctorByAdmin,
+  forgotPassword,
+  verifyOtp,
   resetPassword,
 } = require("../controllers/userController");
-const { protect } = require("../middlewares/authMiddleware");
-const router = express.Router();
+const { protect, admin } = require("../middlewares/authMiddleware");
 
-// Register User
-router.post("/register", registerUser);
-router.get('/viewAllData', protect, getViewData)
+// Admin Registration
+router.post("/register-admin", registerAdmin);
 
-// Login User
+// Patient Registration
+router.post("/register-patient", registerPatient);
+
+// Admin Adding Doctor
+router.post("/add-doctor", protect, admin, addDoctorByAdmin);
+
+// Common Login
 router.post("/login", loginUser);
 
-// Get User Profile
-router.get("/profile", protect, getUserProfile);
+// Forgot Password - Request OTP
+router.post("/forgot-password", forgotPassword);
 
-
-// Forget Password
-router.post("/forgetpass", getforgetpass);
-
+// Verify OTP
+router.post("/verify-otp", verifyOtp);
 
 // Reset Password
-router.put("/resetPassword/:resetToken", resetPassword);
+router.post("/reset-password", resetPassword);
 
 module.exports = router;

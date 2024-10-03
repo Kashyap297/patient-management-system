@@ -1,173 +1,336 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
+const sendSMS = require("../utils/sendSMS");
 
-// Generate JWT
-const generateToken = (id, email) => {
-  return jwt.sign({ id, email }, process.env.JWT_SECRET, {
+// Generate JWT Token
+const generateToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };
 
-
-// Register User
-const registerUser = async (req, res) => {
-  const { firstName, lastName, email, phoneNumber, password, address, country, state, city, role } = req.body;
-
-  if ( !email || !password || !firstName || !lastName || !email || !phoneNumber || !password || !address || !country || !state || !city || !role) {
-    return res
-      .status(400)
-      .json({ message: "Please provide all required fields" });
-  }
-
-const userExists = await User.findOne({ email });
-  if (userExists) {
-    return res.status(400).json({ message: "User already exists" });
-  }
-
-  const user = await User.create({
-    firstName, 
-    lastName, 
-    email, 
+// @desc    Register Admin
+// @route   POST /api/auth/register-admin
+// @access  Public
+exports.registerAdmin = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
     phoneNumber,
-    password, 
-    address, 
-    country, 
-    state, 
-    city, 
-    role
-  });
+    password,
+    country,
+    state,
+    city,
+    hospital,
+  } = req.body;
 
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      phoneNumber: user.phoneNumber,
-      email: user.email,
-      token: generateToken(user._id, user.email),
-    });
-  } else {
-    res.status(400).json({ message: "Invalid user data" });
-  }
-};
-
-
-// View All Users
-const getViewData = async (req, res) => {
   try {
-    const users = await User.find();
-    res.status(200).json(users);
+    // Check if admin already exists
+    const adminExists = await User.findOne({ email });
+    if (adminExists) {
+      return res.status(400).json({ message: "Admin already exists" });
+    }
+
+    // Create new admin
+    const admin = await User.create({
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      password,
+      country,
+      state,
+      city,
+      role: "admin",
+      doctorDetails: { currentHospital: hospital },
+    });
+
+    res.status(201).json({
+      _id: admin._id,
+      firstName: admin.firstName,
+      lastName: admin.lastName,
+      email: admin.email,
+      role: admin.role,
+      token: generateToken(admin._id, admin.role),
+    });
   } catch (error) {
-    res.status(500).json({ message: "Failed to retrieve users" });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
-// Login User
-const loginUser = async (req, res) => {
+// @desc    Register Patient
+// @route   POST /api/auth/register-patient
+// @access  Public
+exports.registerPatient = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    password,
+    age,
+    height,
+    weight,
+    gender,
+    bloodGroup,
+    dateOfBirth,
+    country,
+    state,
+    city,
+    address,
+  } = req.body;
+
+  try {
+    // Check if patient already exists
+    const patientExists = await User.findOne({ email });
+    if (patientExists) {
+      return res.status(400).json({ message: "Patient already exists" });
+    }
+
+    // Create new patient
+    const patient = await User.create({
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      password,
+      age,
+      height,
+      weight,
+      gender,
+      bloodGroup,
+      dateOfBirth,
+      country,
+      state,
+      city,
+      address,
+      role: "patient",
+    });
+
+    res.status(201).json({
+      _id: patient._id,
+      firstName: patient.firstName,
+      lastName: patient.lastName,
+      email: patient.email,
+      role: patient.role,
+      token: generateToken(patient._id, patient.role),
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// @desc    Add New Doctor (Admin Only)
+// @route   POST /api/auth/add-doctor
+// @access  Admin
+exports.addDoctorByAdmin = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    password,
+    qualification,
+    specialtyType,
+    checkupTime,
+    breakTime,
+    experience,
+    zipCode,
+    onlineConsultationRate,
+    country,
+    state,
+    city,
+    hospitalName,
+    hospitalAddress,
+    websiteLink,
+    emergencyContactNumber,
+    gender,
+    age,
+    doctorAddress,
+  } = req.body;
+
+  try {
+    // Check if doctor already exists
+    const doctorExists = await User.findOne({ email });
+    if (doctorExists) {
+      return res.status(400).json({ message: "Doctor already exists" });
+    }
+
+    // Create new doctor
+    const doctor = await User.create({
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      password,
+      role: "doctor",
+      doctorDetails: {
+        qualification,
+        specialtyType,
+        workingHours: { checkupTime, breakTime },
+        experience,
+        zipCode,
+        onlineConsultationRate,
+        hospital: {
+          hospitalName,
+          hospitalAddress,
+          websiteLink,
+          emergencyContactNumber,
+        },
+      },
+      gender,
+      age,
+      country,
+      state,
+      city,
+      address: doctorAddress,
+    });
+
+    res.status(201).json({
+      _id: doctor._id,
+      firstName: doctor.firstName,
+      lastName: doctor.lastName,
+      email: doctor.email,
+      role: doctor.role,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// @desc    Login for Admin, Doctor, Patient
+// @route   POST /api/auth/login
+// @access  Public
+exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  try {
+    // Find user by email
+    const user = await User.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Check if password matches
+    const isMatch = await user.matchPassword(password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Generate and send token
     res.json({
       _id: user._id,
-      phoneNumber: user.phoneNumber,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
-      token: generateToken(user._id, user.phoneNumber),
+      role: user.role,
+      token: generateToken(user._id, user.role),
     });
-  } else {
-    res.status(401).json({ message: "Invalid email or password" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
-// Get Logged In User
-const getUserProfile = async (req, res) => {
-  const user = await User.findById(req.user._id);
-  res.json({
-    _id: user._id,
-    username: user.username,
-    email: user.email,
-  });
-};
-
-// Forget Password
-const getforgetpass = async (req, res) => {
-  const { email } = req.body;
-
-  // Check if user exists
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  // Generate password reset token
-  const resetToken = crypto.randomBytes(20).toString("hex");
-
-  // Set token and expiration to user model
-  user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes expiration
-
-  await user.save();
-
-  // Send email with reset link
-  const resetUrl = `${req.protocol}://${req.get("host")}/api/users/resetpassword/${resetToken}`;
-
-  const message = `You requested a password reset. Click the following link to reset your password: \n\n ${resetUrl}`;
+// @desc    Send OTP for Forgot Password
+// @route   POST /api/auth/forgot-password
+// @access  Public
+exports.forgotPassword = async (req, res) => {
+  const { email, phoneNumber } = req.body;
 
   try {
-    const transporter = nodemailer.createTransport({
-      service: "Gmail", // You can choose any email service like Gmail, SendGrid, etc.
-      auth: {
-        user: process.env.EMAIL_USER, // Your email User
-        pass: process.env.EMAIL_PASS, // Your email password
-      },
-    });
+    // Find user by either email or phone number
+    let user;
+    if (email) {
+      user = await User.findOne({ email });
+    } else if (phoneNumber) {
+      user = await User.findOne({ phoneNumber });
+    }
 
-    await transporter.sendMail({
-      to: email,
-      subject: "Password Reset Request",
-      text: message,
-    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    res.status(200).json({ message: "Password reset email sent" });
-  } catch (error) {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    // Generate OTP (6-digit random number)
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Set OTP expiration time (e.g., 10 minutes)
+    user.otp = otp;
+    user.otpExpires = Date.now() + 10 * 60 * 1000;
+
     await user.save();
 
-    return res.status(500).json({ message: "Email could not be sent" });
+    // Send OTP via email or phone
+    if (email) {
+      await sendEmail(email, "Password Reset OTP", `Your OTP is ${otp}`);
+    } else if (phoneNumber) {
+      await sendSMS(phoneNumber, `Your OTP is ${otp}`);
+    }
+
+    res.status(200).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
+// @desc    Verify OTP
+// @route   POST /api/auth/verify-otp
+// @access  Public
+exports.verifyOtp = async (req, res) => {
+  const { otp, email, phoneNumber } = req.body;
 
-// Reset Password
-const resetPassword = async (req, res) => {
-  const { resetToken } = req.params;
-  const { password } = req.body;
+  try {
+    // Find user by email or phone
+    let user;
+    if (email) {
+      user = await User.findOne({ email });
+    } else if (phoneNumber) {
+      user = await User.findOne({ phoneNumber });
+    }
 
-  // Hash token
-  const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
 
-  // Find user by token and check if the token has not expired
-  const user = await User.findOne({
-    resetPasswordToken: hashedToken,
-    resetPasswordExpire: { $gt: Date.now() },
-  });
-
-  if (!user) {
-    return res.status(400).json({ message: "Invalid or expired token" });
+    res.status(200).json({
+      message: "OTP verified successfully, proceed to reset password",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
-
-  // Set new password
-  user.password = password;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpire = undefined;
-  await user.save();
-
-  res.status(200).json({ message: "Password reset successfully" });
 };
+// @desc    Reset Password
+// @route   POST /api/auth/reset-password
+// @access  Public
+exports.resetPassword = async (req, res) => {
+  const { email, phoneNumber, password } = req.body;
 
+  try {
+    // Find user by email or phone
+    let user;
+    if (email) {
+      user = await User.findOne({ email });
+    } else if (phoneNumber) {
+      user = await User.findOne({ phoneNumber });
+    }
 
-module.exports = { registerUser, loginUser, getViewData, getUserProfile, getforgetpass, resetPassword };
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Set new password
+    user.password = password;
+    user.otp = undefined; // Clear OTP after reset
+    user.otpExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
