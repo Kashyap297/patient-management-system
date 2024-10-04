@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   AiOutlineDown,
   AiOutlineEye,
@@ -6,13 +6,18 @@ import {
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import SidePanel from "./SidePanel";
+import AuthContext from "../context/AuthContext";
 
 const AdminRegister = () => {
+  const { registerAdmin, authError } = useContext(AuthContext);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     country: "",
     state: "",
     city: "",
@@ -21,11 +26,9 @@ const AdminRegister = () => {
     confirmPassword: "",
     agreeToTerms: false,
   });
-
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(true);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
+
   const hospitals = [
     "Hummingbird Garden Samaritan Hospital Center",
     "Fountain Grove Medical Clinic",
@@ -37,22 +40,6 @@ const AdminRegister = () => {
     "Mirror Eden General Hospital",
   ];
 
-  const handleCreateHospital = () => {
-    setShowCreateModal(true);
-  };
-
-  const closeModal = () => {
-    setShowCreateModal(false);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -61,17 +48,30 @@ const AdminRegister = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let validationErrors = {};
+  const handleCreateHospital = () => {
+    setShowCreateModal(true);
+  };
 
-    // Simple form validation logic
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+  const closeModal = () => {
+    setShowCreateModal(false);
+  };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = {};
     if (!formData.firstName)
       validationErrors.firstName = "First Name is required.";
     if (!formData.lastName)
       validationErrors.lastName = "Last Name is required.";
     if (!formData.email) validationErrors.email = "Email Address is required.";
-    if (!formData.phone) validationErrors.phone = "Phone Number is required.";
+    if (!formData.phoneNumber)
+      validationErrors.phoneNumber = "Phone Number is required.";
     if (!formData.country) validationErrors.country = "Country is required.";
     if (!formData.state) validationErrors.state = "State is required.";
     if (!formData.city) validationErrors.city = "City is required.";
@@ -88,18 +88,35 @@ const AdminRegister = () => {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      console.log("Form Data Submitted:", formData);
+
+      const adminData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+        country: formData.country,
+        state: formData.state,
+        city: formData.city,
+        hospital: formData.hospital,
+      };
+
+      try {
+        await registerAdmin(adminData);
+        alert("Admin registered successfully!");
+      } catch (error) {
+        console.error("Registration failed:", authError);
+      }
     }
   };
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Form Section */}
       <div className="w-1/2 flex justify-center items-center bg-white p-10">
         <div className="w-full max-w-xl bg-white p-10 rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Registration</h2>
+          {authError && <p className="text-red-500 text-sm mb-4">{authError}</p>}
           <form onSubmit={handleSubmit}>
-            {/* First Name and Last Name */}
             <div className="grid grid-cols-2 gap-4 ">
               <div className="relative mb-4">
                 <input
@@ -110,7 +127,7 @@ const AdminRegister = () => {
                     errors.firstName ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter First Name"
-                  value={formData.firstName}
+                  value={formData.firstName || ""}
                   onChange={handleChange}
                 />
                 <label
@@ -120,9 +137,7 @@ const AdminRegister = () => {
                   First Name<span className="text-red-500">*</span>
                 </label>
                 {errors.firstName && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.firstName}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
                 )}
               </div>
               <div className="relative mb-4">
@@ -134,7 +149,7 @@ const AdminRegister = () => {
                     errors.lastName ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter Last Name"
-                  value={formData.lastName}
+                  value={formData.lastName || ""}
                   onChange={handleChange}
                 />
                 <label
@@ -149,7 +164,6 @@ const AdminRegister = () => {
               </div>
             </div>
 
-            {/* Email and Phone Number */}
             <div className="grid grid-cols-2 gap-4">
               <div className="relative mb-4">
                 <input
@@ -160,7 +174,7 @@ const AdminRegister = () => {
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter Email Address"
-                  value={formData.email}
+                  value={formData.email || ""}
                   onChange={handleChange}
                 />
                 <label
@@ -176,28 +190,27 @@ const AdminRegister = () => {
               <div className="relative mb-4">
                 <input
                   type="text"
-                  id="phone"
-                  name="phone"
+                  id="phoneNumber"
+                  name="phoneNumber"
                   className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
-                    errors.phone ? "border-red-500" : "border-gray-300"
+                    errors.phoneNumber ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter Phone Number"
-                  value={formData.phone}
+                  value={formData.phoneNumber || ""}
                   onChange={handleChange}
                 />
                 <label
-                  htmlFor="phone"
+                  htmlFor="phoneNumber"
                   className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200  peer-focus:-top-2.5 peer-focus:left-3"
                 >
                   Phone Number<span className="text-red-500">*</span>
                 </label>
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
                 )}
               </div>
             </div>
 
-            {/* Country, State, City */}
             <div className="grid grid-cols-3 gap-4">
               <div className="relative mb-4">
                 <select
@@ -273,7 +286,6 @@ const AdminRegister = () => {
               </div>
             </div>
 
-            {/* Select Hospital */}
             <div className="relative mb-4">
               <div
                 className="peer w-full px-4 py-2 border border-gray-300 rounded-md text-sm font-normal text-gray-500 cursor-pointer flex justify-between items-center"
@@ -303,205 +315,10 @@ const AdminRegister = () => {
                       {hospital}
                     </div>
                   ))}
-                  <div className="px-4 py-2">
-                    <button
-                      onClick={handleCreateHospital}
-                      className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-                    >
-                      Create Hospital
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
 
-            {/* Modal Popup for Creating New Hospital */}
-            {showCreateModal && (
-              <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="bg-white p-6 rounded-md w-full max-w-md">
-                  <h2 className="text-xl font-bold mb-4">
-                    Create New Hospital
-                  </h2>
-                  <form>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        Hospital Name*
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter Hospital Name"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        Hospital Address*
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter Hospital Address"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          Country*
-                        </label>
-                        <select className="w-full px-4 py-2 border rounded-md focus:outline-none">
-                          <option value="">Select Country</option>
-                          <option value="Country1">Country1</option>
-                          <option value="Country2">Country2</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          State*
-                        </label>
-                        <select className="w-full px-4 py-2 border rounded-md focus:outline-none">
-                          <option value="">Select State</option>
-                          <option value="State1">State1</option>
-                          <option value="State2">State2</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          City*
-                        </label>
-                        <select className="w-full px-4 py-2 border rounded-md focus:outline-none">
-                          <option value="">Select City</option>
-                          <option value="City1">City1</option>
-                          <option value="City2">City2</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          Zip Code*
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Enter Zip Code"
-                          className="w-full px-4 py-2 border rounded-md focus:outline-none"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between mt-4">
-                      <button
-                        type="button"
-                        onClick={closeModal}
-                        className="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
-
-            {/* Modal Popup for Creating New Hospital */}
-            {showCreateModal && (
-              <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="bg-white p-6 rounded-md w-full max-w-md">
-                  <h2 className="text-xl font-bold mb-4">
-                    Create New Hospital
-                  </h2>
-                  <form>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        Hospital Name*
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter Hospital Name"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-1">
-                        Hospital Address*
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter Hospital Address"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          Country*
-                        </label>
-                        <select className="w-full px-4 py-2 border rounded-md focus:outline-none">
-                          <option value="">Select Country</option>
-                          <option value="Country1">Country1</option>
-                          <option value="Country2">Country2</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          State*
-                        </label>
-                        <select className="w-full px-4 py-2 border rounded-md focus:outline-none">
-                          <option value="">Select State</option>
-                          <option value="State1">State1</option>
-                          <option value="State2">State2</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          City*
-                        </label>
-                        <select className="w-full px-4 py-2 border rounded-md focus:outline-none">
-                          <option value="">Select City</option>
-                          <option value="City1">City1</option>
-                          <option value="City2">City2</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          Zip Code*
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Enter Zip Code"
-                          className="w-full px-4 py-2 border rounded-md focus:outline-none"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between mt-4">
-                      <button
-                        type="button"
-                        onClick={closeModal}
-                        className="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
-
-            {/* Password and Confirm Password */}
             <div className="relative mb-4">
               <input
                 type={showPassword ? "password" : "text"}
@@ -511,7 +328,7 @@ const AdminRegister = () => {
                   errors.password ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter Password"
-                value={formData.password}
+                value={formData.password || ""}
                 onChange={handleChange}
               />
               <label
@@ -520,11 +337,6 @@ const AdminRegister = () => {
               >
                 Password<span className="text-red-500">*</span>
               </label>
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-              )}
-
-              {/* Add the icon */}
               <div
                 className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
                 onClick={togglePasswordVisibility}
@@ -535,6 +347,9 @@ const AdminRegister = () => {
                   <AiOutlineEye className="text-gray-500" />
                 )}
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
             <div className="relative mb-4">
               <input
@@ -545,7 +360,7 @@ const AdminRegister = () => {
                   errors.confirmPassword ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Confirm Password"
-                value={formData.confirmPassword}
+                value={formData.confirmPassword || ""}
                 onChange={handleChange}
               />
               <label
@@ -554,12 +369,6 @@ const AdminRegister = () => {
               >
                 Confirm Password<span className="text-red-500">*</span>
               </label>
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.confirmPassword}
-                </p>
-              )}
-              {/* Add the icon */}
               <div
                 className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
                 onClick={togglePasswordVisibility}
@@ -570,10 +379,14 @@ const AdminRegister = () => {
                   <AiOutlineEye className="text-gray-500" />
                 )}
               </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
 
-            {/* Agree to Terms */}
-            <div className="flex items-center mb-2 ">
+            <div className="flex items-center mb-2">
               <input
                 type="checkbox"
                 name="agreeToTerms"
@@ -614,9 +427,9 @@ const AdminRegister = () => {
         </div>
       </div>
 
-      {/* Right Side - Banner & Vector Section */}
       <SidePanel />
     </div>
   );
 };
+
 export default AdminRegister;
