@@ -1,44 +1,56 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+// src/components/Login.js
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import SidePanel from "./SidePanel";
+import AuthContext from "../context/AuthContext";
 
 const Login = () => {
+  const { loginUser, authError } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(true);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simple validation logic
+    // Reset errors before validation
     let validationErrors = {};
+    setErrors({});
+
     if (!email) {
       validationErrors.email = "Email or Phone is required.";
     }
     if (!password) {
       validationErrors.password = "Password is required.";
-    } else if (password !== "123456") {
-      // Dummy password check
-      validationErrors.password = "Incorrect Password.";
     }
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      setErrors({});
-      // Perform successful login action here
+      try {
+        // Call login function from AuthContext
+        const { token, role } = await loginUser({ email, password });
+
+        // Store token and role in localStorage
+        localStorage.setItem("token", token);
+
+        // Redirect to the dashboard
+        navigate("/dashboard");
+      } catch (error) {
+        setErrors({ password: authError || "Login failed, try again" });
+      }
     }
   };
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Form Section */}
       <div className="w-1/2 flex justify-center items-center bg-white p-10">
         <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Login</h2>
@@ -70,7 +82,7 @@ const Login = () => {
             {/* Password Input */}
             <div className="relative mb-4">
               <input
-                type={showPassword ? "password" : "text"} // Conditionally set the type
+                type={showPassword ? "password" : "text"}
                 id="password"
                 name="password"
                 className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 ${
@@ -90,7 +102,7 @@ const Login = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
               )}
 
-              {/* Add the icon */}
+              {/* Toggle Password Visibility Icon */}
               <div
                 className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
                 onClick={togglePasswordVisibility}

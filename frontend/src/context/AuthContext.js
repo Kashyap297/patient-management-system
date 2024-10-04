@@ -17,8 +17,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginUser = async (credentials) => {
+    try {
+      const response = await api.post("/users/login", credentials);
+      return response.data;
+    } catch (error) {
+      setAuthError(error.response?.data?.message || "Login failed");
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ registerAdmin, authError }}>
+    <AuthContext.Provider value={{ registerAdmin, loginUser, authError }}>
       {children}
     </AuthContext.Provider>
   );
