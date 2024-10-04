@@ -159,7 +159,15 @@ exports.addDoctorByAdmin = async (req, res) => {
       return res.status(400).json({ message: "Doctor already exists" });
     }
 
-    // Create new doctor
+    // Handle uploaded files (profileImage and signatureImage)
+    const profileImage = req.files.profileImage
+      ? req.files.profileImage[0].path
+      : null;
+    const signatureImage = req.files.signatureImage
+      ? req.files.signatureImage[0].path
+      : null;
+
+    // Create new doctor with the uploaded images
     const doctor = await User.create({
       firstName,
       lastName,
@@ -167,6 +175,8 @@ exports.addDoctorByAdmin = async (req, res) => {
       phoneNumber,
       password,
       role: "doctor",
+      profileImage, // Store profile image path
+      signatureImage, // Store signature image path
       doctorDetails: {
         qualification,
         specialtyType,
@@ -195,6 +205,8 @@ exports.addDoctorByAdmin = async (req, res) => {
       lastName: doctor.lastName,
       email: doctor.email,
       role: doctor.role,
+      profileImage: doctor.profileImage,
+      signatureImage: doctor.signatureImage,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -389,7 +401,7 @@ exports.getUserProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return all fields, including role-specific ones
+    // Return all fields, including role-specific ones and profile/signature images
     res.status(200).json({
       _id: user._id,
       firstName: user.firstName,
@@ -400,6 +412,8 @@ exports.getUserProfile = async (req, res) => {
       country: user.country,
       state: user.state,
       city: user.city,
+      profileImage: user.profileImage, // Profile image field
+      signatureImage: user.signatureImage, // Signature image field
       // Patient-specific fields
       age: user.age,
       height: user.height,
@@ -441,7 +455,6 @@ exports.updateUserProfile = async (req, res) => {
   } = req.body;
 
   try {
-    // Find the user by ID
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -456,6 +469,17 @@ exports.updateUserProfile = async (req, res) => {
     if (country !== undefined) user.country = country;
     if (state !== undefined) user.state = state;
     if (city !== undefined) user.city = city;
+
+    // Handle image uploads
+    if (req.files) {
+      if (req.files.profileImage) {
+        user.profileImage = req.files.profile;
+        user.profileImage = req.files.profileImage[0].path; // Storing path for profile image
+      }
+      if (req.files.signatureImage) {
+        user.signatureImage = req.files.signatureImage[0].path; // Storing path for signature image
+      }
+    }
 
     // Patient-specific fields
     if (age !== undefined) user.age = age;
@@ -516,6 +540,8 @@ exports.updateUserProfile = async (req, res) => {
       lastName: updatedUser.lastName,
       email: updatedUser.email,
       phoneNumber: updatedUser.phoneNumber,
+      profileImage: updatedUser.profileImage,
+      signatureImage: updatedUser.signatureImage,
       role: updatedUser.role,
       country: updatedUser.country,
       state: updatedUser.state,

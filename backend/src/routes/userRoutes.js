@@ -13,6 +13,7 @@ const {
   updateUserProfile,
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
+const upload = require("../utils/multerConfig");
 
 // Admin Registration
 router.post("/register-admin", registerAdmin);
@@ -21,7 +22,16 @@ router.post("/register-admin", registerAdmin);
 router.post("/register-patient", registerPatient);
 
 // Admin Adding Doctor
-router.post("/add-doctor", protect, admin, addDoctorByAdmin);
+router.post(
+  "/add-doctor",
+  protect,
+  admin,
+  upload.fields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "signatureImage", maxCount: 1 },
+  ]),
+  addDoctorByAdmin
+);
 
 // Common Login
 router.post("/login", loginUser);
@@ -42,6 +52,16 @@ router.post("/change-password", protect, changePassword);
 router.get("/profile", protect, getUserProfile);
 
 // Update User Profile with PATCH
-router.patch("/profile", protect, updateUserProfile);
+router.patch(
+  "/profile",
+  protect,
+  upload.fields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "signatureImage", maxCount: 1 },
+  ]),
+  updateUserProfile
+);
+
+
 
 module.exports = router;
