@@ -4,6 +4,10 @@ import AdminRegister from "./components/AdminRegister";
 import Login from "./components/Login";
 import PatientRegister from "./components/PatientRegister";
 import ForgetPassword from "./components/ForgetPassword";
+import CreateDoctor from "./pages/adminPages/CreateDoctor";
+import Profile from "./pages/Profile";
+import Home from "./pages/Home";
+import Layout from "./components/Layout";
 
 const App = () => {
   return (
@@ -13,7 +17,7 @@ const App = () => {
         <Route path="/signup" element={<PatientRegister />} />
         <Route path="/forgot-password" element={<ForgetPassword />} />
         <Route path="/admin-register" element={<AdminRegister />} />
-        {/* <Route
+        <Route
           path="/"
           element={
             <Layout>
@@ -36,7 +40,7 @@ const App = () => {
               <CreateDoctor />
             </Layout>
           }
-        /> */}
+        />
       </Routes>
     </Router>
   );
