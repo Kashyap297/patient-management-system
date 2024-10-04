@@ -4,6 +4,7 @@ const Config = require("./config");
 const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const upload = require("./utils/multerConfig");
+const hospitalRoutes = require("./routes/hospitalRoutes");
 const router = express.Router();
 
 const app = express();
@@ -20,6 +21,7 @@ dbConnection();
 
 // API routes
 app.use("/api/users", userRoutes);
+app.use("/api", hospitalRoutes);
 
 router.post("/upload", upload.single("profileImage"), (req, res) => {
   const { username } = req.body; // Capture additional fields
