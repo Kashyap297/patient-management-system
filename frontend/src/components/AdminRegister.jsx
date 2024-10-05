@@ -47,15 +47,25 @@ const AdminRegister = () => {
     const fetchHospitals = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/hospitals");
-        setHospitals(response.data); // Assuming the response contains an array of hospitals
+
+        // Check if response has a data property that holds the array
+        if (response.data && Array.isArray(response.data.data)) {
+          setHospitals(response.data.data); // Access the array inside 'data' property
+          console.log("Hospitals fetched successfully", response.data.data); // Log the hospitals array
+        } else {
+          throw new Error("Data is not an array");
+        }
+
         setLoading(false);
       } catch (error) {
         setHospitalError("Failed to load hospitals.");
         setLoading(false);
+        console.error(error); // Log the error
       }
     };
     fetchHospitals();
   }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -63,6 +73,7 @@ const AdminRegister = () => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
+
   const [hospitalError, setHospitalError] = useState(null);
   // Handle input changes for the hospital form
   const handleHospitalChange = (e) => {
@@ -355,10 +366,15 @@ const AdminRegister = () => {
                 <div className="absolute w-full mt-2 bg-white border border-gray-300 rounded-md max-h-48 overflow-y-auto shadow-md z-10">
                   {/* Show loading state if the hospitals are being fetched */}
                   {loading ? (
-                    <div className="px-4 py-2 text-sm text-gray-700">Loading...</div>
+                    <div className="px-4 py-2 text-sm text-gray-700">
+                      Loading...
+                    </div>
                   ) : hospitalError ? (
-                    <div className="px-4 py-2 text-sm text-red-500">{hospitalError}</div>
+                    <div className="px-4 py-2 text-sm text-red-500">
+                      {hospitalError}
+                    </div>
                   ) : (
+                    hospitals &&
                     hospitals.map((hospital, index) => (
                       <div
                         key={index}
