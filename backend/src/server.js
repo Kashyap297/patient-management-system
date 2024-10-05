@@ -7,6 +7,7 @@ const upload = require("./utils/multerConfig");
 const hospitalRoutes = require("./routes/hospitalRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const patientRecordRoutes = require("./routes/patientRecordRoutes");
+const prescriptionRoutes = require("./routes/prescriptionRoutes");
 const router = express.Router();
 
 const app = express();
@@ -26,6 +27,7 @@ app.use("/api/users", userRoutes);
 app.use("/api", hospitalRoutes);
 app.use("/api", appointmentRoutes);
 app.use("/api/patients", patientRecordRoutes);
+app.use("/api/prescription", prescriptionRoutes);
 
 router.post("/upload", upload.single("profileImage"), (req, res) => {
   const { username } = req.body; // Capture additional fields
