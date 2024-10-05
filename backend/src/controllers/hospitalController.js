@@ -34,3 +34,18 @@ exports.createHospital = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+// @desc    Get all hospitals
+// @route   GET /api/hospitals
+// @access  Public
+exports.getAllHospitals = async (req, res) => {
+  try {
+    const hospitals = await Hospital.find(); // Fetch all hospitals from the database
+    res.status(200).json({
+      message: "Hospitals fetched successfully",
+      data: hospitals,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};

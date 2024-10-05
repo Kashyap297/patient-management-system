@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   AiOutlineDown,
   AiOutlineEye,
@@ -40,17 +40,22 @@ const AdminRegister = () => {
     zipCode: "",
   });
 
-  const hospitals = [
-    "Hummingbird Garden Samaritan Hospital Center",
-    "Fountain Grove Medical Clinic",
-    "Silver Peak Medical Center",
-    "Bliss Angel Hospital",
-    "Peace Feather Medical Clinic",
-    "Rose Point Clinic",
-    "Dream Isle Medical Clinic",
-    "Mirror Eden General Hospital",
-  ];
+  const [hospitals, setHospitals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/hospitals");
+        setHospitals(response.data); // Assuming the response contains an array of hospitals
+        setLoading(false);
+      } catch (error) {
+        setHospitalError("Failed to load hospitals.");
+        setLoading(false);
+      }
+    };
+    fetchHospitals();
+  }, []);
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -348,18 +353,25 @@ const AdminRegister = () => {
 
               {isDropdownOpen && (
                 <div className="absolute w-full mt-2 bg-white border border-gray-300 rounded-md max-h-48 overflow-y-auto shadow-md z-10">
-                  {hospitals.map((hospital, index) => (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        setFormData({ ...formData, hospital });
-                        setIsDropdownOpen(false);
-                      }}
-                      className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer font-normal"
-                    >
-                      {hospital}
-                    </div>
-                  ))}
+                  {/* Show loading state if the hospitals are being fetched */}
+                  {loading ? (
+                    <div className="px-4 py-2 text-sm text-gray-700">Loading...</div>
+                  ) : hospitalError ? (
+                    <div className="px-4 py-2 text-sm text-red-500">{hospitalError}</div>
+                  ) : (
+                    hospitals.map((hospital, index) => (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          setFormData({ ...formData, hospital: hospital.name });
+                          setIsDropdownOpen(false);
+                        }}
+                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer font-normal"
+                      >
+                        {hospital.name}
+                      </div>
+                    ))
+                  )}
                   <div className="px-4 py-2">
                     <button
                       onClick={() => setShowCreateModal(true)}
