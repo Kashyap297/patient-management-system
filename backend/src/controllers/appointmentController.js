@@ -13,7 +13,7 @@ exports.createAppointment = async (req, res) => {
     appointmentDate,
     appointmentTime,
     hospital,
-    doctor,
+    doctor, // Expecting the doctor ID from the frontend
     patientIssue,
     diseaseName,
     appointmentType,
@@ -29,9 +29,15 @@ exports.createAppointment = async (req, res) => {
         .json({ message: "Only patients can book appointments" });
     }
 
+    // Check if the doctor exists in the User collection
+    const doctorUser = await User.findById(doctor); // doctor is the ObjectId of the doctor
+    if (!doctorUser || doctorUser.role !== "doctor") {
+      return res.status(404).json({ message: "Doctor not found or not valid" });
+    }
+
     // Create the appointment
     const newAppointment = await Appointment.create({
-      patient: req.user._id,
+      patient: req.user._id, // This comes from the logged-in patient's JWT
       specialty,
       country,
       state,
@@ -39,7 +45,7 @@ exports.createAppointment = async (req, res) => {
       appointmentDate,
       appointmentTime,
       hospital,
-      doctor,
+      doctor, // This now stores the ObjectId of the doctor
       patientIssue,
       diseaseName,
       appointmentType,
