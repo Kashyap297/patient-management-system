@@ -7,6 +7,8 @@ import {
 import { Link } from "react-router-dom";
 import SidePanel from "./SidePanel";
 import AuthContext from "../context/AuthContext";
+import api from "../api/api";
+import axios from "axios";
 
 const AdminRegister = () => {
   const { registerAdmin, authError } = useContext(AuthContext);
@@ -29,6 +31,15 @@ const AdminRegister = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(true);
 
+  const [hospitalData, setHospitalData] = useState({
+    name: "",
+    address: "",
+    country: "",
+    state: "",
+    city: "",
+    zipCode: "",
+  });
+
   const hospitals = [
     "Hummingbird Garden Samaritan Hospital Center",
     "Fountain Grove Medical Clinic",
@@ -47,9 +58,29 @@ const AdminRegister = () => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-
-  const handleCreateHospital = () => {
-    setShowCreateModal(true);
+  const [hospitalError, setHospitalError] = useState(null);
+  // Handle input changes for the hospital form
+  const handleHospitalChange = (e) => {
+    const { name, value } = e.target;
+    setHospitalData({ ...hospitalData, [name]: value });
+  };
+  // Create Hospital API Call
+  const handleCreateHospital = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/hospitals",
+        hospitalData
+      );
+      console.log(response.data);
+      if (response.status === 201) {
+        alert("Hospital created successfully!");
+        closeModal(); // Close the modal after creation
+      }
+    } catch (error) {
+      setHospitalError("Failed to create hospital. Please try again.");
+      console.error(error);
+    }
   };
 
   const toggleDropdown = () => {
@@ -57,6 +88,14 @@ const AdminRegister = () => {
   };
   const closeModal = () => {
     setShowCreateModal(false);
+    setHospitalData({
+      name: "",
+      address: "",
+      country: "",
+      state: "",
+      city: "",
+      zipCode: "",
+    });
   };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -115,7 +154,9 @@ const AdminRegister = () => {
       <div className="w-1/2 flex justify-center items-center bg-white p-10">
         <div className="w-full max-w-xl bg-white p-10 rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Registration</h2>
-          {authError && <p className="text-red-500 text-sm mb-4">{authError}</p>}
+          {authError && (
+            <p className="text-red-500 text-sm mb-4">{authError}</p>
+          )}
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 ">
               <div className="relative mb-4">
@@ -137,7 +178,9 @@ const AdminRegister = () => {
                   First Name<span className="text-red-500">*</span>
                 </label>
                 {errors.firstName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.firstName}
+                  </p>
                 )}
               </div>
               <div className="relative mb-4">
@@ -206,7 +249,9 @@ const AdminRegister = () => {
                   Phone Number<span className="text-red-500">*</span>
                 </label>
                 {errors.phoneNumber && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.phoneNumber}
+                  </p>
                 )}
               </div>
             </div>
@@ -315,9 +360,135 @@ const AdminRegister = () => {
                       {hospital}
                     </div>
                   ))}
+                  <div className="px-4 py-2">
+                    <button
+                      onClick={() => setShowCreateModal(true)}
+                      className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
+                    >
+                      Create Hospital
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
+
+            {/* Modal Popup for Creating New Hospital */}
+            {showCreateModal && (
+              <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-md w-full max-w-md">
+                  <h2 className="text-xl font-bold mb-4">
+                    Create New Hospital
+                  </h2>
+                  <form>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-1">
+                        Hospital Name*
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={hospitalData.name}
+                        onChange={handleHospitalChange}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-1">
+                        Hospital Address*
+                      </label>
+                      <input
+                        type="text"
+                        name="address"
+                        value={hospitalData.address}
+                        onChange={handleHospitalChange}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          Country*
+                        </label>
+                        <input
+                          type="text"
+                          name="country"
+                          value={hospitalData.country}
+                          onChange={handleHospitalChange}
+                          className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          State*
+                        </label>
+                        <input
+                          type="text"
+                          name="state"
+                          value={hospitalData.state}
+                          onChange={handleHospitalChange}
+                          className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          City*
+                        </label>
+                        <input
+                          type="text"
+                          name="city"
+                          value={hospitalData.city}
+                          onChange={handleHospitalChange}
+                          className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          Zip Code*
+                        </label>
+                        <input
+                          type="text"
+                          name="zipCode"
+                          value={hospitalData.zipCode}
+                          onChange={handleHospitalChange}
+                          className="w-full px-4 py-2 border rounded-md focus:outline-none"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between mt-4">
+                      <button
+                        type="button"
+                        onClick={closeModal}
+                        className="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleCreateHospital}
+                        type="submit"
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                      >
+                        Save
+                      </button>
+                    </div>
+
+                    {hospitalError && (
+                      <p className="text-red-500 text-sm mt-4">
+                        {hospitalError}
+                      </p>
+                    )}
+                  </form>
+                </div>
+              </div>
+            )}
 
             <div className="relative mb-4">
               <input
