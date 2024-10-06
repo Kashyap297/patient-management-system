@@ -9,6 +9,8 @@ const appointmentRoutes = require("./routes/appointmentRoutes");
 const patientRecordRoutes = require("./routes/patientRecordRoutes");
 const prescriptionRoutes = require("./routes/prescriptionRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const invoiceRoutes = require("./routes/invoiceRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const router = express.Router();
 
 const app = express();
@@ -30,6 +32,8 @@ app.use("/api", appointmentRoutes);
 app.use("/api/patients", patientRecordRoutes);
 app.use("/api/prescription", prescriptionRoutes);
 app.use("/api", chatRoutes);
+app.use("/api/invoice", invoiceRoutes);
+app.use("/api/payment", paymentRoutes);
 
 router.post("/upload", upload.single("profileImage"), (req, res) => {
   const { username } = req.body; // Capture additional fields
