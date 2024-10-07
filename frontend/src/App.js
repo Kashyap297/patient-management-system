@@ -11,50 +11,27 @@ import Layout from "./components/Layout";
 import EnterOTP from "./components/EnterOtp";
 import ResetPassword from "./components/ResetPassword";
 import PatientProfile from "./pages/patientPages/PatientProfile";
+import AdminRoutes from "./components/AdminRoutes";
+import { DoctorRoutes } from "./components/DoctorRoutes";
+import PatientRoutes from "./components/PatientRoutes";
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/signup" element={<PatientRegister />} />
         <Route path="/forgot-password" element={<ForgetPassword />} />
-        <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/enter-otp" element={<EnterOTP />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Home />
-            </Layout>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <Layout>
-              <Profile />
-            </Layout>
-          }
-        />
-        <Route
-          path="/create-doctor"
-          element={
-            <Layout>
-              <CreateDoctor />
-            </Layout>
-          }
-        />
-        <Route
-          path="/patient-profile"
-          element={
-            <Layout>
-              <PatientProfile />
-            </Layout>
-          }
-        />
+        {/* deshbord Routes */}
+        <Route path="/admin" element={<AdminRoutes />} />
+        <Route path="/admin/*" element={<AdminRoutes />} />
+        <Route path="/doctor" element={<DoctorRoutes />} />
+        <Route path="/doctor/*" element={<DoctorRoutes />} />
+        <Route path="/patient" element={<PatientRoutes />} />
+        <Route path="/patient/*" element={<PatientRoutes />} />
       </Routes>
     </Router>
   );
