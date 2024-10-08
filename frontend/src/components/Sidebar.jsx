@@ -92,7 +92,7 @@ const Sidebar = ({ role }) => {
   const handleLogout = () => {
     // setUser(null);
     localStorage.clear(); // Clear any authentication tokens
-    navigate("/login"); // Redirect to login page
+    navigate("/"); // Redirect to login page
   };
 
   const handleToggleBilling = () => {

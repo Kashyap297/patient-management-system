@@ -115,7 +115,7 @@ const EnterOTP = () => {
             </button>
           </form>
           <p className="text-center mt-4 text-sm">
-            <Link to="/login" className="text-blue-500 hover:underline">
+            <Link to="/" className="text-blue-500 hover:underline">
               Back to Login
             </Link>
           </p>

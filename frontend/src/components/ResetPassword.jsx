@@ -36,7 +36,7 @@ const ResetPassword = () => {
         await resetPassword({ password: newPassword, email });
         alert("Password reset successful");
         localStorage.removeItem("email"); // Clean up the email after resetting password
-        navigate("/login");
+        navigate("/");
       } catch {
         setErrors({ confirmPassword: authError });
       }
@@ -115,7 +115,7 @@ const ResetPassword = () => {
             </button>
           </form>
           <p className="text-center mt-4 text-sm">
-            <Link to="/login" className="text-blue-500 hover:underline">
+            <Link to="/" className="text-blue-500 hover:underline">
               Back to Login
             </Link>
           </p>

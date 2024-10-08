@@ -24,7 +24,7 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgetPassword />} />
         <Route path="/enter-otp" element={<EnterOTP />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-
+        <Route path="/admin-register" element={<AdminRegister />} />
         {/* deshbord Routes */}
         <Route path="/admin" element={<AdminRoutes />} />
         <Route path="/admin/*" element={<AdminRoutes />} />

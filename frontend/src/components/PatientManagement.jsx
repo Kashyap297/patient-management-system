@@ -1,134 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import { Search, Visibility } from "@mui/icons-material";
-import PatientDetailsModal from "./modals/PatientDetailModal";
+import PatientDetailsModal from "../components/modals/PatientDetailModal";
+import api from "../api/api"; // Import your API utility
 
 const PatientManagement = () => {
-  const [activeTab, setActiveTab] = useState("Today Appointment"); // Tracks active tab
-  const [searchTerm, setSearchTerm] = useState(""); // Tracks search input
-  const [selectedPatient, setSelectedPatient] = useState(null); // Selected patient for modal
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [activeTab, setActiveTab] = useState("Today Appointment");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [appointments, setAppointments] = useState([]);
 
-  const allAppointments = {
-    today: [
-      {
-        patientName: "Marcus Philips",
-        patientIssue: "Stomach Ache",
-        doctorName: "Dr. Mathew Best",
-        diseaseName: "Viral Infection",
-        appointmentTime: "4:30 PM",
-        appointmentType: "Online",
-      },
-      {
-        patientName: "London Shaffer",
-        patientIssue: "Feeling Tired",
-        doctorName: "Dr. Annabella Porter",
-        diseaseName: "Blood Pressure",
-        appointmentTime: "5:00 AM",
-        appointmentType: "Onsite",
-      },
-      {
-        patientName: "Leslie Mccray",
-        patientIssue: "Dizziness",
-        doctorName: "Dr. Yaretzi Bright",
-        diseaseName: "Diabetes",
-        appointmentTime: "7:30 PM",
-        appointmentType: "Online",
-      },
-      {
-        patientName: "Daniela Cash",
-        patientIssue: "Neck Pain",
-        doctorName: "Dr. Layla Pollard",
-        diseaseName: "Neck Pain",
-        appointmentTime: "6:00 AM",
-        appointmentType: "Onsite",
-      },
-      // Add more dummy data
-    ],
-    upcoming: [
-      {
-        patientName: "Olive Valencia",
-        patientIssue: "Headache",
-        doctorName: "Dr. Tessa Lee",
-        diseaseName: "Headache",
-        appointmentTime: "3:30 PM",
-        appointmentType: "Online",
-      },
-      {
-        patientName: "Rowen Floyd",
-        patientIssue: "Fever",
-        doctorName: "Dr. Winter Strong",
-        diseaseName: "Fever",
-        appointmentTime: "2:00 AM",
-        appointmentType: "Onsite",
-      },
-      // Add more dummy data
-    ],
-    previous: [
-      {
-        patientName: "Gaige Castillo",
-        patientIssue: "Fever",
-        doctorName: "Dr. Yusuf Mercado",
-        diseaseName: "Viral Infection",
-        appointmentTime: "1:30 PM",
-        appointmentType: "Onsite",
-      },
-      {
-        patientName: "Kayla Maddox",
-        patientIssue: "Feeling Tired",
-        doctorName: "Dr. Titan Grant",
-        diseaseName: "Blood Pressure",
-        appointmentTime: "5:00 AM",
-        appointmentType: "Online",
-      },
-      // Add more dummy data
-    ],
-    canceled: [
-      {
-        patientName: "Trenton Mejia",
-        patientIssue: "Fever",
-        doctorName: "Dr. Keenan Tucker",
-        diseaseName: "Viral Infection",
-        appointmentTime: "4:30 PM",
-        appointmentType: "Online",
-      },
-      {
-        patientName: "Julianna Warren",
-        patientIssue: "Headache",
-        doctorName: "Dr. Ari Bullock",
-        diseaseName: "Headache",
-        appointmentTime: "6:00 AM",
-        appointmentType: "Onsite",
-      },
-      // Add more dummy data
-    ],
-  };
+  // Fetch appointments from your API based on the active tab
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await api.get(`/appointments/${activeTab}`);
+        setAppointments(response.data);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+    fetchAppointments();
+  }, [activeTab]);
 
-  // This should be declared before using it
-  const getAppointments = () => {
-    switch (activeTab) {
-      case "Today Appointment":
-        return allAppointments.today;
-      case "Upcoming Appointment":
-        return allAppointments.upcoming;
-      case "Previous Appointment":
-        return allAppointments.previous;
-      case "Cancel Appointment":
-        return allAppointments.canceled;
-      default:
-        return [];
-    }
-  };
-
-  // Handle tab change and switch data
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  // Handle modal view for patient details
-  const handleViewPatient = (patient) => {
-    setSelectedPatient(patient);
-    setIsModalOpen(true);
+  const handleViewPatient = async (patientId) => {
+    try {
+      const response = await api.get(`/users/patients/${patientId}`);
+      setSelectedPatient(response.data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching patient details:", error);
+    }
   };
 
   const handleCloseModal = () => {
@@ -136,8 +43,7 @@ const PatientManagement = () => {
     setSelectedPatient(null);
   };
 
-  // Filter appointments based on search term
-  const filteredAppointments = getAppointments().filter(
+  const filteredAppointments = appointments.filter(
     (appointment) =>
       appointment.patientName
         .toLowerCase()
@@ -156,7 +62,6 @@ const PatientManagement = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md m-6">
-      {/* Tabs for Appointment Categories */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex space-x-8 text-sm font-semibold text-gray-500">
           {[
@@ -195,7 +100,6 @@ const PatientManagement = () => {
         />
       </div>
 
-      {/* Scrollable Table */}
       <div className="max-h-[600px] overflow-y-auto">
         <table className="min-w-full table-auto">
           <thead className="sticky top-0 bg-gray-100 z-10">
@@ -242,13 +146,12 @@ const PatientManagement = () => {
                     </span>
                   </td>
                   <td className="p-3">
-                    <Button
-                      variant="text"
+                    <IconButton
                       color="primary"
-                      onClick={() => handleViewPatient(appointment)}
+                      onClick={() => handleViewPatient(appointment.patientId)}
                     >
                       <Visibility />
-                    </Button>
+                    </IconButton>
                   </td>
                 </tr>
               ))

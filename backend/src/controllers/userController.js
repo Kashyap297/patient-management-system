@@ -559,3 +559,213 @@ exports.updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+// @desc    Get All Doctors
+// @route   GET /api/users/doctors
+// @access  Private (Admin only)
+exports.getAllDoctors = async (req, res) => {
+  try {
+    const doctors = await User.find({ role: "doctor" }).select("-password"); // Exclude password from the response
+    res.status(200).json(doctors);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// @desc    Get All Patients
+// @route   GET /api/users/patients
+// @access  Private (Admin only)
+exports.getAllPatients = async (req, res) => {
+  try {
+    const patients = await User.find({ role: "patient" }).select("-password"); // Exclude password from the response
+    res.status(200).json(patients);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// @desc    Get Doctor by ID
+// @route   GET /api/users/doctors/:id
+// @access  Private (Admin only)
+exports.getDoctorById = async (req, res) => {
+  try {
+    const doctor = await User.findById(req.params.id)
+      .where({ role: "doctor" })
+      .select("-password");
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+    res.status(200).json(doctor);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// @desc    Delete Doctor by ID
+// @route   DELETE /api/users/doctors/:id
+// @access  Private (Admin only)
+exports.deleteDoctorById = async (req, res) => {
+  try {
+    // Find and delete doctor by ID and role
+    const doctor = await User.findOneAndDelete({
+      _id: req.params.id,
+      role: "doctor",
+    });
+
+    // If no doctor is found, return 404
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.status(200).json({ message: "Doctor deleted successfully" });
+  } catch (error) {
+    console.error("Delete error:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// @desc    Edit Doctor by ID
+// @route   PATCH /api/users/doctors/:id
+// @access  Private (Admin only)
+exports.editDoctorById = async (req, res) => {
+  try {
+    const doctor = await User.findById(req.params.id).where({ role: "doctor" });
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      qualification,
+      specialtyType,
+      checkupTime,
+      breakTime,
+      experience,
+      zipCode,
+      onlineConsultationRate,
+      country,
+      state,
+      city,
+      gender,
+      doctorDetails,
+    } = req.body;
+
+    // Update doctor fields
+    doctor.firstName = firstName || doctor.firstName;
+    doctor.lastName = lastName || doctor.lastName;
+    doctor.email = email || doctor.email;
+    doctor.phoneNumber = phoneNumber || doctor.phoneNumber;
+    doctor.gender = gender || doctor.gender;
+    doctor.country = country || doctor.country;
+    doctor.state = state || doctor.state;
+    doctor.city = city || doctor.city;
+
+    // Update doctor details
+    if (doctorDetails) {
+      doctor.doctorDetails.qualification =
+        qualification || doctor.doctorDetails.qualification;
+      doctor.doctorDetails.specialtyType =
+        specialtyType || doctor.doctorDetails.specialtyType;
+      doctor.doctorDetails.experience =
+        experience || doctor.doctorDetails.experience;
+      doctor.doctorDetails.workingHours.checkupTime =
+        checkupTime || doctor.doctorDetails.workingHours.checkupTime;
+      doctor.doctorDetails.workingHours.breakTime =
+        breakTime || doctor.doctorDetails.workingHours.breakTime;
+      doctor.doctorDetails.zipCode = zipCode || doctor.doctorDetails.zipCode;
+      doctor.doctorDetails.onlineConsultationRate =
+        onlineConsultationRate || doctor.doctorDetails.onlineConsultationRate;
+    }
+
+    const updatedDoctor = await doctor.save();
+    res.status(200).json(updatedDoctor);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+// @desc    Get Patient by ID
+// @route   GET /api/users/patients/:id
+// @access  Private (Admin only)
+exports.getPatientById = async (req, res) => {
+  try {
+    const patient = await User.findById(req.params.id)
+      .where({ role: "patient" })
+      .select("-password");
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+    res.status(200).json(patient);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+// @desc    Edit Patient by ID
+// @route   PATCH /api/users/patients/:id
+// @access  Private (Admin only)
+exports.editPatientById = async (req, res) => {
+  try {
+    const patient = await User.findById(req.params.id).where({
+      role: "patient",
+    });
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      age,
+      height,
+      weight,
+      gender,
+      bloodGroup,
+      dateOfBirth,
+      country,
+      state,
+      city,
+      address,
+    } = req.body;
+
+    // Update patient fields
+    patient.firstName = firstName || patient.firstName;
+    patient.lastName = lastName || patient.lastName;
+    patient.email = email || patient.email;
+    patient.phoneNumber = phoneNumber || patient.phoneNumber;
+    patient.age = age || patient.age;
+    patient.height = height || patient.height;
+    patient.weight = weight || patient.weight;
+    patient.gender = gender || patient.gender;
+    patient.bloodGroup = bloodGroup || patient.bloodGroup;
+    patient.dateOfBirth = dateOfBirth || patient.dateOfBirth;
+    patient.country = country || patient.country;
+    patient.state = state || patient.state;
+    patient.city = city || patient.city;
+    patient.address = address || patient.address;
+
+    const updatedPatient = await patient.save();
+    res.status(200).json(updatedPatient);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+// @desc    Delete Patient by ID
+// @route   DELETE /api/users/patients/:id
+// @access  Private (Admin only)
+exports.deletePatientById = async (req, res) => {
+  try {
+    const patient = await User.findById(req.params.id).where({
+      role: "patient",
+    });
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+    await patient.remove();
+    res.status(200).json({ message: "Patient deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};

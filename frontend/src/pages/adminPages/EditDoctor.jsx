@@ -1,235 +1,271 @@
-import { useFormik } from "formik";
-import * as yup from "yup";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, TextField, MenuItem } from "@mui/material";
-
-// Sample data (you would normally get this from an API)
-const sampleDoctorData = {
-  1: {
-    name: "Dr. Marcus Philips",
-    gender: "Male",
-    qualification: "MBBS",
-    specialty: "Internal Medicine",
-    workingTime: "6 Hour",
-    checkupTime: "4 Hour",
-    breakTime: "1 Hour",
-    phoneNumber: "9876543210",
-    country: "India",
-    city: "Gujarat",
-    zipCode: "382200",
-    onlineConsultationRate: "1000",
-    description: "Specialist in Internal Medicine",
-  },
-  2: {
-    name: "Dr. Haylie Schleifer",
-    gender: "Female",
-    qualification: "BDS",
-    specialty: "Anesthesiology",
-    workingTime: "5 Hour",
-    checkupTime: "4 Hour",
-    breakTime: "2 Hour",
-    phoneNumber: "9876543211",
-    country: "India",
-    city: "Delhi",
-    zipCode: "110001",
-    onlineConsultationRate: "1200",
-    description: "Anesthesiology specialist",
-  },
-  3: {
-    name: "Dr. Haylie Schleifer",
-    gender: "Female",
-    qualification: "BDS",
-    specialty: "Anesthesiology",
-    workingTime: "5 Hour",
-    checkupTime: "4 Hour",
-    breakTime: "2 Hour",
-    phoneNumber: "9876543211",
-    country: "India",
-    city: "Delhi",
-    zipCode: "110001",
-    onlineConsultationRate: "1200",
-    description: "Anesthesiology specialist",
-  },
-  // Add more sample data as needed
-};
-
-// Validation schema for the form
-const validationSchema = yup.object({
-  name: yup.string().required("Doctor Name is required"),
-  phoneNumber: yup.string().required("Phone Number is required"),
-  qualification: yup.string().required("Qualification is required"),
-  specialty: yup.string().required("Specialty is required"),
-  workingTime: yup.string().required("Working Time is required"),
-  onlineConsultationRate: yup
-    .number()
-    .required("Online Consultation Rate is required"),
-});
+import { Button } from "@mui/material";
+import api from "../../api/api";
 
 const EditDoctor = ({ isViewOnly = false }) => {
-  const { id } = useParams(); // Get the doctor ID from the URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  // Fetch the doctor's details based on ID (this would normally come from an API)
-  const doctorDetails = sampleDoctorData[id] || {};
-
-  // Formik form setup
-  const formik = useFormik({
-    initialValues: {
-      name: doctorDetails.name || "",
-      gender: doctorDetails.gender || "",
-      qualification: doctorDetails.qualification || "",
-      specialty: doctorDetails.specialty || "",
-      workingTime: doctorDetails.workingTime || "",
-      checkupTime: doctorDetails.checkupTime || "",
-      breakTime: doctorDetails.breakTime || "",
-      phoneNumber: doctorDetails.phoneNumber || "",
-      country: doctorDetails.country || "",
-      city: doctorDetails.city || "",
-      zipCode: doctorDetails.zipCode || "",
-      onlineConsultationRate: doctorDetails.onlineConsultationRate || "",
-      description: doctorDetails.description || "",
-    },
-    validationSchema,
-    onSubmit: (values) => {
-      console.log("Form data", values);
-      navigate("/doctor-management"); // Redirect after saving
-    },
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    gender: "",
+    qualification: "",
+    specialtyType: "",
+    workingTime: "",
+    checkupTime: "",
+    breakTime: "",
+    experience: "",
+    zipCode: "",
+    onlineConsultationRate: "",
+    country: "",
+    state: "",
+    city: "",
+    address: "",
+    description: "",
   });
+
+  useEffect(() => {
+    const fetchDoctorDetails = async () => {
+      try {
+        const response = await api.get(`/users/doctors/${id}`);
+        setFormData(response.data);
+      } catch (error) {
+        console.error("Error fetching doctor details:", error);
+      }
+    };
+
+    // Always fetch doctor details regardless of view mode
+    fetchDoctorDetails();
+  }, [id]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api.patch(`/users/doctors/${id}`, formData);
+      navigate("/doctor-management");
+    } catch (error) {
+      console.error("Error updating doctor:", error);
+    }
+  };
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md m-6">
       <h2 className="text-lg font-semibold mb-4">
         {isViewOnly ? "View Doctor Details" : "Edit Doctor Details"}
       </h2>
-
-      <form onSubmit={formik.handleSubmit}>
-        {/* Doctor details form */}
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-4">
-          <TextField
-            label="Doctor Name"
-            name="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-            fullWidth
-            disabled={isViewOnly}
-          />
-          <TextField
-            select
-            label="Gender"
-            name="gender"
-            value={formik.values.gender}
-            onChange={formik.handleChange}
-            error={formik.touched.gender && Boolean(formik.errors.gender)}
-            helperText={formik.touched.gender && formik.errors.gender}
-            fullWidth
-            disabled={isViewOnly}
-          >
-            <MenuItem value="Male">Male</MenuItem>
-            <MenuItem value="Female">Female</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </TextField>
-          <TextField
-            label="Qualification"
-            name="qualification"
-            value={formik.values.qualification}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.qualification &&
-              Boolean(formik.errors.qualification)
-            }
-            helperText={
-              formik.touched.qualification && formik.errors.qualification
-            }
-            fullWidth
-            disabled={isViewOnly}
-          />
-          <TextField
-            label="Specialty"
-            name="specialty"
-            value={formik.values.specialty}
-            onChange={formik.handleChange}
-            error={formik.touched.specialty && Boolean(formik.errors.specialty)}
-            helperText={formik.touched.specialty && formik.errors.specialty}
-            fullWidth
-            disabled={isViewOnly}
-          />
-          <TextField
-            label="Working Time"
-            name="workingTime"
-            value={formik.values.workingTime}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.workingTime && Boolean(formik.errors.workingTime)
-            }
-            helperText={formik.touched.workingTime && formik.errors.workingTime}
-            fullWidth
-            disabled={isViewOnly}
-          />
-          <TextField
-            label="Phone Number"
-            name="phoneNumber"
-            value={formik.values.phoneNumber}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)
-            }
-            helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-            fullWidth
-            disabled={isViewOnly}
-          />
-          <TextField
-            label="City"
-            name="city"
-            value={formik.values.city}
-            onChange={formik.handleChange}
-            error={formik.touched.city && Boolean(formik.errors.city)}
-            helperText={formik.touched.city && formik.errors.city}
-            fullWidth
-            disabled={isViewOnly}
-          />
-          <TextField
-            label="Zip Code"
-            name="zipCode"
-            value={formik.values.zipCode}
-            onChange={formik.handleChange}
-            error={formik.touched.zipCode && Boolean(formik.errors.zipCode)}
-            helperText={formik.touched.zipCode && formik.errors.zipCode}
-            fullWidth
-            disabled={isViewOnly}
-          />
-          <TextField
-            label="Online Consultation Rate"
-            name="onlineConsultationRate"
-            type="number"
-            value={formik.values.onlineConsultationRate}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.onlineConsultationRate &&
-              Boolean(formik.errors.onlineConsultationRate)
-            }
-            helperText={
-              formik.touched.onlineConsultationRate &&
-              formik.errors.onlineConsultationRate
-            }
-            fullWidth
-            disabled={isViewOnly}
-          />
-          <TextField
-            label="Description"
-            name="description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
-            fullWidth
-            multiline
-            rows={4}
-            disabled={isViewOnly}
-          />
+          <div>
+            <label>First Name</label>
+            <input
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Phone Number</label>
+            <input
+              type="text"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Gender</label>
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label>Qualification</label>
+            <input
+              type="text"
+              name="qualification"
+              value={formData.qualification}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Specialty</label>
+            <input
+              type="text"
+              name="specialtyType"
+              value={formData.specialtyType}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Working Time</label>
+            <input
+              type="text"
+              name="workingTime"
+              value={formData.workingTime}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Checkup Time</label>
+            <input
+              type="text"
+              name="checkupTime"
+              value={formData.checkupTime}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Break Time</label>
+            <input
+              type="text"
+              name="breakTime"
+              value={formData.breakTime}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Experience</label>
+            <input
+              type="number"
+              name="experience"
+              value={formData.experience}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Zip Code</label>
+            <input
+              type="text"
+              name="zipCode"
+              value={formData.zipCode}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Online Consultation Rate</label>
+            <input
+              type="number"
+              name="onlineConsultationRate"
+              value={formData.onlineConsultationRate}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Country</label>
+            <input
+              type="text"
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>State</label>
+            <input
+              type="text"
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>City</label>
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div>
+            <label>Address</label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+          </div>
+          <div className="col-span-2">
+            <label>Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full border p-2 rounded mt-1"
+              rows="4"
+              disabled={isViewOnly}
+            ></textarea>
+          </div>
         </div>
 
         {/* Buttons */}
@@ -238,7 +274,7 @@ const EditDoctor = ({ isViewOnly = false }) => {
             type="submit"
             variant="contained"
             color="primary"
-            className="!mt-4"
+            className="mt-4"
           >
             Save Changes
           </Button>
@@ -246,7 +282,7 @@ const EditDoctor = ({ isViewOnly = false }) => {
         <Button
           variant="contained"
           color="secondary"
-          className="!mt-4 !ml-2"
+          className="mt-4 ml-2"
           onClick={() => navigate("/doctor-management")}
         >
           Cancel

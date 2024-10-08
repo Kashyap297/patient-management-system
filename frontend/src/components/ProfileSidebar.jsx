@@ -1,17 +1,50 @@
 import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import { Person, Lock, Gavel, PrivacyTip } from "@mui/icons-material";
-import admin from "../assets/images/admin-image.png";
+import adminPlaceholder from "../assets/images/admin-image.png"; // Placeholder image for users without photos
+import { useEffect, useState } from "react";
+import api from "../api/api"; // Import your centralized API instance
 
 const ProfileSidebar = ({ activeSection, setActiveSection }) => {
+  const [userData, setUserData] = useState({
+    name: "",
+    photo: "",
+  });
+
+  useEffect(() => {
+    // Fetch user profile data from the API
+    const fetchUserProfile = async () => {
+      try {
+        const response = await api.get("/users/profile");
+        const { firstName, lastName, profileImage } = response.data;
+
+        // Check if the profileImage is a relative path and construct the full URL
+        const imageUrl = profileImage
+          ? `http://localhost:8000/${profileImage}`
+          : "";
+
+        setUserData({
+          name: `${firstName} ${lastName}`,
+          photo: imageUrl,
+        });
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
   return (
     <div className="w-64 bg-white h-full rounded-l-3xl border-r border-gray-200 flex flex-col p-6">
       <div className="text-center mb-6">
         <img
-          src={admin}
+          src={userData.photo || adminPlaceholder}
           alt="Profile"
           className="w-32 h-32 rounded-full mx-auto"
         />
-        <h2 className="text-xl font-semibold mt-2">Lincoln Philips</h2>
+        <h2 className="text-xl font-semibold mt-2">
+          {userData.name || "You have not uploaded a photo yet"}
+        </h2>
       </div>
 
       {/* Sidebar Menu */}

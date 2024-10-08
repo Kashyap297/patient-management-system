@@ -1,66 +1,81 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, IconButton, TextField, InputAdornment } from "@mui/material";
 import { Edit, Visibility, Delete, Search } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import DeleteDoctorModal from "../../components/modals/DeleteDoctorModal";
+import api from "../../api/api"; // Your centralized API instance
 
 const DoctorManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [doctors, setDoctors] = useState([]); // State to hold the doctors
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch doctors data from the API
+    const fetchDoctors = async () => {
+      try {
+        // Get token from localStorage
+        const token = localStorage.getItem("token");
+
+        // Make API request with Authorization header
+        const response = await api.get("/users/doctors", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log("API Response:", response.data); // Log the response to see its structure
+
+        // Assuming the response is directly the array of doctors:
+        setDoctors(response.data);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
 
   const handleDeleteClick = (doctor) => {
     setSelectedDoctor(doctor);
     setOpenDeleteModal(true);
   };
 
+  const handleEditClick = (id) => {
+    navigate(`/admin/edit-doctor/${id}`);
+  };
+
+  const handleViewClick = (id) => {
+    navigate(`/admin/view-doctor/${id}`);
+  };
+
   const handleCloseDeleteModal = () => {
     setOpenDeleteModal(false);
   };
 
-  const handleDeleteDoctor = () => {
-    console.log("Deleting doctor:", selectedDoctor);
-    setOpenDeleteModal(false);
+  const handleDeleteDoctor = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await api.delete(`/users/doctors/${selectedDoctor._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setDoctors(doctors.filter((doctor) => doctor._id !== selectedDoctor._id));
+      setOpenDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting doctor:", error);
+    }
   };
-  const navigate = useNavigate();
-
-  const doctors = [
-    {
-      id: 1,
-      name: "Dr. Marcus Philips",
-      gender: "Male",
-      qualification: "MBBS",
-      specialty: "Internal Medicine",
-      workingTime: "6 Hour",
-      checkupTime: "4 Hour",
-      breakTime: "1 Hour",
-    },
-    {
-      id: 2,
-      name: "Dr. Haylie Schleifer",
-      gender: "Female",
-      qualification: "BDS",
-      specialty: "Anesthesiology",
-      workingTime: "5 Hour",
-      checkupTime: "4 Hour",
-      breakTime: "2 Hour",
-    },
-    {
-      id: 3,
-      name: "Dr. Roger Carder",
-      gender: "Male",
-      qualification: "B.U.M.S.",
-      specialty: "Surgery",
-      workingTime: "8 Hour",
-      checkupTime: "5 Hour",
-      breakTime: "2 Hour",
-    },
-    // Add more doctors
-  ];
 
   // Filter doctors based on the search term
   const filteredDoctors = doctors.filter((doctor) =>
-    doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
+    `${doctor.firstName} ${doctor.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -124,23 +139,29 @@ const DoctorManagement = () => {
           <tbody>
             {filteredDoctors.map((doctor, index) => (
               <tr key={index} className="border-t">
-                <td className="p-3">{doctor.name}</td>
+                <td className="p-3">{`${doctor.firstName} ${doctor.lastName}`}</td>
                 <td className="p-3">{doctor.gender}</td>
-                <td className="p-3">{doctor.qualification}</td>
-                <td className="p-3">{doctor.specialty}</td>
-                <td className="p-3">{doctor.workingTime}</td>
-                <td className="p-3">{doctor.checkupTime}</td>
-                <td className="p-3">{doctor.breakTime}</td>
+                <td className="p-3">{doctor.doctorDetails?.qualification}</td>
+                <td className="p-3">{doctor.doctorDetails?.specialtyType}</td>
+                <td className="p-3">
+                  {doctor.doctorDetails?.workingHours?.checkupTime}
+                </td>
+                <td className="p-3">
+                  {doctor.doctorDetails?.workingHours?.checkupTime}
+                </td>
+                <td className="p-3">
+                  {doctor.doctorDetails?.workingHours?.breakTime}
+                </td>
                 <td className="p-3 flex space-x-2">
                   <IconButton
                     color="primary"
-                    onClick={() => navigate(`/admin/edit-doctor/${doctor.id}`)}
+                    onClick={() => handleEditClick(doctor._id)}
                   >
                     <Edit />
                   </IconButton>
                   <IconButton
                     color="secondary"
-                    onClick={() => navigate(`/admin/view-doctor/${doctor.id}`)}
+                    onClick={() => handleViewClick(doctor._id)}
                   >
                     <Visibility />
                   </IconButton>

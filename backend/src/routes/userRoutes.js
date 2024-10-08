@@ -11,6 +11,14 @@ const {
   changePassword,
   getUserProfile,
   updateUserProfile,
+  getAllDoctors,
+  getAllPatients,
+  getDoctorById,
+  deleteDoctorById,
+  editDoctorById,
+  getPatientById,
+  editPatientById,
+  deletePatientById,
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 const upload = require("../utils/multerConfig");
@@ -62,6 +70,17 @@ router.patch(
   updateUserProfile
 );
 
+// Get All Doctors
+router.get("/doctors", protect, admin, getAllDoctors);
 
+// Get All Patients
+router.get("/patients", protect, admin, getAllPatients);
+
+router.get("/doctors/:id", getDoctorById);
+router.delete("/doctors/:id", protect, admin, deleteDoctorById);
+router.patch("/doctors/:id", editDoctorById);
+router.get("/patients/:id", getPatientById);
+router.patch("/patients/:id", editPatientById);
+router.delete("/patients/:id", deletePatientById);
 
 module.exports = router;

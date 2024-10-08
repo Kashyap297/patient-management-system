@@ -8,10 +8,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 const PatientDetailsModal = ({ open, handleClose, patient }) => {
-  if (!patient) return null; // In case there's no patient selected
+  if (!patient) return null; // Ensure a patient is selected before rendering
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         Patient Details
         <IconButton
@@ -28,40 +28,46 @@ const PatientDetailsModal = ({ open, handleClose, patient }) => {
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>
-        <Typography variant="body2" color="textSecondary" component="p">
+        <Typography gutterBottom>
           <strong>Appointment Type:</strong>{" "}
-          <span className="badge bg-yellow-200 text-yellow-600 px-2 py-1 rounded">
+          <span
+            className={`badge px-2 py-1 rounded ${
+              patient?.appointmentType === "Online"
+                ? "bg-yellow-200 text-yellow-600"
+                : "bg-blue-200 text-blue-600"
+            }`}
+          >
             {patient?.appointmentType}
           </span>
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Appointment Date:</strong> {patient?.appointmentDate}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Appointment Time:</strong> {patient?.appointmentTime}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Patient Name:</strong> {patient?.patientName}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Patient Phone Number:</strong> {patient?.phoneNumber}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Patient Age:</strong> {patient?.age}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Patient Gender:</strong> {patient?.gender}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Patient Issue:</strong> {patient?.patientIssue}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Disease Name:</strong> {patient?.diseaseName}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Doctor Name:</strong> {patient?.doctorName}
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           <strong>Patient Address:</strong> {patient?.address}
         </Typography>
       </DialogContent>
