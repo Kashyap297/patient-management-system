@@ -19,6 +19,8 @@ import AdminDashboard from "../pages/adminPages/AdminDashboard";
 import PatientManagement from "./PatientManagement";
 import ProfileScreen from "../pages/adminPages/ProfileScreen";
 import SearchResults from "./SearchScreen";
+import SelectTemplate from "../pages/adminPages/SelectTemplate";
+import CreateBill from "../pages/adminPages/CreateBillForm";
 
 const AdminRoutes = () => {
   return (
@@ -39,6 +41,7 @@ const AdminRoutes = () => {
             />
             <Route path="/monitor-billing" element={<MonitorBilling />} />
             <Route path="/insurance-claims" element={<InsuranceClaims />} />
+            <Route path="/select-template" element={<SelectTemplate />} />
             <Route path="/payment-process" element={<PaymentProcess />} />
             <Route path="/invoice/:billId/:patientName" element={<Invoice />} />
             <Route path="/insurance/:id" element={<InsuranceDetail />} />
@@ -46,6 +49,7 @@ const AdminRoutes = () => {
             <Route path="/analytics" element={<ReportingAnalysis />} />
             <Route path="/" element={<ProfileScreen />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/create-bill" element={<CreateBill />} />
           </Routes>
           {/* <DoctorManagement /> */}
         </div>

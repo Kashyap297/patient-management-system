@@ -44,6 +44,11 @@ const invoiceSchema = new mongoose.Schema(
       claimedAmount: { type: Number },
     }, // Optional fields for insurance
     logoUrl: { type: String }, // If you want to store hospital logo URL
+    status: {
+      type: String,
+      enum: ["Paid", "Unpaid"],
+      default: "Unpaid",
+    },
   },
   { timestamps: true }
 );

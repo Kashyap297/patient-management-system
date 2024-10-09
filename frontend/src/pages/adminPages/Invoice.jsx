@@ -1,58 +1,31 @@
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import api from "../../api/api"; // Ensure your API utility is correctly imported
 
 const Invoice = () => {
-  const { billId, patientName } = useParams(); // Retrieve the dynamic parameters
+  const { billId } = useParams(); // Retrieve the dynamic parameter
+  const [invoiceData, setInvoiceData] = useState(null); // State for storing invoice data
 
-  // Sample data for the invoice, you can fetch real data here based on billId and patientName
-  const invoiceData = {
-    doctorName: "Dr. Bharat Patel",
-    patient: {
-      name: "Miracle Kenter",
-      gender: "Male",
-      age: "36 Years",
-      address: "B-105 Virat Bungalows Punagam Motavaracha Jamnagar",
-      diseaseName: "Stomach Ach",
-      phoneNumber: "9957 96557",
-      paymentType: "Online",
-    },
-    bill: {
-      id: billId,
-      date: "20 June, 2020",
-      time: "10:45 PM",
-    },
-    items: [
-      {
-        description: "Neuromuscular blockers",
-        amount: "₹ 12000.00",
-        qty: 2,
-        total: "₹ 24000.00",
-      },
-      {
-        description: "Neuromuscular blockers",
-        amount: "₹ 800.00",
-        qty: 2,
-        total: "₹ 1600.00",
-      },
-      {
-        description: "Leucovorin with high dose methotrexate (HDMTX)",
-        amount: "₹ 1000.00",
-        qty: 2,
-        total: "₹ 2000.00",
-      },
-      {
-        description: "Hydroxyurea for sickle cell disease",
-        amount: "₹ 20.00",
-        qty: 2,
-        total: "₹ 40.00",
-      },
-    ],
-    summary: {
-      amount: "₹ 25,840.00",
-      discount: "5% - ₹ 1,292.00",
-      tax: "₹ 120.00",
-      total: "₹ 24,668.00",
-    },
-  };
+  useEffect(() => {
+    // Fetch invoice data by ID
+    const fetchInvoiceData = async () => {
+      try {
+        const response = await api.get(`/invoice/${billId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming token is required
+          },
+        });
+        setInvoiceData(response.data.invoice);
+      } catch (error) {
+        console.error("Error fetching invoice:", error);
+      }
+    };
+    fetchInvoiceData();
+  }, [billId]);
+
+  if (!invoiceData) {
+    return <p>Loading...</p>; // Show a loading message while data is being fetched
+  }
 
   return (
     <div className="p-6 bg-white min-h-screen shadow-md rounded-lg">
@@ -61,10 +34,11 @@ const Invoice = () => {
         <div>
           <h1 className="text-3xl font-semibold">Invoice</h1>
           <h2 className="text-xl font-semibold text-blue-600">
-            Dr. {invoiceData.doctorName}
+            Dr. {invoiceData.doctor.firstName} {invoiceData.doctor.lastName}
           </h2>
           <p>
-            {invoiceData.bill.date} | {invoiceData.bill.time}
+            {new Date(invoiceData.billDate).toLocaleDateString()} |{" "}
+            {invoiceData.billTime}
           </p>
         </div>
       </div>
@@ -72,25 +46,29 @@ const Invoice = () => {
       {/* Patient Details */}
       <div className="bg-gray-50 p-6 rounded-lg shadow-md mb-6">
         <p>
-          <strong>Name:</strong> {invoiceData.patient.name}
+          <strong>Name:</strong> {invoiceData.patient.firstName}{" "}
+          {invoiceData.patient.lastName}
         </p>
         <p>
-          <strong>Gender:</strong> {invoiceData.patient.gender}
+          <strong>Gender:</strong> {invoiceData.gender}
         </p>
         <p>
-          <strong>Age:</strong> {invoiceData.patient.age}
+          <strong>Age:</strong> {invoiceData.age}
         </p>
         <p>
-          <strong>Address:</strong> {invoiceData.patient.address}
+          <strong>Address:</strong> {invoiceData.address}
         </p>
         <p>
-          <strong>Disease Name:</strong> {invoiceData.patient.diseaseName}
+          <strong>Disease Name:</strong> {invoiceData.diseaseName}
         </p>
         <p>
-          <strong>Phone Number:</strong> {invoiceData.patient.phoneNumber}
+          <strong>Phone Number:</strong> {invoiceData.phoneNumber}
         </p>
         <p>
-          <strong>Payment Type:</strong> {invoiceData.patient.paymentType}
+          <strong>Payment Type:</strong> {invoiceData.paymentType}
+        </p>
+        <p>
+          <strong>Status:</strong> {invoiceData.status}
         </p>
       </div>
 
@@ -105,34 +83,29 @@ const Invoice = () => {
           </tr>
         </thead>
         <tbody>
-          {invoiceData.items.map((item, index) => (
-            <tr key={index}>
-              <td className="p-3">{item.description}</td>
-              <td className="p-3">{item.amount}</td>
-              <td className="p-3">{item.qty}</td>
-              <td className="p-3">{item.total}</td>
-            </tr>
-          ))}
+          {/* Assuming `items` is a field in your API response */}
+          <tr>
+            <td className="p-3">{invoiceData.description}</td>
+            <td className="p-3">₹ {invoiceData.amount}</td>
+            <td className="p-3">1</td>
+            <td className="p-3">₹ {invoiceData.amount}</td>
+          </tr>
         </tbody>
       </table>
 
       {/* Summary */}
       <div className="text-right">
         <p className="text-lg">
-          <strong>Amount: </strong>
-          {invoiceData.summary.amount}
+          <strong>Amount: </strong>₹ {invoiceData.amount}
         </p>
         <p className="text-lg">
-          <strong>Discount: </strong>
-          {invoiceData.summary.discount}
+          <strong>Discount: </strong>₹ {invoiceData.discount}
         </p>
         <p className="text-lg">
-          <strong>Tax: </strong>
-          {invoiceData.summary.tax}
+          <strong>Tax: </strong>₹ {invoiceData.tax}
         </p>
         <p className="text-2xl font-semibold text-blue-600">
-          <strong>Total Amount: </strong>
-          {invoiceData.summary.total}
+          <strong>Total Amount: </strong>₹ {invoiceData.totalAmount}
         </p>
       </div>
 
