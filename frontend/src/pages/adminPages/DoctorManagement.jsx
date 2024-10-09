@@ -4,12 +4,14 @@ import { Edit, Visibility, Delete, Search } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import DeleteDoctorModal from "../../components/modals/DeleteDoctorModal";
 import api from "../../api/api"; // Your centralized API instance
+import DoctorDetailsDrawer from "../../components/modals/DoctorDetailsDrawer";
 
 const DoctorManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [doctors, setDoctors] = useState([]); // State to hold the doctors
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -48,10 +50,14 @@ const DoctorManagement = () => {
     navigate(`/admin/edit-doctor/${id}`);
   };
 
-  const handleViewClick = (id) => {
-    navigate(`/admin/view-doctor/${id}`);
+  const handleDrawerOpen = (doctor) => {
+    console.log(doctor);
+    setSelectedDoctor(doctor);
+    setDrawerOpen(true);
   };
-
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
   const handleCloseDeleteModal = () => {
     setOpenDeleteModal(false);
   };
@@ -161,10 +167,11 @@ const DoctorManagement = () => {
                   </IconButton>
                   <IconButton
                     color="secondary"
-                    onClick={() => handleViewClick(doctor._id)}
+                    onClick={() => handleDrawerOpen(doctor)}
                   >
                     <Visibility />
                   </IconButton>
+
                   <IconButton
                     color="error"
                     onClick={() => handleDeleteClick(doctor)}
@@ -177,6 +184,11 @@ const DoctorManagement = () => {
           </tbody>
         </table>
       </div>
+      <DoctorDetailsDrawer
+        open={drawerOpen}
+        onClose={handleDrawerClose}
+        doctor={selectedDoctor}
+      />
       <DeleteDoctorModal
         open={openDeleteModal}
         handleClose={handleCloseDeleteModal}

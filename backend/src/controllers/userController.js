@@ -123,9 +123,6 @@ exports.registerPatient = async (req, res) => {
   }
 };
 
-// @desc    Add New Doctor (Admin Only)
-// @route   POST /api/auth/add-doctor
-// @access  Admin
 exports.addDoctorByAdmin = async (req, res) => {
   const {
     firstName,
@@ -135,6 +132,8 @@ exports.addDoctorByAdmin = async (req, res) => {
     password,
     qualification,
     specialtyType,
+    workType,
+    workingTime,
     checkupTime,
     breakTime,
     experience,
@@ -153,21 +152,18 @@ exports.addDoctorByAdmin = async (req, res) => {
   } = req.body;
 
   try {
-    // Check if doctor already exists
     const doctorExists = await User.findOne({ email });
     if (doctorExists) {
       return res.status(400).json({ message: "Doctor already exists" });
     }
 
-    // Handle uploaded files (profileImage and signatureImage)
     const profileImage = req.files.profileImage
-      ? req.files.profileImage[0].path
+      ? `uploads/${req.files.profileImage[0].filename}`
       : null;
     const signatureImage = req.files.signatureImage
-      ? req.files.signatureImage[0].path
+      ? `uploads/${req.files.signatureImage[0].filename}`
       : null;
 
-    // Create new doctor with the uploaded images
     const doctor = await User.create({
       firstName,
       lastName,
@@ -175,15 +171,16 @@ exports.addDoctorByAdmin = async (req, res) => {
       phoneNumber,
       password,
       role: "doctor",
-      profileImage, // Store profile image path
-      signatureImage, // Store signature image path
+      profileImage,
+      signatureImage,
       doctorDetails: {
         qualification,
         specialtyType,
-        workingHours: { checkupTime, breakTime },
-        experience,
-        zipCode,
-        onlineConsultationRate,
+        workType,
+        workingHours: { workingTime, checkupTime, breakTime },
+        experience: Number(experience),
+        zipCode: Number(zipCode),
+        onlineConsultationRate: Number(onlineConsultationRate),
         hospital: {
           hospitalName,
           hospitalAddress,
@@ -192,11 +189,10 @@ exports.addDoctorByAdmin = async (req, res) => {
         },
       },
       gender,
-      age,
+      age: Number(age),
       country,
       state,
       city,
-      address: doctorAddress,
     });
 
     res.status(201).json({
@@ -209,6 +205,7 @@ exports.addDoctorByAdmin = async (req, res) => {
       signatureImage: doctor.signatureImage,
     });
   } catch (error) {
+    console.error("Validation Error:", error); // Log the full error
     res.status(500).json({ message: "Server error", error });
   }
 };

@@ -23,6 +23,16 @@ const {
 const { protect, admin } = require("../middlewares/authMiddleware");
 const upload = require("../utils/multerConfig");
 
+// Multer error handler
+const multerErrorHandler = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ message: err.message });
+  } else if (err) {
+    return res.status(500).json({ message: "File upload error", error: err });
+  }
+  next();
+};
+
 // Admin Registration
 router.post("/register-admin", registerAdmin);
 
@@ -38,6 +48,7 @@ router.post(
     { name: "profileImage", maxCount: 1 },
     { name: "signatureImage", maxCount: 1 },
   ]),
+  multerErrorHandler,
   addDoctorByAdmin
 );
 
@@ -67,6 +78,7 @@ router.patch(
     { name: "profileImage", maxCount: 1 },
     { name: "signatureImage", maxCount: 1 },
   ]),
+  multerErrorHandler,
   updateUserProfile
 );
 
@@ -76,9 +88,12 @@ router.get("/doctors", protect, admin, getAllDoctors);
 // Get All Patients
 router.get("/patients", protect, admin, getAllPatients);
 
+// Doctor Routes
 router.get("/doctors/:id", getDoctorById);
 router.delete("/doctors/:id", protect, admin, deleteDoctorById);
 router.patch("/doctors/:id", editDoctorById);
+
+// Patient Routes
 router.get("/patients/:id", getPatientById);
 router.patch("/patients/:id", editPatientById);
 router.delete("/patients/:id", deletePatientById);

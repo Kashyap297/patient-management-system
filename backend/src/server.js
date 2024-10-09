@@ -1,6 +1,7 @@
 const express = require("express");
 const dbConnection = require("./config/db");
 const Config = require("./config");
+const path = require("path");
 const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const upload = require("./utils/multerConfig");
@@ -12,6 +13,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const invoiceRoutes = require("./routes/invoiceRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const router = express.Router();
+const fs = require("fs");
 
 const app = express();
 
@@ -24,6 +26,9 @@ app.use(cors());
 
 // dbConnection
 dbConnection();
+
+// Serve static files from the uploads folder inside src
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // API routes
 app.use("/api/users", userRoutes);
@@ -44,6 +49,16 @@ router.post("/upload", upload.single("profileImage"), (req, res) => {
     message: "File uploaded successfully",
     file: req.file,
     username: username, // Return the username or any other fields
+  });
+});
+
+app.get("/uploads-list", (req, res) => {
+  fs.readdir(path.join(__dirname, "uploads"), (err, files) => {
+    if (err) {
+      console.error("Error scanning directory:", err);
+      return res.status(500).send(`Unable to scan directory: ${err.message}`);
+    }
+    res.send(files);
   });
 });
 

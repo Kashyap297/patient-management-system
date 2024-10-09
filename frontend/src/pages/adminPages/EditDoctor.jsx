@@ -15,6 +15,7 @@ const EditDoctor = ({ isViewOnly = false }) => {
     gender: "",
     qualification: "",
     specialtyType: "",
+    workType: "",
     workingTime: "",
     checkupTime: "",
     breakTime: "",
@@ -26,19 +27,66 @@ const EditDoctor = ({ isViewOnly = false }) => {
     city: "",
     address: "",
     description: "",
+    doctorCurrentHospital: "",
+    hospitalName: "",
+    hospitalAddress: "",
+    websiteLink: "",
+    emergencyContactNumber: "",
+    profileImage: "",
+    signatureImage: "",
+    age: "", // Added age field
   });
+
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
+  const [signatureImagePreview, setSignatureImagePreview] = useState(null);
 
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
         const response = await api.get(`/users/doctors/${id}`);
-        setFormData(response.data);
+        const doctor = response.data;
+
+        // Flatten nested doctor details for easy form binding
+        setFormData({
+          firstName: doctor.firstName,
+          lastName: doctor.lastName,
+          email: doctor.email,
+          phoneNumber: doctor.phoneNumber,
+          gender: doctor.gender,
+          qualification: doctor.doctorDetails.qualification,
+          specialtyType: doctor.doctorDetails.specialtyType,
+          workType: doctor.doctorDetails.workType,
+          workingTime: doctor.workingTime,
+          checkupTime: doctor.doctorDetails.workingHours.checkupTime,
+          breakTime: doctor.doctorDetails.workingHours.breakTime,
+          experience: doctor.doctorDetails.experience,
+          zipCode: doctor.doctorDetails.zipCode,
+          onlineConsultationRate: doctor.doctorDetails.onlineConsultationRate,
+          country: doctor.country,
+          state: doctor.state,
+          city: doctor.city,
+          address: doctor.address,
+          description: doctor.description,
+          doctorCurrentHospital: doctor.doctorDetails.hospital.currentHospital,
+          hospitalName: doctor.doctorDetails.hospital.hospitalName,
+          hospitalAddress: doctor.doctorDetails.hospital.hospitalAddress,
+          websiteLink: doctor.doctorDetails.hospital.websiteLink,
+          emergencyContactNumber:
+            doctor.doctorDetails.hospital.emergencyContactNumber,
+          profileImage: doctor.profileImage,
+          signatureImage: doctor.signatureImage,
+          age: doctor.age, // Populate age
+        });
+
+        // Set image previews with server URL
+        const serverUrl = "http://localhost:8000/"; // Replace with your server's URL
+        setProfileImagePreview(`${serverUrl}${doctor.profileImage}`);
+        setSignatureImagePreview(`${serverUrl}${doctor.signatureImage}`);
       } catch (error) {
         console.error("Error fetching doctor details:", error);
       }
     };
 
-    // Always fetch doctor details regardless of view mode
     fetchDoctorDetails();
   }, [id]);
 
@@ -47,10 +95,34 @@ const EditDoctor = ({ isViewOnly = false }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    const { name, files } = e.target;
+    if (files.length > 0) {
+      const file = files[0];
+      setFormData((prevData) => ({ ...prevData, [name]: file }));
+
+      if (name === "profileImage") {
+        setProfileImagePreview(URL.createObjectURL(file));
+      } else if (name === "signatureImage") {
+        setSignatureImagePreview(URL.createObjectURL(file));
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formDataToSend = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      if (formData[key]) {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
+
     try {
-      await api.patch(`/users/doctors/${id}`, formData);
+      await api.patch(`/users/doctors/${id}`, formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       navigate("/doctor-management");
     } catch (error) {
       console.error("Error updating doctor:", error);
@@ -62,7 +134,7 @@ const EditDoctor = ({ isViewOnly = false }) => {
       <h2 className="text-lg font-semibold mb-4">
         {isViewOnly ? "View Doctor Details" : "Edit Doctor Details"}
       </h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label>First Name</label>
@@ -146,125 +218,66 @@ const EditDoctor = ({ isViewOnly = false }) => {
             />
           </div>
           <div>
-            <label>Working Time</label>
-            <input
-              type="text"
-              name="workingTime"
-              value={formData.workingTime}
+            <label>Work Type</label>
+            <select
+              name="workType"
+              value={formData.workType}
               onChange={handleChange}
               className="w-full border p-2 rounded mt-1"
               disabled={isViewOnly}
-            />
+            >
+              <option value="">Select Work Type</option>
+              <option value="Online">Online</option>
+              <option value="In-Person">In-Person</option>
+            </select>
           </div>
           <div>
-            <label>Checkup Time</label>
-            <input
-              type="text"
-              name="checkupTime"
-              value={formData.checkupTime}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Break Time</label>
-            <input
-              type="text"
-              name="breakTime"
-              value={formData.breakTime}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Experience</label>
+            <label>Age</label>
             <input
               type="number"
-              name="experience"
-              value={formData.experience}
+              name="age"
+              value={formData.age}
               onChange={handleChange}
               className="w-full border p-2 rounded mt-1"
               disabled={isViewOnly}
             />
+          </div>
+          {/* Additional fields */}
+          <div>
+            <label>Profile Image</label>
+            <input
+              type="file"
+              name="profileImage"
+              onChange={handleImageChange}
+              className="w-full border p-2 rounded mt-1"
+              disabled={isViewOnly}
+            />
+            {profileImagePreview && (
+              <img
+                src={profileImagePreview}
+                alt="Profile Preview"
+                className="mt-2"
+                width="100"
+              />
+            )}
           </div>
           <div>
-            <label>Zip Code</label>
+            <label>Signature Image</label>
             <input
-              type="text"
-              name="zipCode"
-              value={formData.zipCode}
-              onChange={handleChange}
+              type="file"
+              name="signatureImage"
+              onChange={handleImageChange}
               className="w-full border p-2 rounded mt-1"
               disabled={isViewOnly}
             />
-          </div>
-          <div>
-            <label>Online Consultation Rate</label>
-            <input
-              type="number"
-              name="onlineConsultationRate"
-              value={formData.onlineConsultationRate}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Country</label>
-            <input
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>State</label>
-            <input
-              type="text"
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>City</label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Address</label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div className="col-span-2">
-            <label>Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              rows="4"
-              disabled={isViewOnly}
-            ></textarea>
+            {signatureImagePreview && (
+              <img
+                src={signatureImagePreview}
+                alt="Signature Preview"
+                className="mt-2"
+                width="100"
+              />
+            )}
           </div>
         </div>
 

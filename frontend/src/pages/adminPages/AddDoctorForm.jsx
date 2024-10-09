@@ -1,39 +1,45 @@
 import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, TextField, MenuItem, IconButton } from "@mui/material";
-import { UploadFile } from "@mui/icons-material";
-import * as Yup from "yup";
-
-const validationSchema = Yup.object().shape({
-  doctorName: Yup.string().required("Doctor Name is required"),
-  qualification: Yup.string().required("Qualification is required"),
-  gender: Yup.string().required("Gender is required"),
-  specialty: Yup.string().required("Specialty is required"),
-  checkupTime: Yup.string().required("Checkup Time is required"),
-  workingTime: Yup.string().required("Working Time is required"),
-  breakTime: Yup.string().required("Break Time is required"),
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
-  phoneNumber: Yup.string().required("Phone Number is required"),
-  country: Yup.string().required("Country is required"),
-  state: Yup.string().required("State is required"),
-  city: Yup.string().required("City is required"),
-  onlineRate: Yup.number().required("Online Consultation Rate is required"),
-  zipCode: Yup.string().required("Zip Code is required"),
-  doctorAddress: Yup.string().required("Doctor Address is required"),
-  description: Yup.string().required("Description is required"),
-  currentHospital: Yup.string().required("Current Hospital is required"),
-  hospitalName: Yup.string().required("Hospital Name is required"),
-  hospitalAddress: Yup.string().required("Hospital Address is required"),
-  emergencyContact: Yup.string().required(
-    "Emergency Contact Number is required"
-  ),
-});
 
 const AddDoctorForm = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    qualification: "",
+    gender: "",
+    specialtyType: "",
+    checkupTime: "",
+    workingTime: "",
+    breakTime: "",
+    email: "",
+    phoneNumber: "",
+    password: "", // New password field
+    country: "",
+    state: "",
+    city: "",
+    onlineConsultationRate: "",
+    zipCode: "",
+    doctorAddress: "",
+    description: "",
+    currentHospital: "",
+    hospitalName: "",
+    hospitalAddress: "",
+    websiteLink: "",
+    emergencyContactNumber: "",
+    experience: "",
+    age: "",
+    workType: "", // New field for work type (Online, Onsite, Both)
+  });
+
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [signature, setSignature] = useState(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handlePhotoUpload = (e) => {
     setProfilePhoto(e.target.files[0]);
@@ -43,370 +49,333 @@ const AddDoctorForm = () => {
     setSignature(e.target.files[0]);
   };
 
-  const handleSubmit = (values) => {
-    console.log("Form Data", values);
-    // Implement form submission logic
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData();
+    for (const key in formData) {
+      data.append(key, formData[key]);
+    }
+    if (profilePhoto) data.append("profileImage", profilePhoto);
+    if (signature) data.append("signatureImage", signature);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        "http://localhost:8000/api/users/add-doctor",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: data,
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Server error:", error);
+        alert(`Error: ${error.message}`);
+        return;
+      }
+
+      const result = await response.json();
+      console.log("Doctor added:", result);
+      alert("Doctor added successfully");
+    } catch (error) {
+      console.error("Error adding doctor:", error);
+      alert("Error adding doctor");
+    }
   };
 
   return (
     <div className="p-8 bg-white rounded-lg shadow-md m-6">
       <h2 className="text-xl font-semibold mb-6">Add New Doctor</h2>
-      <Formik
-        initialValues={{
-          doctorName: "",
-          qualification: "",
-          gender: "",
-          specialty: "",
-          checkupTime: "",
-          workingTime: "",
-          breakTime: "",
-          email: "",
-          phoneNumber: "",
-          country: "",
-          state: "",
-          city: "",
-          onlineRate: "",
-          zipCode: "",
-          doctorAddress: "",
-          description: "",
-          currentHospital: "",
-          hospitalName: "",
-          hospitalAddress: "",
-          websiteLink: "",
-          emergencyContact: "",
-        }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ values, handleChange, setFieldValue }) => (
-          <Form className="grid grid-cols-4 gap-6">
-            {/* Profile Section */}
-            <div className="col-span-1 flex flex-col items-center">
-              <div className="w-full flex flex-col items-center">
-                <input
-                  accept="image/*"
-                  type="file"
-                  onChange={handlePhotoUpload}
-                  id="profile-upload"
-                  hidden
-                />
-                <label htmlFor="profile-upload">
-                  <div className="cursor-pointer text-center mb-4">
-                    <img
-                      src={
-                        profilePhoto
-                          ? URL.createObjectURL(profilePhoto)
-                          : "/placeholder.jpg"
-                      }
-                      alt="Profile"
-                      className="rounded-full w-28 h-28 mb-2"
-                    />
-                    <Button component="span" color="primary">
-                      Choose Photo
-                    </Button>
-                  </div>
-                </label>
-              </div>
-
-              <div className="w-full flex flex-col items-center border p-4 rounded-lg mb-6">
-                <input
-                  accept=".png,.jpg,.jpeg"
-                  type="file"
-                  onChange={handleSignatureUpload}
-                  id="signature-upload"
-                  hidden
-                />
-                <label htmlFor="signature-upload">
-                  <div className="cursor-pointer text-center">
-                    {signature ? signature.name : "Upload Signature"}
-                    <IconButton component="span" color="primary">
-                      <UploadFile />
-                    </IconButton>
-                  </div>
-                </label>
-              </div>
+      <form onSubmit={handleSubmit} className="grid grid-cols-4 gap-6">
+        <div className="col-span-1 flex flex-col items-center">
+          <input
+            type="file"
+            onChange={handlePhotoUpload}
+            className="hidden"
+            id="profile-upload"
+          />
+          <label htmlFor="profile-upload" className="cursor-pointer">
+            <div className="text-center mb-4">
+              <img
+                src={
+                  profilePhoto
+                    ? URL.createObjectURL(profilePhoto)
+                    : "/placeholder.jpg"
+                }
+                alt="Profile"
+                className="rounded-full w-28 h-28 mb-2"
+              />
+              <span className="text-blue-500">Choose Photo</span>
             </div>
-
-            {/* Doctor Information Section */}
-            <div className="col-span-3 grid grid-cols-3 gap-4">
-              <div>
-                <Field
-                  name="doctorName"
-                  as={TextField}
-                  label="Doctor Name"
-                  fullWidth
+          </label>
+          <input
+            type="file"
+            onChange={handleSignatureUpload}
+            className="hidden"
+            id="signature-upload"
+          />
+          <label htmlFor="signature-upload" className="cursor-pointer">
+            <div className="text-center">
+              {signature ? (
+                <img
+                  src={URL.createObjectURL(signature)}
+                  alt="Signature"
+                  className="w-24 h-12 object-contain"
                 />
-                <ErrorMessage
-                  name="doctorName"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="qualification"
-                  as={TextField}
-                  label="Doctor Qualification"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="qualification"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="gender"
-                  as={TextField}
-                  select
-                  label="Gender"
-                  fullWidth
-                >
-                  <MenuItem value="Male">Male</MenuItem>
-                  <MenuItem value="Female">Female</MenuItem>
-                  <MenuItem value="Other">Other</MenuItem>
-                </Field>
-                <ErrorMessage
-                  name="gender"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="specialty"
-                  as={TextField}
-                  label="Specialty Type"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="specialty"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="checkupTime"
-                  as={TextField}
-                  label="Checkup Time"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="checkupTime"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="workingTime"
-                  as={TextField}
-                  label="Working Time"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="workingTime"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="breakTime"
-                  as={TextField}
-                  label="Break Time"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="breakTime"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="email"
-                  as={TextField}
-                  label="Doctor Email"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="phoneNumber"
-                  as={TextField}
-                  label="Phone Number"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="phoneNumber"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="country"
-                  as={TextField}
-                  label="Country"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="country"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field name="state" as={TextField} label="State" fullWidth />
-                <ErrorMessage
-                  name="state"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field name="city" as={TextField} label="City" fullWidth />
-                <ErrorMessage
-                  name="city"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="onlineRate"
-                  as={TextField}
-                  label="Online Consultation Rate"
-                  type="number"
-                  placeholder="₹ 0000"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="onlineRate"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="zipCode"
-                  as={TextField}
-                  label="Zip Code"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="zipCode"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="doctorAddress"
-                  as={TextField}
-                  label="Doctor Address"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="doctorAddress"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              <div>
-                <Field
-                  name="description"
-                  as={TextField}
-                  label="Description"
-                  fullWidth
-                />
-                <ErrorMessage
-                  name="description"
-                  component="div"
-                  className="text-red-600 text-sm"
-                />
-              </div>
-
-              {/* Hospital Details - Next Line */}
-              <div className="col-span-3 grid grid-cols-3 gap-4 mt-6">
-                <div>
-                  <Field
-                    name="currentHospital"
-                    as={TextField}
-                    label="Doctor Current Hospital"
-                    fullWidth
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    name="hospitalName"
-                    as={TextField}
-                    label="Hospital Name"
-                    fullWidth
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    name="hospitalAddress"
-                    as={TextField}
-                    label="Hospital Address"
-                    fullWidth
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    name="websiteLink"
-                    as={TextField}
-                    label="Hospital Website Link"
-                    fullWidth
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    name="emergencyContact"
-                    as={TextField}
-                    label="Emergency Contact Number"
-                    fullWidth
-                  />
-                </div>
-              </div>
+              ) : (
+                <span className="text-gray-500">Upload Signature</span>
+              )}
             </div>
+          </label>
+        </div>
 
-            <div className="col-span-4 flex justify-end mt-6">
-              <Button type="submit" variant="contained" color="primary">
-                Add
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Formik>
+        <div className="col-span-3 grid grid-cols-3 gap-4">
+          {/* Doctor's Information Fields */}
+          <input
+            type="text"
+            name="firstName"
+            placeholder="Doctor Name"
+            value={formData.firstName}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            value={formData.lastName}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="qualification"
+            placeholder="Doctor Qualification"
+            value={formData.qualification}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <select
+            name="workType"
+            value={formData.workType}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          >
+            <option value="">Work Type</option>
+            <option value="Online">Online</option>
+            <option value="Onsite">Onsite</option>
+            <option value="Both">Both</option>
+          </select>
+
+          <input
+            type="text"
+            name="specialtyType"
+            placeholder="Specialty Type"
+            value={formData.specialtyType}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="workingTime"
+            placeholder="Working Time"
+            value={formData.workingTime}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="checkupTime"
+            placeholder="Checkup Time"
+            value={formData.checkupTime}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="breakTime"
+            placeholder="Break Time"
+            value={formData.breakTime}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Doctor Email"
+            value={formData.email}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            value={formData.phoneNumber}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="number"
+            name="onlineConsultationRate"
+            placeholder="Online Consultation Rate"
+            value={formData.onlineConsultationRate}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+
+          <input
+            type="text"
+            name="zipCode"
+            placeholder="Zip Code"
+            value={formData.zipCode}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="doctorAddress"
+            placeholder="Doctor Address"
+            value={formData.doctorAddress}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <div>
+            <input
+              type="text"
+              name="country"
+              placeholder="Country"
+              value={formData.country}
+              onChange={handleInputChange}
+              className="border rounded w-full p-2"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="state"
+              placeholder="State"
+              value={formData.state}
+              onChange={handleInputChange}
+              className="border rounded w-full p-2"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              value={formData.city}
+              onChange={handleInputChange}
+              className="border rounded w-full p-2"
+            />
+          </div>
+          {/* Hospital Information Fields */}
+          <input
+            type="text"
+            name="currentHospital"
+            placeholder="Current Hospital"
+            value={formData.currentHospital}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="hospitalName"
+            placeholder="Hospital Name"
+            value={formData.hospitalName}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="hospitalAddress"
+            placeholder="Hospital Address"
+            value={formData.hospitalAddress}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="url"
+            name="websiteLink"
+            placeholder="Website Link"
+            value={formData.websiteLink}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="emergencyContactNumber"
+            placeholder="Emergency Contact Number"
+            value={formData.emergencyContactNumber}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+
+          <input
+            type="number"
+            name="experience"
+            placeholder="Experience"
+            value={formData.experience}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="number"
+            name="age"
+            placeholder="Age"
+            value={formData.age}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+          <input
+            type="text"
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleInputChange}
+            className="border rounded w-full p-2"
+          />
+        </div>
+
+        <div className="col-span-4 flex justify-end mt-6">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white rounded px-4 py-2"
+          >
+            Add Doctor
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

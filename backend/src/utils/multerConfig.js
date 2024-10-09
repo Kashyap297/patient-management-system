@@ -1,23 +1,25 @@
 const multer = require("multer");
 const path = require("path");
 
-// Set up storage engine
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./src/uploads/"); // Folder where files will be stored
-    cb(null, "./src/uploads/"); // Folder where files will be stored
+    cb(null, path.join(__dirname, "../uploads")); // Set destination to relative path
   },
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+    const filename = `${Date.now()}_${file.originalname}`;
+    cb(null, filename);
   },
 });
 
-// Set up multer
 const upload = multer({
-  storage: storage, // Use the disk storage engine defined above
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed!"), false);
+    }
+  },
 });
 
 module.exports = upload;
