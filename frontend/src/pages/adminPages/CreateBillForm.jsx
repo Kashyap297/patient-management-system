@@ -572,42 +572,46 @@ const CreateBill = () => {
             + Add New Field (Patient)
           </Button>
 
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Insurance Company"
-              name="insuranceCompany"
-              value={formValues.insuranceCompany}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Insurance Plan"
-              name="insurancePlan"
-              value={formValues.insurancePlan}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Claim Amount"
-              name="claimAmount"
-              value={formValues.claimAmount}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Claimed Amount"
-              name="claimedAmount"
-              value={formValues.claimedAmount}
-              onChange={handleInputChange}
-            />
-          </Grid>
+          {formValues.paymentType === "Insurance" && (
+            <>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Insurance Company"
+                  name="insuranceCompany"
+                  value={formValues.insuranceCompany}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Insurance Plan"
+                  name="insurancePlan"
+                  value={formValues.insurancePlan}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Claim Amount"
+                  name="claimAmount"
+                  value={formValues.claimAmount}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Claimed Amount"
+                  name="claimedAmount"
+                  value={formValues.claimedAmount}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+            </>
+          )}
         </Grid>
         {/* Add Field Modals */}
         <AddFieldModal
