@@ -10,13 +10,19 @@ const PatientManagement = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [appointments, setAppointments] = useState([]);
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
 
-  // Fetch appointments from your API based on the active tab
+  // Fetch all appointments
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await api.get(`/appointments/${activeTab}`);
-        setAppointments(response.data);
+        const response = await api.get("/appointments", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authorization
+          },
+        });
+        setAppointments(response.data.data);
+        filterAppointments(response.data.data, activeTab);
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
@@ -24,17 +30,67 @@ const PatientManagement = () => {
     fetchAppointments();
   }, [activeTab]);
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
+  // Filter appointments based on the selected tab
+  const filterAppointments = (appointments, tab) => {
+    const today = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD format
+
+    let filtered = [];
+    switch (tab) {
+      case "Today Appointment":
+        filtered = appointments.filter(
+          (appointment) =>
+            appointment.appointmentDate === today &&
+            appointment.status !== "Cancelled"
+        );
+        break;
+      case "Upcoming Appointment":
+        filtered = appointments.filter(
+          (appointment) =>
+            appointment.appointmentDate > today &&
+            appointment.status !== "Cancelled"
+        );
+        break;
+      case "Previous Appointment":
+        filtered = appointments.filter(
+          (appointment) =>
+            appointment.appointmentDate < today &&
+            appointment.status !== "Cancelled"
+        );
+        break;
+      case "Cancel Appointment":
+        filtered = appointments.filter(
+          (appointment) => appointment.status === "Cancelled"
+        );
+        break;
+      default:
+        filtered = appointments;
+    }
+    setFilteredAppointments(filtered);
   };
 
-  const handleViewPatient = async (patientId) => {
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    filterAppointments(appointments, tab);
+  };
+
+  const handleViewPatient = async (appointmentId) => {
+    if (!appointmentId) {
+      console.error("Appointment ID is undefined");
+      return;
+    }
+
     try {
-      const response = await api.get(`/users/patients/${patientId}`);
-      setSelectedPatient(response.data);
+      const response = await api.get(`/appointments/${appointmentId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authorization
+        },
+      });
+
+      // Set the selected patient data for the modal
+      setSelectedPatient(response.data.data);
       setIsModalOpen(true);
     } catch (error) {
-      console.error("Error fetching patient details:", error);
+      console.error("Error fetching appointment details:", error);
     }
   };
 
@@ -43,7 +99,7 @@ const PatientManagement = () => {
     setSelectedPatient(null);
   };
 
-  const filteredAppointments = appointments.filter(
+  const filteredAndSearchedAppointments = filteredAppointments.filter(
     (appointment) =>
       appointment.patientName
         .toLowerCase()
@@ -51,7 +107,10 @@ const PatientManagement = () => {
       appointment.patientIssue
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      appointment.doctorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (appointment.doctorName &&
+        appointment.doctorName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())) ||
       appointment.diseaseName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -126,42 +185,34 @@ const PatientManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredAppointments.length > 0 ? (
-              filteredAppointments.map((appointment, index) => (
-                <tr key={index} className="border-t">
-                  <td className="p-3">{appointment.patientName}</td>
-                  <td className="p-3">{appointment.patientIssue}</td>
-                  <td className="p-3">{appointment.doctorName}</td>
-                  <td className="p-3">{appointment.diseaseName}</td>
-                  <td className="p-3 text-blue-600">
-                    {appointment.appointmentTime}
-                  </td>
-                  <td className="p-3">
-                    <span
-                      className={`px-3 py-1 text-sm font-medium rounded-full ${
-                        appointmentTypeStyles[appointment.appointmentType]
-                      }`}
-                    >
-                      {appointment.appointmentType}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleViewPatient(appointment.patientId)}
-                    >
-                      <Visibility />
-                    </IconButton>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="text-center p-4">
-                  No Appointments Found
+            {filteredAndSearchedAppointments.map((appointment, index) => (
+              <tr key={index} className="border-t">
+                <td className="p-3">{appointment.patientName}</td>
+                <td className="p-3">{appointment.patientIssue}</td>
+                <td className="p-3">{appointment.doctorName || "N/A"}</td>
+                <td className="p-3">{appointment.diseaseName}</td>
+                <td className="p-3 text-blue-600">
+                  {appointment.appointmentTime}
+                </td>
+                <td className="p-3">
+                  <span
+                    className={`px-3 py-1 text-sm font-medium rounded-full ${
+                      appointmentTypeStyles[appointment.appointmentType]
+                    }`}
+                  >
+                    {appointment.appointmentType}
+                  </span>
+                </td>
+                <td className="p-3">
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleViewPatient(appointment.id)} // Use 'id' instead of '_id'
+                  >
+                    <Visibility />
+                  </IconButton>
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>

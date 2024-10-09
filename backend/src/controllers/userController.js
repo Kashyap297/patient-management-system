@@ -148,7 +148,6 @@ exports.addDoctorByAdmin = async (req, res) => {
     emergencyContactNumber,
     gender,
     age,
-    doctorAddress,
   } = req.body;
 
   try {
@@ -199,6 +198,7 @@ exports.addDoctorByAdmin = async (req, res) => {
       _id: doctor._id,
       firstName: doctor.firstName,
       lastName: doctor.lastName,
+      doctorName: `${doctor.firstName} ${doctor.lastName}`,
       email: doctor.email,
       role: doctor.role,
       profileImage: doctor.profileImage,

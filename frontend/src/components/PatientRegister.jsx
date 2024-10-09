@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import SidePanel from "./SidePanel";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // For password visibility toggle
+import axios from "axios";
+import api from "../api/api";
 
 const PatientRegister = () => {
   const [formData, setFormData] = useState({
@@ -35,78 +37,31 @@ const PatientRegister = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validationErrors = {};
 
-    // Validating firstName and lastName
-    if (!formData.firstName) {
+    // Frontend validation for required fields
+    if (!formData.firstName)
       validationErrors.firstName = "First name is required.";
-    }
-
-    if (!formData.lastName) {
+    if (!formData.lastName)
       validationErrors.lastName = "Last name is required.";
-    }
-
-    // Validating email
-    if (!formData.email) {
-      validationErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      validationErrors.email = "Email address is invalid.";
-    }
-
-    // Validating phoneNumber
-    if (!formData.phoneNumber) {
+    if (!formData.email) validationErrors.email = "Email is required.";
+    if (!formData.phoneNumber)
       validationErrors.phoneNumber = "Phone number is required.";
-    }
-
-    // Validating age, height, and weight
-    if (!formData.age) {
-      validationErrors.age = "Age is required.";
-    }
-    if (!formData.height) {
-      validationErrors.height = "Height is required.";
-    }
-    if (!formData.weight) {
-      validationErrors.weight = "Weight is required.";
-    }
-
-    // Validating gender and bloodGroup
-    if (!formData.gender) {
-      validationErrors.gender = "Gender is required.";
-    }
-    if (!formData.bloodGroup) {
+    if (!formData.age) validationErrors.age = "Age is required.";
+    if (!formData.height) validationErrors.height = "Height is required.";
+    if (!formData.weight) validationErrors.weight = "Weight is required.";
+    if (!formData.gender) validationErrors.gender = "Gender is required.";
+    if (!formData.bloodGroup)
       validationErrors.bloodGroup = "Blood group is required.";
-    }
-
-    // Validating dateOfBirth
-    if (!formData.dateOfBirth) {
+    if (!formData.dateOfBirth)
       validationErrors.dateOfBirth = "Date of birth is required.";
-    }
-
-    // Validating address
-    if (!formData.address) {
-      validationErrors.address = "Address is required.";
-    }
-
-    // Validating country, state, city
-    if (!formData.country) {
-      validationErrors.country = "Country is required.";
-    }
-    if (!formData.state) {
-      validationErrors.state = "State is required.";
-    }
-    if (!formData.city) {
-      validationErrors.city = "City is required.";
-    }
-
-    // Validating password and confirmPassword
-    if (!formData.password) {
-      validationErrors.password = "Password is required.";
-    } else if (formData.password.length < 6) {
-      validationErrors.password = "Password must be at least 6 characters.";
-    }
-
+    if (!formData.country) validationErrors.country = "Country is required.";
+    if (!formData.state) validationErrors.state = "State is required.";
+    if (!formData.city) validationErrors.city = "City is required.";
+    if (!formData.address) validationErrors.address = "Address is required.";
+    if (!formData.password) validationErrors.password = "Password is required.";
     if (formData.password !== formData.confirmPassword) {
       validationErrors.confirmPassword = "Passwords do not match.";
     }
@@ -114,9 +69,28 @@ const PatientRegister = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      // Submit form
-      setErrors({});
-      console.log("Form submitted:", formData);
+      const dataToSubmit = {
+        ...formData,
+        age: formData.age ? parseInt(formData.age) : undefined,
+        height: formData.height ? parseInt(formData.height) : undefined,
+        weight: formData.weight ? parseInt(formData.weight) : undefined,
+      };
+
+      try {
+        const response = await api.post(
+          "/users/register-patient",
+          dataToSubmit
+        );
+        console.log("Registration successful:", response.data);
+        setErrors({});
+      } catch (error) {
+        console.error("Registration failed:", error.response);
+        if (error.response && error.response.data.message) {
+          setErrors({ apiError: error.response.data.message });
+        } else {
+          setErrors({ apiError: "An error occurred. Please try again." });
+        }
+      }
     }
   };
 
@@ -527,7 +501,9 @@ const PatientRegister = () => {
                 </p>
               )}
             </div>
-
+            {errors.apiError && (
+              <p className="text-red-500 text-sm mt-4">{errors.apiError}</p>
+            )}
             <button
               type="submit"
               className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
