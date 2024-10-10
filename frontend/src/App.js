@@ -14,6 +14,7 @@ import PatientProfile from "./pages/patientPages/PatientProfile";
 import AdminRoutes from "./components/AdminRoutes";
 import DoctorRoutes from "./components/DoctorRoutes";
 import PatientRoutes from "./components/PatientRoutes";
+import { BreadcrumbProvider } from "./context/BreadcrumbContext";
 
 const App = () => {
   return (
@@ -30,8 +31,8 @@ const App = () => {
         <Route path="/admin/*" element={<AdminRoutes />} />
         <Route path="/doctor" element={<DoctorRoutes />} />
         <Route path="/doctor/*" element={<DoctorRoutes />} />
-        <Route path="/patient" element={<PatientRoutes />} />
-        <Route path="/patient/*" element={<PatientRoutes />} />
+        <Route path="/patient" element={<BreadcrumbProvider><PatientRoutes /></BreadcrumbProvider>} />
+        <Route path="/patient/*" element={<BreadcrumbProvider><PatientRoutes /></BreadcrumbProvider>} />
       </Routes>
     </Router>
   );

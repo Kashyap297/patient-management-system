@@ -15,3 +15,27 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.custom-scroll::-webkit-scrollbar {
+  height: 4px; /* Decrease the height (thickness) of the scrollbar */
+  width: 4px; /* Decrease the height (thickness) of the scrollbar */
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent; /* Transparent background for the scrollbar track */
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #444; /* Black color for the scroll thumb */
+  border-radius: 10px; /* Rounded corners for the scroll thumb */
+}
+
+/* Custom class to hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important; /* Hide scrollbar for Internet Explorer and Edge */
+  scrollbar-width: none !important; /* Hide scrollbar for Firefox */
+}
