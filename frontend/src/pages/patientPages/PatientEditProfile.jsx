@@ -1,51 +1,86 @@
 import React, { useEffect, useState } from "react";
 import { FiCamera } from "react-icons/fi";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
+import api from "../../api/api";
 
 const PatientEditProfile = () => {
+  const [hasError, setHasError] = useState(false);
   const { updateBreadcrumb } = useBreadcrumb();
   const [formData, setFormData] = useState({
-    name: "Marcus",
-    number: "99130 44537",
-    email: "John@gmail.com",
-    gender: "Male",
-    dob: "2 Jan, 2022",
-    age: "20 Years",
-    bloodGroup: "B+",
-    height: "160",
-    weight: "50",
-    country: "India",
-    state: "Gujarat",
-    city: "Ahmedabad",
-    address: "B-408 Swastik society, mota varacha rajkot.",
+    firstName: "",
+    lastName: "",
+    number: "",
+    email: "",
+    gender: "",
+    dob: "",
+    age: "",
+    bloodGroup: "",
+    height: "",
+    weight: "",
+    country: "",
+    state: "",
+    city: "",
+    address: "",
   });
+
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     updateBreadcrumb([
       { label: "Profile Setting", path: "/patient/edit-patient-profile" },
     ]);
+  
+    const fetchProfile = async (attempt = 0, maxAttempts = 3) => {
+      try {
+        const response = await api.get("/users/profile");
+        const patient = response.data;
+        setFormData({
+          firstName: patient.firstName,
+          lastName: patient.lastName,
+          number: patient.phoneNumber,
+          email: patient.email,
+          gender: patient.gender,
+          dob: patient.dateOfBirth,
+          age: patient.age,
+          bloodGroup: patient.bloodGroup,
+          height: patient.height,
+          weight: patient.weight,
+          country: patient.country,
+          state: patient.state,
+          city: patient.city,
+          address: patient.address,
+        });
+      } catch (error) {
+        console.error("Failed to fetch patient profile:", error);
+        if (attempt < maxAttempts) {
+          setTimeout(() => fetchProfile(attempt + 1), 2000);
+        } else {
+          alert("Failed to load profile after multiple attempts. Please try again later.");
+        }
+      }
+    };
+  
+    fetchProfile();
   }, [updateBreadcrumb]);
-
-  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let validationErrors = {};
 
-    if (!formData.name) validationErrors.name = "Name is required.";
+    // Validation for required fields
+    if (!formData.firstName) validationErrors.firstName = "First name is required.";
     if (!formData.email) validationErrors.email = "Email is required.";
     if (!formData.number) validationErrors.number = "Phone number is required.";
     if (!formData.age) validationErrors.age = "Age is required.";
     if (!formData.height) validationErrors.height = "Height is required.";
     if (!formData.weight) validationErrors.weight = "Weight is required.";
     if (!formData.gender) validationErrors.gender = "Gender is required.";
-    if (!formData.bloodGroup)
-      validationErrors.bloodGroup = "Blood group is required.";
+    if (!formData.bloodGroup) validationErrors.bloodGroup = "Blood group is required.";
     if (!formData.dob) validationErrors.dob = "Date of birth is required.";
     if (!formData.address) validationErrors.address = "Address is required.";
     if (!formData.country) validationErrors.country = "Country is required.";
@@ -56,29 +91,23 @@ const PatientEditProfile = () => {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      console.log("Form submitted:", formData);
+      try {
+        await api.patch("/users/profile", formData);
+        alert("Profile updated successfully.");
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+        alert("Failed to update profile. Please try again.");
+      }
     }
   };
 
   return (
     <div className="relative py-16 px-24">
-      {/* Gradient Background Header */}
-      <div
-        className="absolute top-0 left-0 right-0 h-64"
-        style={{
-          background:
-            "linear-gradient(107.38deg, #4C49ED 2.61%, #020067 101.2%)",
-        }}
-      />
-
-      {/* Profile Setting Title */}
       <h2 className="absolute top-12 left-18 text-3xl font-semibold text-white z-20">
         Profile Setting
       </h2>
 
-      {/* Profile Content */}
       <div className="relative z-10 bg-white shadow-lg rounded-lg p-8 flex mt-8">
-        {/* Left Side: Profile Picture */}
         <div className="flex flex-col items-center w-1/5 border-r pr-8">
           <div className="relative w-48 h-48 mb-4">
             <img
@@ -93,13 +122,12 @@ const PatientEditProfile = () => {
           </button>
         </div>
 
-        {/* Right Side: Editable Profile Form */}
         <form className="w-4/5 pl-8" onSubmit={handleSubmit}>
           <h3 className="text-xl font-semibold mb-6">Edit Profile</h3>
           <div className="grid grid-cols-3 gap-4">
-            {/* Form Fields */}
             {[
-              { name: "name", label: "Name" },
+              { name: "firstName", label: "First Name" },
+              { name: "lastName", label: "Last Name" },
               { name: "number", label: "Phone Number" },
               { name: "email", label: "Email" },
               { name: "gender", label: "Gender" },
@@ -153,20 +181,9 @@ const PatientEditProfile = () => {
                   className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200"
                 >
                   {label}
-                  {[
-                    "name",
-                    "number",
-                    "email",
-                    "age",
-                    "height",
-                    "weight",
-                    "gender",
-                    "bloodGroup",
-                    "dob",
-                    "country",
-                    "state",
-                    "city",
-                  ].includes(name) && <span className="text-red-500"> *</span>}
+                  {["firstName", "lastName", "number", "email", "age", "height", "weight", "gender", "bloodGroup", "dob", "country", "state", "city"].includes(name) && (
+                    <span className="text-red-500"> *</span>
+                  )}
                 </label>
                 {errors[name] && (
                   <p className="text-red-500 text-sm mt-1">{errors[name]}</p>
@@ -175,7 +192,6 @@ const PatientEditProfile = () => {
             ))}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"

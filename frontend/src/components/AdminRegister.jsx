@@ -64,7 +64,7 @@ const AdminRegister = () => {
       }
     };
     fetchHospitals();
-  }, []);
+  }, [hospitals]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -180,9 +180,8 @@ const AdminRegister = () => {
                   type="text"
                   id="firstName"
                   name="firstName"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
-                    errors.firstName ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${errors.firstName ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="Enter First Name"
                   value={formData.firstName || ""}
                   onChange={handleChange}
@@ -204,9 +203,8 @@ const AdminRegister = () => {
                   type="text"
                   id="lastName"
                   name="lastName"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
-                    errors.lastName ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${errors.lastName ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="Enter Last Name"
                   value={formData.lastName || ""}
                   onChange={handleChange}
@@ -229,9 +227,8 @@ const AdminRegister = () => {
                   type="email"
                   id="email"
                   name="email"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
-                    errors.email ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="Enter Email Address"
                   value={formData.email || ""}
                   onChange={handleChange}
@@ -251,9 +248,8 @@ const AdminRegister = () => {
                   type="text"
                   id="phoneNumber"
                   name="phoneNumber"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
-                    errors.phoneNumber ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="Enter Phone Number"
                   value={formData.phoneNumber || ""}
                   onChange={handleChange}
@@ -277,9 +273,8 @@ const AdminRegister = () => {
                 <select
                   id="country"
                   name="country"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0 ${
-                    errors.country ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0 ${errors.country ? "border-red-500" : "border-gray-300"
+                    }`}
                   value={formData.country}
                   onChange={handleChange}
                 >
@@ -301,9 +296,8 @@ const AdminRegister = () => {
                 <select
                   id="state"
                   name="state"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0 ${
-                    errors.state ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0 ${errors.state ? "border-red-500" : "border-gray-300"
+                    }`}
                   value={formData.state}
                   onChange={handleChange}
                 >
@@ -325,9 +319,8 @@ const AdminRegister = () => {
                 <select
                   id="city"
                   name="city"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0 ${
-                    errors.city ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0 ${errors.city ? "border-red-500" : "border-gray-300"
+                    }`}
                   value={formData.city}
                   onChange={handleChange}
                 >
@@ -523,9 +516,8 @@ const AdminRegister = () => {
                 type={showPassword ? "password" : "text"}
                 id="password"
                 name="password"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Enter Password"
                 value={formData.password || ""}
                 onChange={handleChange}
@@ -555,9 +547,8 @@ const AdminRegister = () => {
                 type={showPassword ? "password" : "text"}
                 id="confirmPassword"
                 name="confirmPassword"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
-                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Confirm Password"
                 value={formData.confirmPassword || ""}
                 onChange={handleChange}

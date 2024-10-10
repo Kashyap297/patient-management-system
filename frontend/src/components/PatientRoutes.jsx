@@ -29,7 +29,7 @@ const PatientRoutes = () => {
           <Routes>
             <Route path="/" element={<ProfileScreen />} />
             <Route path="/patient-dashboard" element={<PatientDashboard />} />
-            <Route path="/edit-patient-profile" element={<PatientEditProfile />} />
+            <Route path="/edit-patient-profile/:id" element={<PatientEditProfile />} />
             <Route path="/prescriptions" element={<PrescriptionPage />} />
             <Route path="/test-report" element={<TestReportPage />} />
             <Route path="/medical-history" element={<MedicalHistoryPage />} />
