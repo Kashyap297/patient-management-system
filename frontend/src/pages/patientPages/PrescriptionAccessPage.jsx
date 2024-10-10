@@ -1,73 +1,49 @@
 import React, { useState, useEffect } from "react";
 import {
   FaCalendarAlt,
-  FaCross,
   FaDownload,
   FaEye,
   FaImage,
 } from "react-icons/fa";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
 import logo from "../../assets/images/logo.png";
-import PrescritionModal from "../../components/Patient/PrescritionModal";
+import PrescriptionModal from "../../components/Patient/PrescritionModal";
+import api from "../../api/api";
 
 const PrescriptionAccessPage = () => {
   const { updateBreadcrumb } = useBreadcrumb();
   const [showModal, setShowModal] = useState(false);
-  const [selectedPrescription, setSelectedPrescription] = useState(null);
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+  const [prescriptions, setPrescriptions] = useState([]);
 
   useEffect(() => {
     updateBreadcrumb([
       { label: "Prescription Access", path: "/patient/prescription-access" },
     ]);
-  }, [updateBreadcrumb]);
+  }, []);
 
-  const prescriptions = [
-    {
-      doctor: "Dr. Ryan Vetrows",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-      time: "10:10 AM",
-      fileName: "Prescription.JPG",
-      fileSize: "5.09 MB",
-    },
-    {
-      doctor: "Marcus Septimus",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-      time: "10:10 AM",
-      fileName: "Prescription.JPG",
-      fileSize: "5.09 MB",
-    },
-    {
-      doctor: "Ahmad Arcand",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-      time: "10:10 AM",
-      fileName: "Prescription.JPG",
-      fileSize: "5.09 MB",
-    },
-    {
-      doctor: "Dr. Ryan Vetrows",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-      time: "10:10 AM",
-      fileName: "Prescription.JPG",
-      fileSize: "5.09 MB",
-    },
-  ];
+  useEffect(() => {
+    const fetchPrescriptions = async () => {
+      try {
+        const response = await api.get("/prescription");
+        console.log("API Response:", response.data);
+        setPrescriptions(response.data.prescriptions || []);
+      } catch (error) {
+        console.error("Error fetching prescriptions:", error);
+      }
+    };
 
-  const openModal = (prescription) => {
-    setSelectedPrescription(prescription);
+    fetchPrescriptions();
+  }, []);
+
+  const openModal = (prescriptionId) => {
+    setSelectedPrescriptionId(prescriptionId);
     setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setSelectedPrescription(null);
+    setSelectedPrescriptionId(null);
   };
 
   return (
@@ -82,20 +58,22 @@ const PrescriptionAccessPage = () => {
 
       {/* Prescription Cards */}
       <div className="grid grid-cols-4 gap-4 overflow-y-auto custom-scroll">
-        {prescriptions.map((prescription, index) => (
+        {prescriptions.map((prescription) => (
           <div
-            key={index}
+            key={prescription._id}
             className="border rounded-lg shadow-md bg-white transition"
           >
             {/* Card Header */}
             <div className="flex justify-between items-center px-4 py-2 bg-gray-50 rounded-t-lg">
-              <h4 className="font-semibold ">{prescription.doctor}</h4>
+              <h4 className="font-semibold ">
+                Dr. {prescription.doctor.firstName} {prescription.doctor.lastName}
+              </h4>
               <div className="flex">
                 <div className="text-customBlue text-lg cursor-pointer rounded-lg bg-white p-2">
-                  <FaDownload onClick={() => openModal(prescription)} />
+                  <FaDownload onClick={() => openModal(prescription._id)} />
                 </div>
                 <div className="text-customBlue text-lg cursor-pointer rounded-lg bg-white p-2 mr-2">
-                  <FaEye onClick={() => openModal(prescription)} />
+                  <FaEye onClick={() => openModal(prescription._id)} />
                 </div>
               </div>
             </div>
@@ -104,17 +82,17 @@ const PrescriptionAccessPage = () => {
             <div className="p-4 text-sm text-gray-700 space-y-1">
               <p className="flex justify-between font-semibold">
                 <span className="text-gray-500">Hospital Name</span>{" "}
-                {prescription.hospital}
+                {prescription.appointmentId.hospital}
               </p>
               <p className="flex justify-between font-semibold">
                 <span className="text-gray-500">Disease Name</span>{" "}
-                {prescription.disease}
+                {prescription.medicines[0]?.name || "N/A"}
               </p>
               <p className="flex justify-between font-semibold">
-                <span className="text-gray-500">Date</span> {prescription.date}
+                <span className="text-gray-500">Date</span> {new Date(prescription.prescriptionDate).toLocaleDateString()}
               </p>
               <p className="flex justify-between font-semibold">
-                <span className="text-gray-500">Time</span> {prescription.time}
+                <span className="text-gray-500">Time</span> {prescription.appointmentId.appointmentTime}
               </p>
             </div>
 
@@ -124,8 +102,8 @@ const PrescriptionAccessPage = () => {
                 <FaImage />
               </div>
               <div className="ml-2">
-                <p className=" font-semibold">{prescription.fileName}</p>
-                <p className="text-xs text-gray-500">{prescription.fileSize}</p>
+                <p className=" font-semibold">Prescription.jpg</p>
+                <p className="text-xs text-gray-500">5.09 MB</p>
               </div>
             </div>
           </div>
@@ -133,7 +111,9 @@ const PrescriptionAccessPage = () => {
       </div>
 
       {/* Prescription Modal */}
-      {showModal && selectedPrescription && <PrescritionModal closeModal={closeModal}/>}
+      {showModal && selectedPrescriptionId && (
+        <PrescriptionModal closeModal={closeModal} prescriptionId={selectedPrescriptionId} />
+      )}
     </div>
   );
 };

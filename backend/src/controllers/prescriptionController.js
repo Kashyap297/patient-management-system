@@ -73,3 +73,41 @@ exports.getPrescriptionById = async (req, res) => {
     res.status(500).json({ message: "Error fetching prescription", error });
   }
 };
+
+
+// @desc    Get all prescriptions for the logged-in user
+// @route   GET /api/prescription
+// @access  Private (Doctors and Patients can view their prescriptions)
+exports.getAllPrescriptionsByUser = async (req, res) => {
+  try {
+    let prescriptions;
+
+    // If the logged-in user is a doctor, find prescriptions created by them
+    if (req.user.role === "doctor") {
+      prescriptions = await Prescription.find({ doctor: req.user._id })
+        .populate("doctor", "firstName lastName specialty")
+        .populate("patient", "firstName lastName age gender address")
+        .populate("appointmentId", "appointmentDate appointmentTime hospital");
+    }
+    // If the logged-in user is a patient, find prescriptions for them
+    else if (req.user.role === "patient") {
+      prescriptions = await Prescription.find({ patient: req.user._id })
+        .populate("doctor", "firstName lastName specialty")
+        .populate("patient", "firstName lastName age gender address")
+        .populate("appointmentId", "appointmentDate appointmentTime hospital");
+    }
+    // If the user is neither a doctor nor a patient, deny access
+    else {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: prescriptions.length,
+      prescriptions,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching prescriptions", error });
+  }
+};
