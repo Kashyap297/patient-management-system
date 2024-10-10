@@ -5,6 +5,7 @@ const {
   getInvoice,
   updateInvoice,
   getAllInvoices,
+  getUserInvoices,
 } = require("../controllers/invoiceController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 const upload = require("../utils/multerConfig");
@@ -17,6 +18,9 @@ router.get("/:id", protect, admin, getInvoice);
 router.patch("/:id", protect, admin, upload.single("logo"), updateInvoice);
 
 // Route to get all invoices
-router.get("/", protect, admin, getAllInvoices);
+router.get("/", protect, getAllInvoices);
+
+// Route to get invoices for the logged-in patient
+router.get("/user/invoice", protect, getUserInvoices); // No 'admin' middleware here
 
 module.exports = router;
