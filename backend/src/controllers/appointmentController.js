@@ -80,7 +80,7 @@ exports.getAllAppointments = async (req, res) => {
       .populate({
         path: "doctor",
         select:
-          "firstName lastName specialty qualification experience hospital",
+          "firstName lastName doctorDetails.qualification doctorDetails.specialtyType doctorDetails.experience doctorDetails.hospital",
       });
 
     res.status(200).json({
@@ -106,17 +106,17 @@ exports.getAllAppointments = async (req, res) => {
         doctorName: appointment.doctor
           ? `${appointment.doctor.firstName} ${appointment.doctor.lastName}`
           : "N/A", // Fallback for missing doctor data
-        doctorSpecialty: appointment.doctor
-          ? appointment.doctor.specialty
+        doctorSpecialty: appointment.doctor && appointment.doctor.doctorDetails
+          ? appointment.doctor.doctorDetails.specialtyType
           : "N/A",
-        doctorQualification: appointment.doctor
-          ? appointment.doctor.qualification
+        doctorQualification: appointment.doctor && appointment.doctor.doctorDetails
+          ? appointment.doctor.doctorDetails.qualification
           : "N/A",
-        doctorExperience: appointment.doctor
-          ? appointment.doctor.experience
+        doctorExperience: appointment.doctor && appointment.doctor.doctorDetails
+          ? appointment.doctor.doctorDetails.experience
           : "N/A",
-        doctorHospital: appointment.doctor
-          ? appointment.doctor.hospital
+        doctorHospital: appointment.doctor && appointment.doctor.doctorDetails
+          ? appointment.doctor.doctorDetails.hospital.currentHospital
           : "N/A",
         patientAddress: appointment.patient
           ? appointment.patient.address

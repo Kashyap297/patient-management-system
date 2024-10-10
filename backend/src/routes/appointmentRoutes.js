@@ -13,7 +13,7 @@ const { protect } = require("../middlewares/authMiddleware");
 router.post("/appointment", protect, createAppointment);
 
 // Get all appointments
-router.get("/appointments", getAllAppointments);
+router.get("/appointments", protect, getAllAppointments);
 
 // Get an appointment by ID
 router.get("/appointments/:id", getAppointmentById);
