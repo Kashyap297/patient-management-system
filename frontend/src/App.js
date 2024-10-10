@@ -12,7 +12,7 @@ import EnterOTP from "./components/EnterOtp";
 import ResetPassword from "./components/ResetPassword";
 import PatientProfile from "./pages/patientPages/PatientProfile";
 import AdminRoutes from "./components/AdminRoutes";
-import { DoctorRoutes } from "./components/DoctorRoutes";
+import DoctorRoutes from "./components/DoctorRoutes";
 import PatientRoutes from "./components/PatientRoutes";
 
 const App = () => {

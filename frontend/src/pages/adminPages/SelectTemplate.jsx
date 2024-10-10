@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-
-// Dummy images for template previews (replace with real paths to your template images)
 import template1Image from "../../assets/images/template1.png";
 import template2Image from "../../assets/images/template2.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const templateData = [
   {
@@ -22,9 +20,19 @@ const templateData = [
 const SelectTemplate = () => {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const editMode = location.state?.editMode || false; // Get editMode from the navigation state
 
   const handleSelectTemplate = (template) => {
     setSelectedTemplate(template);
+  };
+
+  const handleConfirmSelection = () => {
+    if (editMode) {
+      navigate("/admin/monitor-billing");
+    } else {
+      navigate("/admin/create-bill");
+    }
   };
 
   return (
@@ -62,7 +70,7 @@ const SelectTemplate = () => {
         <div className="flex justify-center mt-8">
           <button
             className="bg-blue-500 text-white py-2 px-6 rounded-lg text-lg"
-            onClick={() => navigate("/admin/create-bill")}
+            onClick={handleConfirmSelection}
           >
             Select {selectedTemplate.name}
           </button>

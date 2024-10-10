@@ -46,14 +46,13 @@ const MonitorBilling = () => {
       entry.phoneNumber?.includes(searchTerm)
   );
 
-  // Enhanced status styles
+  const handleViewInvoice = (bill) => {
+    navigate(`/admin/invoice/${bill._id}/${bill.patient?.firstName}`);
+  };
+
   const statusStyles = {
     Paid: "bg-green-100 text-green-600 font-medium px-3 py-1 rounded-full",
     Unpaid: "bg-red-100 text-red-600 font-medium px-3 py-1 rounded-full",
-  };
-
-  const handleViewInvoice = (bill) => {
-    navigate(`/admin/invoice/${bill._id}/${bill.patient?.firstName}`);
   };
 
   return (
@@ -66,7 +65,9 @@ const MonitorBilling = () => {
             variant="outlined"
             color="primary"
             className="text-sm"
-            onClick={() => navigate("/admin/edit-invoice")}
+            onClick={() =>
+              navigate("/admin/select-template", { state: { editMode: true } })
+            }
           >
             Edit Design Invoice
           </Button>
@@ -74,7 +75,9 @@ const MonitorBilling = () => {
             variant="contained"
             color="primary"
             className="text-sm"
-            onClick={() => navigate("/admin/select-template")}
+            onClick={() =>
+              navigate("/admin/select-template", { state: { editMode: false } })
+            }
           >
             Create Bills
           </Button>
@@ -124,7 +127,6 @@ const MonitorBilling = () => {
                 <TableCell>{entry.phoneNumber}</TableCell>
                 <TableCell>
                   <span className={statusStyles[entry.status]}>
-                    {console.log(entry.status)}
                     {entry.status || "Unpaid"}
                   </span>
                 </TableCell>
