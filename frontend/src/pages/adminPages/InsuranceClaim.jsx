@@ -1,201 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IconButton } from "@mui/material";
 import { Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/api"; // Import your API utility
 
 const InsuranceClaims = () => {
   const navigate = useNavigate();
-  const insuranceClaimsData = [
-    {
-      billNo: 5654,
-      doctorName: "Dr. Marcus Philips",
-      patientName: "Kadin Saris",
-      diseaseName: "Internal Medicine",
-      insuranceCompany: "HDFC Life Insurance",
-      insurancePlan: "Maternity",
-      billDate: "2 Jun, 2024",
-    },
-    {
-      billNo: 5655,
-      doctorName: "Dr. Haylie Schleifer",
-      patientName: "Jaxson Bergson",
-      diseaseName: "Jaxson Bergson",
-      insuranceCompany: "LIC Life Insurance",
-      insurancePlan: "Health",
-      billDate: "3 Jun, 2024",
-    },
-    {
-      billNo: 5660,
-      doctorName: "Dr. Jaxson Levin",
-      patientName: "Emerson Levin",
-      diseaseName: "Justin Dokidis",
-      insuranceCompany: "Aegon Life Insurance",
-      insurancePlan: "Medical",
-      billDate: "4 Jun, 2024",
-    },
-    {
-      billNo: 5654,
-      doctorName: "Dr. Roger Carder",
-      patientName: "Brandon Lipshutz",
-      diseaseName: "Terry Dokidis",
-      insuranceCompany: "HDFC Life Insurance",
-      insurancePlan: "Medical",
-      billDate: "5 Jun, 2024",
-    },
-    {
-      billNo: 5661,
-      doctorName: "Dr. Emily Patel",
-      patientName: "Ava Lee",
-      diseaseName: "Cardiology",
-      insuranceCompany: "ICICI Prudential Life Insurance",
-      insurancePlan: "Critical Illness",
-      billDate: "6 Jun, 2024",
-    },
-    {
-      billNo: 5662,
-      doctorName: "Dr. Liam Chen",
-      patientName: "Lily Tran",
-      diseaseName: "Neurology",
-      insuranceCompany: "SBI Life Insurance",
-      insurancePlan: "Accident",
-      billDate: "7 Jun, 2024",
-    },
-    {
-      billNo: 5663,
-      doctorName: "Dr. Noah Kim",
-      patientName: "Ethan Hall",
-      diseaseName: "Orthopedics",
-      insuranceCompany: "Bajaj Allianz Life Insurance",
-      insurancePlan: "Health",
-      billDate: "8 Jun, 2024",
-    },
-    {
-      billNo: 5664,
-      doctorName: "Dr. Olivia Martin",
-      patientName: "Isabella Garcia",
-      diseaseName: "Gastroenterology",
-      insuranceCompany: "Max Life Insurance",
-      insurancePlan: "Maternity",
-      billDate: "9 Jun, 2024",
-    },
-    {
-      billNo: 5665,
-      doctorName: "Dr. Logan Brooks",
-      patientName: "Oliver Brown",
-      diseaseName: "Dermatology",
-      insuranceCompany: "Tata AIA Life Insurance",
-      insurancePlan: "Medical",
-      billDate: "10 Jun, 2024",
-    },
-    {
-      billNo: 5666,
-      doctorName: "Dr. Ava Lee",
-      patientName: "Sophia Patel",
-      diseaseName: "Pediatrics",
-      insuranceCompany: "HDFC Life Insurance",
-      insurancePlan: "Health",
-      billDate: "11 Jun, 2024",
-    },
-    {
-      billNo: 5667,
-      doctorName: "Dr. Ethan Hall",
-      patientName: "Mia Kim",
-      diseaseName: "Oncology",
-      insuranceCompany: "LIC Life Insurance",
-      insurancePlan: "Critical Illness",
-      billDate: "12 Jun, 2024",
-    },
-    {
-      billNo: 5668,
-      doctorName: "Dr. Isabella Garcia",
-      patientName: "Alexander Martin",
-      diseaseName: "Cardiology",
-      insuranceCompany: "Aegon Life Insurance",
-      insurancePlan: "Accident",
-      billDate: "13 Jun, 2024",
-    },
-    {
-      billNo: 5669,
-      doctorName: "Dr. Oliver Brown",
-      patientName: "Benjamin Brooks",
-      diseaseName: "Neurology",
-      insuranceCompany: "ICICI Prudential Life Insurance",
-      insurancePlan: "Maternity",
-      billDate: "14 Jun, 2024",
-    },
-    {
-      billNo: 5670,
-      doctorName: "Dr. Sophia Patel",
-      patientName: "Charlotte Lee",
-      diseaseName: "Gastroenterology",
-      insuranceCompany: "SBI Life Insurance",
-      insurancePlan: "Health",
-      billDate: "15 Jun, 2024",
-    },
-    {
-      billNo: 5671,
-      doctorName: "Dr. Mia Kim",
-      patientName: "Julian Kim",
-      diseaseName: "Orthopedics",
-      insuranceCompany: "Bajaj Allianz Life Insurance",
-      insurancePlan: "Medical",
-      billDate: "16 Jun, 2024",
-    },
-    {
-      billNo: 5672,
-      doctorName: "Dr. Alexander Martin",
-      patientName: "Gabriel Martin ",
-      diseaseName: "Dermatology",
-      insuranceCompany: "Max Life Insurance",
-      insurancePlan: "Critical Illness",
-      billDate: "17 Jun, 2024",
-    },
-    {
-      billNo: 5673,
-      doctorName: "Dr. Benjamin Brooks",
-      patientName: "Elijah Brooks",
-      diseaseName: "Pediatrics",
-      insuranceCompany: "Tata AIA Life Insurance",
-      insurancePlan: "Accident",
-      billDate: "18 Jun, 2024",
-    },
-    {
-      billNo: 5674,
-      doctorName: "Dr. Charlotte Lee",
-      patientName: "Abigail Lee",
-      diseaseName: "Oncology",
-      insuranceCompany: "HDFC Life Insurance",
-      insurancePlan: "Health",
-      billDate: "19 Jun, 2024",
-    },
-    {
-      billNo: 5675,
-      doctorName: "Dr. Julian Kim",
-      patientName: "Landon Kim",
-      diseaseName: "Cardiology",
-      insuranceCompany: "LIC Life Insurance",
-      insurancePlan: "Maternity",
-      billDate: "20 Jun, 2024",
-    },
-  ];
-
   const [searchTerm, setSearchTerm] = useState("");
+  const [insuranceClaimsData, setInsuranceClaimsData] = useState([]); // State for fetched data
 
+  // Fetch insurance claim data from the API
+  useEffect(() => {
+    const fetchInsuranceClaimsData = async () => {
+      try {
+        const response = await api.get("/invoice", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        // Filter only the entries with paymentType "Insurance"
+        const filteredData = response.data.data.filter(
+          (entry) => entry.paymentType === "Insurance"
+        );
+        setInsuranceClaimsData(filteredData);
+      } catch (error) {
+        console.error("Error fetching insurance claims:", error);
+      }
+    };
+    fetchInsuranceClaimsData();
+  }, []);
+
+  // Filtered data based on search term
   const filteredData = insuranceClaimsData.filter((claim) => {
     const lowercasedTerm = searchTerm.toLowerCase();
     return (
-      claim.billNo.toString().includes(lowercasedTerm) ||
-      claim.doctorName.toLowerCase().includes(lowercasedTerm) ||
-      claim.patientName.toLowerCase().includes(lowercasedTerm) ||
+      claim.billNumber.toString().includes(lowercasedTerm) ||
+      `${claim.doctor.firstName} ${claim.doctor.lastName}`
+        .toLowerCase()
+        .includes(lowercasedTerm) ||
+      `${claim.patient.firstName} ${claim.patient.lastName}`
+        .toLowerCase()
+        .includes(lowercasedTerm) ||
       claim.diseaseName.toLowerCase().includes(lowercasedTerm) ||
-      claim.insuranceCompany.toLowerCase().includes(lowercasedTerm) ||
-      claim.insurancePlan.toLowerCase().includes(lowercasedTerm)
+      claim.insuranceDetails.insuranceCompany
+        .toLowerCase()
+        .includes(lowercasedTerm) ||
+      claim.insuranceDetails.insurancePlan
+        .toLowerCase()
+        .includes(lowercasedTerm)
     );
   });
 
-  const handleViewDetails = (billNo) => {
+  const handleViewDetails = (claim) => {
     // Navigate to the detailed insurance page
-    navigate(`/admin/insurance/${billNo}`);
+    // navigate(`/admin/insurance/${billNo}`);
+    navigate(`/admin/invoice/${claim._id}/${claim.patient?.firstName}`);
   };
 
   return (
@@ -216,21 +76,11 @@ const InsuranceClaims = () => {
           <thead className="bg-gray-100 sticky top-0">
             <tr>
               <th className="p-3 text-left text-sm font-semibold">Bill No</th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Doctor Name
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Patient Name
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Disease Name
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Insurance Company
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Insurance Plan
-              </th>
+              <th className="p-3 text-left text-sm font-semibold">Doctor Name</th>
+              <th className="p-3 text-left text-sm font-semibold">Patient Name</th>
+              <th className="p-3 text-left text-sm font-semibold">Disease Name</th>
+              <th className="p-3 text-left text-sm font-semibold">Insurance Company</th>
+              <th className="p-3 text-left text-sm font-semibold">Insurance Plan</th>
               <th className="p-3 text-left text-sm font-semibold">Bill Date</th>
               <th className="p-3 text-left text-sm font-semibold">Action</th>
             </tr>
@@ -239,19 +89,17 @@ const InsuranceClaims = () => {
             {filteredData.length > 0 ? (
               filteredData.map((claim, index) => (
                 <tr key={index} className="border-t">
-                  <td className="p-3 text-blue-600 cursor-pointer">
-                    {claim.billNo}
-                  </td>
-                  <td className="p-3">{claim.doctorName}</td>
-                  <td className="p-3">{claim.patientName}</td>
+                  <td className="p-3 text-blue-600 cursor-pointer">{claim.billNumber}</td>
+                  <td className="p-3">{`${claim.doctor.firstName} ${claim.doctor.lastName}`}</td>
+                  <td className="p-3">{`${claim.patient.firstName} ${claim.patient.lastName}`}</td>
                   <td className="p-3">{claim.diseaseName}</td>
-                  <td className="p-3">{claim.insuranceCompany}</td>
-                  <td className="p-3 text-blue-600">{claim.insurancePlan}</td>
-                  <td className="p-3">{claim.billDate}</td>
+                  <td className="p-3">{claim.insuranceDetails.insuranceCompany}</td>
+                  <td className="p-3 text-blue-600">{claim.insuranceDetails.insurancePlan}</td>
+                  <td className="p-3">{new Date(claim.billDate).toLocaleDateString()}</td>
                   <td className="p-3">
                     <IconButton
                       color="primary"
-                      onClick={() => handleViewDetails(claim.billNo)}
+                      onClick={() => handleViewDetails(claim)}
                     >
                       <Visibility />
                     </IconButton>

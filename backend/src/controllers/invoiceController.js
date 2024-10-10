@@ -158,6 +158,9 @@ exports.updateInvoice = async (req, res) => {
     status, // New field for updating status
   } = req.body;
 
+  console.log("Received patient ID:", patient);
+  console.log("Received doctor ID:", doctor);
+
   try {
     // Validate if patient and doctor exist
     const patientExists = await User.findById(patient);

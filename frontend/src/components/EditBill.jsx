@@ -1,44 +1,108 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
+import api from "../api/api"; // Import your API utility or adjust the import path
 
 const EditBill = () => {
   const { id } = useParams(); // Get the bill ID from the route
   const navigate = useNavigate();
 
-  // Sample initial form data (you will fetch this from an API in a real app)
   const [formData, setFormData] = useState({
-    patientName: "Sliver Medical Center",
-    phoneNumber: "99130 23830",
-    gender: "Male",
-    age: "22 Years",
-    doctorName: "Dr. Marcus Philips",
-    diseaseName: "Meningococcal Disease",
-    description: "Lorem ipsum dolor sit amet, consectetur",
-    paymentType: "Online",
-    billDate: "2 Jan, 2022",
-    billTime: "12:19 PM",
+    patientName: "",
+    phoneNumber: "",
+    gender: "",
+    age: "",
+    doctorName: "",
+    diseaseName: "",
+    description: "",
+    paymentType: "",
+    billDate: "",
+    billTime: "",
     billNumber: id, // Using the id from the URL
-    discount: "10%",
-    tax: "₹ 256",
-    amount: "₹ 2,520",
-    totalAmount: "₹ 2,520",
-    address: "501, Shamruddh Avenue",
+    discount: "",
+    tax: "",
+    amount: "",
+    totalAmount: "",
+    address: "",
   });
 
+  // Fetch the existing bill data when the component mounts
+  useEffect(() => {
+    const fetchBillData = async () => {
+      try {
+        const response = await api.get(`/invoice/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const invoiceData = response.data.invoice;
+
+        setFormData({
+          patient: invoiceData.patient._id, // Use the _id here
+          doctor: invoiceData.doctor._id,   // Use the _id here
+          patientName: `${invoiceData.patient.firstName} ${invoiceData.patient.lastName}`,
+          phoneNumber: invoiceData.phoneNumber,
+          gender: invoiceData.gender,
+          age: parseInt(invoiceData.age, 10) || "",
+          doctorName: `${invoiceData.doctor.firstName} ${invoiceData.doctor.lastName}`,
+          diseaseName: invoiceData.diseaseName,
+          description: invoiceData.description,
+          paymentType: invoiceData.paymentType,
+          billDate: new Date(invoiceData.billDate).toISOString().split("T")[0],
+          billTime: invoiceData.billTime,
+          billNumber: invoiceData.billNumber,
+          discount: invoiceData.discount,
+          tax: invoiceData.tax,
+          amount: invoiceData.amount,
+          totalAmount: invoiceData.totalAmount,
+          address: invoiceData.address,
+        });
+      } catch (error) {
+        console.error("Error fetching bill data:", error);
+      }
+    };
+
+    fetchBillData();
+  }, [id]);
+
+
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    // Convert age to a number if it's a string like "55 Years"
+    if (name === "age") {
+      setFormData({
+        ...formData,
+        [name]: parseInt(value, 10) || "", // convert to number or keep it empty if not a number
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Save logic here (e.g., API call to save the bill data)
-    alert("Bill updated successfully");
-    navigate("/billing-process"); // Navigate back after saving
+    console.log("Submitting form data:", formData); // Add this line to debug
+
+    try {
+      await api.patch(`/invoice/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      alert("Bill updated successfully");
+      navigate("/billing-process"); // Navigate back after saving
+    } catch (error) {
+      console.error("Error updating bill:", error);
+      alert("Failed to update the bill. Please try again.");
+    }
   };
+
 
   return (
     <div className="p-6 m-6 bg-white rounded-lg shadow-md">
@@ -68,6 +132,7 @@ const EditBill = () => {
         >
           <MenuItem value="Male">Male</MenuItem>
           <MenuItem value="Female">Female</MenuItem>
+          <MenuItem value="Other">Other</MenuItem>
         </TextField>
 
         <TextField
@@ -107,6 +172,7 @@ const EditBill = () => {
           <MenuItem value="Online">Online</MenuItem>
           <MenuItem value="Cash">Cash</MenuItem>
           <MenuItem value="Card">Card</MenuItem>
+          <MenuItem value="Insurance">Insurance</MenuItem>
         </TextField>
 
         <TextField
