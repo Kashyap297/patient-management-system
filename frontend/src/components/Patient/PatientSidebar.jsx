@@ -28,7 +28,7 @@ const PatientSidebar = ({ onMenuClick }) => {
   const menuItems = [
     {
       label: "Personal Health Record",
-      path: "/patient/patient-dashboard",
+      path: "/patient",
       icon: FaFileMedical,
     },
     {
@@ -65,8 +65,8 @@ const PatientSidebar = ({ onMenuClick }) => {
             <NavLink
               to={item.path}
               className={`relative flex items-center px-4 py-4 text-gray-700 font-semibold ${activeTab === item.label
-                  ? "text-customBlue"
-                  : "hover:text-customBlue"
+                ? "text-customBlue"
+                : "hover:text-customBlue"
                 } group`}
               onClick={() => handleMenuClick(item.label, item.path)}
             >
@@ -79,15 +79,15 @@ const PatientSidebar = ({ onMenuClick }) => {
               {/* Background Gradient and Clip Path for Active Tab */}
               <div
                 className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${activeTab === item.label
-                    ? "opacity-100"
-                    : "group-hover:opacity-100"
+                  ? "opacity-100"
+                  : "group-hover:opacity-100"
                   } transition duration-300 z-10`}
               ></div>
 
               <div
                 className={`absolute top-50 right-0 h-10 bg-customBlue ${activeTab === item.label
-                    ? "w-2 opacity-100"
-                    : "group-hover:w-2 opacity-0"
+                  ? "w-2 opacity-100"
+                  : "group-hover:w-2 opacity-0"
                   } rounded-tl-lg rounded-bl-lg transition-all duration-300 clip-button z-10`}
               ></div>
             </NavLink>

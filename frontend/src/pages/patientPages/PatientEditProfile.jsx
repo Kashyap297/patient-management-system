@@ -29,7 +29,7 @@ const PatientEditProfile = () => {
     updateBreadcrumb([
       { label: "Profile Setting", path: "/patient/edit-patient-profile" },
     ]);
-  
+
     const fetchProfile = async (attempt = 0, maxAttempts = 3) => {
       try {
         const response = await api.get("/users/profile");
@@ -59,9 +59,9 @@ const PatientEditProfile = () => {
         }
       }
     };
-  
+
     fetchProfile();
-  }, [updateBreadcrumb]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

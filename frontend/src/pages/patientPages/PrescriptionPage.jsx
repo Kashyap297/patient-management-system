@@ -1,104 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { FaEye, FaSearch } from "react-icons/fa";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
-import PrescritionModal from "../../components/Patient/PrescritionModal";
+import PrescriptionModal from "../../components/Patient/PrescritionModal";
+import api from "../../api/api";
 
 const PrescriptionPage = () => {
   const { updateBreadcrumb } = useBreadcrumb();
   const [showModal, setShowModal] = useState(false);
-  const [selectedPrescription, setSelectedPrescription] = useState(null);
-
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+  const [prescriptions, setPrescriptions] = useState([]);
 
   useEffect(() => {
     updateBreadcrumb([
       { label: "Personal Health Record", path: "/patient/patient-dashboard" },
       { label: "Prescriptions", path: "/patient/prescriptions" },
     ]);
-  }, [updateBreadcrumb]);
+  }, []);
 
-  const prescriptions = [
-    {
-      doctor: "Dr. Ryan Vetrows",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Omar Herwitz",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Corey Dorwart",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Kadin Workman",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Leo Workman",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Emerson Levin",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Emerson Press",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Ryan Herwitz",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Jaylon Lubin",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Ruben Septimus",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Zaire Dorwart",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-    {
-      doctor: "Dr. Phillip Rhiel Madsen",
-      hospital: "Artemis Hospital",
-      disease: "Viral Infection",
-      date: "2 Jan, 2022",
-    },
-  ];
+  useEffect(() => {
+    const fetchPrescriptions = async () => {
+      try {
+        const response = await api.get("/prescription");
+        setPrescriptions(response.data.prescriptions || []); // Update state with the fetched data
+      } catch (error) {
+        console.error("Error fetching prescriptions:", error);
+      }
+    };
+
+    fetchPrescriptions();
+  }, []);
 
   const openModal = (prescription) => {
-    setSelectedPrescription(prescription);
+    setSelectedPrescriptionId(prescription._id); // Set prescription ID
     setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setSelectedPrescription(null);
+    setSelectedPrescriptionId(null);
   };
 
   return (
@@ -106,11 +45,11 @@ const PrescriptionPage = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Prescriptions</h2>
         {/* Search Bar */}
-        <div className="relative ">
+        <div className="relative">
           <input
             type="text"
             placeholder="Search Here"
-            className=" rounded-3xl py-2 px-4 pr-10 w-64 bg-gray-50 bottom-0"
+            className="rounded-3xl py-2 px-4 pr-10 w-64 bg-gray-50 bottom-0"
           />
           <FaSearch className="absolute top-2/4 right-4 transform -translate-y-1/2 text-gray-500" />
         </div>
@@ -120,14 +59,16 @@ const PrescriptionPage = () => {
       <div className="grid grid-cols-4 gap-4 overflow-y-auto custom-scroll">
         {prescriptions.map((prescription, index) => (
           <div
-            key={index}
-            className="border rounded-lg  shadow-md   transition"
+            key={prescription._id || index} // Use prescription ID if available, otherwise fallback to index
+            className="border rounded-lg shadow-md transition"
           >
             {/* Card header with doctor name and eye icon */}
-            <div className="flex justify-between items-center p-2 bg-gray-50 rounded-t-lg  mb-4">
-              <h4 className="font-semibold">{prescription.doctor}</h4>
+            <div className="flex justify-between items-center p-2 bg-gray-50 rounded-t-lg mb-4">
+              <h4 className="font-semibold">
+                Dr. {prescription.doctor.firstName} {prescription.doctor.lastName}
+              </h4>
               <div className="text-customBlue p-2 rounded-full bg-white shadow">
-                <FaEye onClick={() => openModal(prescription)}/>
+                <FaEye onClick={() => openModal(prescription)} />
               </div>
             </div>
 
@@ -135,22 +76,30 @@ const PrescriptionPage = () => {
             <div className="grid grid-cols-2 gap-2 p-2">
               <p className="text-gray-500">Hospital Name</p>
               <p className="text-gray-900 font-medium">
-                {prescription.hospital}
+                {prescription.appointmentId.hospital}
               </p>
 
               <p className="text-gray-500">Disease Name</p>
               <p className="text-gray-900 font-medium">
-                {prescription.disease}
+                {prescription.medicines[0]?.name || "N/A"}
               </p>
 
               <p className="text-gray-500">Date</p>
-              <p className="text-gray-900 font-medium">{prescription.date}</p>
+              <p className="text-gray-900 font-medium">
+                {new Date(prescription.prescriptionDate).toLocaleDateString()}
+              </p>
             </div>
           </div>
         ))}
       </div>
+
       {/* Prescription Modal */}
-      {showModal && selectedPrescription && <PrescritionModal closeModal={closeModal}/>}
+      {showModal && selectedPrescriptionId && (
+        <PrescriptionModal
+          closeModal={closeModal}
+          prescriptionId={selectedPrescriptionId}
+        />
+      )}
     </div>
   );
 };
