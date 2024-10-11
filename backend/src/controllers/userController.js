@@ -5,8 +5,8 @@ const sendEmail = require("../utils/sendEmail");
 const sendSMS = require("../utils/sendSMS");
 
 // Generate JWT Token
-const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
+const generateToken = (id, role, firstName, lastName) => {
+  return jwt.sign({ id, role, firstName, lastName }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };
@@ -54,7 +54,7 @@ exports.registerAdmin = async (req, res) => {
       lastName: admin.lastName,
       email: admin.email,
       role: admin.role,
-      token: generateToken(admin._id, admin.role),
+      token: generateToken(admin._id, admin.role, admin.firstName, admin.lastName),
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -116,7 +116,7 @@ exports.registerPatient = async (req, res) => {
       lastName: patient.lastName,
       email: patient.email,
       role: patient.role,
-      token: generateToken(patient._id, patient.role),
+      token: generateToken(patient._id, patient.role, patient.firstName, patient.lastName),
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -247,7 +247,7 @@ exports.loginUser = async (req, res) => {
       lastName: user.lastName,
       email: user.email,
       role: user.role,
-      token: generateToken(user._id, user.role),
+      token: generateToken(user._id, user.role, user.firstName, user.lastName),
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

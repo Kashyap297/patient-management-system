@@ -39,7 +39,9 @@ const App = () => {
           path="/admin/*"
           element={
             <ProtectedRoute roles={["admin"]}>
-              <AdminRoutes />
+              <BreadcrumbProvider>
+                <AdminRoutes />
+              </BreadcrumbProvider>
             </ProtectedRoute>
           }
         />
@@ -47,7 +49,9 @@ const App = () => {
           path="/doctor/*"
           element={
             <ProtectedRoute roles={["doctor"]}>
-              <DoctorRoutes />
+              <BreadcrumbProvider>
+                <DoctorRoutes />
+              </BreadcrumbProvider>
             </ProtectedRoute>
           }
         />
