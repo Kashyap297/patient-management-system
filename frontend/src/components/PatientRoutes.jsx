@@ -19,9 +19,9 @@ import { BreadcrumbProvider } from "../context/BreadcrumbContext";
 const PatientRoutes = () => {
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* <Sidebar role={"patient"} /> */}
+      <Sidebar role={"patient"} />
       {/* <BreadcrumbProvider> */}
-      <PatientSidebar />
+      {/* <PatientSidebar /> */}
       {/* </BreadcrumbProvider> */}
       <div className="flex-1 flex flex-col">
         <Header />

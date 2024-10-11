@@ -1,172 +1,171 @@
+import React, { useState } from "react";
+import { Collapse } from "@mui/material";
 import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Collapse,
-  Button,
-} from "@mui/material";
-import {
-  CalendarToday,
-  Chat,
-  Payment,
-  Logout,
-  Group,
-  PhoneInTalk,
-  ExpandMore,
-  ExpandLess,
-  BarChart,
-  LocalHospital,
-  PostAdd,
-} from "@mui/icons-material";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
-import logo from "../assets/images/logo.png"; // Assuming you have a logo path here
-// import { useUser } from "../../context/user";
-import { createFilterOptions } from "@mui/material/Autocomplete";
+  FaUserMd,
+  FaUserInjured,
+  FaFileInvoiceDollar,
+  FaChartBar,
+  FaCalendarAlt,
+  FaCommentDots,
+  FaFileMedical,
+  FaPills,
+} from "react-icons/fa";
+import { HiOutlineLogout } from "react-icons/hi";
+import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import logo from "../assets/images/logo.png";
+import appointment from "../assets/images/appointment.png";
+
 const Sidebar = ({ role }) => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get the current route
+  const location = useLocation();
   const [openBilling, setOpenBilling] = useState(false);
-  // const { setUser } = useUser();
+  const [activeTab, setActiveTab] = useState(null);
 
-  // Define tab options for each role
   const tabs = {
     admin: [
-      { label: "Dashboard", icon: <CalendarToday />, path: "dashboard" },
+      { label: "Dashboard", icon: FaChartBar, path: "/admin/dashboard" },
+      { label: "Doctor Management", icon: FaUserMd, path: "/admin/doctor-management" },
+      { label: "Patient Management", icon: FaUserInjured, path: "/admin/patient-management" },
       {
-        label: "Doctor Management",
-        icon: <Group />,
-        path: "doctor-management",
+        label: "Billing And Payments", icon: FaFileInvoiceDollar, subMenu: [
+          { label: "Monitor Billing", path: "/admin/monitor-billing" },
+          { label: "Insurance Claims", path: "/admin/insurance-claims" },
+          { label: "Payment Process", path: "/admin/payment-process" },
+        ]
       },
-      {
-        label: "Patient Management",
-        icon: <Group />,
-        path: "patient-management",
-      },
-      {
-        label: "Billing And Payments",
-        icon: <Payment />,
-        path: null, // This is to allow the dropdown to open without navigation
-        subMenu: [
-          { label: "Monitor Billing", path: "monitor-billing" },
-          { label: "Insurance Claims", path: "insurance-claims" },
-          { label: "Payment Process", path: "payment-process" },
-        ],
-      },
-      {
-        label: "Reporting And Analytics",
-        icon: <BarChart />,
-        path: "analytics",
-      },
+      { label: "Reporting And Analytics", icon: FaChartBar, path: "/admin/analytics" },
     ],
     doctor: [
+      { label: "Appointment Management", icon: FaCalendarAlt, path: "/doctor/appointment-management" },
+      { label: "Patient Record Access", icon: FaFileMedical, path: "/doctor/patient-record-access" },
       {
-        label: "Appointment Management",
-        icon: <CalendarToday />,
-        path: "appointment-management",
+        label: "Prescription Tools", icon: FaPills, subMenu: [
+          { label: "Create", path: "/doctor/prescription-tools/create" },
+          { label: "Manage", path: "/doctor/prescription-tools/manage" },
+        ]
       },
-      {
-        label: "Patient Record Access",
-        icon: <PostAdd />,
-        path: "patient-record-access",
-      },
-      {
-        label: "Prescription Tools",
-        icon: <LocalHospital />,
-        path: null,
-        subMenu: [
-          { label: "Create", path: "prescription-tools/create" },
-          { label: "Manage", path: "prescription-tools/manage" },
-        ],
-      },
-      {
-        label: "Teleconsultation Module",
-        icon: <PhoneInTalk />,
-        path: "teleconsultation",
-      },
-      { label: "Chat", icon: <Chat />, path: "doctor-chat" },
+      { label: "Teleconsultation", icon: FaCommentDots, path: "/doctor/teleconsultation" },
+      { label: "Chat", icon: FaCommentDots, path: "/doctor/doctor-chat" },
+    ],
+    patient: [
+      { label: "Personal Health Record", icon: FaFileMedical, path: "/patient" },
+      { label: "Appointment Booking", icon: FaCalendarAlt, path: "/patient/appointment-booking" },
+      { label: "Prescription Access", icon: FaPills, path: "/patient/prescription-access" },
+      { label: "Teleconsultation Access", icon: FaCommentDots, path: "/patient/tele-access" },
+      { label: "Chat", icon: FaCommentDots, path: "/patient/chat" },
+      { label: "Bills", icon: FaFileInvoiceDollar, path: "/patient/bills" },
     ],
   };
 
   const handleLogout = () => {
-    // setUser(null);
-    localStorage.clear(); // Clear any authentication tokens
-    navigate("/"); // Redirect to login page
+    localStorage.clear();
+    navigate("/");
+  };
+
+  const handleMenuClick = (path, label) => {
+    setActiveTab(label);
+    if (path) navigate(path);
   };
 
   const handleToggleBilling = () => {
     setOpenBilling(!openBilling);
   };
 
-  // Check if the current path matches the tab path
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
-
   return (
-    <div className="w-64 h-screen bg-white shadow-lg flex flex-col justify-between">
+    <div className="w-72 bg-white h-full shadow-lg flex flex-col justify-between">
       {/* Logo Section */}
-      <div className="p-6">
-        <img src={logo} alt="Hospital Logo" />
+      <div className="py-4">
+        <img src={logo} alt="Hospital Logo" className="w-48 mx-auto mb-4" />
       </div>
 
-      {/* Menu Section */}
-      <div className="flex-1">
-        <List>
-          {tabs[role].map((tab, index) =>
-            tab.subMenu ? (
-              <div key={index}>
-                <ListItem
-                  button
+      {/* Menu Items */}
+      <ul className="flex-grow">
+        {tabs[role].map((item, index) => (
+          <li key={index} className="py-2">
+            {!item.subMenu ? (
+              <NavLink
+                to={item.path}
+                className={`relative flex items-center w-full px-6 py-4 text-gray-700 font-semibold ${activeTab === item.label ? "text-customBlue" : "hover:text-customBlue"}`}
+                onClick={() => handleMenuClick(item.path, item.label)}
+              >
+                <item.icon
+                  className={`mr-3 transition duration-300 z-20 relative ${activeTab === item.label ? "text-customBlue" : "text-gray-500"
+                    }`}
+                />
+                <span className="relative z-20">{item.label}</span>
+
+                {/* Active Tab Background & Border */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${activeTab === item.label ? "opacity-100" : "group-hover:opacity-100"} transition duration-300 z-10`}
+                ></div>
+                <div
+                  className={`absolute top-0 right-0 h-10 bg-customBlue ${activeTab === item.label ? "w-2 opacity-100" : "group-hover:w-2 opacity-0"} rounded-tl-lg rounded-bl-lg transition-all duration-300 z-10`}
+                ></div>
+              </NavLink>
+            ) : (
+              <div>
+                <button
                   onClick={handleToggleBilling}
-                  className={isActive(tab.path) ? "bg-blue-100" : ""}
+                  className={`flex items-center w-full px-6 py-4 text-gray-700 font-semibold ${openBilling ? "text-customBlue" : "hover:text-customBlue"}`}
                 >
-                  <ListItemIcon>{tab.icon}</ListItemIcon>
-                  <ListItemText primary={tab.label} />
-                  {openBilling ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
+                  <item.icon className={`mr-4 ${openBilling ? "text-customBlue" : "text-gray-500"}`} />
+                  <span>{item.label}</span>
+                </button>
                 <Collapse in={openBilling} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {tab.subMenu.map((subTab, subIndex) => (
-                      <ListItem
-                        button
-                        key={subIndex}
-                        onClick={() => navigate(subTab.path)}
-                        className={`pl-12 ${
-                          isActive(subTab.path) ? "bg-blue-100" : ""
-                        }`}
-                      >
-                        <ListItemText primary={subTab.label} />
-                      </ListItem>
+                  <ul>
+                    {item.subMenu.map((subItem, subIndex) => (
+                      <li key={subIndex}>
+                        <NavLink
+                          to={subItem.path}
+                          className={`relative flex items-center w-full pl-12 py-3 text-gray-700 font-semibold ${activeTab === subItem.label ? "text-customBlue" : "hover:text-customBlue"}`}
+                          onClick={() => handleMenuClick(subItem.path, subItem.label)}
+                        >
+                          <span className="relative z-20">{subItem.label}</span>
+                          {/* Active Tab Background & Border */}
+                          <div
+                            className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${activeTab === subItem.label ? "opacity-100" : "group-hover:opacity-100"} transition duration-300 z-10`}
+                          ></div>
+                          <div
+                            className={`absolute top-0 right-0 h-10 bg-customBlue ${activeTab === subItem.label ? "w-2 opacity-100" : "group-hover:w-2 opacity-0"} rounded-tl-lg rounded-bl-lg transition-all duration-300 z-10`}
+                          ></div>
+                        </NavLink>
+                      </li>
                     ))}
-                  </List>
+                  </ul>
                 </Collapse>
               </div>
-            ) : (
-              <ListItem
-                button
-                key={index}
-                onClick={() => navigate(tab.path)}
-                className={isActive(tab.path) ? "bg-blue-100" : ""}
-              >
-                <ListItemIcon>{tab.icon}</ListItemIcon>
-                <ListItemText primary={tab.label} />
-              </ListItem>
-            )
-          )}
-        </List>
-      </div>
+            )}
+          </li>
+        ))}
+      </ul>
 
+      {/* Appointment Section */}
+      
+      <div className="relative px-5 m-5 bg-gray-100 rounded-2xl">
+        <div className="flex justify-center mb-4 relative z-10">
+          <img src={appointment} alt="appointment" className="w-48 h-48 -mt-32" />
+        </div>
+        <div className="pb-5 text-center relative z-0">
+          <h4 className="mb-2 font-semibold text-lg">Hospital appointment</h4>
+          <p className="text-sm text-gray-500 mb-4">
+            You have to fill up the form to be admitted to the Hospital.
+          </p>
+          <NavLink to={'/patient/appointment-booking'}>
+            <button className="w-full bg-customBlue text-white py-2 rounded-md">
+              Appointment
+            </button>
+          </NavLink>
+        </div>
+      </div>
       {/* Logout Button */}
-      <div className="p-6">
-        <Button
+      <div className="mb-5">
+        <button
           onClick={handleLogout}
-          className="!text-red-500 hover:!bg-red-200 !w-full"
+          className="flex items-center w-full py-3 text-red-500 font-semibold bg-red-100 px-6"
         >
-          <Logout />
-          <span className="ml-2">Logout</span>
-        </Button>
+          <HiOutlineLogout className="mr-2 text-lg" />
+          Logout
+        </button>
       </div>
     </div>
   );
