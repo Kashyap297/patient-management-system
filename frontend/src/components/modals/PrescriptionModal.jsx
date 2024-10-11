@@ -7,11 +7,10 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
-  Button
+  TableRow
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import signature from "../../assets/images/signature.svg"
+import signature from "../../assets/images/signature.svg";
 
 const PrescriptionModal = ({ open, handleClose, prescriptionData }) => {
   return (
@@ -29,21 +28,21 @@ const PrescriptionModal = ({ open, handleClose, prescriptionData }) => {
           <div className="flex justify-between">
             <div>
               <h2 className="text-xl font-bold text-blue-600">Hospital</h2>
-              <p>Medical Center</p>
+              <p>{prescriptionData.appointmentId.hospital}</p>
             </div>
             <div>
-              <h3 className="font-bold text-blue-600">Dr. Bharat Patel</h3>
-              <p>Obstetrics and Gynecology</p>
+              <h3 className="font-bold text-blue-600">{prescriptionData.doctor.firstName} {prescriptionData.doctor.lastName}</h3>
+              <p>{prescriptionData.doctor.specialty}</p>
             </div>
           </div>
 
           <div className="mt-4">
             <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>Patient Name: {prescriptionData.patientName}</div>
-              <div>Prescription Date: {prescriptionData.prescriptionDate}</div>
-              <div>Gender: {prescriptionData.gender}</div>
-              <div>Age: {prescriptionData.age}</div>
-              <div>Address: {prescriptionData.address}</div>
+              <div>Patient Name: {prescriptionData.patient.firstName} {prescriptionData.patient.lastName}</div>
+              <div>Prescription Date: {new Date(prescriptionData.prescriptionDate).toLocaleDateString()}</div>
+              <div>Gender: {prescriptionData.patient.gender}</div>
+              <div>Age: {prescriptionData.patient.age}</div>
+              <div>Address: {prescriptionData.patient.address}</div>
             </div>
           </div>
 
@@ -76,13 +75,10 @@ const PrescriptionModal = ({ open, handleClose, prescriptionData }) => {
           </div>
 
           <div className="mt-4 flex justify-between">
-            <div>
-
-              <div className="border-t w-32 mt-4">
-                <img src={signature} alt="Signature" />
-              </div>
-              <p>Doctor Signature</p>
+            <div className="border-t w-32 mt-4">
+              <img src={signature} alt="Signature" />
             </div>
+            <p>Doctor Signature</p>
           </div>
         </div>
       </DialogContent>

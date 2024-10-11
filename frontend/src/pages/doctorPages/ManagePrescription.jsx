@@ -1,61 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, TextField, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Badge } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import PrescriptionModal from '../../components/modals/PrescriptionModal';
-
-// Dummy Data for Patients
-const todayPatients = [
-  { name: 'Marcus Philips', number: '89564 25462', type: 'Online', time: '4:30 PM', age: '22 Years', gender: 'Male' },
-  { name: 'London Shaffer', number: '89564 25462', type: 'Onsite', time: '5:00 PM', age: '74 Years', gender: 'Female' },
-  { name: 'Julianna Warren', number: '89564 25462', type: 'Onsite', time: '4:30 PM', age: '44 Years', gender: 'Female' },
-  { name: 'Marcus Philips', number: '89564 25462', type: 'Online', time: '5:00 PM', age: '22 Years', gender: 'Male' },
-];
-
-const olderPatients = [
-  { name: 'Julianna Warren', number: '89564 25462', type: 'Onsite', time: '8:30 AM', age: '55 Years', gender: 'Female' },
-  { name: 'London Shaffer', number: '89564 25462', type: 'Online', time: '4:30 PM', age: '22 Years', gender: 'Female' },
-  { name: 'Marcus Philips', number: '89564 25462', type: 'Onsite', time: '8:30 AM', age: '22 Years', gender: 'Male' },
-  { name: 'Marcus Philips', number: '89564 25462', type: 'Online', time: '5:00 PM', age: '22 Years', gender: 'Male' },
-];
-
-const prescriptionData = {
-  patientName: 'Albatrao Bhajirao',
-  prescriptionDate: '2 Jan, 2022',
-  gender: 'Male',
-  age: '36 Years',
-  address: 'B-105 Virat Bungalows Punagam Motavaracha Jamnagar.',
-  medicines: [
-    { name: 'Calcium carbonate', strength: '100 Mg', dose: '1-0-1', duration: '2 Day', whenToTake: 'Before Food' },
-    { name: 'Cyclobenzaprine', strength: '200 Mg', dose: '1-1-1', duration: '4 Day', whenToTake: 'With Food' },
-  ],
-  additionalNote: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-};
-
+import api from "../../api/api"; // Assuming api.js is set up with the Axios instance
 
 const ManagePrescription = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [todayPatients, setTodayPatients] = useState([]);
+  const [olderPatients, setOlderPatients] = useState([]);
+  const [selectedPrescription, setSelectedPrescription] = useState(null);
 
-  const handleModalOpen = () => {
-    setModalOpen(true);
+  // Fetch appointments for today and older appointments
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await api.get('/appointments');
+        const appointments = response.data.data;
+        
+        // Filter today's appointments and older appointments
+        const today = new Date().setHours(0, 0, 0, 0);
+        const todayData = appointments.filter(appt => new Date(appt.appointmentDate).setHours(0, 0, 0, 0) === today);
+        const olderData = appointments.filter(appt => new Date(appt.appointmentDate).setHours(0, 0, 0, 0) < today);
+
+        setTodayPatients(todayData);
+        setOlderPatients(olderData);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
+  // Handle modal open with prescription details
+  const handleModalOpen = async (appointmentId) => {
+    try {
+      const response = await api.get('/prescription');
+      const prescriptions = response.data.prescriptions;
+      const prescription = prescriptions.find(prescription => prescription.appointmentId._id === appointmentId);
+
+      if (prescription) {
+        setSelectedPrescription(prescription);
+        setModalOpen(true);
+      } else {
+        console.error("Prescription not found for this appointment.");
+      }
+    } catch (error) {
+      console.error("Error fetching prescription:", error);
+    }
   };
 
   const handleModalClose = () => {
     setModalOpen(false);
+    setSelectedPrescription(null);
   };
 
   // Choose the appropriate data based on the active tab
   const currentPatients = activeTab === 0 ? todayPatients : olderPatients;
 
-  // Filtering the patient data based on search input
+  // Filter the patient data based on search input
   const filteredPatients = currentPatients.filter(
     (patient) =>
-      patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.number.includes(searchTerm) ||
-      patient.age.includes(searchTerm)
+      patient.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      patient.patientPhoneNumber.includes(searchTerm) ||
+      patient.patientAge.toString().includes(searchTerm)
   );
 
   return (
@@ -93,25 +105,25 @@ const ManagePrescription = () => {
         <TableBody>
           {filteredPatients.map((patient, index) => (
             <TableRow key={index}>
-              <TableCell>{patient.name}</TableCell>
-              <TableCell>{patient.number}</TableCell>
+              <TableCell>{patient.patientName}</TableCell>
+              <TableCell>{patient.patientPhoneNumber}</TableCell>
               <TableCell>
                 <Badge
-                  badgeContent={patient.type}
-                  color={patient.type === 'Online' ? 'warning' : 'primary'}
+                  badgeContent={patient.appointmentType}
+                  color={patient.appointmentType === 'Online' ? 'warning' : 'primary'}
                 />
               </TableCell>
-              <TableCell>{patient.time}</TableCell>
-              <TableCell>{patient.age}</TableCell>
+              <TableCell>{patient.appointmentTime}</TableCell>
+              <TableCell>{patient.patientAge}</TableCell>
               <TableCell>
-                {patient.gender === 'Male' ? (
+                {patient.patientGender === 'Male' ? (
                   <MaleIcon style={{ color: 'blue' }} />
                 ) : (
                   <FemaleIcon style={{ color: 'red' }} />
                 )}
               </TableCell>
               <TableCell>
-                <IconButton onClick={handleModalOpen} >
+                <IconButton onClick={() => handleModalOpen(patient.id)}>
                   <Visibility />
                 </IconButton>
               </TableCell>
@@ -119,7 +131,15 @@ const ManagePrescription = () => {
           ))}
         </TableBody>
       </Table>
-      <PrescriptionModal open={modalOpen} handleClose={handleModalClose} prescriptionData={prescriptionData} />
+
+      {/* Prescription Modal */}
+      {selectedPrescription && (
+        <PrescriptionModal
+          open={modalOpen}
+          handleClose={handleModalClose}
+          prescriptionData={selectedPrescription}
+        />
+      )}
     </div>
   );
 };
