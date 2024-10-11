@@ -38,11 +38,20 @@ const Login = () => {
         // Call login function from AuthContext
         const { token, role } = await loginUser({ email, password });
 
-        // Store token and role in localStorage
+        // Store token in localStorage
         localStorage.setItem("token", token);
 
-        // Redirect to the dashboard
-        navigate("/dashboard");
+        // Redirect based on user role
+        if (role === "admin") {
+          navigate("/admin");
+        } else if (role === "doctor") {
+          navigate("/doctor");
+        } else if (role === "patient") {
+          navigate("/patient");
+        } else {
+          // If role is undefined or unexpected, redirect to a generic page
+          navigate("/home");
+        }
       } catch (error) {
         setErrors({ password: authError || "Login failed, try again" });
       }
@@ -61,9 +70,8 @@ const Login = () => {
                 type="text"
                 id="email"
                 name="email"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Enter Email or Phone Number"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -85,9 +93,8 @@ const Login = () => {
                 type={showPassword ? "password" : "text"}
                 id="password"
                 name="password"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 ${errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Enter Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

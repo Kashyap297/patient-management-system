@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AdminRegister from "./components/AdminRegister";
 import Login from "./components/Login";
 import PatientRegister from "./components/PatientRegister";
@@ -15,24 +15,52 @@ import AdminRoutes from "./components/AdminRoutes";
 import DoctorRoutes from "./components/DoctorRoutes";
 import PatientRoutes from "./components/PatientRoutes";
 import { BreadcrumbProvider } from "./context/BreadcrumbContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
+  const token = localStorage.getItem("token");
+
+  // If user is logged in, redirect away from login and signup pages
+  const authRedirect = token ? <Navigate to="/" replace /> : null;
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<PatientRegister />} />
-        <Route path="/forgot-password" element={<ForgetPassword />} />
-        <Route path="/enter-otp" element={<EnterOTP />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/admin-register" element={<AdminRegister />} />
-        {/* deshbord Routes */}
-        <Route path="/admin" element={<AdminRoutes />} />
-        <Route path="/admin/*" element={<AdminRoutes />} />
-        <Route path="/doctor" element={<DoctorRoutes />} />
-        <Route path="/doctor/*" element={<DoctorRoutes />} />
-        <Route path="/patient" element={<BreadcrumbProvider><PatientRoutes /></BreadcrumbProvider>} />
-        <Route path="/patient/*" element={<BreadcrumbProvider><PatientRoutes /></BreadcrumbProvider>} />
+        {/* Redirect if user is already logged in */}
+        <Route path="/" element={token ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/signup" element={!token ? <PatientRegister /> : authRedirect} />
+        <Route path="/forgot-password" element={!token ? <ForgetPassword /> : authRedirect} />
+        <Route path="/enter-otp" element={!token ? <EnterOTP /> : authRedirect} />
+        <Route path="/reset-password" element={!token ? <ResetPassword /> : authRedirect} />
+        <Route path="/admin-register" element={!token ? <AdminRegister /> : authRedirect} />
+
+        {/* Dashboard Routes with Role-based Protection */}
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminRoutes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/doctor/*"
+          element={
+            <ProtectedRoute roles={["doctor"]}>
+              <DoctorRoutes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/patient/*"
+          element={
+            <ProtectedRoute roles={["patient"]}>
+              <BreadcrumbProvider>
+                <PatientRoutes />
+              </BreadcrumbProvider>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
