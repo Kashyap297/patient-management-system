@@ -1,6 +1,5 @@
-
 import { Button } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility'; // Material UI eye icon
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from 'react-router-dom';
 
 const CreatePrescription = ({ id, name, age, gender, appointmentType, time, isNew }) => {
@@ -43,7 +42,7 @@ const CreatePrescription = ({ id, name, age, gender, appointmentType, time, isNe
         style={{
           borderRadius: "8px",
         }}
-        onClick={() => navigate(`/create-prescription/${id}`)}
+        onClick={() => navigate(`/doctor/create-prescription/${id}`)}
       >
         Create Prescription
       </Button>

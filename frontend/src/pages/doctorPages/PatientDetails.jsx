@@ -1,44 +1,65 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, IconButton } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
+import api from "../../api/api"; // Adjust the path according to your project structure
 
 const PatientDetail = () => {
   const { id } = useParams();  // Get the patient ID from the route parameter
+  const [patientData, setPatientData] = useState(null);
+  const [appointments, setAppointments] = useState([]);
 
-  // Dummy data for a single patient (in real scenario, this should be fetched by the ID)
-  const patientData = {
-    name: 'Marcus Philips',
-    number: '99130 44537',
-    doctorName: 'Dr. Marcus Philips',
-    age: '20 Years',
-    issue: 'Feeling Tired',
-    gender: 'Male',
-    appointmentType: 'Online',
-    address: 'B-408 Swastik society, mota varacha rajkot.',
-    lastAppointmentDate: '2 Jan, 2022',
-    lastAppointmentTime: '4:30 PM',
-    imageUrl: 'https://via.placeholder.com/150', // Dummy image URL for patient
-  };
+  useEffect(() => {
+    // Fetch patient data by ID
+    const fetchPatientData = async () => {
+      try {
+        const response = await api.get(`/users/patients/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setPatientData(response.data);
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      }
+    };
 
-  const appointments = [
-    { diseaseName: 'Viral Infection', issue: 'Feeling Tired', date: '2 Jan, 2022', time: '4:30 PM', type: 'Online' },
-    { diseaseName: 'Diabetes', issue: 'Stomach Ache', date: '5 Jan, 2022', time: '5:00 PM', type: 'Onsite' },
-    // Add more appointment data
-  ];
+    // Fetch appointments for the patient by filtering from all appointments
+    const fetchAppointments = async () => {
+      try {
+        const response = await api.get('/appointments', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        // Filter appointments for this specific patient
+        const patientAppointments = response.data.data.filter(appointment => appointment.patientId === id);
+        setAppointments(patientAppointments);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+
+    fetchPatientData();
+    fetchAppointments();
+  }, [id]);
+
+  if (!patientData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md m-6">
       <h2 className="text-lg font-semibold mb-4">Patient Details</h2>
-      
+
       {/* Patient Details Section */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <img src={patientData.imageUrl} alt="Patient" className="w-24 h-24 rounded-full" />
+          <img src="https://via.placeholder.com/150" alt="Patient" className="w-24 h-24 rounded-full" />
           <div>
-            <h3 className="text-xl font-semibold">{patientData.name}</h3>
-            <p>Patient Number: {patientData.number}</p>
-            <p>Doctor Name: {patientData.doctorName}</p>
-            <p>Patient Age: {patientData.age}</p>
+            <h3 className="text-xl font-semibold">{`${patientData.firstName} ${patientData.lastName}`}</h3>
+            <p>Patient Number: {patientData.phoneNumber}</p>
+            <p>Patient Age: {patientData.age} Years</p>
             <p>Patient Gender: {patientData.gender}</p>
           </div>
         </div>
@@ -67,12 +88,12 @@ const PatientDetail = () => {
             {appointments.map((appointment, index) => (
               <tr key={index} className="border-t">
                 <td className="p-3">{appointment.diseaseName}</td>
-                <td className="p-3">{appointment.issue}</td>
-                <td className="p-3">{appointment.date}</td>
-                <td className="p-3 text-blue-600">{appointment.time}</td>
+                <td className="p-3">{appointment.patientIssue || "N/A"}</td>
+                <td className="p-3">{new Date(appointment.appointmentDate).toLocaleDateString()}</td>
+                <td className="p-3 text-blue-600">{appointment.appointmentTime}</td>
                 <td className="p-3">
-                  <span className={`px-3 py-1 text-sm font-medium rounded-full ${appointment.type === 'Online' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
-                    {appointment.type}
+                  <span className={`px-3 py-1 text-sm font-medium rounded-full ${appointment.appointmentType === 'Online' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
+                    {appointment.appointmentType}
                   </span>
                 </td>
                 <td className="p-3">

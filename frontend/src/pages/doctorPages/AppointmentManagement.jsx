@@ -90,12 +90,14 @@ const AppointmentManagement = () => {
       appointment.diseaseName.toLowerCase().includes(lowerSearchTerm) ||
       (appointment.patientIssue && appointment.patientIssue.toLowerCase().includes(lowerSearchTerm));
 
+    // Filter based on date range
     const matchesDateRange =
       (!filterDates.fromDate || appointmentDate >= new Date(filterDates.fromDate)) &&
       (!filterDates.toDate || appointmentDate <= new Date(filterDates.toDate));
 
     return matchesSearchTerm && matchesDateRange;
   });
+
 
   console.log("Filtered Appointments:", filteredAppointments);
 

@@ -1,31 +1,66 @@
-import { useState } from 'react';
-import { IconButton, TextField, InputAdornment, MenuItem, Select } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { IconButton, TextField, InputAdornment } from '@mui/material';
 import { Search, Visibility } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import api from "../../api/api"; // Adjust the path according to your project structure
 
 const PatientRecordAccess = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [timeFilter, setTimeFilter] = useState('Month');
+  const [appointments, setAppointments] = useState([]);
   const navigate = useNavigate();
-  
-  const patients = [
-    { patientName: 'Marcus Philips', diseaseName: 'Viral Infection', patientIssue: 'Feeling Tired', lastAppointmentDate: '2 Jan, 2022', lastAppointmentTime: '4:30 PM', age: '22 Years', gender: 'Male' },
-    { patientName: 'London Shaffer', diseaseName: 'Diabetes', patientIssue: 'Stomach Ache', lastAppointmentDate: '5 Jan, 2022', lastAppointmentTime: '5:00 PM', age: '45 Years', gender: 'Female' },
-    // Add more data...
-  ];
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('Token not found');
+          return;
+        }
+
+        // Decode token to get the doctor ID
+        const decodedToken = jwtDecode(token);
+        const doctorId = decodedToken.id; // Adjust based on your JWT structure
+
+        // Fetch appointments associated with this doctor
+        const response = await api.get('/appointments', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const allAppointments = response.data.data || [];
+
+        // Filter for only the previous appointments of the logged-in doctor
+        const previousAppointments = allAppointments.filter(appointment => {
+          const appointmentDate = new Date(appointment.appointmentDate);
+          const today = new Date();
+          return appointment.doctorId === doctorId && appointmentDate < today;
+        });
+
+        console.log('Filtered previous appointments:', previousAppointments); // Debugging
+        setAppointments(previousAppointments);
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
 
   // Filter patients based on search term
-  const filteredPatients = patients.filter((patient) => 
-    patient.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    patient.diseaseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    patient.patientIssue.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPatients = appointments.filter((appointment) =>
+    appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    appointment.diseaseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (appointment.patientIssue && appointment.patientIssue.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md m-6">
-      <h2 className="text-lg font-semibold mb-4">Patient Record Access</h2>
+      <h2 className="text-lg font-semibold mb-4">Previous Appointments</h2>
 
-      {/* Search and Filter Section */}
+      {/* Search Section */}
       <div className="flex justify-between items-center mb-4">
         <TextField
           variant="outlined"
@@ -40,18 +75,9 @@ const PatientRecordAccess = () => {
             ),
           }}
         />
-        <Select
-          value={timeFilter}
-          onChange={(e) => setTimeFilter(e.target.value)}
-          variant="outlined"
-        >
-          <MenuItem value="Month">Month</MenuItem>
-          <MenuItem value="Week">Week</MenuItem>
-          <MenuItem value="Day">Day</MenuItem>
-        </Select>
       </div>
 
-      {/* Table of Patient Records */}
+      {/* Table of Previous Appointments */}
       <div className="max-h-[600px] overflow-y-auto">
         <table className="min-w-full table-auto">
           <thead className="sticky top-0 bg-gray-100 z-10">
@@ -67,26 +93,34 @@ const PatientRecordAccess = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredPatients.map((patient, index) => (
-              <tr key={index} className="border-t">
-                <td className="p-3">{patient.patientName}</td>
-                <td className="p-3">{patient.diseaseName}</td>
-                <td className="p-3">{patient.patientIssue}</td>
-                <td className="p-3">{patient.lastAppointmentDate}</td>
-                <td className="p-3 text-blue-600">{patient.lastAppointmentTime}</td>
-                <td className="p-3">{patient.age}</td>
-                <td className="p-3">
-                  <span className={patient.gender === 'Male' ? 'text-blue-500' : 'text-pink-500'}>
-                    {patient.gender === 'Male' ? '♂' : '♀'}
-                  </span>
-                </td>
-                <td className="p-3">
-                  <IconButton color="primary">
-                    <Visibility onClick={() => navigate(`/patient-detail/${patient.id}`)} />
-                  </IconButton>
+            {filteredPatients.length > 0 ? (
+              filteredPatients.map((appointment, index) => (
+                <tr key={index} className="border-t">
+                  <td className="p-3">{appointment.patientName}</td>
+                  <td className="p-3">{appointment.diseaseName}</td>
+                  <td className="p-3">{appointment.patientIssue}</td>
+                  <td className="p-3">{new Date(appointment.appointmentDate).toLocaleDateString()}</td>
+                  <td className="p-3 text-blue-600">{appointment.appointmentTime}</td>
+                  <td className="p-3">{appointment.patientAge} Years</td>
+                  <td className="p-3">
+                    <span className={appointment.patientGender === 'Male' ? 'text-blue-500' : 'text-pink-500'}>
+                      {appointment.patientGender === 'Male' ? '♂' : '♀'}
+                    </span>
+                  </td>
+                  <td className="p-3">
+                    <IconButton color="primary" onClick={() => navigate(`/doctor/patient-detail/${appointment.patientId}`)}>
+                      <Visibility />
+                    </IconButton>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" className="text-center p-4 text-gray-500">
+                  No previous appointments found for the selected criteria.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
