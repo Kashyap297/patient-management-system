@@ -1,0 +1,168 @@
+{
+	"info": {
+		"_postman_id": "970e06de-e80c-4500-a91d-ec9808826856",
+		"name": "chats",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32123946"
+	},
+	"item": [
+		{
+			"name": "Create chat by patients",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDZlZThmZDQzMzhjYWZiYWNkOTVjYSIsInJvbGUiOiJwYXRpZW50IiwiZmlyc3ROYW1lIjoib20iLCJsYXN0TmFtZSI6InByYWthc2giLCJpYXQiOjE3Mjg2ODUyNjEsImV4cCI6MTczMTI3NzI2MX0.fN0bZFxHoTLf8dtfxJMbt7QinEgefUegUm5MkuDfOYw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"6706c94fee2c8ba279cf269a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/chats/start",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"chats",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send a Message in an Existing Chat",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDZlZThmZDQzMzhjYWZiYWNkOTVjYSIsInJvbGUiOiJwYXRpZW50IiwiZmlyc3ROYW1lIjoib20iLCJsYXN0TmFtZSI6InByYWthc2giLCJpYXQiOjE3Mjg2ODUyNjEsImV4cCI6MTczMTI3NzI2MX0.fN0bZFxHoTLf8dtfxJMbt7QinEgefUegUm5MkuDfOYw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "content",
+							"value": "i am sick",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/chats/67099b7df554e0c1ca2aa593/message",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"chats",
+						"67099b7df554e0c1ca2aa593",
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Chats for the Logged-in User",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDZjOTRmZWUyYzhiYTI3OWNmMjY5YSIsInJvbGUiOiJkb2N0b3IiLCJmaXJzdE5hbWUiOiJmZmYiLCJsYXN0TmFtZSI6ImZmZiIsImlhdCI6MTcyODY4NTE5NCwiZXhwIjoxNzMxMjc3MTk0fQ.6idmu9JsaZXcvEh1kgtLP0aicQ0uaoMNw2TDogrejFw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"doctorId\": \"66fedc77cd28841ff655876d\", \r\n  \"content\": \"Hi Doctor, how are you?\", \r\n  \"sender\": \"patientId_here\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/chats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"chats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Messages for a Specific Chat",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDE4NGNjNzY4YmY3YjcyNmFiZTk0YyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzI4MTY5OTgyLCJleHAiOjE3MzA3NjE5ODJ9.zDQCiXBvwCSXUODe326aEMdlXk-E-4WLpcbsDlsk4Ws",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"doctorId\": \"66fedc77cd28841ff655876d\", \r\n  \"content\": \"Hi Doctor, how are you?\", \r\n  \"sender\": \"patientId_here\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/chats/67099b7df554e0c1ca2aa593/messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"chats",
+						"67099b7df554e0c1ca2aa593",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

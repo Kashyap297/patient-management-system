@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "1507ac0d-d4ab-4081-93e6-52ec91bdb672",
+		"name": "appointment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32123946"
+	},
+	"item": [
+		{
+			"name": "Book Appointment by patient",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDZlZThmZDQzMzhjYWZiYWNkOTVjYSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzI4NTk3NzE5LCJleHAiOjE3MzExODk3MTl9.CpWsGKGQUMojqx66y-3KQ0PLWBG2yg5qmYZTmtfQtEQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"specialty\": \"ENT\",\r\n  \"country\": \"India\",\r\n  \"state\": \"Gujarat\",\r\n  \"city\": \"Surat\",\r\n  \"appointmentDate\": \"2024-10-10\",\r\n  \"appointmentTime\": \"12:30 PM\",\r\n  \"hospital\": \"Kiran Hospital\",\r\n  \"doctor\": \"6706baaf84d783d47bf8b8cb\", // ObjectId of the doctor\r\n  \"patientIssue\": \"Ear Pain\",\r\n  \"diseaseName\": \"Infection in Ear\",\r\n  \"appointmentType\": \"Onsite\",\r\n  \"doctorFees\": 1800\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/appointment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"appointment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Appointment Details",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODUwODI5MiwiZXhwIjoxNzMxMTAwMjkyfQ.OAGNO1acB8yUvq8WRwxbaNo0uksEoyGrMeCfqQ1pEDU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/appointments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Appointment by ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmVkYjY3Y2QyODg0MWZmNjU1ODc2OSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzI4MTU0MDY0LCJleHAiOjE3MzA3NDYwNjR9.Ykr8ZzYlilJfaHKRXoLIT3Nr6N-wxJRyolHSQPIRjmM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/appointments/6706ef82d4338cafbacd95d5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"appointments",
+						"6706ef82d4338cafbacd95d5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reschedule Appointment",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmVkYjY3Y2QyODg0MWZmNjU1ODc2OSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzI4MTU0NTkwLCJleHAiOjE3MzA3NDY1OTB9.Aqo0dGQNrSNszzMGOKSZJPCJjA_Cm4WEwtzBiPHXuPk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"appointmentDate\": \"2024-10-22\",\r\n  \"appointmentTime\": \"5:00 PM - 6:00 PM\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/appointments/reschedule/6701898a780cddc0a4ee6712",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"appointments",
+						"reschedule",
+						"6701898a780cddc0a4ee6712"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel Appointment",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDE4NGNjNzY4YmY3YjcyNmFiZTk0YyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzI4MTUyODA0LCJleHAiOjE3MzA3NDQ4MDR9.r9KVIo4lXJruwJJ560R97nD7wiFDaozg7sd9YLyfVP0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/appointments/cancel/6701898a780cddc0a4ee6712",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"appointments",
+						"cancel",
+						"6701898a780cddc0a4ee6712"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

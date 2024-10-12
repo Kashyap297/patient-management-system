@@ -1,91 +1,769 @@
 {
-  "info": {
-    "_postman_id": "6a2ddf99-a74d-4ba5-b65d-fb7eee2be366",
-    "name": "User",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "32123946"
-  },
-  "item": [
-    {
-      "name": "Register",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"username\": \"admin\",\r\n  \"email\": \"admin@gmail.com\",\r\n  \"password\": \"123\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/users/register",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8000",
-          "path": ["api", "users", "register"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Login",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"email\": \"admin@gmail.com\",\r\n  \"password\": \"123\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/users/login",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8000",
-          "path": ["api", "users", "login"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "User Profile",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmQ3NDliNjlmYWE0ZTRiYjkxNDA0MiIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3Mjc4ODY1NzcsImV4cCI6MTczMDQ3ODU3N30.IuAF13wa3Btrd7WfgndxgEBpfTBwS0UGJa3XlpV56tE",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8000/api/users/profile",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8000",
-          "path": ["api", "users", "profile"]
-        }
-      },
-      "response": []
-    }
-  ]
+	"info": {
+		"_postman_id": "6a2ddf99-a74d-4ba5-b65d-fb7eee2be366",
+		"name": "User",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32123946"
+	},
+	"item": [
+		{
+			"name": "Register-admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"meet\",\r\n  \"lastName\": \"lakhani\",\r\n  \"email\": \"meetlakhani98787@gmail.com\",\r\n  \"phoneNumber\": \"9909002448\",\r\n  \"password\": \"123\",\r\n  \"country\": \"India\",\r\n  \"state\": \"Gujarat\",\r\n  \"city\": \"Surat\",\r\n  \"hospital\": \"General Hospital\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/register-admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"register-admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register-patient",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"Vikas\",\r\n    \"lastName\": \"Patil\",\r\n    \"email\": \"viks@gmail.com\",\r\n    \"phoneNumber\": \"8889498887\",\r\n    \"password\": \"123456\",\r\n    \"age\": 29,\r\n    \"height\": 160,\r\n    \"weight\": 60,\r\n    \"gender\": \"Male\",\r\n    \"bloodGroup\": \"O+\",\r\n    \"dateOfBirth\": \"1993-05-10\",\r\n    \"country\": \"India\",\r\n    \"state\": \"Gujarat\",\r\n    \"city\": \"Surat\",\r\n    \"address\": \"123 Main St\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/register-patient",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"register-patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Doctor By Admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODQ5MjAxOSwiZXhwIjoxNzMxMDg0MDE5fQ.lLF9ne-N_D3vP_IdVrwX_XJEnrZidHm-s2n0vk9irh4",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "firstName",
+							"value": "Dr. Mahesh",
+							"type": "text"
+						},
+						{
+							"key": "lastName",
+							"value": "Savani",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "Dr@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "phoneNumber",
+							"value": "987654321",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123",
+							"type": "text"
+						},
+						{
+							"key": "qualification",
+							"value": "MBBS",
+							"type": "text"
+						},
+						{
+							"key": "specialtyType",
+							"value": "Heart Speciality",
+							"type": "text"
+						},
+						{
+							"key": "workType",
+							"value": "Online",
+							"type": "text"
+						},
+						{
+							"key": "workingTime",
+							"value": "09:00 AM - 05:00 PM",
+							"type": "text"
+						},
+						{
+							"key": "checkupTime",
+							"value": "09:00 AM - 01:00 PM",
+							"type": "text"
+						},
+						{
+							"key": "breakTime",
+							"value": "01:00 PM - 02:00 PM",
+							"type": "text"
+						},
+						{
+							"key": "experience",
+							"value": "10",
+							"type": "text"
+						},
+						{
+							"key": "zipCode",
+							"value": "395001",
+							"type": "text"
+						},
+						{
+							"key": "onlineConsultationRate",
+							"value": "2000",
+							"type": "text"
+						},
+						{
+							"key": "country",
+							"value": "India",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "Gujarat",
+							"type": "text"
+						},
+						{
+							"key": "city",
+							"value": "Surat",
+							"type": "text"
+						},
+						{
+							"key": "hospitalName",
+							"value": "Savani Hospital",
+							"type": "text"
+						},
+						{
+							"key": "hospitalAddress",
+							"value": "123 Main St, Los Angeles",
+							"type": "text"
+						},
+						{
+							"key": "websiteLink",
+							"value": "http://examplehospital.com",
+							"type": "text"
+						},
+						{
+							"key": "emergencyContactNumber",
+							"value": "6665554442",
+							"type": "text"
+						},
+						{
+							"key": "gender",
+							"value": "Male",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "55",
+							"type": "text"
+						},
+						{
+							"key": "doctorAddress",
+							"value": "456 Elm St, Los Angeles",
+							"type": "text"
+						},
+						{
+							"key": "profileImage",
+							"type": "file",
+							"src": "/C:/Users/RNW/Downloads/Redesing-graph-08-1024x657.jpg"
+						},
+						{
+							"key": "signatureImage",
+							"type": "file",
+							"src": "/C:/Users/RNW/Downloads/Pet-Food-Market.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/add-doctor",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"add-doctor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"omli@gmail.com\",\r\n  \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request OTP",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"meetlakhani98787@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/forgot-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify OTP",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"meetlakhani98787@gmail.com\",\r\n  \"otp\": \"803802\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/verify-otp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"verify-otp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"meetlakhani98787@gmail.com\",\r\n  \"password\": \"123\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/reset-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"reset-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change Password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyNzk5MzUwNSwiZXhwIjoxNzMwNTg1NTA1fQ.5jCIUTo5MWivlvAL-rluWVT_fsQr2MOTnR0CI0Rs5T4",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"currentPassword\": \"123456\",\r\n  \"newPassword\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/change-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Profile",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODA4MjM4NCwiZXhwIjoxNzMwNjc0Mzg0fQ.RtHRqIh0IxQGo646sn6TINRDDYwElFY1lw996NpSxm0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Doctors",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODM0NDYwMiwiZXhwIjoxNzMwOTM2NjAyfQ.PFrPTbaZR_j_12pn3Tm_RvxKGaPZknTMTrXAtW4evsU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/doctors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"doctors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get dr. by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODM0NjU2OCwiZXhwIjoxNzMwOTM4NTY4fQ.gxKGU6ItKfiBx33qgOUEFhodGvZB3gGXMeftW5d8v_M",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/doctors/66fedc77cd28841ff655876d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"doctors",
+						"66fedc77cd28841ff655876d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Dr. by id",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODM0NjU2OCwiZXhwIjoxNzMwOTM4NTY4fQ.gxKGU6ItKfiBx33qgOUEFhodGvZB3gGXMeftW5d8v_M",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"Updated First Name\",\r\n  \"lastName\": \"Updated Last Name\",\r\n  \"qualification\": \"Updated Qualification\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/doctors/66fedc77cd28841ff655876d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"doctors",
+						"66fedc77cd28841ff655876d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete dr. by id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODM0NDYwMiwiZXhwIjoxNzMwOTM2NjAyfQ.PFrPTbaZR_j_12pn3Tm_RvxKGaPZknTMTrXAtW4evsU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/doctors/66fedc77cd28841ff655876d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"doctors",
+						"66fedc77cd28841ff655876d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Patients",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODM0NDYwMiwiZXhwIjoxNzMwOTM2NjAyfQ.PFrPTbaZR_j_12pn3Tm_RvxKGaPZknTMTrXAtW4evsU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/patients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"patients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Patient by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODM0NDYwMiwiZXhwIjoxNzMwOTM2NjAyfQ.PFrPTbaZR_j_12pn3Tm_RvxKGaPZknTMTrXAtW4evsU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/patients/6706ee8fd4338cafbacd95ca",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"patients",
+						"6706ee8fd4338cafbacd95ca"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit patient by id",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODM0NDYwMiwiZXhwIjoxNzMwOTM2NjAyfQ.PFrPTbaZR_j_12pn3Tm_RvxKGaPZknTMTrXAtW4evsU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"patient1\",\r\n  \"lastName\": \"updated\",\r\n  \"age\": 30\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/patients/66fedb67cd28841ff6558769",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"patients",
+						"66fedb67cd28841ff6558769"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Patient by id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODM0NDYwMiwiZXhwIjoxNzMwOTM2NjAyfQ.PFrPTbaZR_j_12pn3Tm_RvxKGaPZknTMTrXAtW4evsU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/patients/66fedb67cd28841ff6558769",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"patients",
+						"66fedb67cd28841ff6558769"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit User Profile",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmQ3NDliNjlmYWE0ZTRiYjkxNDA0MiIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3Mjc4ODY1NzcsImV4cCI6MTczMDQ3ODU3N30.IuAF13wa3Btrd7WfgndxgEBpfTBwS0UGJa3XlpV56tE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"laklhani\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		}
+	]
 }

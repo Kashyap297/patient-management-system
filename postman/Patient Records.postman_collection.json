@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "b9c96d4a-06f2-4fc6-aa00-367381822922",
+		"name": "Patient Records",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32123946"
+	},
+	"item": [
+		{
+			"name": "get all appointments for a doctor",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmVkYzc3Y2QyODg0MWZmNjU1ODc2ZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MjgxNjU2OTcsImV4cCI6MTczMDc1NzY5N30.iQ_0TA8MOV2na9TM1fl18BPuYPl-fzv6-Apbv8ea3O0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/api/patients/appointments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"patients",
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Patient Details by Appointment ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmVkYzc3Y2QyODg0MWZmNjU1ODc2ZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MjgxNjQ1MDYsImV4cCI6MTczMDc1NjUwNn0.q52qPMdcXmNzDTU7mBzC0erjP8bTIoAS7SyaKqg7U2g",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/api/patients/appointment/670184fe768bf7b726abe952",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"patients",
+						"appointment",
+						"670184fe768bf7b726abe952"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Patient Records for Doctor",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmVkYzc3Y2QyODg0MWZmNjU1ODc2ZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MjgxNjY3MTEsImV4cCI6MTczMDc1ODcxMX0.xOAk_8K48a5E5-XvIK0z1oJqqW_ry_knDPM4clCSeIU",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/api/patients/patient/records/670184cc768bf7b726abe94c/66fedc77cd28841ff655876d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"patients",
+						"patient",
+						"records",
+						"670184cc768bf7b726abe94c",
+						"66fedc77cd28841ff655876d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Patient Record",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmVkYzc3Y2QyODg0MWZmNjU1ODc2ZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MjgxNjQ1MDYsImV4cCI6MTczMDc1NjUwNn0.q52qPMdcXmNzDTU7mBzC0erjP8bTIoAS7SyaKqg7U2g",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/RNW/Downloads/djnight.jfif"
+						},
+						{
+							"key": "description",
+							"value": "this is description",
+							"type": "text"
+						},
+						{
+							"key": "patientId",
+							"value": "670184cc768bf7b726abe94c",
+							"type": "text"
+						},
+						{
+							"key": "doctorId",
+							"value": "66fedc77cd28841ff655876d",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/patients/patient/records",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"patients",
+						"patient",
+						"records"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,315 @@
+{
+	"info": {
+		"_postman_id": "7edd497b-e353-4bc5-967a-6f07d0e43ba8",
+		"name": "invoice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32123946"
+	},
+	"item": [
+		{
+			"name": "Create INVOICE",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODIzODA5MywiZXhwIjoxNzMwODMwMDkzfQ.jj6h5K9ytIN84awz0WdqxOd-YgQ6B9Zp0o54QE3rAz8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "hospital",
+							"value": "66ff35b2e12eb86a6b427115",
+							"type": "text"
+						},
+						{
+							"key": "patient",
+							"value": "6706ee8fd4338cafbacd95ca",
+							"type": "text"
+						},
+						{
+							"key": "doctor",
+							"value": "6706c94fee2c8ba279cf269a",
+							"type": "text"
+						},
+						{
+							"key": "doctorName",
+							"value": "ffffff",
+							"type": "text"
+						},
+						{
+							"key": "diseaseName",
+							"value": "headache",
+							"type": "text"
+						},
+						{
+							"key": "billDate",
+							"value": "2023-09-28",
+							"type": "text"
+						},
+						{
+							"key": "billTime",
+							"value": "10:00 AM",
+							"type": "text"
+						},
+						{
+							"key": "billNumber",
+							"value": "BILL1",
+							"type": "text"
+						},
+						{
+							"key": "phoneNumber",
+							"value": "8889997775",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "vikas@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "123 Medical Lane",
+							"type": "text"
+						},
+						{
+							"key": "otherText",
+							"value": "Additional information",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Consultation and medication",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "tax",
+							"value": "100",
+							"type": "text"
+						},
+						{
+							"key": "discount",
+							"value": "50",
+							"type": "text"
+						},
+						{
+							"key": "totalAmount",
+							"value": "1050",
+							"type": "text"
+						},
+						{
+							"key": "paymentType",
+							"value": "Online",
+							"type": "text"
+						},
+						{
+							"key": "gender",
+							"value": "Male",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "30",
+							"type": "text"
+						},
+						{
+							"key": "insuranceCompany",
+							"value": "XYZ Insurance",
+							"type": "text"
+						},
+						{
+							"key": "insurancePlan",
+							"value": "Premium",
+							"type": "text"
+						},
+						{
+							"key": "claimAmount",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "claimedAmount",
+							"value": "900",
+							"type": "text"
+						},
+						{
+							"key": "logo",
+							"type": "file",
+							"src": "/C:/Users/RNW/Downloads/biryani.jfif"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/invoice",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"invoice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Invoice",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODIzODA5MywiZXhwIjoxNzMwODMwMDkzfQ.jj6h5K9ytIN84awz0WdqxOd-YgQ6B9Zp0o54QE3rAz8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "amount",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "patient",
+							"value": "6706eef7d4338cafbacd95ce",
+							"type": "text"
+						},
+						{
+							"key": "doctor",
+							"value": "6706baaf84d783d47bf8b8cb",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/invoice/6707fdda075a5d6e2edca05b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"invoice",
+						"6707fdda075a5d6e2edca05b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get invoice by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODIzODA5MywiZXhwIjoxNzMwODMwMDkzfQ.jj6h5K9ytIN84awz0WdqxOd-YgQ6B9Zp0o54QE3rAz8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/invoice/6707fdda075a5d6e2edca05b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"invoice",
+						"6707fdda075a5d6e2edca05b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get All Invoce",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmYwMjBiMGY5NTA0NWM0YWI3MmVkZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyODIzODA5MywiZXhwIjoxNzMwODMwMDkzfQ.jj6h5K9ytIN84awz0WdqxOd-YgQ6B9Zp0o54QE3rAz8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/invoice",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"invoice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user's invoice",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDZlZThmZDQzMzhjYWZiYWNkOTVjYSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzI4NjAzNzk3LCJleHAiOjE3MzExOTU3OTd9.ya9LFcSSjPy-xNm-kl7cHPJzDzsjq2_Va36-P-xwmwk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/invoice/user/invoice",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"invoice",
+						"user",
+						"invoice"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

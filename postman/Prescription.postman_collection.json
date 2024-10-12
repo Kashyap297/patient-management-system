@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "dbd0ba5e-f4ce-4ff8-a530-41da003132f9",
+		"name": "Prescription",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32123946"
+	},
+	"item": [
+		{
+			"name": "Creating a Prescription",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDZiYWFmODRkNzgzZDQ3YmY4YjhjYiIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3Mjg1OTkyMDEsImV4cCI6MTczMTE5MTIwMX0.HHL3p0MaiT9MoOKEVRg4Oj7MlPIvdzRSstlimXEroYU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"appointmentId\": \"67084f9e8520da02f02db208\",\r\n  \"medicines\": [\r\n    {\r\n      \"name\": \"Calcium carbonate\",\r\n      \"strength\": \"100 Mg\",\r\n      \"dose\": \"1-0-1\",\r\n      \"duration\": \"2 Day\",\r\n      \"whenToTake\": \"Before Food\"\r\n    },\r\n    {\r\n      \"name\": \"Cyclobenzaprine\",\r\n      \"strength\": \"200 Mg\",\r\n      \"dose\": \"1-1-1\",\r\n      \"duration\": \"4 Day\",\r\n      \"whenToTake\": \"With Food\"\r\n    }\r\n  ],\r\n  \"additionalNote\": \"Take as prescribed\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/prescription",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"prescription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Prescription by ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmVkYzc3Y2QyODg0MWZmNjU1ODc2ZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MjgxNjgxNjUsImV4cCI6MTczMDc2MDE2NX0.gQDxv_Rb1ZxwJdnBi6SLDW1UWObgBpjIFEIX88484rA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/prescription/670854ad52c33beee84afc83",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"prescription",
+						"670854ad52c33beee84afc83"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Prescription",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDZlZThmZDQzMzhjYWZiYWNkOTVjYSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzI4NTk3NzE5LCJleHAiOjE3MzExODk3MTl9.CpWsGKGQUMojqx66y-3KQ0PLWBG2yg5qmYZTmtfQtEQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/prescription",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"prescription"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

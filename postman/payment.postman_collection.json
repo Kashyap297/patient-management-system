@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "2b2b5389-cfdb-47db-837a-e67fefe5c7f4",
+		"name": "payment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32123946"
+	},
+	"item": [
+		{
+			"name": "Create Payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"totalAmount\": \"25.00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/payment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"payment"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

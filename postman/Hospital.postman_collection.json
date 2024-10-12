@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "25977941-340c-4c62-95e1-9cfad51af81f",
+		"name": "Hospital",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32123946"
+	},
+	"item": [
+		{
+			"name": "Create Hospital",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"name\": \" Hospital\",\r\n  \"address\": \"1 Street, Area\",\r\n  \"country\": \"US\",\r\n  \"state\": \"California\",\r\n  \"city\": \"Los Angeles\",\r\n  \"zipCode\": \"9000\"\r\n \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/hospitals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"hospitals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Hospital",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/hospitals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"hospitals"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
