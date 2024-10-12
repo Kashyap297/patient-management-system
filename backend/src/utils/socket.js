@@ -1,19 +1,24 @@
-// socket.js
 const socketio = require("socket.io");
-const Chat = require("./models/Chat");
-const Message = require("./models/Message");
+const Message = require("../models/messageModel"); // Import Message model
 
 let io;
 
 module.exports = {
   init: (server) => {
-    io = socketio(server);
+    io = socketio(server, {
+      cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Authorization"],
+        credentials: true,
+      },
+    });
 
     io.on("connection", (socket) => {
       console.log("A user connected");
 
       // Join chat room
-      socket.on("joinChat", async ({ chatId }) => {
+      socket.on("joinChat", ({ chatId }) => {
         socket.join(chatId);
         console.log(`User joined chat ${chatId}`);
       });
@@ -22,16 +27,19 @@ module.exports = {
       socket.on("sendMessage", async (data) => {
         const { chatId, senderId, messageContent, fileUrl, fileType } = data;
 
-        const newMessage = await Message.create({
-          chat: chatId,
-          sender: senderId,
-          content: messageContent,
-          fileUrl,
-          fileType,
-        });
+        try {
+          const newMessage = await Message.create({
+            chat: chatId,
+            sender: senderId,
+            content: messageContent,
+            fileUrl,
+            fileType,
+          });
 
-        // Send message to the room
-        io.to(chatId).emit("newMessage", newMessage);
+          io.to(chatId).emit("newMessage", newMessage); // Emit the new message to the room
+        } catch (error) {
+          console.error("Error creating message:", error);
+        }
       });
 
       socket.on("disconnect", () => {

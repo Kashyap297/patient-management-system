@@ -3,13 +3,12 @@ const Chat = require("../models/chatModel");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 
+
 // Get all chat participants for a user
 exports.getAllChats = async (req, res) => {
   try {
-    const chats = await Chat.find({ participants: req.user._id }).populate(
-      "participants",
-      "firstName lastName"
-    );
+    const chats = await Chat.find({ participants: req.user._id })
+      .populate("participants", "firstName lastName");
 
     res.status(200).json({ success: true, chats });
   } catch (error) {
@@ -30,14 +29,19 @@ exports.getChatMessages = async (req, res) => {
   }
 };
 
+// Start a Chat
 // Start a Chat by Patient
 exports.startChat = async (req, res) => {
-  const { doctorId, content, sender } = req.body;
+  const { doctorId, sender } = req.body;
+  console.log("Received request to start chat with doctorId:", doctorId, "and sender:", sender);
 
   try {
     // Check if both sender and doctor exist in the database
     const doctor = await User.findById(doctorId);
     const patient = await User.findById(sender);
+
+    console.log("Doctor found:", doctor);
+    console.log("Patient found:", patient);
 
     if (!doctor || !patient) {
       return res.status(404).json({ message: "Doctor or patient not found" });
@@ -48,32 +52,22 @@ exports.startChat = async (req, res) => {
       participants: { $all: [doctorId, sender] },
     });
 
-    // If no chat exists, create a new one
     if (!chat) {
       chat = new Chat({
         participants: [doctorId, sender],
       });
       await chat.save();
+      console.log("New chat created with ID:", chat._id);
+    } else {
+      console.log("Existing chat found with ID:", chat._id);
     }
-
-    // Now create the first message
-    if (!content) {
-      return res.status(400).json({ message: "Content is required" });
-    }
-
-    const newMessage = await Message.create({
-      chat: chat._id,
-      sender,
-      content,
-    });
 
     res.status(201).json({
-      message: "Chat started and message sent successfully",
+      message: "Chat started successfully",
       chatId: chat._id,
-      message: newMessage,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error in startChat controller:", error);
     res.status(500).json({
       message: "Error starting chat",
       error,
@@ -81,42 +75,43 @@ exports.startChat = async (req, res) => {
   }
 };
 
+
+
 // Send Message in a Chat
+// controllers/chatController.js
 exports.sendMessage = async (req, res) => {
+  const io = require("../utils/socket").getIO();
   const { chatId } = req.params;
   const { content } = req.body;
-  const fileUrl = req.file ? `./src/uploads/${req.file.filename}` : null; // If there's an uploaded file, save its path
-  const fileType = req.file ? req.file.mimetype.split("/")[0] : null; // 'image' or 'application' (for PDF)
+
+  if (!chatId || chatId === 'undefined') {
+    return res.status(400).json({ message: "Invalid or missing chat ID" });
+  }
+  if (!content) {
+    return res.status(400).json({ message: "Message content is required" });
+  }
 
   try {
-    // Ensure the chat exists
     const chat = await Chat.findById(chatId);
     if (!chat) {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    // Ensure the user is a participant in the chat
-    if (!chat.participants.includes(req.user._id)) {
-      return res
-        .status(403)
-        .json({ message: "You are not a participant of this chat" });
-    }
-
-    // Create the message
     const newMessage = await Message.create({
       chat: chatId,
       sender: req.user._id,
       content,
-      fileUrl, // Optional fileUrl if an image or pdf is attached
-      fileType, // Optional fileType ('image' or 'pdf')
     });
+
+    // Emit the new message to the room
+    io.to(chatId).emit("newMessage", newMessage);
 
     res.status(201).json({
       message: "Message sent successfully",
       messageData: newMessage,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error sending message:", error);
     res.status(500).json({ message: "Error sending message", error });
   }
 };

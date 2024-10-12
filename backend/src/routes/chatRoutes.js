@@ -20,11 +20,6 @@ router.get("/chats/:chatId/messages", protect, getChatMessages);
 router.post("/chats/start", protect, startChat);
 
 // Send a message in a specific chat
-router.post(
-  "/chats/:chatId/message",
-  protect,
-  upload.single("file"),
-  sendMessage
-);
+router.post("/chats/:chatId/message", protect, upload.single("file"), sendMessage);
 
 module.exports = router;

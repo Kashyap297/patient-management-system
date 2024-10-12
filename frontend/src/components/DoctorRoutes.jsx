@@ -12,6 +12,7 @@ import CreatePrescriptionForm from "./CreatePrescriptionForm";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ProfileScreen from "../pages/adminPages/ProfileScreen";
+import ChatPage from "../pages/patientPages/ChatPage";
 
 const DoctorRoutes = () => {
   return (
@@ -30,7 +31,7 @@ const DoctorRoutes = () => {
             <Route path="/create-prescription/:id" element={<CreatePrescriptionForm />} />
             <Route path="/prescription-tools/manage" element={<ManagePrescription />} />
             <Route path="/teleconsultation" element={<TeleConsultationScreen />} />
-            <Route path="/doctor-chat" element={<ChatScreen />} />
+            <Route path="/doctor-chat" element={<ChatPage />} />
             <Route path="/" element={<ProfileScreen />} />
           </Routes>
           {/* <DoctorManagement /> */}
