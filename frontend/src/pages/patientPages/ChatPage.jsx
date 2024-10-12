@@ -5,7 +5,7 @@ import userImage from '../../assets/images/user.png';
 import chatIcon from '../../assets/images/chat-icon.png';
 import io from "socket.io-client";
 
-const socket = io("http://localhost:8000"); // Initialize socket outside the component
+const socket = io("http://localhost:8000");
 
 const ChatPage = () => {
   const [selectedChatUser, setSelectedChatUser] = useState(null);
@@ -31,7 +31,7 @@ const ChatPage = () => {
     window.location.href = "/login";
   }
 
-  // Fetch doctors or patients based on role
+  // Fetch users based on role
   useEffect(() => {
     if (!role || !token) return;
 
@@ -51,7 +51,7 @@ const ChatPage = () => {
     fetchUsers();
   }, [role, token]);
 
-  // Fetch chat messages when a chat is selected
+  // Fetch messages when a chat is selected
   useEffect(() => {
     if (selectedChat) {
       const fetchMessages = async () => {
@@ -68,27 +68,22 @@ const ChatPage = () => {
       };
 
       fetchMessages();
-      socket.emit("joinChat", { chatId: selectedChat }); // Join the chat room for real-time updates
-
+      // Join the selected chat room for real-time updates
+      socket.emit("joinChat", { chatId: selectedChat });
     }
   }, [selectedChat, token]);
 
-  // Set up socket listener for new messages
   useEffect(() => {
     socket.on("newMessage", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
     return () => {
-      socket.off("newMessage"); // Clean up listener on component unmount
+      socket.off("newMessage");
     };
   }, []);
 
-  // Start a new chat with the selected user
   const startChat = async (user) => {
-    console.log("Starting chat with user ID:", user._id);
-    console.log("Logged-in user ID:", loggedInUserId);
-
     try {
       const response = await fetch("http://localhost:8000/api/chats/start", {
         method: "POST",
@@ -106,7 +101,6 @@ const ChatPage = () => {
       }
 
       const data = await response.json();
-      console.log("Chat started successfully:", data);
       setSelectedChat(data.chatId);
       setSelectedChatUser(user);
       setMessages([]); // Reset messages on new chat
@@ -115,12 +109,8 @@ const ChatPage = () => {
     }
   };
 
-  // Send a message in the chat
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedChat) {
-      console.error("Message content is empty or chat is not selected");
-      return;
-    }
+    if (!newMessage.trim() || !selectedChat) return;
 
     try {
       const sendMessageResponse = await fetch(`http://localhost:8000/api/chats/${selectedChat}/message`, {
@@ -136,19 +126,19 @@ const ChatPage = () => {
         throw new Error(`Error ${sendMessageResponse.status}: ${sendMessageResponse.statusText}`);
       }
 
-      socket.emit("sendMessage", {
-        chatId: selectedChat,
-        senderId: loggedInUserId,
-        messageContent: newMessage,
-      });
+      // socket.emit("sendMessage", {
+      //   chatId: selectedChat,
+      //   senderId: loggedInUserId,
+      //   messageContent: newMessage,
+      // });
 
-      setNewMessage(""); // Clear input field after message is sent
+      setNewMessage(""); // Clear input field after sending the message
+
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
 
-  // Filter user list based on search term
   const filteredUserList = userList.filter(user =>
     `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
