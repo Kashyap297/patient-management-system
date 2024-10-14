@@ -6,6 +6,7 @@ const fs = require("fs");
 const dbConnection = require("./config/db");
 const Config = require("./config");
 const socket = require("./utils/socket"); // Import socket setup
+const socketio = require("./utils/teleconsultationSocket");
 
 // Import routes
 const userRoutes = require("./routes/userRoutes");
@@ -20,6 +21,8 @@ const upload = require("./utils/multerConfig");
 
 const app = express();
 const server = http.createServer(app); // Create HTTP server
+
+socketio.init(server);
 
 const PORT = Config.PORT || 5000;
 
@@ -72,6 +75,8 @@ app.get("/uploads-list", (req, res) => {
     res.send(files);
   });
 });
+
+
 
 // Start server and initialize Socket.io
 server.listen(PORT, (err) => {
