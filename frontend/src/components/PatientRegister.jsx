@@ -5,6 +5,7 @@ import axios from "axios";
 import api from "../api/api";
 // Import country JSON data
 import countryData from "../countryjson/countries+states+cities.json";
+import { useNavigate } from "react-router-dom";
 
 const PatientRegister = () => {
   const [formData, setFormData] = useState({
@@ -30,6 +31,7 @@ const PatientRegister = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [filteredStates, setFilteredStates] = useState([]);
   const [filteredCities, setFilteredCities] = useState([]);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -106,6 +108,7 @@ const PatientRegister = () => {
           dataToSubmit
         );
         console.log("Registration successful:", response.data);
+        navigate('/')
         setErrors({});
       } catch (error) {
         console.error("Registration failed:", error.response);
@@ -297,6 +300,7 @@ const PatientRegister = () => {
                   <option value="">Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
+                  <option value="Other">Other</option>
                 </select>
                 <label
                   htmlFor="gender"
@@ -318,7 +322,13 @@ const PatientRegister = () => {
                 >
                   <option value="">Select Group</option>
                   <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
                   <option value="O+">O+</option>
+                  <option value="O-">O-</option>
                 </select>
                 <label
                   htmlFor="bloodGroup"
@@ -462,7 +472,7 @@ const PatientRegister = () => {
             </div>
 
             {/* Password and Confirm Password */}
-             <div className="relative mb-4">
+            <div className="relative mb-4">
               <input
                 type={showPassword ? "password" : "text"}
                 id="password"

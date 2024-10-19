@@ -671,50 +671,47 @@ exports.editDoctorById = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    const {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      qualification,
-      specialtyType,
-      checkupTime,
-      breakTime,
-      experience,
-      zipCode,
-      onlineConsultationRate,
-      country,
-      state,
-      city,
-      gender,
-      doctorDetails,
-    } = req.body;
+    // Update doctor fields conditionally
+    doctor.firstName = req.body.firstName || doctor.firstName;
+    doctor.lastName = req.body.lastName || doctor.lastName;
+    doctor.email = req.body.email || doctor.email;
+    doctor.phoneNumber = req.body.phoneNumber || doctor.phoneNumber;
+    doctor.gender = req.body.gender || doctor.gender;
+    doctor.country = req.body.country || doctor.country;
+    doctor.state = req.body.state || doctor.state;
+    doctor.city = req.body.city || doctor.city;
 
-    // Update doctor fields
-    doctor.firstName = firstName || doctor.firstName;
-    doctor.lastName = lastName || doctor.lastName;
-    doctor.email = email || doctor.email;
-    doctor.phoneNumber = phoneNumber || doctor.phoneNumber;
-    doctor.gender = gender || doctor.gender;
-    doctor.country = country || doctor.country;
-    doctor.state = state || doctor.state;
-    doctor.city = city || doctor.city;
+    // Update doctor details if present
+    if (req.body.qualification || req.body.specialtyType) {
+      doctor.doctorDetails.qualification = req.body.qualification || doctor.doctorDetails.qualification;
+      doctor.doctorDetails.specialtyType = req.body.specialtyType || doctor.doctorDetails.specialtyType;
+      doctor.doctorDetails.workType = req.body.workType || doctor.doctorDetails.workType;
+      doctor.doctorDetails.experience = req.body.experience || doctor.doctorDetails.experience;
+      doctor.doctorDetails.onlineConsultationRate = req.body.onlineConsultationRate || doctor.doctorDetails.onlineConsultationRate;
+    }
 
-    // Update doctor details
-    if (doctorDetails) {
-      doctor.doctorDetails.qualification =
-        qualification || doctor.doctorDetails.qualification;
-      doctor.doctorDetails.specialtyType =
-        specialtyType || doctor.doctorDetails.specialtyType;
-      doctor.doctorDetails.experience =
-        experience || doctor.doctorDetails.experience;
-      doctor.doctorDetails.workingHours.checkupTime =
-        checkupTime || doctor.doctorDetails.workingHours.checkupTime;
-      doctor.doctorDetails.workingHours.breakTime =
-        breakTime || doctor.doctorDetails.workingHours.breakTime;
-      doctor.doctorDetails.zipCode = zipCode || doctor.doctorDetails.zipCode;
-      doctor.doctorDetails.onlineConsultationRate =
-        onlineConsultationRate || doctor.doctorDetails.onlineConsultationRate;
+    // Update working hours
+    if (req.body.checkupTime || req.body.breakTime) {
+      doctor.doctorDetails.workingHours.checkupTime = req.body.checkupTime || doctor.doctorDetails.workingHours.checkupTime;
+      doctor.doctorDetails.workingHours.breakTime = req.body.breakTime || doctor.doctorDetails.workingHours.breakTime;
+    }
+
+    // Update hospital details
+    if (req.body.hospitalName || req.body.hospitalAddress) {
+      doctor.doctorDetails.hospital.hospitalName = req.body.hospitalName || doctor.doctorDetails.hospital.hospitalName;
+      doctor.doctorDetails.hospital.hospitalAddress = req.body.hospitalAddress || doctor.doctorDetails.hospital.hospitalAddress;
+      doctor.doctorDetails.hospital.emergencyContactNumber = req.body.emergencyContact || doctor.doctorDetails.hospital.emergencyContactNumber;
+      doctor.doctorDetails.hospital.websiteLink = req.body.hospitalWebsite || doctor.doctorDetails.hospital.websiteLink;
+    }
+
+    // Handle image uploads
+    if (req.files) {
+      if (req.files.profileImage) {
+        doctor.profileImage = req.files.profileImage[0].path; // Save profile image path
+      }
+      if (req.files.signatureImage) {
+        doctor.signatureImage = req.files.signatureImage[0].path; // Save signature image path
+      }
     }
 
     const updatedDoctor = await doctor.save();
@@ -723,6 +720,7 @@ exports.editDoctorById = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
 // @desc    Get Patient by ID
 // @route   GET /api/users/patients/:id
 // @access  Private (Admin only)
@@ -745,10 +743,10 @@ exports.getPatientById = async (req, res) => {
 exports.editPatientById = async (req, res) => {
   try {
     const patient = await User.findById(req.params.id).where({
-      role: "patient",
+      role: 'patient',
     });
     if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
+      return res.status(404).json({ message: 'Patient not found' });
     }
 
     const {
@@ -784,12 +782,19 @@ exports.editPatientById = async (req, res) => {
     patient.city = city || patient.city;
     patient.address = address || patient.address;
 
+    // Check if a file has been uploaded
+    if (req.file) {
+      // Store only the relative path to the file
+      patient.profileImage = `uploads/${req.file.filename}`;
+    }
+
     const updatedPatient = await patient.save();
     res.status(200).json(updatedPatient);
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: 'Server error', error });
   }
 };
+
 // @desc    Delete Patient by ID
 // @route   DELETE /api/users/patients/:id
 // @access  Private (Admin only)

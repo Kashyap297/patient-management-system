@@ -91,11 +91,14 @@ router.get("/patients", getAllPatients);
 // Doctor Routes
 router.get("/doctors/:id", getDoctorById);
 router.delete("/doctors/:id", protect, admin, deleteDoctorById);
-router.patch("/doctors/:id", editDoctorById);
+router.patch("/doctors/:id", upload.fields([
+  { name: 'profileImage', maxCount: 1 },
+  { name: 'signatureImage', maxCount: 1 }
+]), editDoctorById);
 
 // Patient Routes
 router.get("/patients/:id", getPatientById);
-router.patch("/patients/:id", editPatientById);
+router.patch('/patients/:id', upload.single('profileImage'), editPatientById);
 router.delete("/patients/:id", deletePatientById);
 
 module.exports = router;

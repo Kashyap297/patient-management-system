@@ -1,98 +1,102 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { AiOutlineCamera, AiOutlineClockCircle } from "react-icons/ai";
+import { FiUpload } from "react-icons/fi";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/api";
+import Swal from "sweetalert2";
 
-const EditDoctor = ({ isViewOnly = false }) => {
+const EditDoctor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
-    phoneNumber: "",
-    gender: "",
-    qualification: "",
+    doctorQualification: "",
     specialtyType: "",
-    workType: "",
-    workingTime: "",
-    checkupTime: "",
-    breakTime: "",
-    experience: "",
+    checkUpTime: "",
+    phoneNumber: "",
+    country: "",
     zipCode: "",
     onlineConsultationRate: "",
-    country: "",
+    gender: "",
+    workOn: "",
     state: "",
     city: "",
-    address: "",
+    doctorAddress: "",
     description: "",
-    doctorCurrentHospital: "",
+    experience: "",
+    workingTime: "",
+    breakTime: "",
+    age: "",
+    doctorEmail: "",
     hospitalName: "",
     hospitalAddress: "",
-    websiteLink: "",
-    emergencyContactNumber: "",
-    profileImage: "",
-    signatureImage: "",
-    age: "", // Added age field
+    emergencyContact: "",
+    hospitalWebsite: "",
+    doctorCurrentHospital: "",
   });
 
+  const [showHospitalFields, setShowHospitalFields] = useState(false);
   const [profileImagePreview, setProfileImagePreview] = useState(null);
   const [signatureImagePreview, setSignatureImagePreview] = useState(null);
 
   useEffect(() => {
-    const fetchDoctorDetails = async () => {
+    const fetchDoctorData = async () => {
       try {
         const response = await api.get(`/users/doctors/${id}`);
         const doctor = response.data;
-
-        // Flatten nested doctor details for easy form binding
+        
         setFormData({
           firstName: doctor.firstName,
           lastName: doctor.lastName,
-          email: doctor.email,
-          phoneNumber: doctor.phoneNumber,
-          gender: doctor.gender,
-          qualification: doctor.doctorDetails.qualification,
+          doctorQualification: doctor.doctorDetails.qualification,
           specialtyType: doctor.doctorDetails.specialtyType,
-          workType: doctor.doctorDetails.workType,
-          workingTime: doctor.workingTime,
-          checkupTime: doctor.doctorDetails.workingHours.checkupTime,
-          breakTime: doctor.doctorDetails.workingHours.breakTime,
-          experience: doctor.doctorDetails.experience,
+          checkUpTime: doctor.doctorDetails.workingHours.checkupTime,
+          phoneNumber: doctor.phoneNumber,
+          country: doctor.doctorDetails.country,
           zipCode: doctor.doctorDetails.zipCode,
           onlineConsultationRate: doctor.doctorDetails.onlineConsultationRate,
-          country: doctor.country,
+          gender: doctor.gender,
+          workOn: doctor.doctorDetails.workType,
           state: doctor.state,
           city: doctor.city,
-          address: doctor.address,
-          description: doctor.description,
-          doctorCurrentHospital: doctor.doctorDetails.hospital.currentHospital,
+          doctorAddress: doctor.address,
+          description: doctor.doctorDetails.description,
+          experience: doctor.doctorDetails.experience,
+          workingTime: doctor.doctorDetails.workingHours.workingTime,
+          breakTime: doctor.doctorDetails.workingHours.breakTime,
+          age: doctor.age,
+          doctorEmail: doctor.email,
           hospitalName: doctor.doctorDetails.hospital.hospitalName,
           hospitalAddress: doctor.doctorDetails.hospital.hospitalAddress,
-          websiteLink: doctor.doctorDetails.hospital.websiteLink,
-          emergencyContactNumber:
-            doctor.doctorDetails.hospital.emergencyContactNumber,
-          profileImage: doctor.profileImage,
-          signatureImage: doctor.signatureImage,
-          age: doctor.age, // Populate age
+          emergencyContact: doctor.doctorDetails.hospital.emergencyContactNumber,
+          hospitalWebsite: doctor.doctorDetails.hospital.websiteLink,
+          doctorCurrentHospital: doctor.doctorDetails.hospital.currentHospital,
         });
 
-        // Set image previews with server URL
-        const serverUrl = "http://localhost:8000/"; // Replace with your server's URL
-        setProfileImagePreview(`${serverUrl}${doctor.profileImage}`);
-        setSignatureImagePreview(`${serverUrl}${doctor.signatureImage}`);
+        // Set preview images
+        setProfileImagePreview(`http://localhost:8000/${doctor.profileImage}`);
+        setSignatureImagePreview(`http://localhost:8000/${doctor.signatureImage}`);
+
+        // Conditionally show hospital fields
+        setShowHospitalFields(doctor.doctorDetails.workType === "Online" || doctor.doctorDetails.workType === "Both");
       } catch (error) {
         console.error("Error fetching doctor details:", error);
       }
     };
 
-    fetchDoctorDetails();
+    fetchDoctorData();
   }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    // Toggle hospital fields based on "workOn" value
+    if (name === "workOn") {
+      setShowHospitalFields(value === "Online" || value === "Both");
+    }
   };
 
   const handleImageChange = (e) => {
@@ -111,198 +115,177 @@ const EditDoctor = ({ isViewOnly = false }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     const formDataToSend = new FormData();
-
+    
     Object.keys(formData).forEach((key) => {
-      if (formData[key]) {
-        formDataToSend.append(key, formData[key]);
+      if (formData[key] !== null && formData[key] !== undefined) {
+        formDataToSend.append(key, String(formData[key]));
       }
     });
-
+  
     try {
-      await api.patch(`/users/doctors/${id}`, formDataToSend, {
+      const response = await api.patch(`/users/doctors/${id}`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+  
+      console.log("Server response:", response.data);
+  
+      Swal.fire({
+        icon: "success",
+        title: "Doctor Edited successfully!",
+        confirmButtonText: "OK",
+      });
+  
       navigate("/admin/doctor-management");
     } catch (error) {
-      console.error("Error updating doctor:", error);
+      console.error("Error updating doctor:", error.response?.data || error);
+      Swal.fire({
+        icon: "error",
+        title: "Error in editing doctor",
+        confirmButtonText: "Try Again",
+      });
     }
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md m-6">
-      <h2 className="text-lg font-semibold mb-4">
-        {isViewOnly ? "View Doctor Details" : "Edit Doctor Details"}
-      </h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label>First Name</label>
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Last Name</label>
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Phone Number</label>
-            <input
-              type="text"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Gender</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            >
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label>Qualification</label>
-            <input
-              type="text"
-              name="qualification"
-              value={formData.qualification}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Specialty</label>
-            <input
-              type="text"
-              name="specialtyType"
-              value={formData.specialtyType}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          <div>
-            <label>Work Type</label>
-            <select
-              name="workType"
-              value={formData.workType}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            >
-              <option value="">Select Work Type</option>
-              <option value="Online">Online</option>
-              <option value="In-Person">In-Person</option>
-            </select>
-          </div>
-          <div>
-            <label>Age</label>
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-          </div>
-          {/* Additional fields */}
-          <div>
-            <label>Profile Image</label>
-            <input
-              type="file"
-              name="profileImage"
-              onChange={handleImageChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-            {profileImagePreview && (
-              <img
-                src={profileImagePreview}
-                alt="Profile Preview"
-                className="mt-2"
-                width="100"
-              />
-            )}
-          </div>
-          <div>
-            <label>Signature Image</label>
-            <input
-              type="file"
-              name="signatureImage"
-              onChange={handleImageChange}
-              className="w-full border p-2 rounded mt-1"
-              disabled={isViewOnly}
-            />
-            {signatureImagePreview && (
-              <img
-                src={signatureImagePreview}
-                alt="Signature Preview"
-                className="mt-2"
-                width="100"
-              />
-            )}
-          </div>
-        </div>
+    <div className="p-6 bg-gray-100">
+      <div className="flex flex-col w-full px-4 py-4 bg-white rounded-lg shadow-lg">
+        <div className="border border-gray-300 rounded-lg px-4 py-4">
+          <h2 className="text-2xl font-bold mb-4">Edit Doctor Detail</h2>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
+            <div className="flex justify-between gap-8">
+              {/* Profile Image Section */}
+              <div className="flex flex-col w-1/6">
+                {/* Profile Image Upload */}
+                <div className="relative mb-4 flex flex-col items-center">
+                  <div className="w-48 h-48 bg-gray-200 rounded-full flex items-center justify-center">
+                    {profileImagePreview ? (
+                      <img
+                        src={profileImagePreview}
+                        alt="Profile"
+                        className="rounded-full w-full h-full"
+                      />
+                    ) : (
+                      <AiOutlineCamera className="text-gray-400 text-3xl" />
+                    )}
+                  </div>
+                  <label className="mt-2 text-blue-500 cursor-pointer">
+                    <input
+                      type="file"
+                      className="hidden"
+                      name="profileImage"
+                      onChange={handleImageChange}
+                    />
+                    Choose Photo
+                  </label>
+                </div>
 
-        {/* Buttons */}
-        {!isViewOnly && (
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className="mt-4"
-          >
-            Save Changes
-          </Button>
-        )}
-        <Button
-          variant="contained"
-          color="secondary"
-          className="mt-4 ml-2"
-          onClick={() => navigate("/doctor-management")}
-        >
-          Cancel
-        </Button>
-      </form>
+                {/* Signature Image Upload */}
+                <div className="mb-4">
+                  <label className="text-gray-700 text-sm font-medium">Upload Signature</label>
+                  <div className="flex-col items-center justify-center border border-dashed border-gray-300 rounded-md p-10 w-full mt-2">
+                    {signatureImagePreview ? (
+                      <img
+                        src={signatureImagePreview}
+                        alt="Signature"
+                        className="object-contain w-full h-full"
+                      />
+                    ) : (
+                      <div className="flex justify-center">
+                        <FiUpload className="text-gray-500 text-2xl" />
+                      </div>
+                    )}
+                    <div className="text-center mt-2">
+                      <label className="text-blue-500 cursor-pointer">
+                        <input
+                          type="file"
+                          className="hidden"
+                          name="signatureImage"
+                          onChange={handleImageChange}
+                        />
+                        Upload a file
+                      </label>
+                      <p className="text-xs text-gray-400">PNG Up To 5MB</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Doctor Info Section */}
+              <div className="w-10/12 grid grid-cols-3 gap-4">
+                <InputField id="firstName" label="First Name" value={formData.firstName} onChange={handleChange} />
+                <InputField id="lastName" label="Last Name" value={formData.lastName} onChange={handleChange} />
+                <InputField id="doctorQualification" label="Doctor Qualification" value={formData.doctorQualification} onChange={handleChange} />
+                <SelectField id="gender" label="Gender" options={["Male", "Female", "Other"]} value={formData.gender} onChange={handleChange} />
+                <InputField id="specialtyType" label="Specialty Type" value={formData.specialtyType} onChange={handleChange} />
+                <SelectField id="workOn" label="Work On" options={["Online", "Onsite", "Both"]} value={formData.workOn} onChange={handleChange} />
+                <InputFieldWithIcon id="workingTime" label="Working Time" icon={<AiOutlineClockCircle className="absolute right-3 top-3 text-gray-400" />} value={formData.workingTime} onChange={handleChange} />
+                <InputFieldWithIcon id="checkUpTime" label="Check-Up Time" icon={<AiOutlineClockCircle className="absolute right-3 top-3 text-gray-400" />} value={formData.checkUpTime} onChange={handleChange} />
+                <InputFieldWithIcon id="breakTime" label="Break Time" icon={<AiOutlineClockCircle className="absolute right-3 top-3 text-gray-400" />} value={formData.breakTime} onChange={handleChange} />
+                <InputField id="experience" label="Experience" value={formData.experience} onChange={handleChange} />
+                <InputField id="age" label="Age" value={formData.age} onChange={handleChange} />
+                <InputField id="phoneNumber" label="Phone Number" value={formData.phoneNumber} onChange={handleChange} />
+                <InputField id="doctorEmail" label="Doctor Email" type="email" value={formData.doctorEmail} onChange={handleChange} />
+                <SelectField id="country" label="Country" options={["India", "USA"]} value={formData.country} onChange={handleChange} />
+                <SelectField id="state" label="State" options={["California", "Texas"]} value={formData.state} onChange={handleChange} />
+                <SelectField id="city" label="City" options={["Los Angeles", "San Francisco"]} value={formData.city} onChange={handleChange} />
+                <InputField id="zipCode" label="Zip Code" value={formData.zipCode} onChange={handleChange} />
+                <InputField id="doctorAddress" label="Doctor Address" value={formData.doctorAddress} onChange={handleChange} />
+                <InputField id="description" label="Description" value={formData.description} onChange={handleChange} />
+                <InputField id="onlineConsultationRate" label="Online Consultation Rate" placeholder="₹ 0000" value={formData.onlineConsultationRate} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Conditionally Render Hospital Information */}
+            {showHospitalFields && (
+              <div className="grid grid-cols-3 gap-4 mt-6">
+                <InputField id="doctorCurrentHospital" label="Doctor Current Hospital" value={formData.doctorCurrentHospital} onChange={handleChange} />
+                <InputField id="hospitalName" label="Hospital Name" value={formData.hospitalName} onChange={handleChange} />
+                <InputField id="hospitalAddress" label="Hospital Address" value={formData.hospitalAddress} onChange={handleChange} />
+                <InputField id="hospitalWebsite" label="Hospital Website Link" value={formData.hospitalWebsite} onChange={handleChange} />
+                <InputField id="emergencyContact" label="Emergency Contact Number" value={formData.emergencyContact} onChange={handleChange} />
+              </div>
+            )}
+
+            <div className="flex justify-end">
+              <button type="submit" className="mt-4 py-2 px-6 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
+
+// Input field components
+const InputField = ({ id, label, type = "text", placeholder = "", value, onChange }) => (
+  <div className="relative mb-4">
+    <input type={type} id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none" placeholder={placeholder || `Enter ${label}`} value={value} onChange={onChange} />
+    <label htmlFor={id} className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200">{label}</label>
+  </div>
+);
+
+const SelectField = ({ id, label, options, value, onChange }) => (
+  <div className="relative mb-4">
+    <select id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-md text-gray-500 focus:outline-none" value={value} onChange={onChange}>
+      <option value="">{`Select ${label}`}</option>
+      {options.map((option) => (
+        <option key={option} value={option}>{option}</option>
+      ))}
+    </select>
+    <label htmlFor={id} className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200">{label}</label>
+  </div>
+);
+
+const InputFieldWithIcon = ({ id, label, icon, value, onChange }) => (
+  <div className="relative mb-4">
+    <input type="text" id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none" placeholder={`Enter ${label}`} value={value} onChange={onChange} />
+    <label htmlFor={id} className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200">{label}</label>
+    {icon}
+  </div>
+);
 
 export default EditDoctor;

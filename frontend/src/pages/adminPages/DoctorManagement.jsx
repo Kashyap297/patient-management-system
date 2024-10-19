@@ -173,7 +173,7 @@ const DoctorManagement = () => {
                         <FaEye />
                       </button>
                       <Link
-                        to={`/admin/doctor-management/edit/${doctor._id}`}
+                        to={`/admin/edit-doctor/${doctor._id}`}
                         className="text-green-500 hover:text-green-600 mx-2 bg-gray-100 p-2 rounded-lg"
                         title="Edit"
                       >

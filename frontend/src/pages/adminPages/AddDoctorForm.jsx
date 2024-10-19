@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { AiOutlineCamera, AiOutlineClockCircle } from "react-icons/ai";
 import { FiUpload } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import TimePicker from 'rc-time-picker';  // Assuming you use a time picker library
-import 'rc-time-picker/assets/index.css';  // Time picker styles
 import Swal from "sweetalert2";
-import countryData from '../../countryjson/countries+states+cities.json'; // Assuming the file path
+import api from "../../api/api";
+import countryData from "../../countryjson/countries+states+cities.json"; // Assuming the file path
 
 const AddDoctorForm = () => {
   const [formData, setFormData] = useState({
@@ -77,13 +76,6 @@ const AddDoctorForm = () => {
     setSignature(e.target.files[0]);
   };
 
-  const handleTimeSelect = (label, value) => {
-    setFormData({
-      ...formData,
-      [label]: `${value} Hour`,
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -97,22 +89,19 @@ const AddDoctorForm = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:8000/api/users/add-doctor", {
-        method: "POST",
+      const response = await api.post("/users/add-doctor", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        body: data,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
+      if (response.status !== 201) {
+        const error = response.data;
         console.error("Server error:", error);
         alert(`Error: ${error.message}`);
         return;
       }
 
-      const result = await response.json();
       Swal.fire({
         icon: "success",
         title: "Doctor added successfully!",
@@ -251,7 +240,6 @@ const AddDoctorForm = () => {
                   <AiOutlineClockCircle className="absolute right-3 top-3 text-gray-400" />
                 }
                 value={formData.workingTime}
-                onClick={() => handleTimeSelect("workingTime", "6")}
                 onChange={handleInputChange}
               />
               <InputFieldWithIcon
@@ -261,7 +249,6 @@ const AddDoctorForm = () => {
                   <AiOutlineClockCircle className="absolute right-3 top-3 text-gray-400" />
                 }
                 value={formData.checkupTime}
-                onClick={() => handleTimeSelect("checkupTime", "2")}
                 onChange={handleInputChange}
               />
               <InputFieldWithIcon
@@ -271,7 +258,6 @@ const AddDoctorForm = () => {
                   <AiOutlineClockCircle className="absolute right-3 top-3 text-gray-400" />
                 }
                 value={formData.breakTime}
-                onClick={() => handleTimeSelect("breakTime", "1")}
                 onChange={handleInputChange}
               />
               <InputField
@@ -453,7 +439,7 @@ const SelectField = ({ id, label, options, value, onChange }) => (
 );
 
 // InputFieldWithIcon component
-const InputFieldWithIcon = ({ id, label, icon, value, onChange, onClick }) => (
+const InputFieldWithIcon = ({ id, label, icon, value, onChange }) => (
   <div className="relative mb-4">
     <input
       type="text"
@@ -463,7 +449,6 @@ const InputFieldWithIcon = ({ id, label, icon, value, onChange, onClick }) => (
       placeholder={`Enter ${label}`}
       value={value}
       onChange={onChange}
-      onClick={onClick} // Handle time selection on click
     />
     <label
       htmlFor={id}

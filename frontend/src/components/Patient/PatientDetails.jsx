@@ -56,7 +56,7 @@ const PatientDetails = () => {
         {/* Patient Image */}
         <div className="flex-shrink-0">
           <img
-            src="https://via.placeholder.com/150"
+            src={`http://localhost:8000/${patient.profileImage}`}
             alt="Patient"
             className="w-32 h-32 rounded-full object-cover"
           />
