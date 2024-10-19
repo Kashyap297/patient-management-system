@@ -3,6 +3,7 @@ import { useBreadcrumb } from "../../context/BreadcrumbContext";
 import { FaCalendarAlt, FaTrashAlt, FaRedoAlt, FaEye } from "react-icons/fa";
 import DoctorDetailsSidebar from "../../components/Patient/DoctorDetailsSidebar";
 import api from "../../api/api";
+import { Link } from "react-router-dom";
 
 const AppointmentBookingPage = () => {
   const { updateBreadcrumb } = useBreadcrumb();
@@ -60,10 +61,10 @@ const AppointmentBookingPage = () => {
       </div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">My Appointment</h2>
-        <button className="flex items-center space-x-2 bg-customBlue text-white px-4 py-2 rounded">
+        <Link to={"/patient/book-appointment"} className="flex items-center space-x-2 bg-customBlue text-white px-4 py-2 rounded">
           <FaCalendarAlt />
           <span>Book Appointment</span>
-        </button>
+        </Link>
       </div>
 
       {/* Appointment List */}

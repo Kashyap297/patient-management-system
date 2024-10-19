@@ -14,6 +14,7 @@ import TeleAccess from "../pages/patientPages/TeleAccess";
 import BillPage from "../pages/patientPages/BillPage";
 import PatientSidebar from "./Patient/PatientSidebar";
 import { BreadcrumbProvider } from "../context/BreadcrumbContext";
+import BookAppointment from "../pages/patientPages/BookAppointment";
 
 
 const PatientRoutes = () => {
@@ -38,6 +39,7 @@ const PatientRoutes = () => {
             <Route path="/tele-access" element={<TeleAccess />} />
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/bills" element={<BillPage />} />
+            <Route path="/book-appointment" element={< BookAppointment/>} />
           </Routes>
           {/* <DoctorManagement /> */}
         </div>
