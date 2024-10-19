@@ -141,7 +141,7 @@ const Sidebar = ({ role }) => {
 
       {/* Appointment Section */}
 
-      <div className="relative px-5 m-5 bg-gray-100 rounded-2xl">
+      {/* <div className="relative px-5 m-5 bg-gray-100 rounded-2xl">
         <div className="flex justify-center mb-4 relative z-10">
           <img src={appointment} alt="appointment" className="w-48 h-48 -mt-32" />
         </div>
@@ -156,7 +156,7 @@ const Sidebar = ({ role }) => {
             </button>
           </NavLink>
         </div>
-      </div>
+      </div> */}
       {/* Logout Button */}
       <div className="mb-5">
         <button

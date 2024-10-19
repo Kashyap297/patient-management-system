@@ -1,0 +1,14 @@
+{
+    "India": {
+        "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur"],
+        "Karnataka": ["Bengaluru", "Mysuru", "Mangaluru"],
+        "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
+        "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
+        "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad"],
+        "West Bengal": ["Kolkata", "Howrah", "Durgapur"],
+        "Gujarat": ["Ahmedabad", "Surat", "Vadodara"],
+        "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur"],
+        "Punjab": ["Chandigarh", "Amritsar", "Ludhiana"],
+        "Bihar": ["Patna", "Gaya", "Bhagalpur"]
+    }
+}

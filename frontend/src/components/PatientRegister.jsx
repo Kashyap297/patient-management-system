@@ -3,6 +3,8 @@ import SidePanel from "./SidePanel";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // For password visibility toggle
 import axios from "axios";
 import api from "../api/api";
+// Import country JSON data
+import countryData from "../countryjson/countries+states+cities.json";
 
 const PatientRegister = () => {
   const [formData, setFormData] = useState({
@@ -25,16 +27,38 @@ const PatientRegister = () => {
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [filteredStates, setFilteredStates] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  // Handle country change to populate states
+  const handleCountryChange = (e) => {
+    const selectedCountry = e.target.value;
+    setFormData({ ...formData, country: selectedCountry, state: "", city: "" });
+
+    const country = countryData.find((item) => item.name === selectedCountry);
+    if (country) {
+      setFilteredStates(country.states || []);
+      setFilteredCities([]); // Reset cities when a new country is selected
+    }
+  };
+
+  // Handle state change to populate cities
+  const handleStateChange = (e) => {
+    const selectedState = e.target.value;
+    setFormData({ ...formData, state: selectedState, city: "" });
+
+    const state = filteredStates.find((item) => item.name === selectedState);
+    if (state) {
+      setFilteredCities(state.cities || []);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -93,6 +117,9 @@ const PatientRegister = () => {
       }
     }
   };
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
 
   return (
     <div className="min-h-screen flex">
@@ -352,17 +379,21 @@ const PatientRegister = () => {
 
             {/* Country, State, City */}
             <div className="grid grid-cols-3 gap-4 ">
+              {/* Country */}
               <div className="relative mb-4">
                 <select
                   id="country"
                   name="country"
                   className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0`}
                   value={formData.country}
-                  onChange={handleChange}
+                  onChange={handleCountryChange}
                 >
                   <option value="">Select Country</option>
-                  <option value="Country1">Country1</option>
-                  <option value="Country2">Country2</option>
+                  {countryData.map((country) => (
+                    <option key={country.id} value={country.name}>
+                      {country.name}
+                    </option>
+                  ))}
                 </select>
                 <label
                   htmlFor="country"
@@ -374,17 +405,22 @@ const PatientRegister = () => {
                   <p className="text-red-500 text-sm mt-1">{errors.country}</p>
                 )}
               </div>
+
+              {/* State */}
               <div className="relative mb-4">
                 <select
                   id="state"
                   name="state"
                   className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0`}
                   value={formData.state}
-                  onChange={handleChange}
+                  onChange={handleStateChange}
                 >
                   <option value="">Select State</option>
-                  <option value="State1">State1</option>
-                  <option value="State2">State2</option>
+                  {filteredStates.map((state) => (
+                    <option key={state.id} value={state.name}>
+                      {state.name}
+                    </option>
+                  ))}
                 </select>
                 <label
                   htmlFor="state"
@@ -396,6 +432,8 @@ const PatientRegister = () => {
                   <p className="text-red-500 text-sm mt-1">{errors.state}</p>
                 )}
               </div>
+
+              {/* City */}
               <div className="relative mb-4">
                 <select
                   id="city"
@@ -405,8 +443,11 @@ const PatientRegister = () => {
                   onChange={handleChange}
                 >
                   <option value="">Select City</option>
-                  <option value="City1">City1</option>
-                  <option value="City2">City2</option>
+                  {filteredCities.map((city) => (
+                    <option key={city.id} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
                 </select>
                 <label
                   htmlFor="city"
@@ -421,7 +462,7 @@ const PatientRegister = () => {
             </div>
 
             {/* Password and Confirm Password */}
-            <div className="relative mb-4">
+             <div className="relative mb-4">
               <input
                 type={showPassword ? "password" : "text"}
                 id="password"
@@ -437,10 +478,6 @@ const PatientRegister = () => {
               >
                 Password<span className="text-red-500">*</span>
               </label>
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-              )}
-
               <div
                 className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
                 onClick={togglePasswordVisibility}
@@ -451,11 +488,12 @@ const PatientRegister = () => {
                   <AiOutlineEye className="text-gray-500" />
                 )}
               </div>
+              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
             </div>
 
             <div className="relative mb-4">
               <input
-                type={showPassword ? "password" : "text"}
+                type={showConfirmPassword ? "password" : "text"}
                 id="confirmPassword"
                 name="confirmPassword"
                 className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
@@ -469,11 +507,17 @@ const PatientRegister = () => {
               >
                 Confirm Password<span className="text-red-500">*</span>
               </label>
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.confirmPassword}
-                </p>
-              )}
+              <div
+                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                onClick={toggleConfirmPasswordVisibility}
+              >
+                {showConfirmPassword ? (
+                  <AiOutlineEyeInvisible className="text-gray-500" />
+                ) : (
+                  <AiOutlineEye className="text-gray-500" />
+                )}
+              </div>
+              {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
             </div>
 
             {/* Agree to Terms */}

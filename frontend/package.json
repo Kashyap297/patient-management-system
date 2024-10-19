@@ -25,6 +25,7 @@
     "react-tabs": "^6.0.2",
     "recharts": "^2.12.7",
     "socket.io-client": "^4.8.0",
+    "sweetalert2": "^11.14.3",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0"
   },

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddDoctorForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -83,6 +85,7 @@ const AddDoctorForm = () => {
       const result = await response.json();
       console.log("Doctor added:", result);
       alert("Doctor added successfully");
+      navigate("/doctor-management");
     } catch (error) {
       console.error("Error adding doctor:", error);
       alert("Error adding doctor");

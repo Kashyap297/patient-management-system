@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema(
     otpExpires: { type: Date }, // OTP expiry time
     profileImage: { type: String }, // Store path for profile image
     signatureImage: { type: String }, // Store path for signature image
+    //
+    adminhospital:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Hospital", 
+    },
     // Fields specific to patient
     age: { type: Number },
     height: { type: Number },

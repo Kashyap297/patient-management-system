@@ -53,7 +53,7 @@ const ForgetPassword = () => {
                 className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 }`}
-                placeholder="Enter Email or Phone Number"
+                placeholder="Enter Your Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

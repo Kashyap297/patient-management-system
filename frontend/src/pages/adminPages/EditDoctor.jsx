@@ -123,7 +123,7 @@ const EditDoctor = ({ isViewOnly = false }) => {
       await api.patch(`/users/doctors/${id}`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      navigate("/doctor-management");
+      navigate("/admin/doctor-management");
     } catch (error) {
       console.error("Error updating doctor:", error);
     }

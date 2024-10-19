@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
   origin: "http://localhost:3000", // Allow frontend origin
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE",'PATCH'],
   allowedHeaders: ["Authorization", "Content-Type"],
   credentials: true,
 }));

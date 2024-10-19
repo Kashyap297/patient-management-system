@@ -9,7 +9,7 @@ import AuthContext from "../context/AuthContext";
 const EnterOTP = () => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [errors, setErrors] = useState("");
-  const { verifyOtp, authError } = useContext(AuthContext);
+  const { verifyOtp, authError,requestOtp } = useContext(AuthContext);
   const [timer, setTimer] = useState(30);
   const navigate = useNavigate();
 
@@ -50,10 +50,17 @@ const EnterOTP = () => {
   };
 
   // Handle Resend OTP (reset the timer)
-  const handleResendOtp = () => {
-    setOtp(new Array(6).fill(""));
+  const handleResendOtp = async () => {
+    setOtp(new Array(6).fill("")); // Reset the OTP input
     setTimer(30); // Reset the timer
-    console.log("OTP resent");
+    const email = localStorage.getItem("email"); // Get the email from localStorage
+    console.log(email)
+    try {
+      await requestOtp({ email }); // Call the API to resend OTP
+      alert("OTP resent to your email/phone");
+    } catch (error) {
+      setErrors("Failed to resend OTP. Please try again."); // Handle any errors
+    }
   };
 
   // Update timer

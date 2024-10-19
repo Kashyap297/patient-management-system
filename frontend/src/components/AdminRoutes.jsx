@@ -22,6 +22,8 @@ import SearchResults from "./SearchScreen";
 import SelectTemplate from "../pages/adminPages/SelectTemplate";
 import CreateBill from "../pages/adminPages/CreateBillForm";
 import EditInvoice from "../pages/adminPages/EditInvoice";
+import AdminProfile from "./AdminProfile";
+import AdminEditProfile from "./Profile/AdminEditProfile";
 
 const AdminRoutes = () => {
   return (
@@ -48,7 +50,9 @@ const AdminRoutes = () => {
             <Route path="/insurance/:id" element={<InsuranceDetail />} />
             <Route path="/payment/edit/:id" element={<EditBill />} />
             <Route path="/analytics" element={<ReportingAnalysis />} />
-            <Route path="/" element={<ProfileScreen />} />
+            {/* <Route path="/" element={<ProfileScreen />} /> */}
+            <Route path="/*" element={<AdminProfile />} />
+            <Route path="/edit-profile" element={<AdminEditProfile />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/create-bill" element={<CreateBill />} />
             <Route path="/edit-invoice" element={<EditInvoice />} />

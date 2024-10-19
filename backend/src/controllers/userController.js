@@ -14,6 +14,8 @@ const generateToken = (id, role, firstName, lastName) => {
 // @desc    Register Admin
 // @route   POST /api/auth/register-admin
 // @access  Public
+const hospitalModel = require("../models/hospitalModel");
+
 exports.registerAdmin = async (req, res) => {
   const {
     firstName,
@@ -24,17 +26,23 @@ exports.registerAdmin = async (req, res) => {
     country,
     state,
     city,
-    hospital,
+    hospital, // Assuming hospital ID is passed here
   } = req.body;
 
   try {
+    // Check if the hospital exists
+    const hospitalData = await hospitalModel.findById(hospital);
+    if (!hospitalData) {
+      return res.status(400).json({ message: "Hospital not found" });
+    }
+
     // Check if admin already exists
     const adminExists = await User.findOne({ email });
     if (adminExists) {
       return res.status(400).json({ message: "Admin already exists" });
     }
 
-    // Create new admin
+    // Create new admin with the hospital reference
     const admin = await User.create({
       firstName,
       lastName,
@@ -45,7 +53,7 @@ exports.registerAdmin = async (req, res) => {
       state,
       city,
       role: "admin",
-      doctorDetails: { currentHospital: hospital },
+      adminhospital: hospitalData._id, // Store hospital ID as reference in adminhospital
     });
 
     res.status(201).json({
@@ -60,6 +68,7 @@ exports.registerAdmin = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
 
 // @desc    Register Patient
 // @route   POST /api/auth/register-patient
@@ -391,8 +400,13 @@ exports.changePassword = async (req, res) => {
 // @access  Private (Logged in users)
 exports.getUserProfile = async (req, res) => {
   try {
-    // Find user by ID, excluding the password field
-    const user = await User.findById(req.user._id).select("-password");
+    // Find the user and populate the hospital field
+    const user = await User.findById(req.user._id)
+    .select("-password")
+    .populate({
+      path: 'adminhospital', // Populating the hospital reference
+      select: 'name address city state', // Select relevant hospital fields
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -419,6 +433,7 @@ exports.getUserProfile = async (req, res) => {
       bloodGroup: user.bloodGroup,
       dateOfBirth: user.dateOfBirth,
       address: user.address,
+      adminhospital: user.adminhospital,
       // Doctor-specific fields
       doctorDetails: user.doctorDetails,
       createdAt: user.createdAt,
@@ -449,6 +464,7 @@ exports.updateUserProfile = async (req, res) => {
     dateOfBirth,
     address,
     doctorDetails,
+    adminhospital,
   } = req.body;
 
   try {
@@ -467,14 +483,16 @@ exports.updateUserProfile = async (req, res) => {
     if (state !== undefined) user.state = state;
     if (city !== undefined) user.city = city;
 
+
     // Handle image uploads
     if (req.files) {
       if (req.files.profileImage) {
-        user.profileImage = req.files.profile;
-        user.profileImage = req.files.profileImage[0].path; // Storing path for profile image
+        // Store only the relative path
+        user.profileImage = `uploads/${req.files.profileImage[0].filename}`;
       }
       if (req.files.signatureImage) {
-        user.signatureImage = req.files.signatureImage[0].path; // Storing path for signature image
+        // Store only the relative path
+        user.signatureImage = `uploads/${req.files.signatureImage[0].filename}`;
       }
     }
 
@@ -527,9 +545,20 @@ exports.updateUserProfile = async (req, res) => {
       }
     }
 
+    // Admin-specific fields (updating the hospital reference for admin)
+    if (user.role === "admin" && adminhospital !== undefined) {
+      const hospitalData = await hospitalModel.findById(adminhospital);
+
+      if (!hospitalData) {
+        return res.status(404).json({ message: "Hospital not found" });
+      }
+
+      // Update the admin's hospital reference
+      user.adminhospital = hospitalData._id;
+    }
+
     // Save the updated user data
     const updatedUser = await user.save();
-
     // Return updated profile data
     res.status(200).json({
       _id: updatedUser._id,
@@ -551,6 +580,7 @@ exports.updateUserProfile = async (req, res) => {
       dateOfBirth: updatedUser.dateOfBirth,
       address: updatedUser.address,
       doctorDetails: updatedUser.doctorDetails,
+      adminhospital: updatedUser.adminhospital,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
