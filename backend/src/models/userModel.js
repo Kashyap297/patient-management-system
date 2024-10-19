@@ -35,20 +35,22 @@ const userSchema = new mongoose.Schema(
     doctorDetails: {
       qualification: { type: String },
       specialtyType: { type: String },
+      workType: { type: String, enum: ["Online", "Onsite", "Both"] }, // Add work type
       workingHours: {
-        checkupTime: { type: String },
-        breakTime: { type: String },
+        workingTime: { type: String },  // Store selected time for working hours
+        checkupTime: { type: String },  // Store selected time for check-up duration
+        breakTime: { type: String },    // Store selected time for break time
       },
       experience: { type: Number },
       zipCode: { type: String },
       onlineConsultationRate: { type: Number },
       hospital: {
-        currentHospital: { type: String },
         hospitalName: { type: String },
         hospitalAddress: { type: String },
         websiteLink: { type: String },
         emergencyContactNumber: { type: String },
       },
+      description: { type: String }, // Add this field
     },
 
     // Common fields for admin and doctor
