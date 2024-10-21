@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import noappointmentrecord from "../../assets/images/noappointmentrecord.png";
 import countryData from "../../countryjson/countries+states+cities.json"; // Assuming this is the correct path to your JSON file
-import api from "../../api/api"; // Assuming api.js is the file where your axios instance or fetch methods are set up
+import api from "../../api/api"; // Axios instance with token interceptor
+import TimeSlotTable from "../../components/TimeSlotTable";
 
-// Reusing InputField and SelectField components from AddDoctorForm
 const InputField = ({ id, label, type = "text", value, onChange }) => (
   <div className="relative mb-4">
     <input
@@ -36,8 +36,8 @@ const SelectField = ({ id, label, options, value, onChange }) => (
       <option value="">{`Select ${label}`}</option>
       {options &&
         options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.value} value={option.value}>
+            {option.label}
           </option>
         ))}
     </select>
@@ -62,14 +62,48 @@ const BookAppointment = () => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [doctorDetails, setDoctorDetails] = useState(null);
-  const [calendarSlots, setCalendarSlots] = useState(null);
+  const [calendarSlots, setCalendarSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+
+  // Helper function to convert time string to minutes (e.g., "9:00 AM" -> 540)
+  const timeToMinutes = (timeStr) => {
+    const [time, period] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+    return hours * 60 + minutes;
+  };
+
+  // Generate slots based on working hours and break time
+  const generateTimeSlots = (startTime, endTime, breakTime, breakDuration) => {
+    const slots = [];
+    const slotDuration = 60; // 1-hour slots
+
+    const start = timeToMinutes(startTime);
+    const end = timeToMinutes(endTime);
+    const breakStart = timeToMinutes(breakTime);
+    const breakEnd = breakStart + breakDuration * 60; // Break time is given in hours
+
+    for (let time = start; time < end; time += slotDuration) {
+      const slotTime = `${Math.floor(time / 60)
+        .toString()
+        .padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
+      const available =
+        time < breakStart || time >= breakEnd ? "Available" : "Break";
+      slots.push({
+        time: `${slotTime} ${time < 720 ? "AM" : "PM"}`,
+        available,
+      });
+    }
+    return slots;
+  };
 
   // Fetch hospitals when the component mounts
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
         const response = await api.get("/hospitals");
-        const fetchedHospitals = response.data.data || []; // Ensure default value
+        const fetchedHospitals = response.data.data || [];
         setHospitals(fetchedHospitals);
       } catch (error) {
         console.error("Error fetching hospitals:", error);
@@ -82,38 +116,31 @@ const BookAppointment = () => {
   // Fetch doctors when the selected hospital changes
   useEffect(() => {
     const fetchDoctors = async () => {
-      try {
-        const response = await api.get("/users/doctors");
-        const fetchedDoctors = response.data.data || []; // Ensure default value
-        setDoctors(fetchedDoctors);
-      } catch (error) {
-        console.error("Error fetching doctors:", error);
-        setDoctors([]); // Fallback in case of error
+      if (selectedHospital) {
+        try {
+          const response = await api.get("/users/doctors");
+          const fetchedDoctors = response.data.map((doctor) => doctor);
+          setDoctors(fetchedDoctors);
+        } catch (error) {
+          console.error("Error fetching doctors:", error);
+          setDoctors([]);
+        }
       }
     };
     fetchDoctors();
   }, [selectedHospital]);
 
-  // Fetch doctor details when selected doctor changes
+  // Fetch doctor details when selected doctor changes and generate slots
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       if (selectedDoctor) {
         try {
           const response = await api.get(`/users/doctors/${selectedDoctor}`);
-          setDoctorDetails(response.data);
-          // Simulating calendar data fetching
-          const slots = [
-            { time: "8:00 AM", available: false },
-            { time: "9:00 AM", available: true },
-            { time: "10:00 AM", available: false },
-            { time: "11:00 AM", available: true },
-            { time: "12:00 PM", available: false },
-            { time: "1:00 PM", available: false },
-          ];
-          setCalendarSlots(slots); // Set available slots for the calendar
+          const details = response.data;
+          setDoctorDetails(details);
         } catch (error) {
           console.error("Error fetching doctor details:", error);
-          setDoctorDetails(null); // Fallback in case of error
+          setDoctorDetails(null);
         }
       }
     };
@@ -143,6 +170,10 @@ const BookAppointment = () => {
   const handleCityChange = (e) => {
     setCity(e.target.value);
   };
+  useEffect(() => {
+    console.log(doctorDetails);
+  }, [doctorDetails]);
+  
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg m-6">
@@ -154,7 +185,11 @@ const BookAppointment = () => {
         <SelectField
           id="specialty"
           label="Specialty"
-          options={["Cardiology", "Dermatology", "Neurology"]}
+          options={[
+            { label: "Cardiology", value: "Cardiology" },
+            { label: "Dermatology", value: "Dermatology" },
+            { label: "Neurology", value: "Neurology" },
+          ]}
           value="" // Add state value here
           onChange={() => {}}
         />
@@ -163,7 +198,7 @@ const BookAppointment = () => {
         <SelectField
           id="country"
           label="Country"
-          options={countryData.map((c) => c.name)} // Ensure you're using c.name, not the full object
+          options={countryData.map((c) => ({ label: c.name, value: c.name }))}
           value={country}
           onChange={handleCountryChange}
         />
@@ -172,15 +207,22 @@ const BookAppointment = () => {
         <SelectField
           id="state"
           label="State"
-          options={filteredStates.map((state) => state.name)} // Use state.name, not the full object
+          options={filteredStates.map((state) => ({
+            label: state.name,
+            value: state.name,
+          }))}
           value={state}
           onChange={handleStateChange}
         />
 
+        {/* City Dropdown */}
         <SelectField
           id="city"
           label="City"
-          options={filteredCities.map((city) => city.name)} // Use city.name, not the full object
+          options={filteredCities.map((city) => ({
+            label: city.name,
+            value: city.name,
+          }))}
           value={city}
           onChange={handleCityChange}
         />
@@ -189,7 +231,10 @@ const BookAppointment = () => {
         <SelectField
           id="hospital"
           label="Hospital"
-          options={hospitals.map((hospital) => hospital.name)} // Fetch from API
+          options={hospitals.map((hospital) => ({
+            label: hospital.name,
+            value: hospital.name,
+          }))}
           value={selectedHospital}
           onChange={(e) => setSelectedHospital(e.target.value)}
         />
@@ -198,7 +243,10 @@ const BookAppointment = () => {
         <SelectField
           id="doctor"
           label="Doctor"
-          options={doctors.map((doctor) => `${doctor.firstName} ${doctor.lastName}`)} // Fetch from API
+          options={doctors.map((doctor) => ({
+            label: `Dr. ${doctor.firstName} ${doctor.lastName}`,
+            value: doctor._id,
+          }))}
           value={selectedDoctor}
           onChange={(e) => setSelectedDoctor(e.target.value)}
         />
@@ -207,36 +255,28 @@ const BookAppointment = () => {
         <SelectField
           id="appointmentType"
           label="Appointment Type"
-          options={["Online", "In-Person"]}
+          options={[
+            { label: "Online", value: "Online" },
+            { label: "In-Person", value: "In-Person" },
+          ]}
           value="" // Add state value here
           onChange={() => {}}
         />
       </div>
-
       {/* Calendar and Doctor Details */}
-      {doctorDetails && calendarSlots ? (
-        <div className="grid grid-cols-3 gap-6">
-          {/* Calendar */}
-          <div className="col-span-2 bg-gray-100 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Select a Time Slot</h3>
-            <div className="grid grid-cols-3 gap-2">
-              {calendarSlots.map((slot, index) => (
-                <button
-                  key={index}
-                  className={`p-4 rounded-md text-center ${
-                    slot.available
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-300 text-gray-500"
-                  }`}
-                  disabled={!slot.available}
-                >
-                  {slot.time}
-                </button>
-              ))}
-            </div>
-          </div>
+      {doctorDetails && (
+      <div className="flex">
 
-          {/* Doctor Details */}
+      
+      <div className="col-12">
+
+      <TimeSlotTable doctorDetails={doctorDetails} selectedDate="2024-10-22" />
+      </div>
+        <div className="col-2">
+       
+
+        {/* Doctor Details */}
+        
           <div className="bg-white shadow-lg rounded-lg p-6">
             <h3 className="text-xl font-semibold mb-4">Doctor Details</h3>
             <div className="flex items-center mb-4">
@@ -249,36 +289,33 @@ const BookAppointment = () => {
                 <p className="text-lg font-semibold">
                   Dr. {doctorDetails.firstName} {doctorDetails.lastName}
                 </p>
-                <p className="text-gray-500">{doctorDetails.specialtyType}</p>
+                <p className="text-gray-500">
+                  {doctorDetails.doctorDetails.specialtyType}
+                </p>
               </div>
             </div>
             <p>
               <span className="font-semibold">Qualification: </span>
-              {doctorDetails.qualification}
+              {doctorDetails.doctorDetails.qualification}
             </p>
             <p>
               <span className="font-semibold">Experience: </span>
-              {doctorDetails.yearsOfExperience} years
+              {doctorDetails.doctorDetails.experience} years
             </p>
             <p>
               <span className="font-semibold">Consultation Type: </span>
-              {doctorDetails.workType}
+              {doctorDetails.doctorDetails.workType}
+            </p>
+            <p>
+              <span className="font-semibold">Online Consultation Rate: </span>
+              ₹{doctorDetails.doctorDetails.onlineConsultationRate}
             </p>
           </div>
+        
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center p-6 bg-gray-100 rounded-lg">
-          <img
-            src={noappointmentrecord} // Replace with your illustration image URL
-            alt="No Appointments"
-            className="mb-4"
-          />
-          <p className="text-lg font-semibold text-gray-600">
-            No Appointment Found Yet
-          </p>
         </div>
-      )}
-    </div>
+        )}
+      </div>
   );
 };
 

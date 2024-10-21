@@ -35,7 +35,20 @@ exports.createAppointment = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found or not valid" });
     }
 
-    // Create the appointment
+    // Check for conflicting appointments (same doctor, same date, and overlapping time)
+    const existingAppointment = await Appointment.findOne({
+      doctor: doctor,  // Same doctor
+      appointmentDate: appointmentDate,  // Same date
+      appointmentTime: appointmentTime  // Same time slot
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({
+        message: "The selected time slot is already booked for this doctor.",
+      });
+    }
+
+    // If no conflict, create the appointment
     const newAppointment = await Appointment.create({
       patient: req.user._id,
       specialty,
@@ -251,5 +264,54 @@ exports.cancelAppointment = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// @desc    Get all booked appointments for a doctor on a given date
+// @route   GET /api/appointments/booked/:doctorId/:date
+// @access  Private
+exports.getDoctorAppointmentsByDate = async (req, res) => {
+  const { doctorId, date } = req.params;
+
+  try {
+    // Find all appointments for the doctor on the selected date
+    const appointments = await Appointment.find({
+      doctor: doctorId,
+      appointmentDate: new Date(date),  // Ensure correct date format
+    }).select("appointmentTime");
+
+    res.status(200).json({
+      success: true,
+      bookedSlots: appointments.map((a) => a.appointmentTime),
+    });
+  } catch (error) {
+    console.error("Error fetching doctor's appointments:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+
+// Updated controller logic to filter by both date and time
+exports.getBookedSlots = async (req, res) => {
+  const { doctorId, date } = req.params;
+  
+  try {
+    // Find booked slots for the doctor on the specified date
+    const appointments = await Appointment.find({
+      doctor: doctorId,
+      appointmentDate: new Date(date), // Compare date and time
+      status: "Pending", // Only consider appointments that are pending
+    }).select("appointmentTime");
+
+    // Extract booked slots from the appointments
+    const bookedSlots = appointments.map(appointment => appointment.appointmentTime);
+
+    res.status(200).json({
+      success: true,
+      bookedSlots,
+    });
+  } catch (error) {
+    console.error("Error fetching booked slots:", error);
+    res.status(500).json({ message: "Error fetching booked slots", error });
   }
 };

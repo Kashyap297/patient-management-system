@@ -6,6 +6,8 @@ const {
   rescheduleAppointment,
   getAppointmentById,
   getAllAppointments,
+  getDoctorAppointmentsByDate,
+  getBookedSlots,
 } = require("../controllers/appointmentController");
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -23,5 +25,9 @@ router.patch("/appointments/reschedule/:id", rescheduleAppointment);
 
 // Cancel appointment
 router.patch("/appointments/cancel/:id", cancelAppointment);
+
+// Get all booked appointments for a specific doctor on a given date
+router.get("/appointments/booked/:doctorId/:date", getBookedSlots);
+
 
 module.exports = router;
