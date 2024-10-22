@@ -6,10 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 import api from "../../api/api"; // Assuming you have an API setup
 import { jwtDecode } from "jwt-decode";
-import { FaCalendarTimes } from 'react-icons/fa';  // Cancel appointment icon
-import { FaCalendarCheck } from 'react-icons/fa';  // Reschedule appointment icon
-
-
+import { FaCalendarTimes, FaCalendarCheck } from 'react-icons/fa';  // Cancel and Reschedule appointment icons
+import moment from 'moment';
 
 // Modal for Payment Return Confirmation (second image)
 const PaymentReturnModal = ({ open, onClose, onConfirm }) => {
@@ -57,13 +55,44 @@ const CancelAppointmentModal = ({ open, onClose, onProceed }) => {
   );
 };
 
+// Modal for Rescheduling Appointment (similar to EditSlotModal)
+const RescheduleAppointmentModal = ({ open, onClose, appointment, timeSlots, onSave }) => {
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(appointment ? appointment.appointmentTime : '');
+
+  if (!open || !appointment) return null;
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-[320px]">
+        <h2 className="text-xl font-bold mb-4">Edit Slot</h2>
+        <label className="block mb-2">Select Time Slot</label>
+        <select
+          className="w-full p-2 border rounded mb-4"
+          value={selectedTimeSlot}
+          onChange={(e) => setSelectedTimeSlot(e.target.value)}
+        >
+          {timeSlots.map((time, index) => (
+            <option key={index} value={time}>
+              {time}
+            </option>
+          ))}
+        </select>
+        <div className="flex justify-end">
+          <Button variant="outlined" onClick={onClose} className="mr-2">Cancel</Button>
+          <Button variant="contained" color="primary" onClick={() => onSave(selectedTimeSlot)}>Save</Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
 const AppointmentManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('Today Appointment');
-  const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [openCancelAppointmentModal, setOpenCancelAppointmentModal] = useState(false);
   const [openPaymentReturnModal, setOpenPaymentReturnModal] = useState(false);
-  const [filterDates, setFilterDates] = useState({ fromDate: null, toDate: null });
+  const [openRescheduleModal, setOpenRescheduleModal] = useState(false); // For rescheduling modal
+  const [timeSlots, setTimeSlots] = useState([]); // For time slots
   const [appointments, setAppointments] = useState({
     today: [],
     upcoming: [],
@@ -71,44 +100,49 @@ const AppointmentManagement = () => {
     canceled: []
   });
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
-  
+  const [appointmentToReschedule, setAppointmentToReschedule] = useState(null); // For rescheduling
+  const [filterDates, setFilterDates] = useState({ fromDate: null, toDate: null }); // Define filterDates state
   const navigate = useNavigate();
 
-  // Fetch appointments for the logged-in doctor
   useEffect(() => {
+    // Generate time slots dynamically
+    const generateTimeSlots = () => {
+      const slots = [];
+      for (let hour = 8; hour <= 20; hour++) {
+        const timeString = `${hour < 12 ? hour : hour - 12}:00 ${hour < 12 ? 'AM' : 'PM'}`;
+        slots.push(timeString);
+      }
+      setTimeSlots(slots);
+    };
+
+    generateTimeSlots();
+
     const fetchAppointments = async () => {
       try {
-        const token = localStorage.getItem('token'); // Retrieve token
-        const decodedToken = jwtDecode(token); // Decode the token
-        const doctorId = decodedToken.id; // Assuming the token contains the doctorId in the 'id' field
-  
-        // Fetch appointments and filter them by the logged-in doctor's ID
+        const token = localStorage.getItem('token');
+        const decodedToken = jwtDecode(token);
+        const doctorId = decodedToken.id;
         const response = await api.get("/appointments", {
           headers: {
-            Authorization: `Bearer ${token}`, // Pass token in the header
+            Authorization: `Bearer ${token}`,
           },
         });
-  
+
         const appointmentsData = response.data.data || [];
-        const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-  
-        // Filter appointments for the logged-in doctor
+        const today = new Date().toISOString().split("T")[0];
         const doctorAppointments = appointmentsData.filter(
           (appointment) => appointment.doctorId === doctorId
         );
-  
         const todayAppointments = doctorAppointments.filter(appointment =>
           appointment.appointmentDate.startsWith(today)
         );
-  
         const upcomingAppointments = doctorAppointments.filter(appointment =>
           new Date(appointment.appointmentDate) > new Date(today)
         );
-  
         const previousAppointments = doctorAppointments.filter(appointment =>
           new Date(appointment.appointmentDate) < new Date(today)
         );
-  
+
         setAppointments({
           today: todayAppointments,
           upcoming: upcomingAppointments,
@@ -119,14 +153,11 @@ const AppointmentManagement = () => {
         console.error("Error fetching doctor's appointments:", error);
       }
     };
-  
+
     fetchAppointments();
   }, []);
 
-
-
   const getAppointments = () => {
-    // Ensure we return an array for the selected appointment type
     switch (activeTab) {
       case 'Today Appointment':
         return appointments.today || [];
@@ -150,7 +181,6 @@ const AppointmentManagement = () => {
       appointment.diseaseName.toLowerCase().includes(lowerSearchTerm) ||
       (appointment.patientIssue && appointment.patientIssue.toLowerCase().includes(lowerSearchTerm));
 
-    // Filter based on date range
     const matchesDateRange =
       (!filterDates.fromDate || appointmentDate >= new Date(filterDates.fromDate)) &&
       (!filterDates.toDate || appointmentDate <= new Date(filterDates.toDate));
@@ -158,10 +188,33 @@ const AppointmentManagement = () => {
     return matchesSearchTerm && matchesDateRange;
   });
 
-  // Open modal for canceling appointment
-  const handleOpenCancelAppointmentModal = (appointment) => {
-    setAppointmentToCancel(appointment);
-    setOpenCancelAppointmentModal(true);
+  // Open reschedule modal
+  const handleOpenRescheduleAppointmentModal = (appointment) => {
+    setAppointmentToReschedule(appointment);
+    setOpenRescheduleModal(true);
+  };
+
+  // Save new time slot for rescheduled appointment
+  const handleSaveReschedule = async (newTimeSlot) => {
+    try {
+      const response = await api.patch(`/appointments/reschedule/${appointmentToReschedule.id}`, {
+        appointmentTime: newTimeSlot,
+      });
+
+      if (response.status === 200) {
+        setAppointments((prevAppointments) => ({
+          ...prevAppointments,
+          upcoming: prevAppointments.upcoming.map((appt) =>
+            appt.id === appointmentToReschedule.id
+              ? { ...appt, appointmentTime: newTimeSlot }
+              : appt
+          ),
+        }));
+        setOpenRescheduleModal(false);
+      }
+    } catch (error) {
+      console.error("Error rescheduling appointment:", error);
+    }
   };
 
   // Proceed to Payment Return modal
@@ -170,13 +223,11 @@ const AppointmentManagement = () => {
     setOpenPaymentReturnModal(true);
   };
 
-  // Confirm cancellation and close Payment Return modal
   const handleConfirmCancelAppointment = async () => {
     try {
       await api.patch(`/appointments/cancel/${appointmentToCancel.id}`, {
         status: "Cancelled",
       });
-      // Update the appointments after cancellation
       setAppointments((prevAppointments) => ({
         ...prevAppointments,
         today: prevAppointments.today.filter(app => app.id !== appointmentToCancel.id),
@@ -189,16 +240,6 @@ const AppointmentManagement = () => {
     } finally {
       setOpenPaymentReturnModal(false);
     }
-  };
-
-  const handleApplyDateFilter = (fromDate, toDate) => {
-    setFilterDates({ fromDate, toDate });
-    setOpenCustomDateModal(false);
-  };
-
-  const handleResetDateFilter = () => {
-    setFilterDates({ fromDate: null, toDate: null });
-    setOpenCustomDateModal(false);
   };
 
   return (
@@ -259,40 +300,39 @@ const AppointmentManagement = () => {
             </tr>
           </thead>
           <tbody>
-          {filteredAppointments.length > 0 ? (
-  filteredAppointments.map((appointment, index) => (
-    <tr key={index} className="border-t">
-      <td className="p-3">{appointment.patientName}</td>
-      <td className="p-3">{appointment.diseaseName}</td>
-      <td className="p-3">{appointment.patientIssue}</td>
-      <td className="p-3">{appointment.appointmentDate}</td>
-      <td className="p-3 text-blue-600">{appointment.appointmentTime}</td>
-      <td className="p-3">
-        <span className={`px-3 py-1 text-sm font-medium rounded-full ${appointment.appointmentType === 'Online' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
-          {appointment.appointmentType}
-        </span>
-      </td>
-      <td className="p-3 flex space-x-2">
-        {/* Cancel Appointment */}
-        <IconButton color="secondary" onClick={() => handleOpenCancelAppointmentModal(appointment)}>
-          <FaCalendarTimes style={{ color: 'red', fontSize: '24px' }} />
-        </IconButton>
-        
-        {/* Reschedule Appointment */}
-        <IconButton color="primary" onClick={() => handleOpenRescheduleAppointmentModal(appointment)}>
-          <FaCalendarCheck style={{ color: 'blue', fontSize: '24px' }} />
-        </IconButton>
-      </td>
-    </tr>
-  ))
-) : (
-  <tr>
-    <td colSpan="7" className="text-center p-4 text-gray-500">
-      No appointments found for the selected criteria.
-    </td>
-  </tr>
-)}
-
+            {filteredAppointments.length > 0 ? (
+              filteredAppointments.map((appointment, index) => (
+                <tr key={index} className="border-t">
+                  <td className="p-3">{appointment.patientName}</td>
+                  <td className="p-3">{appointment.diseaseName}</td>
+                  <td className="p-3">{appointment.patientIssue}</td>
+                  <td className="p-3">{appointment.appointmentDate}</td>
+                  <td className="p-3 text-blue-600">{appointment.appointmentTime}</td>
+                  <td className="p-3">
+                    <span className={`px-3 py-1 text-sm font-medium rounded-full ${appointment.appointmentType === 'Online' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
+                      {appointment.appointmentType}
+                    </span>
+                  </td>
+                  <td className="p-3 flex space-x-2">
+                    {/* Cancel Appointment */}
+                    <IconButton color="secondary" onClick={() => handleOpenCancelAppointmentModal(appointment)}>
+                      <FaCalendarTimes style={{ color: 'red', fontSize: '24px' }} />
+                    </IconButton>
+                    
+                    {/* Reschedule Appointment */}
+                    <IconButton color="primary" onClick={() => handleOpenRescheduleAppointmentModal(appointment)}>
+                      <FaCalendarCheck style={{ color: 'blue', fontSize: '24px' }} />
+                    </IconButton>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center p-4 text-gray-500">
+                  No appointments found for the selected criteria.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -307,6 +347,15 @@ const AppointmentManagement = () => {
         open={openPaymentReturnModal}
         onClose={() => setOpenPaymentReturnModal(false)}
         onConfirm={handleConfirmCancelAppointment}
+      />
+
+      {/* Reschedule Modal */}
+      <RescheduleAppointmentModal
+        open={openRescheduleModal}
+        onClose={() => setOpenRescheduleModal(false)}
+        appointment={appointmentToReschedule}
+        timeSlots={timeSlots}
+        onSave={handleSaveReschedule}
       />
     </div>
   );
