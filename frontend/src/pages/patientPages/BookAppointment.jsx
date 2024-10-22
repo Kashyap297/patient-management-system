@@ -58,6 +58,9 @@ const BookAppointment = () => {
   const [appointmentType, setAppointmentType] = useState("Online");
   const [loading, setLoading] = useState(false);
   const [appointmentSuccess, setAppointmentSuccess] = useState(false);
+  const [specialty, setSpecialty] = useState("");
+  const [specialties, setSpecialties] = useState([]);
+
 
   // Fetch hospitals when the component mounts
   useEffect(() => {
@@ -75,21 +78,34 @@ const BookAppointment = () => {
   }, []);
 
   // Fetch doctors when the selected hospital changes
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      if (selectedHospital) {
-        try {
-          const response = await api.get("/users/doctors");
-          const fetchedDoctors = response.data.map((doctor) => doctor);
-          setDoctors(fetchedDoctors);
-        } catch (error) {
-          console.error("Error fetching doctors:", error);
-          setDoctors([]);
+  // Fetch specialties and doctors when the component mounts
+useEffect(() => {
+  const fetchDoctorsAndSpecialties = async () => {
+    try {
+      const response = await api.get("/users/doctors");
+      const fetchedDoctors = response.data;
+
+      // Set the doctors in state
+      setDoctors(fetchedDoctors);
+
+      // Extract unique specialties
+      const specialtiesSet = new Set();
+      fetchedDoctors.forEach((doctor) => {
+        if (doctor.doctorDetails.specialtyType) {
+          specialtiesSet.add(doctor.doctorDetails.specialtyType);
         }
-      }
-    };
-    fetchDoctors();
-  }, [selectedHospital]);
+      });
+
+      // Convert Set to Array and set specialties
+      setSpecialties(Array.from(specialtiesSet));
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    }
+  };
+
+  fetchDoctorsAndSpecialties();
+}, []);
+
 
   // Fetch doctor details when selected doctor changes and generate slots
   useEffect(() => {
@@ -226,28 +242,28 @@ const BookAppointment = () => {
     console.log("Patient Issue:", patientIssue);
     console.log("Disease Name:", diseaseName);
     console.log("Appointment Type:", appointmentType);
-    console.log("Doctor Fees:", doctorDetails?.doctorDetails?.consultationFee);
+    console.log("Doctor Fees:", doctorDetails?.doctorDetails?.onlineConsultationRate); // Use doctorDetails for fees
 
     // Validate required fields
     if (!patientIssue || !country || !state || !city || !selectedHospital || !doctorDetails?._id || !selectedSlot) {
-        alert("Please provide all the necessary details.");
-        return;
+      alert("Please provide all the necessary details.");
+      return;
     }
     console.log("detail ", doctorDetails.doctorDetails)
     // Prepare the data to be sent
     const appointmentData = {
-        specialty,
-        country,
-        state,
-        city,
-        appointmentDate: selectedSlot.day,
-        appointmentTime: selectedSlot.time,
-        hospital: selectedHospital,
-        doctor: doctorDetails._id,
-        patientIssue,
-        diseaseName,
-        appointmentType,
-        doctorFees: doctorDetails.doctorDetails.onlineConsultationRate,
+      specialty,
+      country,
+      state,
+      city,
+      appointmentDate: selectedSlot.day,
+      appointmentTime: selectedSlot.time,
+      hospital: selectedHospital,
+      doctor: doctorDetails._id,
+      patientIssue,
+      diseaseName,
+      appointmentType,
+      doctorFees: doctorDetails.doctorDetails.onlineConsultationRate,
     };
 
     console.log("Booking Appointment Data:", appointmentData); // Log the full payload
@@ -255,25 +271,36 @@ const BookAppointment = () => {
     // Send the request
     setLoading(true);
     try {
-        const response = await api.post("/appointment", appointmentData);
-        setAppointmentSuccess(true); // Success message
-        console.log("Appointment booked successfully:", response.data);
+      const response = await api.post("/appointment", appointmentData);
+      setAppointmentSuccess(true); // Success message
+      console.log("Appointment booked successfully:", response.data);
     } catch (error) {
-        console.error("Error booking appointment", error); // Log the error for debugging
-        alert("Failed to book appointment");
+      console.error("Error booking appointment", error); // Log the error for debugging
+      alert("Failed to book appointment");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
-  
+
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg m-6">
       <h2 className="text-2xl font-semibold mb-6">Appointment Booking</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         {/* Dropdowns for filters */}
-        <SelectField id="specialty" label="Specialty" options={[{ label: "Cardiology", value: "Cardiology" }]} value="" onChange={() => {}} />
+        <SelectField
+  id="specialty"
+  label="Specialty"
+  options={specialties.map((specialty) => ({
+    label: specialty,
+    value: specialty
+  }))}
+  value={specialty}
+  onChange={(e) => setSpecialty(e.target.value)}
+/>
+
+
         <SelectField id="country" label="Country" options={countryData.map((c) => ({ label: c.name, value: c.name }))} value={country} onChange={handleCountryChange} />
         <SelectField id="state" label="State" options={filteredStates.map((state) => ({ label: state.name, value: state.name }))} value={state} onChange={handleStateChange} />
         <SelectField id="city" label="City" options={filteredCities.map((city) => ({ label: city.name, value: city.name }))} value={city} onChange={handleCityChange} />
@@ -281,7 +308,7 @@ const BookAppointment = () => {
         <SelectField id="doctor" label="Doctor" options={doctors.map((doctor) => ({ label: `Dr. ${doctor.firstName} ${doctor.lastName}`, value: doctor._id }))} value={selectedDoctor} onChange={(e) => setSelectedDoctor(e.target.value)} />
       </div>
 
-      {/* Doctor Details */}
+      {/* Doctor Details */}z
       {doctorDetails && (
         <div className="flex">
           <div className="col-12">
