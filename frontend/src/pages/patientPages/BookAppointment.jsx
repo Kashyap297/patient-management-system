@@ -285,148 +285,474 @@ useEffect(() => {
 
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg m-6">
-      <h2 className="text-2xl font-semibold mb-6">Appointment Booking</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-        {/* Dropdowns for filters */}
-        <SelectField
-  id="specialty"
-  label="Specialty"
-  options={specialties.map((specialty) => ({
-    label: specialty,
-    value: specialty
-  }))}
-  value={specialty}
-  onChange={(e) => setSpecialty(e.target.value)}
-/>
+//     <div className="bg-white p-6 rounded-lg shadow-lg m-6">
+//       <h2 className="text-2xl font-semibold mb-6">Appointment Booking</h2>
+//       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+//         {/* Dropdowns for filters */}
+//         <SelectField
+//   id="specialty"
+//   label="Specialty"
+//   options={specialties.map((specialty) => ({
+//     label: specialty,
+//     value: specialty
+//   }))}
+//   value={specialty}
+//   onChange={(e) => setSpecialty(e.target.value)}
+// />
 
 
-        <SelectField id="country" label="Country" options={countryData.map((c) => ({ label: c.name, value: c.name }))} value={country} onChange={handleCountryChange} />
-        <SelectField id="state" label="State" options={filteredStates.map((state) => ({ label: state.name, value: state.name }))} value={state} onChange={handleStateChange} />
-        <SelectField id="city" label="City" options={filteredCities.map((city) => ({ label: city.name, value: city.name }))} value={city} onChange={handleCityChange} />
-        <SelectField id="hospital" label="Hospital" options={hospitals.map((hospital) => ({ label: hospital.name, value: hospital.name }))} value={selectedHospital} onChange={(e) => setSelectedHospital(e.target.value)} />
-        <SelectField id="doctor" label="Doctor" options={doctors.map((doctor) => ({ label: `Dr. ${doctor.firstName} ${doctor.lastName}`, value: doctor._id }))} value={selectedDoctor} onChange={(e) => setSelectedDoctor(e.target.value)} />
-      </div>
+//         <SelectField id="country" label="Country" options={countryData.map((c) => ({ label: c.name, value: c.name }))} value={country} onChange={handleCountryChange} />
+//         <SelectField id="state" label="State" options={filteredStates.map((state) => ({ label: state.name, value: state.name }))} value={state} onChange={handleStateChange} />
+//         <SelectField id="city" label="City" options={filteredCities.map((city) => ({ label: city.name, value: city.name }))} value={city} onChange={handleCityChange} />
+//         <SelectField id="hospital" label="Hospital" options={hospitals.map((hospital) => ({ label: hospital.name, value: hospital.name }))} value={selectedHospital} onChange={(e) => setSelectedHospital(e.target.value)} />
+//         <SelectField id="doctor" label="Doctor" options={doctors.map((doctor) => ({ label: `Dr. ${doctor.firstName} ${doctor.lastName}`, value: doctor._id }))} value={selectedDoctor} onChange={(e) => setSelectedDoctor(e.target.value)} />
+//       </div>
 
-      {/* Doctor Details */}z
-      {doctorDetails && (
-        <div className="flex">
-          <div className="col-12">
-            <div className="bg-white shadow-lg rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">Doctor Details</h3>
-              <div className="flex items-center mb-4">
-                <img
-                  src={doctorDetails.profileImage || noappointmentrecord}
-                  alt="Doctor"
-                  className="w-16 h-16 rounded-full mr-4"
-                />
-                <div>
-                  <p className="text-lg font-semibold">
-                    Dr. {doctorDetails.firstName} {doctorDetails.lastName}
-                  </p>
-                  <p className="text-gray-500">
-                    {doctorDetails.doctorDetails.specialtyType}
-                  </p>
-                </div>
-              </div>
-              <p><span className="font-semibold">Qualification: </span>{doctorDetails.doctorDetails.qualification}</p>
-              <p><span className="font-semibold">Experience: </span>{doctorDetails.doctorDetails.experience} years</p>
-              <p><span className="font-semibold">Consultation Type: </span>{doctorDetails.doctorDetails.workType}</p>
-              <p><span className="font-semibold">Online Consultation Rate: </span>₹{doctorDetails.doctorDetails.onlineConsultationRate}</p>
-            </div>
-          </div>
+//       <div className="flex">
+//         {/* Time Slots Table - Left Side 70% */}
+//         {doctorDetails && (
+//           <div className="w-full lg:w-7/10 p-4">
+//             <div className="flex justify-between items-center mb-4">
+//               <button className="px-4 py-2 bg-gray-300 rounded" onClick={handlePreviousWeek} disabled={moment(currentWeekStart).isSameOrBefore(moment(), 'day')}>
+//                 &lt;
+//               </button>
+//               <h1 className="text-xl font-bold">
+//                 {moment(currentWeekStart).format('DD MMMM, YYYY')} - {moment(currentWeekStart).add(6, 'days').format('DD MMMM, YYYY')}
+//               </h1>
+//               <button className="px-4 py-2 bg-gray-300 rounded" onClick={handleNextWeek}>
+//                 &gt;
+//               </button>
+//             </div>
+//             <table className="min-w-full table-auto border-collapse">
+//               <thead>
+//                 <tr>
+//                   <th className="border px-4 py-2">Time</th>
+//                   {days.map((day) => (
+//                     <th key={day} className="border px-4 py-2">{moment(day).format('ddd D')}</th>
+//                   ))}
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {timeSlots.length === 0 ? (
+//                   <tr>
+//                     <td className="border px-4 py-2 text-center" colSpan={days.length + 1}>No Slots Available</td>
+//                   </tr>
+//                 ) : (
+//                   timeSlots.map((slot) => (
+//                     <tr key={slot.time}>
+//                       <td className="border px-4 py-2">{slot.time}</td>
+//                       {days.map((day) => (
+//                         <td key={day} className="border px-4 py-2 text-center">
+//                           {isSlotBooked(slot.time, day) ? <span className="text-gray-400">Booked</span> : slot.status === 'Available' ? (
+//                             <span className="text-green-500 cursor-pointer" onClick={() => handleSlotClick(slot.time, day)}>Available</span>
+//                           ) : slot.status === 'Lunch Break' ? (
+//                             <span className="text-yellow-500">Lunch Break</span>
+//                           ) : <span className="text-gray-400">{slot.status}</span>}
+//                         </td>
+//                       ))}
+//                     </tr>
+//                   ))
+//                 )}
+//               </tbody>
+//             </table>
+//           </div>
+//         )}
+
+//         {/* Doctor Details - Right Side 30% */}
+//         {doctorDetails && (
+//           <div className="w-full lg:w-3/10 p-4">
+//             <div className="bg-white shadow-lg rounded-lg p-6">
+//               <div className="flex items-center mb-4">
+//                 <img
+//                   src={`http://localhost:8000/${doctorDetails.profileImage || noappointmentrecord}`}
+//                   alt="Doctor"
+//                   className="w-16 h-16 rounded-full mr-4"
+//                 />
+//                 <div>
+//                   <h3 className="text-lg font-semibold text-blue-600">
+//                     Dr. {doctorDetails.firstName} {doctorDetails.lastName}
+//                   </h3>
+//                   <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-sm">
+//                     {doctorDetails.gender === "Male" ? "Male" : "Female"}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="bg-gray-100 p-4 rounded-lg">
+//                 <div className="grid grid-cols-2 gap-4 text-sm">
+//                   <div>
+//                     <p className="text-gray-500">Qualification</p>
+//                     <p className="text-gray-900">{doctorDetails.doctorDetails.qualification}</p>
+//                   </div>
+//                   <div>
+//                     <p className="text-gray-500">Years of Experience</p>
+//                     <p className="text-gray-900">{doctorDetails.doctorDetails.experience}+ Year</p>
+//                   </div>
+//                   <div>
+//                     <p className="text-gray-500">Specialty Type</p>
+//                     <p className="text-gray-900">{doctorDetails.doctorDetails.specialtyType}</p>
+//                   </div>
+//                   <div>
+//                     <p className="text-gray-500">Working Time</p>
+//                     <p className="text-gray-900">{doctorDetails.doctorDetails.workingHours.workingTime}</p>
+//                   </div>
+//                   <div>
+//                     <p className="text-gray-500">Break Time</p>
+//                     <p className="text-gray-900">{doctorDetails.doctorDetails.workingHours.breakTime}</p>
+//                   </div>
+//                   <div>
+//                     <p className="text-gray-500">Emergency Contact Number</p>
+//                     <p className="text-gray-900">
+//                       {doctorDetails.doctorDetails.hospital.emergencyContactNumber || "N/A"}
+//                     </p>
+//                   </div>
+//                   <div className="col-span-2">
+//                     <p className="text-gray-500">Description</p>
+//                     <p className="text-gray-900">{doctorDetails.doctorDetails.description}</p>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Modal for booking appointment */}
+//       {selectedSlot && (
+//         <Modal
+//         isOpen={modalIsOpen}
+//         onRequestClose={closeModal}
+//         contentLabel="Appointment Booking"
+//         className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto my-16"
+//         overlayClassName="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center"
+//       >
+//         {appointmentSuccess ? (
+//           <div className="text-center">
+//             <h2 className="text-2xl font-bold mb-4">Appointment Booked Successfully!</h2>
+//             <p>Your appointment has been booked for {moment(selectedSlot.day).format('MMMM D, YYYY')} at {selectedSlot.time}.</p>
+//             <button className="mt-6 px-4 py-2 bg-green-500 text-white rounded-md" onClick={closeModal}>Okay</button>
+//           </div>
+//         ) : (
+//           <>
+//             <h2 className="text-lg font-semibold text-gray-700 mb-4">Appointment</h2>
+//             <div className="grid grid-cols-2 gap-4 mb-4">
+//               <div className="col-span-2">
+//                 <p className="text-sm text-gray-600">Appointment Type</p>
+//                 <p className="font-semibold text-yellow-600">{appointmentType}</p>
+//               </div>
+//               <div className="col-span-2">
+//                 <p className="text-sm text-gray-600">Patient Name</p>
+//                 <p className="font-semibold">John Doe</p> {/* Placeholder name or dynamically fill */}
+//               </div>
+//               <div>
+//                 <p className="text-sm text-gray-600">Appointment Date</p>
+//                 <p className="font-semibold">{moment(selectedSlot.day).format('DD MMMM, YYYY')}</p>
+//               </div>
+//               <div>
+//                 <p className="text-sm text-gray-600">Appointment Time</p>
+//                 <p className="font-semibold">{selectedSlot.time}</p>
+//               </div>
+//             </div>
+      
+//             <div className="mt-4">
+//               <label className="block mb-1 font-semibold text-gray-600">Patient Issue</label>
+//               <input
+//                 type="text"
+//                 placeholder="Enter Patient Issue"
+//                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                 value={patientIssue}
+//                 onChange={(e) => setPatientIssue(e.target.value)}
+//               />
+//             </div>
+      
+//             <div className="mt-4">
+//               <label className="block mb-1 font-semibold text-gray-600">Disease Name (Optional)</label>
+//               <input
+//                 type="text"
+//                 placeholder="Enter Disease Name"
+//                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                 value={diseaseName}
+//                 onChange={(e) => setDiseaseName(e.target.value)}
+//               />
+//             </div>
+      
+//             <div className="mt-6 flex justify-between">
+//               <button
+//                 onClick={closeModal}
+//                 className="px-4 py-2 bg-gray-500 text-white rounded-md"
+//               >
+//                 Cancel
+//               </button>
+//               <button
+//                 onClick={handleBookAppointment}
+//                 className="px-4 py-2 bg-blue-500 text-white rounded-md flex items-center space-x-2"
+//                 disabled={loading}
+//               >
+//                 <span>
+//                   {loading ? "Booking..." : "Book Appointment"}
+//                 </span>
+//               </button>
+//             </div>
+//           </>
+//         )}
+//       </Modal>
+
+//       )}
+//     </div>
+<div className="bg-white p-6 rounded-lg shadow-lg m-6">
+  <h2 className="text-2xl font-semibold mb-6">Appointment Booking</h2>
+  
+  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+    {/* Dropdowns for filters */}
+    <SelectField
+      id="specialty"
+      label="Specialty"
+      options={specialties.map((specialty) => ({
+        label: specialty,
+        value: specialty
+      }))}
+      value={specialty}
+      onChange={(e) => setSpecialty(e.target.value)}
+    />
+    <SelectField id="country" label="Country" options={countryData.map((c) => ({ label: c.name, value: c.name }))} value={country} onChange={handleCountryChange} />
+    <SelectField id="state" label="State" options={filteredStates.map((state) => ({ label: state.name, value: state.name }))} value={state} onChange={handleStateChange} />
+    <SelectField id="city" label="City" options={filteredCities.map((city) => ({ label: city.name, value: city.name }))} value={city} onChange={handleCityChange} />
+    <SelectField id="hospital" label="Hospital" options={hospitals.map((hospital) => ({ label: hospital.name, value: hospital.name }))} value={selectedHospital} onChange={(e) => setSelectedHospital(e.target.value)} />
+    <SelectField id="doctor" label="Doctor" options={doctors.map((doctor) => ({ label: `Dr. ${doctor.firstName} ${doctor.lastName}`, value: doctor._id }))} value={selectedDoctor} onChange={(e) => setSelectedDoctor(e.target.value)} />
+  </div>
+
+  <div className="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-4">
+    {/* Time Slots Table - Left Side 70% */}
+    {doctorDetails && (
+      <div className="w-full p-4">
+        <div className="flex justify-between items-center mb-4">
+          <button className="px-4 py-2 bg-gray-300 rounded" onClick={handlePreviousWeek} disabled={moment(currentWeekStart).isSameOrBefore(moment(), 'day')}>
+            &lt;
+          </button>
+          <h1 className="text-xl font-bold">
+            {moment(currentWeekStart).format('DD MMMM, YYYY')} - {moment(currentWeekStart).add(6, 'days').format('DD MMMM, YYYY')}
+          </h1>
+          <button className="px-4 py-2 bg-gray-300 rounded" onClick={handleNextWeek}>
+            &gt;
+          </button>
         </div>
-      )}
-
-      {/* Time Slots */}
-      {doctorDetails && (
-        <div className="p-4">
-          <div className="flex justify-between items-center mb-4">
-            <button className="px-4 py-2 bg-gray-300 rounded" onClick={handlePreviousWeek} disabled={moment(currentWeekStart).isSameOrBefore(moment(), 'day')}>
-              &lt;
-            </button>
-            <h1 className="text-xl font-bold">
-              {moment(currentWeekStart).format('DD MMMM, YYYY')} - {moment(currentWeekStart).add(6, 'days').format('DD MMMM, YYYY')}
-            </h1>
-            <button className="px-4 py-2 bg-gray-300 rounded" onClick={handleNextWeek}>
-              &gt;
-            </button>
-          </div>
-          <table className="min-w-full table-auto border-collapse">
-            <thead>
+        {/* <table className="min-w-full table-auto border-collapse">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2">Time</th>
+              {days.map((day) => (
+                <th key={day} className="border px-4 py-2">{moment(day).format('ddd D')}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {timeSlots.length === 0 ? (
               <tr>
-                <th className="border px-4 py-2">Time</th>
-                {days.map((day) => (
-                  <th key={day} className="border px-4 py-2">{moment(day).format('ddd D')}</th>
-                ))}
+                <td className="border px-4 py-2 text-center" colSpan={days.length + 1}>No Slots Available</td>
               </tr>
-            </thead>
-            <tbody>
-              {timeSlots.length === 0 ? (
-                <tr>
-                  <td className="border px-4 py-2 text-center" colSpan={days.length + 1}>No Slots Available</td>
+            ) : (
+              timeSlots.map((slot) => (
+                <tr key={slot.time}>
+                  <td className="border px-4 py-2">{slot.time}</td>
+                  {days.map((day) => (
+                    <td key={day} className="border px-4 py-2 text-center">
+                      {isSlotBooked(slot.time, day) ? <span className="text-gray-400">Booked</span> : slot.status === 'Available' ? (
+                        <span className="text-green-500 cursor-pointer" onClick={() => handleSlotClick(slot.time, day)}>Available</span>
+                      ) : slot.status === 'Lunch Break' ? (
+                        <span className="text-yellow-500">Lunch Break</span>
+                      ) : <span className="text-gray-400">{slot.status}</span>}
+                    </td>
+                  ))}
                 </tr>
+              ))
+            )}
+          </tbody>
+        </table> */}
+        <table className="min-w-full table-auto border-collapse bg-white rounded-lg shadow-lg">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="px-6 py-3 text-sm font-semibold text-gray-600 border-b">Time</th>
+      {days.map((day) => (
+        <th key={day} className="px-6 py-3 text-sm font-semibold text-gray-600 border-b">{moment(day).format('ddd D')}</th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>
+    {timeSlots.length === 0 ? (
+      <tr>
+        <td className="px-6 py-4 text-center text-gray-500" colSpan={days.length + 1}>
+          No Slots Available
+        </td>
+      </tr>
+    ) : (
+      timeSlots.map((slot) => (
+        <tr key={slot.time} className="hover:bg-gray-50">
+          <td className="px-6 py-4 text-gray-700 text-sm border-b">{slot.time}</td>
+          {days.map((day) => (
+            <td key={day} className="px-6 py-4 text-center border-b">
+              {isSlotBooked(slot.time, day) ? (
+                <span className="text-gray-400">Booked</span>
+              ) : slot.status === 'Available' ? (
+                <span className="bg-blue-500 text-white px-3 py-1 rounded-full cursor-pointer" onClick={() => handleSlotClick(slot.time, day)}>
+                  Available
+                </span>
+              ) : slot.status === 'Lunch Break' ? (
+                <span className="text-yellow-500">Lunch Break</span>
               ) : (
-                timeSlots.map((slot) => (
-                  <tr key={slot.time}>
-                    <td className="border px-4 py-2">{slot.time}</td>
-                    {days.map((day) => (
-                      <td key={day} className="border px-4 py-2 text-center">
-                        {isSlotBooked(slot.time, day) ? <span className="text-gray-400">Booked</span> : slot.status === 'Available' ? (
-                          <span className="text-green-500 cursor-pointer" onClick={() => handleSlotClick(slot.time, day)}>Available</span>
-                        ) : slot.status === 'Lunch Break' ? (
-                          <span className="text-yellow-500">Lunch Break</span>
-                        ) : <span className="text-gray-400">{slot.status}</span>}
-                      </td>
-                    ))}
-                  </tr>
-                ))
+                <span className="text-gray-400">{slot.status}</span>
               )}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </td>
+          ))}
+        </tr>
+      ))
+    )}
+  </tbody>
+</table>
 
-      {/* Modal for booking appointment */}
-      {selectedSlot && (
-        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Appointment Booking" className="bg-white p-4 rounded-lg shadow-lg max-w-md mx-auto my-16" overlayClassName="fixed inset-0 bg-gray-900 bg-opacity-50">
-          {appointmentSuccess ? (
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4">Appointment Booked Successfully!</h2>
-              <p>Your appointment has been booked for {moment(selectedSlot.day).format('MMMM D, YYYY')} at {selectedSlot.time}.</p>
-              <button className="mt-6 px-4 py-2 bg-green-500 text-white rounded-md" onClick={closeModal}>Okay</button>
+      </div>
+    )}
+
+    {/* Doctor Details - Right Side 30% */}
+    {doctorDetails && (
+      <div className="w-full p-4">
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <div className="flex items-center mb-4">
+            <img
+              src={`http://localhost:8000/${doctorDetails.profileImage || noappointmentrecord}`}
+              alt="Doctor"
+              className="w-16 h-16 rounded-full mr-4"
+            />
+            <div>
+              <h3 className="text-lg font-semibold text-blue-600">
+                Dr. {doctorDetails.firstName} {doctorDetails.lastName}
+              </h3>
+              <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-sm">
+                {doctorDetails.gender === "Male" ? "Male" : "Female"}
+              </span>
             </div>
-          ) : (
-            <>
-              <h2 className="text-xl font-bold mb-4">Book Appointment</h2>
-              <p>Appointment Date: {moment(selectedSlot.day).format('MMMM D, YYYY')}</p>
-              <p>Appointment Time: {selectedSlot.time}</p>
-              <div className="mt-4">
-                <label className="block mb-2 font-semibold">Patient Issue</label>
-                <input type="text" placeholder="Enter Patient Issue" className="w-full px-4 py-2 border border-gray-300 rounded-md" value={patientIssue} onChange={(e) => setPatientIssue(e.target.value)} />
+          </div>
+
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-500">Qualification</p>
+                <p className="text-gray-900">{doctorDetails.doctorDetails.qualification}</p>
               </div>
-              <div className="mt-4">
-                <label className="block mb-2 font-semibold">Disease Name (Optional)</label>
-                <input type="text" placeholder="Enter Disease Name" className="w-full px-4 py-2 border border-gray-300 rounded-md" value={diseaseName} onChange={(e) => setDiseaseName(e.target.value)} />
+              <div>
+                <p className="text-gray-500">Years of Experience</p>
+                <p className="text-gray-900">{doctorDetails.doctorDetails.experience}+ Year</p>
               </div>
-              <div className="mt-4">
-                <label className="block mb-2 font-semibold">Appointment Type</label>
-                <select value={appointmentType} onChange={(e) => setAppointmentType(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-md">
-                  <option value="Online">Online</option>
-                  <option value="Onsite">Onsite</option>
-                </select>
+              <div>
+                <p className="text-gray-500">Specialty Type</p>
+                <p className="text-gray-900">{doctorDetails.doctorDetails.specialtyType}</p>
               </div>
-              <div className="mt-6 flex justify-end">
-                <button onClick={closeModal} className="px-4 py-2 mr-2 bg-gray-500 text-white rounded-md">Cancel</button>
-                <button onClick={handleBookAppointment} className="px-4 py-2 bg-blue-500 text-white rounded-md" disabled={loading}>
-                  {loading ? "Booking..." : "Book Appointment"}
-                </button>
+              <div>
+                <p className="text-gray-500">Working Time</p>
+                <p className="text-gray-900">{doctorDetails.doctorDetails.workingHours.workingTime}</p>
               </div>
-            </>
-          )}
-        </Modal>
+              <div>
+                <p className="text-gray-500">Break Time</p>
+                <p className="text-gray-900">{doctorDetails.doctorDetails.workingHours.breakTime}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Emergency Contact Number</p>
+                <p className="text-gray-900">
+                  {doctorDetails.doctorDetails.hospital.emergencyContactNumber || "N/A"}
+                </p>
+              </div>
+              <div className="col-span-2">
+                <p className="text-gray-500">Description</p>
+                <p className="text-gray-900">{doctorDetails.doctorDetails.description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Modal for booking appointment */}
+  {selectedSlot && (
+    <Modal
+      isOpen={modalIsOpen}
+      onRequestClose={closeModal}
+      contentLabel="Appointment Booking"
+      className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto my-16"
+      overlayClassName="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center"
+    >
+      {appointmentSuccess ? (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Appointment Booked Successfully!</h2>
+          <p>Your appointment has been booked for {moment(selectedSlot.day).format('MMMM D, YYYY')} at {selectedSlot.time}.</p>
+          <button className="mt-6 px-4 py-2 bg-green-500 text-white rounded-md" onClick={closeModal}>Okay</button>
+        </div>
+      ) : (
+        <>
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Appointment</h2>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="col-span-2">
+              <p className="text-sm text-gray-600">Appointment Type</p>
+              <p className="font-semibold text-yellow-600">{appointmentType}</p>
+            </div>
+            <div className="col-span-2">
+              <p className="text-sm text-gray-600">Patient Name</p>
+              <p className="font-semibold">John Doe</p> {/* Placeholder name or dynamically fill */}
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Appointment Date</p>
+              <p className="font-semibold">{moment(selectedSlot.day).format('DD MMMM, YYYY')}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Appointment Time</p>
+              <p className="font-semibold">{selectedSlot.time}</p>
+            </div>
+          </div>
+    
+          <div className="mt-4">
+            <label className="block mb-1 font-semibold text-gray-600">Patient Issue</label>
+            <input
+              type="text"
+              placeholder="Enter Patient Issue"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={patientIssue}
+              onChange={(e) => setPatientIssue(e.target.value)}
+            />
+          </div>
+    
+          <div className="mt-4">
+            <label className="block mb-1 font-semibold text-gray-600">Disease Name (Optional)</label>
+            <input
+              type="text"
+              placeholder="Enter Disease Name"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={diseaseName}
+              onChange={(e) => setDiseaseName(e.target.value)}
+            />
+          </div>
+    
+          <div className="mt-6 flex justify-between">
+            <button
+              onClick={closeModal}
+              className="px-4 py-2 bg-gray-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleBookAppointment}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md flex items-center space-x-2"
+              disabled={loading}
+            >
+              <span>
+                {loading ? "Booking..." : "Book Appointment"}
+              </span>
+            </button>
+          </div>
+        </>
       )}
-    </div>
+    </Modal>
+  )}
+</div>
+
   );
 };
 
