@@ -13,7 +13,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     country: {
       type: String,
-      required: true,
+      required: true, 
     },
     state: {
       type: String,
