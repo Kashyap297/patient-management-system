@@ -83,9 +83,13 @@ exports.createAppointment = async (req, res) => {
 // @desc    Get All Appointments
 // @route   GET /api/appointments
 // @access  Private (Patients only)
+// @desc    Get All Appointments for the logged-in patient
+// @route   GET /api/appointments
+// @access  Private (Patients only)
 exports.getAllAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find()
+    // Find appointments where the logged-in user is the patient
+    const appointments = await Appointment.find({ patient: req.user._id })
       .populate({
         path: "patient",
         select: "firstName lastName phoneNumber age gender address",
@@ -93,7 +97,7 @@ exports.getAllAppointments = async (req, res) => {
       .populate({
         path: "doctor",
         select:
-          "firstName lastName doctorDetails.qualification doctorDetails.specialtyType doctorDetails.experience doctorDetails.hospital _id", // Add _id here to ensure doctor ID is included
+          "firstName lastName doctorDetails.qualification doctorDetails.specialtyType doctorDetails.experience doctorDetails.hospital _id",
       });
 
     res.status(200).json({
@@ -112,11 +116,9 @@ exports.getAllAppointments = async (req, res) => {
           : "N/A",
         patientAge: appointment.patient ? appointment.patient.age : "N/A",
         patientGender: appointment.patient ? appointment.patient.gender : "N/A",
-        patientIssue: appointment.patient
-          ? appointment.patient.patientIssue
-          : "N/A",
+        patientIssue: appointment.patientIssue,
         diseaseName: appointment.diseaseName,
-        doctorId: appointment.doctor ? appointment.doctor._id : null, // Add doctor ID to the response
+        doctorId: appointment.doctor ? appointment.doctor._id : null,
         patientId: appointment.patient ? appointment.patient._id : null,
         doctorName: appointment.doctor
           ? `${appointment.doctor.firstName} ${appointment.doctor.lastName}`
@@ -243,6 +245,9 @@ exports.rescheduleAppointment = async (req, res) => {
 // @desc    Cancel Appointment
 // @route   PATCH /api/appointments/cancel/:id
 // @access  Private
+// @desc    Cancel Appointment
+// @route   PATCH /api/appointments/cancel/:id
+// @access  Private
 exports.cancelAppointment = async (req, res) => {
   const { id } = req.params;
 
@@ -266,6 +271,7 @@ exports.cancelAppointment = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
 
 // @desc    Get all booked appointments for a doctor on a given date
 // @route   GET /api/appointments/booked/:doctorId/:date
