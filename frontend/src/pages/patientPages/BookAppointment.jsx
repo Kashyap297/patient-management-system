@@ -1,29 +1,14 @@
-import React, { useState, useEffect } from "react";
-import noappointmentrecord from "../../assets/images/noappointmentrecord.png";
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
+import api from "../../api/api"; // Axios instance for API calls
+import Modal from 'react-modal'; // Modal package, install via npm: npm install react-modal
 import countryData from "../../countryjson/countries+states+cities.json"; // Assuming this is the correct path to your JSON file
-import api from "../../api/api"; // Axios instance with token interceptor
-import TimeSlotTable from "../../components/TimeSlotTable";
+import noappointmentrecord from "../../assets/images/noappointmentrecord.png"; // Placeholder image
 
-const InputField = ({ id, label, type = "text", value, onChange }) => (
-  <div className="relative mb-4">
-    <input
-      type={type}
-      id={id}
-      name={id}
-      className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
-      placeholder={`Enter ${label}`}
-      value={value}
-      onChange={onChange}
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
-    >
-      {label}
-    </label>
-  </div>
-);
+// Initialize the Modal
+Modal.setAppElement('#root');
 
+// Helper components
 const SelectField = ({ id, label, options, value, onChange }) => (
   <div className="relative mb-4">
     <select
@@ -62,41 +47,17 @@ const BookAppointment = () => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [doctorDetails, setDoctorDetails] = useState(null);
-  const [calendarSlots, setCalendarSlots] = useState([]);
+
+  const [currentWeekStart, setCurrentWeekStart] = useState(moment().startOf('day'));
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [bookedSlotsByDate, setBookedSlotsByDate] = useState({});
   const [selectedSlot, setSelectedSlot] = useState(null);
-
-  // Helper function to convert time string to minutes (e.g., "9:00 AM" -> 540)
-  const timeToMinutes = (timeStr) => {
-    const [time, period] = timeStr.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-    if (period === "PM" && hours !== 12) hours += 12;
-    if (period === "AM" && hours === 12) hours = 0;
-    return hours * 60 + minutes;
-  };
-
-  // Generate slots based on working hours and break time
-  const generateTimeSlots = (startTime, endTime, breakTime, breakDuration) => {
-    const slots = [];
-    const slotDuration = 60; // 1-hour slots
-
-    const start = timeToMinutes(startTime);
-    const end = timeToMinutes(endTime);
-    const breakStart = timeToMinutes(breakTime);
-    const breakEnd = breakStart + breakDuration * 60; // Break time is given in hours
-
-    for (let time = start; time < end; time += slotDuration) {
-      const slotTime = `${Math.floor(time / 60)
-        .toString()
-        .padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
-      const available =
-        time < breakStart || time >= breakEnd ? "Available" : "Break";
-      slots.push({
-        time: `${slotTime} ${time < 720 ? "AM" : "PM"}`,
-        available,
-      });
-    }
-    return slots;
-  };
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [patientIssue, setPatientIssue] = useState("");
+  const [diseaseName, setDiseaseName] = useState("");
+  const [appointmentType, setAppointmentType] = useState("Online");
+  const [loading, setLoading] = useState(false);
+  const [appointmentSuccess, setAppointmentSuccess] = useState(false);
 
   // Fetch hospitals when the component mounts
   useEffect(() => {
@@ -107,7 +68,7 @@ const BookAppointment = () => {
         setHospitals(fetchedHospitals);
       } catch (error) {
         console.error("Error fetching hospitals:", error);
-        setHospitals([]); // Fallback in case of error
+        setHospitals([]);
       }
     };
     fetchHospitals();
@@ -147,10 +108,24 @@ const BookAppointment = () => {
     fetchDoctorDetails();
   }, [selectedDoctor]);
 
+  // Fetch booked slots whenever doctorDetails changes
+  useEffect(() => {
+    if (doctorDetails) {
+      const fetchBookedSlots = async () => {
+        try {
+          const response = await api.get(`/appointments/booked/${doctorDetails._id}`);
+          setBookedSlotsByDate(response.data.bookedSlots);
+        } catch (error) {
+          console.error("Error fetching booked slots:", error);
+        }
+      };
+      fetchBookedSlots();
+    }
+  }, [doctorDetails]);
+
   const handleCountryChange = (e) => {
     const selectedCountry = e.target.value;
     setCountry(selectedCountry);
-
     const countryObj = countryData.find((c) => c.name === selectedCountry);
     setFilteredStates(countryObj ? countryObj.states : []);
     setState("");
@@ -161,7 +136,6 @@ const BookAppointment = () => {
   const handleStateChange = (e) => {
     const selectedState = e.target.value;
     setState(selectedState);
-
     const stateObj = filteredStates.find((s) => s.name === selectedState);
     setFilteredCities(stateObj ? stateObj.cities : []);
     setCity("");
@@ -170,152 +144,262 @@ const BookAppointment = () => {
   const handleCityChange = (e) => {
     setCity(e.target.value);
   };
+
+  // Helper function to convert time string to minutes
+  const timeToMinutes = (timeStr) => {
+    const [time, period] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+    return hours * 60 + minutes;
+  };
+
+  // Generate time slots dynamically based on the doctor's working hours and break time
   useEffect(() => {
-    console.log(doctorDetails);
+    if (doctorDetails && doctorDetails.doctorDetails && doctorDetails.doctorDetails.workingHours) {
+      const { workingHours } = doctorDetails.doctorDetails;
+      const { workingTime, checkupTime, breakTime } = workingHours;
+
+      if (workingTime && checkupTime && breakTime) {
+        const startTime = timeToMinutes(workingTime.split(" - ")[0]);
+        const endTime = timeToMinutes(workingTime.split(" - ")[1]);
+        const checkupEnd = timeToMinutes(checkupTime.split(" - ")[1]);
+        const breakStart = timeToMinutes(breakTime);
+        const breakEnd = breakStart + 60;
+
+        const slots = [];
+        for (let time = startTime; time < endTime; time += 60) {
+          let slotStatus = 'No Schedule';
+          if (time >= breakStart && time < breakEnd) {
+            slotStatus = 'Lunch Break';
+          } else if (time < checkupEnd) {
+            slotStatus = 'Available';
+          }
+          const slotTime = `${Math.floor(time / 60).toString().padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")} ${time < 720 ? 'AM' : 'PM'}`;
+          slots.push({ time: slotTime, status: slotStatus });
+        }
+        setTimeSlots(slots);
+      }
+    }
   }, [doctorDetails]);
+
+  const isSlotBooked = (timeSlot, date) => {
+    return bookedSlotsByDate[date] && bookedSlotsByDate[date].includes(timeSlot);
+  };
+
+  const getWeekDays = (start) => {
+    return Array.from({ length: 7 }, (_, i) => moment(start).add(i, 'days').format('YYYY-MM-DD'));
+  };
+
+  const days = getWeekDays(currentWeekStart);
+
+  const handleNextWeek = () => {
+    setCurrentWeekStart((prev) => moment(prev).add(7, 'days'));
+  };
+
+  const handlePreviousWeek = () => {
+    if (moment(currentWeekStart).isAfter(moment(), 'day')) {
+      setCurrentWeekStart((prev) => moment(prev).subtract(7, 'days'));
+    }
+  };
+
+  const handleSlotClick = (time, day) => {
+    setSelectedSlot({ time, day });
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setAppointmentSuccess(false);
+  };
+
+  const handleBookAppointment = async () => {
+    // Log all the values that will be used in the appointment booking
+    console.log("Specialty:", specialty);
+    console.log("Country:", country);
+    console.log("State:", state);
+    console.log("City:", city);
+    console.log("Selected Hospital:", selectedHospital);
+    console.log("Doctor ID:", doctorDetails?._id);
+    console.log("Appointment Date:", selectedSlot?.day);
+    console.log("Appointment Time:", selectedSlot?.time);
+    console.log("Patient Issue:", patientIssue);
+    console.log("Disease Name:", diseaseName);
+    console.log("Appointment Type:", appointmentType);
+    console.log("Doctor Fees:", doctorDetails?.doctorDetails?.consultationFee);
+
+    // Validate required fields
+    if (!patientIssue || !country || !state || !city || !selectedHospital || !doctorDetails?._id || !selectedSlot) {
+        alert("Please provide all the necessary details.");
+        return;
+    }
+    console.log("detail ", doctorDetails.doctorDetails)
+    // Prepare the data to be sent
+    const appointmentData = {
+        specialty,
+        country,
+        state,
+        city,
+        appointmentDate: selectedSlot.day,
+        appointmentTime: selectedSlot.time,
+        hospital: selectedHospital,
+        doctor: doctorDetails._id,
+        patientIssue,
+        diseaseName,
+        appointmentType,
+        doctorFees: doctorDetails.doctorDetails.onlineConsultationRate,
+    };
+
+    console.log("Booking Appointment Data:", appointmentData); // Log the full payload
+
+    // Send the request
+    setLoading(true);
+    try {
+        const response = await api.post("/appointment", appointmentData);
+        setAppointmentSuccess(true); // Success message
+        console.log("Appointment booked successfully:", response.data);
+    } catch (error) {
+        console.error("Error booking appointment", error); // Log the error for debugging
+        alert("Failed to book appointment");
+    } finally {
+        setLoading(false);
+    }
+};
+
   
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg m-6">
       <h2 className="text-2xl font-semibold mb-6">Appointment Booking</h2>
-
-      {/* Filters */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-        {/* Specialty Dropdown */}
-        <SelectField
-          id="specialty"
-          label="Specialty"
-          options={[
-            { label: "Cardiology", value: "Cardiology" },
-            { label: "Dermatology", value: "Dermatology" },
-            { label: "Neurology", value: "Neurology" },
-          ]}
-          value="" // Add state value here
-          onChange={() => {}}
-        />
-
-        {/* Country Dropdown */}
-        <SelectField
-          id="country"
-          label="Country"
-          options={countryData.map((c) => ({ label: c.name, value: c.name }))}
-          value={country}
-          onChange={handleCountryChange}
-        />
-
-        {/* State Dropdown */}
-        <SelectField
-          id="state"
-          label="State"
-          options={filteredStates.map((state) => ({
-            label: state.name,
-            value: state.name,
-          }))}
-          value={state}
-          onChange={handleStateChange}
-        />
-
-        {/* City Dropdown */}
-        <SelectField
-          id="city"
-          label="City"
-          options={filteredCities.map((city) => ({
-            label: city.name,
-            value: city.name,
-          }))}
-          value={city}
-          onChange={handleCityChange}
-        />
-
-        {/* Hospital Dropdown */}
-        <SelectField
-          id="hospital"
-          label="Hospital"
-          options={hospitals.map((hospital) => ({
-            label: hospital.name,
-            value: hospital.name,
-          }))}
-          value={selectedHospital}
-          onChange={(e) => setSelectedHospital(e.target.value)}
-        />
-
-        {/* Doctor Dropdown */}
-        <SelectField
-          id="doctor"
-          label="Doctor"
-          options={doctors.map((doctor) => ({
-            label: `Dr. ${doctor.firstName} ${doctor.lastName}`,
-            value: doctor._id,
-          }))}
-          value={selectedDoctor}
-          onChange={(e) => setSelectedDoctor(e.target.value)}
-        />
-
-        {/* Appointment Type Dropdown */}
-        <SelectField
-          id="appointmentType"
-          label="Appointment Type"
-          options={[
-            { label: "Online", value: "Online" },
-            { label: "In-Person", value: "In-Person" },
-          ]}
-          value="" // Add state value here
-          onChange={() => {}}
-        />
+        {/* Dropdowns for filters */}
+        <SelectField id="specialty" label="Specialty" options={[{ label: "Cardiology", value: "Cardiology" }]} value="" onChange={() => {}} />
+        <SelectField id="country" label="Country" options={countryData.map((c) => ({ label: c.name, value: c.name }))} value={country} onChange={handleCountryChange} />
+        <SelectField id="state" label="State" options={filteredStates.map((state) => ({ label: state.name, value: state.name }))} value={state} onChange={handleStateChange} />
+        <SelectField id="city" label="City" options={filteredCities.map((city) => ({ label: city.name, value: city.name }))} value={city} onChange={handleCityChange} />
+        <SelectField id="hospital" label="Hospital" options={hospitals.map((hospital) => ({ label: hospital.name, value: hospital.name }))} value={selectedHospital} onChange={(e) => setSelectedHospital(e.target.value)} />
+        <SelectField id="doctor" label="Doctor" options={doctors.map((doctor) => ({ label: `Dr. ${doctor.firstName} ${doctor.lastName}`, value: doctor._id }))} value={selectedDoctor} onChange={(e) => setSelectedDoctor(e.target.value)} />
       </div>
-      {/* Calendar and Doctor Details */}
+
+      {/* Doctor Details */}
       {doctorDetails && (
-      <div className="flex">
-
-      
-      <div className="col-12">
-
-      <TimeSlotTable doctorDetails={doctorDetails} selectedDate="2024-10-22" />
-      </div>
-        <div className="col-2">
-       
-
-        {/* Doctor Details */}
-        
-          <div className="bg-white shadow-lg rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Doctor Details</h3>
-            <div className="flex items-center mb-4">
-              <img
-                src={doctorDetails.profileImage || noappointmentrecord}
-                alt="Doctor"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-              <div>
-                <p className="text-lg font-semibold">
-                  Dr. {doctorDetails.firstName} {doctorDetails.lastName}
-                </p>
-                <p className="text-gray-500">
-                  {doctorDetails.doctorDetails.specialtyType}
-                </p>
+        <div className="flex">
+          <div className="col-12">
+            <div className="bg-white shadow-lg rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-4">Doctor Details</h3>
+              <div className="flex items-center mb-4">
+                <img
+                  src={doctorDetails.profileImage || noappointmentrecord}
+                  alt="Doctor"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div>
+                  <p className="text-lg font-semibold">
+                    Dr. {doctorDetails.firstName} {doctorDetails.lastName}
+                  </p>
+                  <p className="text-gray-500">
+                    {doctorDetails.doctorDetails.specialtyType}
+                  </p>
+                </div>
               </div>
+              <p><span className="font-semibold">Qualification: </span>{doctorDetails.doctorDetails.qualification}</p>
+              <p><span className="font-semibold">Experience: </span>{doctorDetails.doctorDetails.experience} years</p>
+              <p><span className="font-semibold">Consultation Type: </span>{doctorDetails.doctorDetails.workType}</p>
+              <p><span className="font-semibold">Online Consultation Rate: </span>₹{doctorDetails.doctorDetails.onlineConsultationRate}</p>
             </div>
-            <p>
-              <span className="font-semibold">Qualification: </span>
-              {doctorDetails.doctorDetails.qualification}
-            </p>
-            <p>
-              <span className="font-semibold">Experience: </span>
-              {doctorDetails.doctorDetails.experience} years
-            </p>
-            <p>
-              <span className="font-semibold">Consultation Type: </span>
-              {doctorDetails.doctorDetails.workType}
-            </p>
-            <p>
-              <span className="font-semibold">Online Consultation Rate: </span>
-              ₹{doctorDetails.doctorDetails.onlineConsultationRate}
-            </p>
           </div>
-        
         </div>
+      )}
+
+      {/* Time Slots */}
+      {doctorDetails && (
+        <div className="p-4">
+          <div className="flex justify-between items-center mb-4">
+            <button className="px-4 py-2 bg-gray-300 rounded" onClick={handlePreviousWeek} disabled={moment(currentWeekStart).isSameOrBefore(moment(), 'day')}>
+              &lt;
+            </button>
+            <h1 className="text-xl font-bold">
+              {moment(currentWeekStart).format('DD MMMM, YYYY')} - {moment(currentWeekStart).add(6, 'days').format('DD MMMM, YYYY')}
+            </h1>
+            <button className="px-4 py-2 bg-gray-300 rounded" onClick={handleNextWeek}>
+              &gt;
+            </button>
+          </div>
+          <table className="min-w-full table-auto border-collapse">
+            <thead>
+              <tr>
+                <th className="border px-4 py-2">Time</th>
+                {days.map((day) => (
+                  <th key={day} className="border px-4 py-2">{moment(day).format('ddd D')}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {timeSlots.length === 0 ? (
+                <tr>
+                  <td className="border px-4 py-2 text-center" colSpan={days.length + 1}>No Slots Available</td>
+                </tr>
+              ) : (
+                timeSlots.map((slot) => (
+                  <tr key={slot.time}>
+                    <td className="border px-4 py-2">{slot.time}</td>
+                    {days.map((day) => (
+                      <td key={day} className="border px-4 py-2 text-center">
+                        {isSlotBooked(slot.time, day) ? <span className="text-gray-400">Booked</span> : slot.status === 'Available' ? (
+                          <span className="text-green-500 cursor-pointer" onClick={() => handleSlotClick(slot.time, day)}>Available</span>
+                        ) : slot.status === 'Lunch Break' ? (
+                          <span className="text-yellow-500">Lunch Break</span>
+                        ) : <span className="text-gray-400">{slot.status}</span>}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-        )}
-      </div>
+      )}
+
+      {/* Modal for booking appointment */}
+      {selectedSlot && (
+        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Appointment Booking" className="bg-white p-4 rounded-lg shadow-lg max-w-md mx-auto my-16" overlayClassName="fixed inset-0 bg-gray-900 bg-opacity-50">
+          {appointmentSuccess ? (
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-4">Appointment Booked Successfully!</h2>
+              <p>Your appointment has been booked for {moment(selectedSlot.day).format('MMMM D, YYYY')} at {selectedSlot.time}.</p>
+              <button className="mt-6 px-4 py-2 bg-green-500 text-white rounded-md" onClick={closeModal}>Okay</button>
+            </div>
+          ) : (
+            <>
+              <h2 className="text-xl font-bold mb-4">Book Appointment</h2>
+              <p>Appointment Date: {moment(selectedSlot.day).format('MMMM D, YYYY')}</p>
+              <p>Appointment Time: {selectedSlot.time}</p>
+              <div className="mt-4">
+                <label className="block mb-2 font-semibold">Patient Issue</label>
+                <input type="text" placeholder="Enter Patient Issue" className="w-full px-4 py-2 border border-gray-300 rounded-md" value={patientIssue} onChange={(e) => setPatientIssue(e.target.value)} />
+              </div>
+              <div className="mt-4">
+                <label className="block mb-2 font-semibold">Disease Name (Optional)</label>
+                <input type="text" placeholder="Enter Disease Name" className="w-full px-4 py-2 border border-gray-300 rounded-md" value={diseaseName} onChange={(e) => setDiseaseName(e.target.value)} />
+              </div>
+              <div className="mt-4">
+                <label className="block mb-2 font-semibold">Appointment Type</label>
+                <select value={appointmentType} onChange={(e) => setAppointmentType(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-md">
+                  <option value="Online">Online</option>
+                  <option value="Onsite">Onsite</option>
+                </select>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <button onClick={closeModal} className="px-4 py-2 mr-2 bg-gray-500 text-white rounded-md">Cancel</button>
+                <button onClick={handleBookAppointment} className="px-4 py-2 bg-blue-500 text-white rounded-md" disabled={loading}>
+                  {loading ? "Booking..." : "Book Appointment"}
+                </button>
+              </div>
+            </>
+          )}
+        </Modal>
+      )}
+    </div>
   );
 };
 

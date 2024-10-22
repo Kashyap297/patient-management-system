@@ -27,7 +27,7 @@ router.patch("/appointments/reschedule/:id", rescheduleAppointment);
 router.patch("/appointments/cancel/:id", cancelAppointment);
 
 // Get all booked appointments for a specific doctor on a given date
-router.get("/appointments/booked/:doctorId/:date", getBookedSlots);
+router.get("/appointments/booked/:doctorId", getBookedSlots);
 
 
 module.exports = router;

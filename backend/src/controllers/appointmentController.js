@@ -291,24 +291,34 @@ exports.getDoctorAppointmentsByDate = async (req, res) => {
 };
 
 
-// Updated controller logic to filter by both date and time
+// @desc    Get booked slots for a specific doctor on a particular date
+// @route   GET /api/appointments/booked/:doctorId/:date
+// @access  Private (for fetching booked slots for appointment booking)
 exports.getBookedSlots = async (req, res) => {
-  const { doctorId, date } = req.params;
-  
+  const { doctorId } = req.params; // We don't need to pass a specific date
+
   try {
-    // Find booked slots for the doctor on the specified date
+    // Find all appointments for the doctor
     const appointments = await Appointment.find({
       doctor: doctorId,
-      appointmentDate: new Date(date), // Compare date and time
       status: "Pending", // Only consider appointments that are pending
-    }).select("appointmentTime");
+    }).select("appointmentDate appointmentTime");
 
-    // Extract booked slots from the appointments
-    const bookedSlots = appointments.map(appointment => appointment.appointmentTime);
+    // Group booked slots by date
+    const bookedSlotsByDate = {};
 
+    appointments.forEach(appointment => {
+      const dateKey = appointment.appointmentDate.toISOString().split('T')[0]; // Convert to YYYY-MM-DD format
+      if (!bookedSlotsByDate[dateKey]) {
+        bookedSlotsByDate[dateKey] = [];
+      }
+      bookedSlotsByDate[dateKey].push(appointment.appointmentTime);
+    });
+
+    // Return the grouped booked slots
     res.status(200).json({
       success: true,
-      bookedSlots,
+      bookedSlots: bookedSlotsByDate, // Slots grouped by date
     });
   } catch (error) {
     console.error("Error fetching booked slots:", error);
