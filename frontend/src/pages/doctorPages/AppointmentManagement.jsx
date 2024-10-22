@@ -1,17 +1,68 @@
 import { useState, useEffect } from 'react';
 import { Button, IconButton, TextField, InputAdornment } from '@mui/material';
-import { CalendarToday, Search } from '@mui/icons-material';
+import { CalendarToday, Search, Close } from '@mui/icons-material'; // Keep other Material UI icons
+import { FaTrashAlt } from 'react-icons/fa'; // Import FontAwesome trash icon from react-icons
 import { useNavigate } from 'react-router-dom';
-import CancelAppointmentModal from '../../components/modals/CancelAppointmentModal';
-import CustomDateFilter from '../../components/modals/CustomDateFilter';
+import Modal from '@mui/material/Modal';
 import api from "../../api/api"; // Assuming you have an API setup
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import { FaCalendarTimes } from 'react-icons/fa';  // Cancel appointment icon
+import { FaCalendarCheck } from 'react-icons/fa';  // Reschedule appointment icon
+
+
+
+// Modal for Payment Return Confirmation (second image)
+const PaymentReturnModal = ({ open, onClose, onConfirm }) => {
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-[320px]">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-red-500">Cancel Onsite Appointment?</h2>
+          <IconButton onClick={onClose}>
+            <Close />
+          </IconButton>
+        </div>
+        <p className="mb-4 text-center">
+          Do you want to cancel this appointment?
+        </p>
+        <div className="flex justify-between">
+          <Button variant="outlined" onClick={onClose}>No</Button>
+          <Button variant="contained" color="primary" onClick={onConfirm}>Yes</Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+// Modal for Cancel Online Appointment (first image)
+const CancelAppointmentModal = ({ open, onClose, onProceed }) => {
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-[320px]">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-red-500">Cancel Online Appointment?</h2>
+          <IconButton onClick={onClose}>
+            <Close />
+          </IconButton>
+        </div>
+        <p className="mb-4 text-center">
+          If you cancel the appointment, you will need to return the payment.
+        </p>
+        <div className="flex justify-between">
+          <Button variant="outlined" onClick={onClose}>No</Button>
+          <Button variant="contained" color="primary" onClick={onProceed}>Payment Return</Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
 
 const AppointmentManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('Today Appointment');
   const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [openCancelAppointmentModal, setOpenCancelAppointmentModal] = useState(false);
+  const [openPaymentReturnModal, setOpenPaymentReturnModal] = useState(false);
   const [filterDates, setFilterDates] = useState({ fromDate: null, toDate: null });
   const [appointments, setAppointments] = useState({
     today: [],
@@ -19,7 +70,8 @@ const AppointmentManagement = () => {
     previous: [],
     canceled: []
   });
-
+  const [appointmentToCancel, setAppointmentToCancel] = useState(null);
+  
   const navigate = useNavigate();
 
   // Fetch appointments for the logged-in doctor
@@ -89,7 +141,6 @@ const AppointmentManagement = () => {
     }
   };
 
-
   const filteredAppointments = getAppointments().filter((appointment) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
     const appointmentDate = new Date(appointment.appointmentDate);
@@ -107,8 +158,38 @@ const AppointmentManagement = () => {
     return matchesSearchTerm && matchesDateRange;
   });
 
+  // Open modal for canceling appointment
+  const handleOpenCancelAppointmentModal = (appointment) => {
+    setAppointmentToCancel(appointment);
+    setOpenCancelAppointmentModal(true);
+  };
 
-  console.log("Filtered Appointments:", filteredAppointments);
+  // Proceed to Payment Return modal
+  const handlePaymentReturn = () => {
+    setOpenCancelAppointmentModal(false);
+    setOpenPaymentReturnModal(true);
+  };
+
+  // Confirm cancellation and close Payment Return modal
+  const handleConfirmCancelAppointment = async () => {
+    try {
+      await api.patch(`/appointments/cancel/${appointmentToCancel.id}`, {
+        status: "Cancelled",
+      });
+      // Update the appointments after cancellation
+      setAppointments((prevAppointments) => ({
+        ...prevAppointments,
+        today: prevAppointments.today.filter(app => app.id !== appointmentToCancel.id),
+        upcoming: prevAppointments.upcoming.filter(app => app.id !== appointmentToCancel.id),
+        previous: prevAppointments.previous.filter(app => app.id !== appointmentToCancel.id),
+        canceled: [...prevAppointments.canceled, { ...appointmentToCancel, status: "Cancelled" }]
+      }));
+    } catch (error) {
+      console.error("Error cancelling the appointment:", error);
+    } finally {
+      setOpenPaymentReturnModal(false);
+    }
+  };
 
   const handleApplyDateFilter = (fromDate, toDate) => {
     setFilterDates({ fromDate, toDate });
@@ -119,8 +200,6 @@ const AppointmentManagement = () => {
     setFilterDates({ fromDate: null, toDate: null });
     setOpenCustomDateModal(false);
   };
-
-
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md m-6">
@@ -180,47 +259,55 @@ const AppointmentManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredAppointments.length > 0 ? (
-              filteredAppointments.map((appointment, index) => (
-                <tr key={index} className="border-t">
-                  <td className="p-3">{appointment.patientName}</td>
-                  <td className="p-3">{appointment.diseaseName}</td>
-                  <td className="p-3">{appointment.patientIssue}</td>
-                  <td className="p-3">{appointment.appointmentDate}</td>
-                  <td className="p-3 text-blue-600">{appointment.appointmentTime}</td>
-                  <td className="p-3">
-                    <span className={`px-3 py-1 text-sm font-medium rounded-full ${appointment.appointmentType === 'Online' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
-                      {appointment.appointmentType}
-                    </span>
-                  </td>
-                  <td className="p-3 flex space-x-2">
-                    <IconButton color="primary" onClick={() => setOpenCustomDateModal(true)}>
-                      <CalendarToday style={{ color: '#1A73E8' }} />
-                    </IconButton>
-                    <IconButton color="secondary" onClick={() => setOpenCancelAppointmentModal(true)}>
-                      <CalendarToday style={{ color: 'red' }} />
-                    </IconButton>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="text-center p-4 text-gray-500">
-                  No appointments found for the selected criteria.
-                </td>
-              </tr>
-            )}
+          {filteredAppointments.length > 0 ? (
+  filteredAppointments.map((appointment, index) => (
+    <tr key={index} className="border-t">
+      <td className="p-3">{appointment.patientName}</td>
+      <td className="p-3">{appointment.diseaseName}</td>
+      <td className="p-3">{appointment.patientIssue}</td>
+      <td className="p-3">{appointment.appointmentDate}</td>
+      <td className="p-3 text-blue-600">{appointment.appointmentTime}</td>
+      <td className="p-3">
+        <span className={`px-3 py-1 text-sm font-medium rounded-full ${appointment.appointmentType === 'Online' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
+          {appointment.appointmentType}
+        </span>
+      </td>
+      <td className="p-3 flex space-x-2">
+        {/* Cancel Appointment */}
+        <IconButton color="secondary" onClick={() => handleOpenCancelAppointmentModal(appointment)}>
+          <FaCalendarTimes style={{ color: 'red', fontSize: '24px' }} />
+        </IconButton>
+        
+        {/* Reschedule Appointment */}
+        <IconButton color="primary" onClick={() => handleOpenRescheduleAppointmentModal(appointment)}>
+          <FaCalendarCheck style={{ color: 'blue', fontSize: '24px' }} />
+        </IconButton>
+      </td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan="7" className="text-center p-4 text-gray-500">
+      No appointments found for the selected criteria.
+    </td>
+  </tr>
+)}
+
           </tbody>
         </table>
       </div>
 
-      <CustomDateFilter
-        open={openCustomDateModal}
-        onClose={() => setOpenCustomDateModal(false)}
-        onApply={handleApplyDateFilter}
-        onReset={handleResetDateFilter}
+      <CancelAppointmentModal 
+        open={openCancelAppointmentModal}
+        onClose={() => setOpenCancelAppointmentModal(false)}
+        onProceed={handlePaymentReturn}
       />
-      <CancelAppointmentModal open={openCancelAppointmentModal} onClose={() => setOpenCancelAppointmentModal(false)} />
+
+      <PaymentReturnModal
+        open={openPaymentReturnModal}
+        onClose={() => setOpenPaymentReturnModal(false)}
+        onConfirm={handleConfirmCancelAppointment}
+      />
     </div>
   );
 };

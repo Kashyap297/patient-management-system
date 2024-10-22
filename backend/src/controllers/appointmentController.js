@@ -115,9 +115,9 @@ exports.getAllAppointments = async (req, res) => {
           : "N/A",
         patientAge: appointment.patient ? appointment.patient.age : "N/A",
         patientGender: appointment.patient ? appointment.patient.gender : "N/A",
-        patientIssue: appointment.patient
-          ? appointment.patient.patientIssue
-          : "N/A",
+        patientIssue: appointment.patientIssue,
+          //  ? appointment.patient.age
+          //  : "N/A",
         diseaseName: appointment.diseaseName,
         doctorId: appointment.doctor ? appointment.doctor._id : null, // Add doctor ID to the response
         patientId: appointment.patient ? appointment.patient._id : null,
