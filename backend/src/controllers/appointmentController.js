@@ -88,8 +88,7 @@ exports.createAppointment = async (req, res) => {
 // @access  Private (Patients only)
 exports.getAllAppointments = async (req, res) => {
   try {
-    // Find appointments where the logged-in user is the patient
-    const appointments = await Appointment.find({ patient: req.user._id })
+    const appointments = await Appointment.find()
       .populate({
         path: "patient",
         select: "firstName lastName phoneNumber age gender address",
@@ -97,7 +96,7 @@ exports.getAllAppointments = async (req, res) => {
       .populate({
         path: "doctor",
         select:
-          "firstName lastName doctorDetails.qualification doctorDetails.specialtyType doctorDetails.experience doctorDetails.hospital _id",
+          "firstName lastName doctorDetails.qualification doctorDetails.specialtyType doctorDetails.experience doctorDetails.hospital _id", // Add _id here to ensure doctor ID is included
       });
 
     res.status(200).json({
@@ -116,9 +115,11 @@ exports.getAllAppointments = async (req, res) => {
           : "N/A",
         patientAge: appointment.patient ? appointment.patient.age : "N/A",
         patientGender: appointment.patient ? appointment.patient.gender : "N/A",
-        patientIssue: appointment.patientIssue,
+        patientIssue: appointment.patient
+          ? appointment.patient.patientIssue
+          : "N/A",
         diseaseName: appointment.diseaseName,
-        doctorId: appointment.doctor ? appointment.doctor._id : null,
+        doctorId: appointment.doctor ? appointment.doctor._id : null, // Add doctor ID to the response
         patientId: appointment.patient ? appointment.patient._id : null,
         doctorName: appointment.doctor
           ? `${appointment.doctor.firstName} ${appointment.doctor.lastName}`

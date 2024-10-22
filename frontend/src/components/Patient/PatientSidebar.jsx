@@ -19,6 +19,11 @@ const PatientSidebar = ({ onMenuClick }) => {
   // State to store the active tab
   const [activeTab, setActiveTab] = useState("Personal Health Record");
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
+
   const handleMenuClick = (label, path) => {
     updateBreadcrumb([{ label, path }]);
     setActiveTab(label); // Set the active tab
@@ -119,13 +124,13 @@ const PatientSidebar = ({ onMenuClick }) => {
 
       {/* Logout Section */}
       <div className="mb-5">
-        <NavLink
-          to="/logout"
-          className="flex items-center justify-start py-3 text-red-500 font-semibold bg-red-100 px-5"
+        <button
+          onClick={handleLogout}
+          className="flex items-center w-full py-3 text-red-500 font-semibold bg-red-100 px-6"
         >
           <HiOutlineLogout className="mr-2 text-lg" />
           Logout
-        </NavLink>
+        </button>
       </div>
     </div>
   );

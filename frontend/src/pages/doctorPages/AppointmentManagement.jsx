@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import CancelAppointmentModal from '../../components/modals/CancelAppointmentModal';
 import CustomDateFilter from '../../components/modals/CustomDateFilter';
 import api from "../../api/api"; // Assuming you have an API setup
+import {jwtDecode} from "jwt-decode";
 
 const AppointmentManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,42 +26,50 @@ const AppointmentManagement = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const token = localStorage.getItem('token'); // Retrieve the token
+        const token = localStorage.getItem('token'); // Retrieve token
+        const decodedToken = jwtDecode(token); // Decode the token
+        const doctorId = decodedToken.id; // Assuming the token contains the doctorId in the 'id' field
+  
+        // Fetch appointments and filter them by the logged-in doctor's ID
         const response = await api.get("/appointments", {
           headers: {
-            Authorization: `Bearer ${token}`, // Pass the token in the header
+            Authorization: `Bearer ${token}`, // Pass token in the header
           },
         });
-
+  
         const appointmentsData = response.data.data || [];
-        const today = new Date().toISOString().split("T")[0]; // Today's date string in YYYY-MM-DD format
-
-        const todayAppointments = appointmentsData.filter(appointment =>
+        const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+  
+        // Filter appointments for the logged-in doctor
+        const doctorAppointments = appointmentsData.filter(
+          (appointment) => appointment.doctorId === doctorId
+        );
+  
+        const todayAppointments = doctorAppointments.filter(appointment =>
           appointment.appointmentDate.startsWith(today)
         );
-
-        const upcomingAppointments = appointmentsData.filter(appointment =>
+  
+        const upcomingAppointments = doctorAppointments.filter(appointment =>
           new Date(appointment.appointmentDate) > new Date(today)
         );
-
-        const previousAppointments = appointmentsData.filter(appointment =>
+  
+        const previousAppointments = doctorAppointments.filter(appointment =>
           new Date(appointment.appointmentDate) < new Date(today)
         );
-
+  
         setAppointments({
           today: todayAppointments,
           upcoming: upcomingAppointments,
           previous: previousAppointments,
-          canceled: appointmentsData.filter(app => app.status === "Canceled")
+          canceled: doctorAppointments.filter(app => app.status === "Cancelled")
         });
       } catch (error) {
         console.error("Error fetching doctor's appointments:", error);
       }
     };
-
+  
     fetchAppointments();
   }, []);
-
 
 
 
@@ -151,7 +160,7 @@ const AppointmentManagement = () => {
           >
             Any Date
           </Button>
-          <Button variant="contained" color="primary" className="!text-sm" onClick={() => navigate('/appointment-time-slot')}>
+          <Button variant="contained" color="primary" className="!text-sm" onClick={() => navigate('/doctor/appointment-time-slot')}>
             Appointment Time Slot
           </Button>
         </div>
