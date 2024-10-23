@@ -15,6 +15,7 @@ import BillPage from "../pages/patientPages/BillPage";
 import PatientSidebar from "./Patient/PatientSidebar";
 import { BreadcrumbProvider } from "../context/BreadcrumbContext";
 import BookAppointment from "../pages/patientPages/BookAppointment";
+import RescheduleAppointment from "../pages/patientPages/RescheduleAppointment";
 
 
 const PatientRoutes = () => {
@@ -35,6 +36,7 @@ const PatientRoutes = () => {
             <Route path="/test-report" element={<TestReportPage />} />
             <Route path="/medical-history" element={<MedicalHistoryPage />} />
             <Route path="/appointment-booking" element={<AppointmentBookingPage />} />
+            <Route path="/rescheduleA-appointment" element={<RescheduleAppointment />} />
             <Route path="/prescription-access" element={<PrescriptionAccessPage />} />
             <Route path="/tele-access" element={<TeleAccess />} />
             <Route path="/chat" element={<ChatPage />} />

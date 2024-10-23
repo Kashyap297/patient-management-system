@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, IconButton, TextField, InputAdornment } from '@mui/material';
 import { CalendarToday, Search, Close } from '@mui/icons-material'; // Keep other Material UI icons
 import { FaTrashAlt } from 'react-icons/fa'; // Import FontAwesome trash icon from react-icons
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 import api from "../../api/api"; // Assuming you have an API setup
 import { jwtDecode } from "jwt-decode";
@@ -114,8 +114,9 @@ const AppointmentManagement = () => {
       }
       setTimeSlots(slots);
     };
-
+    
     generateTimeSlots();
+
 
     const fetchAppointments = async () => {
       try {
@@ -160,17 +161,18 @@ const AppointmentManagement = () => {
   const getAppointments = () => {
     switch (activeTab) {
       case 'Today Appointment':
-        return appointments.today || [];
+        return appointments.today.filter(app => app.status !== 'Cancelled'); // Exclude cancelled appointments
       case 'Upcoming Appointment':
-        return appointments.upcoming || [];
+        return appointments.upcoming.filter(app => app.status !== 'Cancelled'); // Exclude cancelled appointments
       case 'Previous Appointment':
-        return appointments.previous || [];
+        return appointments.previous.filter(app => app.status !== 'Cancelled'); // Exclude cancelled appointments
       case 'Cancel Appointment':
-        return appointments.canceled || [];
+        return appointments.canceled; // Only show cancelled appointments
       default:
         return [];
     }
   };
+  
 
   const filteredAppointments = getAppointments().filter((appointment) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -188,11 +190,12 @@ const AppointmentManagement = () => {
     return matchesSearchTerm && matchesDateRange;
   });
 
-  // Open reschedule modal
-  const handleOpenRescheduleAppointmentModal = (appointment) => {
-    setAppointmentToReschedule(appointment);
-    setOpenRescheduleModal(true);
+  const handleOpenCancelAppointmentModal = (appointment) => {
+    setAppointmentToCancel(appointment);
+    setOpenCancelAppointmentModal(true);
   };
+  // Open reschedule modal
+
 
   // Save new time slot for rescheduled appointment
   const handleSaveReschedule = async (newTimeSlot) => {
@@ -320,9 +323,11 @@ const AppointmentManagement = () => {
                     </IconButton>
                     
                     {/* Reschedule Appointment */}
-                    <IconButton color="primary" onClick={() => handleOpenRescheduleAppointmentModal(appointment)}>
+                    <Link to='/doctor/edit-appointment'>
+                    <IconButton color="primary">
                       <FaCalendarCheck style={{ color: 'blue', fontSize: '24px' }} />
                     </IconButton>
+                    </Link>
                   </td>
                 </tr>
               ))

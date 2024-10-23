@@ -193,10 +193,10 @@ const AppointmentBookingPage = () => {
                     <FaTrashAlt />
                     <span>{loading ? "Canceling..." : "Cancel"}</span>
                   </button>
-                  <button className="flex items-center justify-center space-x-1 bg-customBlue px-3 py-2 rounded-md text-white w-1/2">
+                  <Link to='/patient/rescheduleA-appointment' className="flex items-center justify-center space-x-1 bg-customBlue px-3 py-2 rounded-md text-white w-1/2">
                     <FaRedoAlt />
                     <span>Reschedule</span>
-                  </button>
+                  </Link>
                 </>
               ) : null}
             </div>

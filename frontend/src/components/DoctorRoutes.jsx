@@ -13,6 +13,7 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ProfileScreen from "../pages/adminPages/ProfileScreen";
 import ChatPage from "../pages/patientPages/ChatPage";
+import EditAppointment from "../pages/doctorPages/EditAppointment";
 
 const DoctorRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const DoctorRoutes = () => {
           <Routes>
             <Route path="/appointment-management" element={<AppointmentManagement />} />
             <Route path="/appointment-time-slot" element={<AppointmentTimeSlot />} />
+            <Route path="/edit-appointment" element={<EditAppointment />} />
             <Route path="/patient-record-access" element={<PatientRecordAccess />} />
             <Route path="/patient-detail/:id" element={<PatientDetail />} />
             <Route path="/prescription-tools/create" element={<CreatePrescriptionScreen />} />
