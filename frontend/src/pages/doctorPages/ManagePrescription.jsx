@@ -10,47 +10,46 @@ const ManagePrescription = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const [todayPatients, setTodayPatients] = useState([]);
-  const [olderPatients, setOlderPatients] = useState([]);
+  const [todayPrescriptions, setTodayPrescriptions] = useState([]);
+  const [olderPrescriptions, setOlderPrescriptions] = useState([]);
   const [selectedPrescription, setSelectedPrescription] = useState(null);
 
-  // Fetch appointments for today and older appointments
+  // Fetch prescriptions for today and older ones
   useEffect(() => {
-    const fetchAppointments = async () => {
+    const fetchPrescriptions = async () => {
       try {
-        const response = await api.get('/appointments');
-        const appointments = response.data.data;
-        
-        // Filter today's appointments and older appointments
-        const today = new Date().setHours(0, 0, 0, 0);
-        const todayData = appointments.filter(appt => new Date(appt.appointmentDate).setHours(0, 0, 0, 0) === today);
-        const olderData = appointments.filter(appt => new Date(appt.appointmentDate).setHours(0, 0, 0, 0) < today);
+        const response = await api.get('/prescription'); // Fetch all prescriptions for the logged-in user
+        const prescriptions = response.data.prescriptions;
 
-        setTodayPatients(todayData);
-        setOlderPatients(olderData);
+        // Filter today's prescriptions and older prescriptions
+        const today = new Date().setHours(0, 0, 0, 0); // Start of today's date
+        const todayData = prescriptions.filter(
+          (pres) => new Date(pres.createdAt).setHours(0, 0, 0, 0) === today
+        );
+        const olderData = prescriptions.filter(
+          (pres) => new Date(pres.createdAt).setHours(0, 0, 0, 0) < today
+        );
+
+        setTodayPrescriptions(todayData);
+        setOlderPrescriptions(olderData);
       } catch (error) {
-        console.error("Error fetching appointments:", error);
+        console.error('Error fetching prescriptions:', error);
       }
     };
 
-    fetchAppointments();
+    fetchPrescriptions();
   }, []);
 
   // Handle modal open with prescription details
-  const handleModalOpen = async (appointmentId) => {
-    try {
-      const response = await api.get('/prescription');
-      const prescriptions = response.data.prescriptions;
-      const prescription = prescriptions.find(prescription => prescription.appointmentId._id === appointmentId);
+  const handleModalOpen = (prescriptionId) => {
+    const prescription = todayPrescriptions.find((pres) => pres._id === prescriptionId) 
+                      || olderPrescriptions.find((pres) => pres._id === prescriptionId);
 
-      if (prescription) {
-        setSelectedPrescription(prescription);
-        setModalOpen(true);
-      } else {
-        console.error("Prescription not found for this appointment.");
-      }
-    } catch (error) {
-      console.error("Error fetching prescription:", error);
+    if (prescription) {
+      setSelectedPrescription(prescription);
+      setModalOpen(true);
+    } else {
+      console.error('Prescription not found.');
     }
   };
 
@@ -60,22 +59,22 @@ const ManagePrescription = () => {
   };
 
   // Choose the appropriate data based on the active tab
-  const currentPatients = activeTab === 0 ? todayPatients : olderPatients;
+  const currentPrescriptions = activeTab === 0 ? todayPrescriptions : olderPrescriptions;
 
-  // Filter the patient data based on search input
-  const filteredPatients = currentPatients.filter(
-    (patient) =>
-      patient.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.patientPhoneNumber.includes(searchTerm) ||
-      patient.patientAge.toString().includes(searchTerm)
+  // Filter the prescription data based on search input
+  const filteredPrescriptions = currentPrescriptions.filter(
+    (prescription) =>
+      prescription.patient.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      prescription.patient.phoneNumber.includes(searchTerm) ||
+      prescription.patient.age.toString().includes(searchTerm)
   );
 
   return (
     <div className="p-8 bg-white min-h-screen shadow-lg rounded-lg">
       {/* Tabs */}
       <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
-        <Tab label="Today Prescription" />
-        <Tab label="Older Prescription" />
+        <Tab label="Today's Prescriptions" />
+        <Tab label="Older Prescriptions" />
       </Tabs>
 
       {/* Search Field */}
@@ -94,8 +93,8 @@ const ManagePrescription = () => {
         <TableHead>
           <TableRow>
             <TableCell>Patient Name</TableCell>
-            <TableCell>Patient Number</TableCell>
-            <TableCell>Appointment Type</TableCell>
+            <TableCell>Phone Number</TableCell>
+            <TableCell>Appointment Date</TableCell>
             <TableCell>Appointment Time</TableCell>
             <TableCell>Age</TableCell>
             <TableCell>Gender</TableCell>
@@ -103,27 +102,22 @@ const ManagePrescription = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {filteredPatients.map((patient, index) => (
+          {filteredPrescriptions.map((prescription, index) => (
             <TableRow key={index}>
-              <TableCell>{patient.patientName}</TableCell>
-              <TableCell>{patient.patientPhoneNumber}</TableCell>
+              <TableCell>{prescription.patient.firstName} {prescription.patient.lastName}</TableCell>
+              <TableCell>{prescription.patient.phoneNumber}</TableCell>
+              <TableCell>{new Date(prescription.appointmentId.appointmentDate).toLocaleDateString()}</TableCell>
+              <TableCell>{prescription.appointmentId.appointmentTime}</TableCell>
+              <TableCell>{prescription.patient.age}</TableCell>
               <TableCell>
-                <Badge
-                  badgeContent={patient.appointmentType}
-                  color={patient.appointmentType === 'Online' ? 'warning' : 'primary'}
-                />
-              </TableCell>
-              <TableCell>{patient.appointmentTime}</TableCell>
-              <TableCell>{patient.patientAge}</TableCell>
-              <TableCell>
-                {patient.patientGender === 'Male' ? (
+                {prescription.patient.gender === 'Male' ? (
                   <MaleIcon style={{ color: 'blue' }} />
                 ) : (
                   <FemaleIcon style={{ color: 'red' }} />
                 )}
               </TableCell>
               <TableCell>
-                <IconButton onClick={() => handleModalOpen(patient.id)}>
+                <IconButton onClick={() => handleModalOpen(prescription._id)}>
                   <Visibility />
                 </IconButton>
               </TableCell>

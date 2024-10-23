@@ -32,15 +32,13 @@ const PatientRecordAccess = () => {
 
         const allAppointments = response.data.data || [];
 
-        // Filter for only the previous appointments of the logged-in doctor
-        const previousAppointments = allAppointments.filter(appointment => {
-          const appointmentDate = new Date(appointment.appointmentDate);
-          const today = new Date();
-          return appointment.doctorId === doctorId && appointmentDate < today;
+        // Filter for only the completed appointments of the logged-in doctor
+        const completedAppointments = allAppointments.filter(appointment => {
+          return appointment.doctorId === doctorId && appointment.status === 'Completed';
         });
 
-        console.log('Filtered previous appointments:', previousAppointments); // Debugging
-        setAppointments(previousAppointments);
+        console.log('Filtered completed appointments:', completedAppointments); // Debugging
+        setAppointments(completedAppointments);
       } catch (error) {
         console.error('Error fetching appointments:', error);
       }
@@ -58,7 +56,7 @@ const PatientRecordAccess = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md m-6">
-      <h2 className="text-lg font-semibold mb-4">Previous Appointments</h2>
+      <h2 className="text-lg font-semibold mb-4">Completed Appointments</h2>
 
       {/* Search Section */}
       <div className="flex justify-between items-center mb-4">
@@ -77,7 +75,7 @@ const PatientRecordAccess = () => {
         />
       </div>
 
-      {/* Table of Previous Appointments */}
+      {/* Table of Completed Appointments */}
       <div className="max-h-[600px] overflow-y-auto">
         <table className="min-w-full table-auto">
           <thead className="sticky top-0 bg-gray-100 z-10">
@@ -117,7 +115,7 @@ const PatientRecordAccess = () => {
             ) : (
               <tr>
                 <td colSpan="8" className="text-center p-4 text-gray-500">
-                  No previous appointments found for the selected criteria.
+                  No completed appointments found for the selected criteria.
                 </td>
               </tr>
             )}

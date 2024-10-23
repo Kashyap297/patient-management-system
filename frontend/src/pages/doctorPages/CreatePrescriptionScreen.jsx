@@ -28,9 +28,10 @@ const CreatePrescriptionScreen = () => {
         });
 
         // Filter for today's appointments associated with the logged-in doctor
+        // Exclude appointments with status 'completed'
         const filteredAppointments = response.data.data.filter(appointment => {
           const appointmentDate = appointment.appointmentDate.split('T')[0];
-          return appointment.doctorId === doctorId && appointmentDate === today;
+          return appointment.doctorId === doctorId && appointmentDate === today && appointment.status !== 'Completed';
         });
 
         setAppointments(filteredAppointments);
@@ -52,10 +53,10 @@ const CreatePrescriptionScreen = () => {
             id={appointment.id}
             name={appointment.patientName}
             age={appointment.patientAge}
-            gender={appointment.patientGender}
+            gender={appointment.patientGender} 
             appointmentType={appointment.appointmentType}
             time={appointment.appointmentTime}
-            isNew={true} // Assume all today's appointments are "New" for simplicity
+            status={appointment.status}  // Pass the status to the component
           />
         ))}
       </div>

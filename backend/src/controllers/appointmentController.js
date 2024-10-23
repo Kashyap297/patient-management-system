@@ -332,3 +332,34 @@ exports.getBookedSlots = async (req, res) => {
     res.status(500).json({ message: "Error fetching booked slots", error });
   }
 };
+
+// @desc    Update appointment status
+// @route   PATCH /api/appointments/:id
+// @access  Private
+exports.updateAppointmentStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body; // Status will be passed in the request body
+
+  try {
+    // Find the appointment by ID
+    const appointment = await Appointment.findById(id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Update the appointment status
+    appointment.status = status || appointment.status;
+
+    await appointment.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment status updated successfully",
+      data: appointment,
+    });
+  } catch (error) {
+    console.error("Error updating appointment status:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};

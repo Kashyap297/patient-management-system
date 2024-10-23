@@ -8,6 +8,7 @@ const {
   getAllAppointments,
   getDoctorAppointmentsByDate,
   getBookedSlots,
+  updateAppointmentStatus,
 } = require("../controllers/appointmentController");
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -29,5 +30,7 @@ router.patch("/appointments/cancel/:id", cancelAppointment);
 // Get all booked appointments for a specific doctor on a given date
 router.get("/appointments/booked/:doctorId", getBookedSlots);
 
+// Update appointment status
+router.patch("/appointments/:id", updateAppointmentStatus); // <-- Add this route to update status
 
 module.exports = router;

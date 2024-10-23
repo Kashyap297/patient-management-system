@@ -71,12 +71,20 @@ const CreatePrescriptionForm = () => {
         additionalNote: values.additionalNote,
       };
 
+      // Step 1: Create the prescription
       const response = await api.post('/prescription', payload);
-      alert('Prescription created successfully')
       console.log('Prescription created successfully:', response.data);
-      navigate(`/doctor/prescription-tools/create`)
+
+      // Step 2: Update the appointment status to "Completed"
+      await api.patch(`/appointments/${values.appointmentId}`, {
+        status: 'Completed',
+      });
+      alert('Prescription created successfully and appointment marked as Completed');
+
+      // Navigate back after successful submission
+      navigate(`/doctor/prescription-tools/create`);
     } catch (error) {
-      console.error('Error creating prescription:', error);
+      console.error('Error creating prescription or updating appointment status:', error);
     }
   };
 
@@ -88,138 +96,154 @@ const CreatePrescriptionForm = () => {
       onSubmit={handleSubmit}
     >
       {({ values, handleChange, handleBlur, errors, touched }) => (
-        <Form>
-          <div className="flex flex-col gap-8 p-8 bg-white min-h-screen shadow-lg rounded-lg">
-            <h2 className="text-2xl font-bold mb-4">Create Prescription</h2>
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <TextField
-                label="Patient Name"
-                name="patientName"
-                value={values.patientName}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.patientName && Boolean(errors.patientName)}
-                helperText={touched.patientName && errors.patientName}
-                fullWidth
-                disabled
-              />
-              <TextField
-                label="Age"
-                name="patientAge"
-                type="number"
-                value={values.patientAge}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.patientAge && Boolean(errors.patientAge)}
-                helperText={touched.patientAge && errors.patientAge}
-                fullWidth
-                disabled
-              />
-              <TextField
-                label="Gender"
-                name="patientGender"
-                value={values.patientGender}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.patientGender && Boolean(errors.patientGender)}
-                helperText={touched.patientGender && errors.patientGender}
-                fullWidth
-                disabled
-              />
-            </div>
-
-            {/* Medicines Table */}
-            <h2 className="text-xl font-bold mb-4">Drug Prescription</h2>
-            <FieldArray name="medicines">
-              {({ push, remove }) => (
-                <>
-                  {values.medicines.map((medicine, index) => (
-                    <div key={index} className="grid grid-cols-6 gap-4 mb-4">
-                      <TextField
-                        label="Medicine Name"
-                        name={`medicines[${index}].medicineName`}
-                        value={medicine.medicineName}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        fullWidth
-                      />
-                      <TextField
-                        label="Strength"
-                        name={`medicines[${index}].strength`}
-                        value={medicine.strength}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        fullWidth
-                      />
-                      <FormControl fullWidth>
-                        <InputLabel>Dose</InputLabel>
-                        <Select
-                          name={`medicines[${index}].dose`}
-                          value={medicine.dose}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        >
-                          {doseOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <TextField
-                        label="Duration"
-                        name={`medicines[${index}].duration`}
-                        value={medicine.duration}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        fullWidth
-                      />
-                      <FormControl fullWidth>
-                        <InputLabel>When to Take</InputLabel>
-                        <Select
-                          name={`medicines[${index}].whenToTake`}
-                          value={medicine.whenToTake}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        >
-                          {whenToTakeOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <IconButton
-                        onClick={() => remove(index)}
-                        className="text-red-500"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </div>
-                  ))}
-                  <Button variant="contained" onClick={() => push({ medicineName: '', strength: '', dose: '', duration: '', whenToTake: '' })}>
-                    Add Medicine
-                  </Button>
-                </>
-              )}
-            </FieldArray>
-
+        <Form className="flex flex-col gap-6 p-8 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6">Create Prescription</h2>
+          
+          {/* Patient Info */}
+          <div className="grid grid-cols-3 gap-4">
             <TextField
-              label="Additional Note"
-              name="additionalNote"
-              value={values.additionalNote}
+              label="Patient Name"
+              name="patientName"
+              value={values.patientName}
               onChange={handleChange}
               onBlur={handleBlur}
+              error={touched.patientName && Boolean(errors.patientName)}
+              helperText={touched.patientName && errors.patientName}
               fullWidth
-              multiline
-              rows={4}
-              className="mt-6"
+              disabled
+              className="bg-gray-50"
             />
-
-            <Button type="submit" variant="contained" color="primary" className="mt-6">
-              Submit
-            </Button>
+            <TextField
+              label="Age"
+              name="patientAge"
+              type="number"
+              value={values.patientAge}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.patientAge && Boolean(errors.patientAge)}
+              helperText={touched.patientAge && errors.patientAge}
+              fullWidth
+              disabled
+              className="bg-gray-50"
+            />
+            <TextField
+              label="Gender"
+              name="patientGender"
+              value={values.patientGender}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.patientGender && Boolean(errors.patientGender)}
+              helperText={touched.patientGender && errors.patientGender}
+              fullWidth
+              disabled
+              className="bg-gray-50"
+            />
           </div>
+
+          {/* Medicines Table */}
+          <h2 className="text-2xl font-semibold mb-4">Drug Prescription</h2>
+          <FieldArray name="medicines">
+            {({ push, remove }) => (
+              <>
+                <div className="grid grid-cols-6 gap-4 text-sm font-semibold mb-2">
+                  <div>Medicine Name</div>
+                  <div>Strength</div>
+                  <div>Dose</div>
+                  <div>Duration</div>
+                  <div>When to Take</div>
+                  <div></div>
+                </div>
+                {values.medicines.map((medicine, index) => (
+                  <div key={index} className="grid grid-cols-6 gap-4 mb-4">
+                    <TextField
+                      label="Medicine Name"
+                      name={`medicines[${index}].medicineName`}
+                      value={medicine.medicineName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      fullWidth
+                    />
+                    <TextField
+                      label="Strength"
+                      name={`medicines[${index}].strength`}
+                      value={medicine.strength}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      fullWidth
+                    />
+                    <FormControl fullWidth>
+                      <InputLabel>Dose</InputLabel>
+                      <Select
+                        name={`medicines[${index}].dose`}
+                        value={medicine.dose}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      >
+                        {doseOptions.map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <TextField
+                      label="Duration"
+                      name={`medicines[${index}].duration`}
+                      value={medicine.duration}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      fullWidth
+                    />
+                    <FormControl fullWidth>
+                      <InputLabel>When to Take</InputLabel>
+                      <Select
+                        name={`medicines[${index}].whenToTake`}
+                        value={medicine.whenToTake}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      >
+                        {whenToTakeOptions.map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <IconButton onClick={() => remove(index)} className="text-red-500">
+                      <DeleteIcon />
+                    </IconButton>
+                  </div>
+                ))}
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    push({ medicineName: '', strength: '', dose: '', duration: '', whenToTake: '' })
+                  }
+                  className="bg-blue-500 text-white"
+                >
+                  Add Medicine
+                </Button>
+              </>
+            )}
+          </FieldArray>
+
+          {/* Additional Note */}
+          <TextField
+            label="Additional Note"
+            name="additionalNote"
+            value={values.additionalNote}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            fullWidth
+            multiline
+            rows={4}
+            className="mt-6 bg-gray-50"
+          />
+
+          {/* Submit Button */}
+          <Button type="submit" variant="contained" className="mt-6 bg-blue-500 text-white">
+            Submit
+          </Button>
         </Form>
       )}
     </Formik>

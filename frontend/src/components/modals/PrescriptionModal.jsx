@@ -20,7 +20,7 @@ const PrescriptionModal = ({ open, handleClose, prescriptionData }) => {
           <span>Prescription</span>
           <IconButton onClick={handleClose}>
             <CloseIcon />
-          </IconButton>
+          </IconButton> 
         </div>
       </DialogTitle>
       <DialogContent>
