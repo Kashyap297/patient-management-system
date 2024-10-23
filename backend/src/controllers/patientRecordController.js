@@ -77,43 +77,50 @@ const upload = multer({
 }).single("file"); // Single file upload
 
 exports.addPatientRecord = async (req, res) => {
-  upload(req, res, async (err) => {
-    if (err) {
-      return res.status(500).json({ message: "File upload error", error: err });
-    }
+  const { patientId, doctorId, description } = req.body;
 
-    const { patientId, doctorId, description } = req.body;
+  // Validate required fields
+  if (!patientId || !doctorId || !description || !req.file) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
 
-    try {
-      // Find if the record already exists
-      let patientRecord = await PatientRecord.findOne({
+  try {
+    // Find if the record already exists for this patient and doctor
+    let patientRecord = await PatientRecord.findOne({
+      patient: patientId,
+      doctor: doctorId,
+    });
+
+    // Store the relative path to the file, not the full local path
+    const relativeFilePath = `uploads/${req.file.filename}`;
+
+    if (!patientRecord) {
+      // Create new patient record if it doesn't exist
+      patientRecord = new PatientRecord({
         patient: patientId,
         doctor: doctorId,
+        files: [{ url: relativeFilePath, description }],
       });
-
-      if (!patientRecord) {
-        // Create new patient record if not exists
-        patientRecord = new PatientRecord({
-          patient: patientId,
-          doctor: doctorId,
-          files: [{ url: req.file.path, description }],
-        });
-      } else {
-        // Add new file to existing patient record
-        patientRecord.files.push({ url: req.file.path, description });
-      }
-
-      await patientRecord.save();
-
-      res.status(201).json({
-        message: "Record added successfully",
-        data: patientRecord,
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
+    } else {
+      // Add new file to existing patient record
+      patientRecord.files.push({ url: relativeFilePath, description });
     }
-  });
+
+    // Save the patient record
+    await patientRecord.save();
+
+    // Respond with success
+    res.status(201).json({
+      message: "Record added successfully",
+      data: patientRecord,
+    });
+  } catch (error) {
+    // Handle any errors that occur during database operations
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
+
+
 
 //4 Fetch All Patient Records for a Doctor
 exports.getPatientRecords = async (req, res) => {

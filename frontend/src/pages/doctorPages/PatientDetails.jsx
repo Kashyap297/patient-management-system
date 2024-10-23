@@ -1,21 +1,32 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, IconButton } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
+import {jwtDecode} from 'jwt-decode'; // Import jwt-decode
 import api from "../../api/api"; // Adjust the path according to your project structure
+import AddRecordModal from './AddRecordModal'; // Import the AddRecordModal
 
 const PatientDetail = () => {
   const { id } = useParams();  // Get the patient ID from the route parameter
   const [patientData, setPatientData] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false); // State to handle modal open/close
+  const [doctorId, setDoctorId] = useState(null);
 
   useEffect(() => {
+    // Decode token to get doctorId
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setDoctorId(decodedToken?.id || null);
+    }
+
     // Fetch patient data by ID
     const fetchPatientData = async () => {
       try {
         const response = await api.get(`/users/patients/${id}`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${token}`
           }
         });
         setPatientData(response.data);
@@ -29,7 +40,7 @@ const PatientDetail = () => {
       try {
         const response = await api.get('/appointments', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${token}`
           }
         });
         // Filter appointments for this specific patient
@@ -64,7 +75,7 @@ const PatientDetail = () => {
           </div>
         </div>
         <div className="text-right">
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={() => setModalOpen(true)}>
             + Add Record
           </Button>
         </div>
@@ -106,6 +117,18 @@ const PatientDetail = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Add Record Modal */}
+      <AddRecordModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        patientId={id}
+        doctorId={doctorId} // Pass the decoded doctorId
+        onSuccess={() => {
+          console.log("Record added successfully");
+          setModalOpen(false);
+        }}
+      />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { Button } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from 'react-router-dom';
 
-const CreatePrescription = ({ id, name, age, gender, appointmentType, time, status }) => {
+const CreatePrescription = ({ id,patientid, name, age, gender, appointmentType, time, status }) => {
   const navigate = useNavigate();
 
   return (
@@ -19,7 +19,7 @@ const CreatePrescription = ({ id, name, age, gender, appointmentType, time, stat
               New
             </span>
           )}
-          <VisibilityIcon className="text-gray-400 cursor-pointer" onClick={() => navigate(`/doctor/prescription-view/${id}`)} />
+          <VisibilityIcon className="text-gray-400 cursor-pointer" onClick={() => navigate(`/doctor/prescription-view/${patientid}`)} />
         </div>
       </div>
       <div className="text-sm text-gray-600 space-y-2 mb-4">

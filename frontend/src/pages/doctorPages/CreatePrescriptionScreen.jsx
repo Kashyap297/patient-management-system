@@ -51,6 +51,7 @@ const CreatePrescriptionScreen = () => {
           <CreatePrescription
             key={appointment.id}
             id={appointment.id}
+            patientid={appointment.patientId}
             name={appointment.patientName}
             age={appointment.patientAge}
             gender={appointment.patientGender} 
