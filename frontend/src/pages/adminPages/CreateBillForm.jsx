@@ -71,6 +71,24 @@ const CreateBill = () => {
     fetchHospitals();
   }, []);
 
+ // Calculate total amount whenever amount, tax, or discount changes
+ useEffect(() => {
+  if (formValues.amount && formValues.tax && formValues.discount !== null) {
+    const amount = parseFloat(formValues.amount);
+    const tax = parseFloat(formValues.tax);
+    const discount = parseFloat(formValues.discount);
+
+    // Calculate total amount
+    const calculatedTotal = amount + (amount * (tax / 100)) - discount;
+
+    // Round off total amount to two decimal places
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      totalAmount: calculatedTotal.toFixed(2),
+    }));
+  }
+}, [formValues.amount, formValues.tax, formValues.discount]);
+
   // Fetch patients from API
   useEffect(() => {
     const fetchPatients = async () => {
@@ -467,6 +485,7 @@ const CreateBill = () => {
               fullWidth
               label="Amount"
               name="amount"
+              type="number"
               value={formValues.amount}
               onChange={handleInputChange}
             />
@@ -474,8 +493,9 @@ const CreateBill = () => {
           <Grid item xs={12} md={4}>
             <TextField
               fullWidth
-              label="Tax"
+              label="Tax (%)"
               name="tax"
+              type="number"
               value={formValues.tax}
               onChange={handleInputChange}
             />
@@ -485,6 +505,7 @@ const CreateBill = () => {
               fullWidth
               label="Discount"
               name="discount"
+              type="number"
               value={formValues.discount}
               onChange={handleInputChange}
             />
@@ -496,6 +517,7 @@ const CreateBill = () => {
               name="totalAmount"
               value={formValues.totalAmount}
               onChange={handleInputChange}
+              disabled
             />
           </Grid>
           <Grid item xs={12} md={4}>

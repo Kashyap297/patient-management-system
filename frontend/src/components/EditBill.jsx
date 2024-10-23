@@ -84,6 +84,20 @@ const EditBill = () => {
     }
   };
 
+  useEffect(() => {
+    if (formData.amount && formData.tax && formData.discount !== null) {
+      const amount = parseFloat(formData.amount) || 0;
+      const tax = parseFloat(formData.tax) || 0;
+      const discount = parseFloat(formData.discount) || 0;
+
+      const calculatedTotal = amount + (amount * (tax / 100)) - discount;
+
+      setFormData((prevValues) => ({
+        ...prevValues,
+        totalAmount: calculatedTotal.toFixed(2), // Round to 2 decimal places
+      }));
+    }
+  }, [formData.amount, formData.tax, formData.discount]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,6 +128,7 @@ const EditBill = () => {
           value={formData.patientName}
           onChange={handleInputChange}
           required
+          disabled
         />
         <TextField
           label="Phone Number"
@@ -147,6 +162,7 @@ const EditBill = () => {
           value={formData.doctorName}
           onChange={handleInputChange}
           required
+          disabled
         />
         <TextField
           label="Disease Name"
@@ -199,29 +215,31 @@ const EditBill = () => {
           disabled
         />
         <TextField
-          label="Discount (%)"
-          name="discount"
-          value={formData.discount}
+          label="Amount"
+          name="amount"
+          type="number"
+          value={formData.amount}
           onChange={handleInputChange}
         />
         <TextField
-          label="Tax"
+          label="Tax (%)"
           name="tax"
+          type="number"
           value={formData.tax}
           onChange={handleInputChange}
         />
-
         <TextField
-          label="Amount"
-          name="amount"
-          value={formData.amount}
+          label="Discount"
+          name="discount"
+          type="number"
+          value={formData.discount}
           onChange={handleInputChange}
         />
         <TextField
           label="Total Amount"
           name="totalAmount"
           value={formData.totalAmount}
-          onChange={handleInputChange}
+          disabled
         />
         <TextField
           label="Address"
