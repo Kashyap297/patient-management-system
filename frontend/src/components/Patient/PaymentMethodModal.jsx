@@ -11,12 +11,12 @@ const PaymentMethodModal = ({ bill, onClose }) => {
     expiry: "",
     cvv: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}); // Define errors here as an empty object
 
   const handleChange = (field, value) => {
     setCardDetails({ ...cardDetails, [field]: value });
     if (value) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" })); // Clear errors when the field is filled
     }
   };
 
@@ -29,7 +29,7 @@ const PaymentMethodModal = ({ bill, onClose }) => {
     if (!cardDetails.cvv) newErrors.cvv = "CVV is required";
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+      setErrors(newErrors); // Set errors if validation fails
     } else {
       alert("Payment Successful");
       onClose();

@@ -1,97 +1,69 @@
 const paypal = require("paypal-rest-sdk");
 
 paypal.configure({
-  mode: "sandbox", // 'sandbox' for testing or 'live' for production
-  client_id:
-    "AbBvw2_XUvhfKmOWafxTS77MS2lxpmMxJAOYcwRK1ZtRWrMG9XFhUWM1qSAoT1RBf-8RtjTur3mtQ0gT", // Replace with your actual client ID
-  client_secret:
-    "EDRKbUQf82m9qi9SaUuUrbrf7hWPyvKregYDSfByYbLS7sQ7r84tsm1U2C0P0ySPwZVuTAFeJj-cr8gX", // Replace with your actual client secret
+  mode: "sandbox", // 'sandbox' for testing, 'live' for production
+  client_id: "Your-PayPal-Client-ID",  // Replace with your client ID
+  client_secret: "Your-PayPal-Client-Secret",  // Replace with your client secret
 });
 
-// Create PayPal Payment
+// Route for creating a payment
 exports.createPayment = (req, res) => {
-  const { totalAmount } = req.body; // Accept total amount from request body
+  const { totalAmount } = req.body;
 
   const create_payment_json = {
     intent: "sale",
-    payer: {
-      payment_method: "paypal",
-    },
+    payer: { payment_method: "paypal" },
     redirect_urls: {
-      return_url: "http://localhost:8000/api/payment/success", // Success URL, change it for production
-      cancel_url: "http://localhost:8000/api/payment/cancel", // Cancel URL, change it for production
+      return_url: "http://localhost:3000/payment/success",  // Your success URL
+      cancel_url: "http://localhost:3000/payment/cancel",    // Your cancel URL
     },
-    transactions: [
-      {
-        item_list: {
-          items: [
-            {
-              name: "Hospital Bill Payment",
-              sku: "001",
-              price: totalAmount,
-              currency: "USD",
-              quantity: 1,
-            },
-          ],
-        },
-        amount: {
+    transactions: [{
+      item_list: {
+        items: [{
+          name: "Hospital Bill Payment",
+          sku: "001",
+          price: totalAmount,
           currency: "USD",
-          total: totalAmount,
-        },
-        description: "Payment for Hospital Bill",
+          quantity: 1
+        }]
       },
-    ],
+      amount: { currency: "USD", total: totalAmount },
+      description: "Payment for Hospital Bill"
+    }]
   };
 
   paypal.payment.create(create_payment_json, (error, payment) => {
     if (error) {
-      console.error("Error creating PayPal payment:", error.response);
-      return res
-        .status(500)
-        .json({ message: "Payment creation failed", error });
+      console.error("Error creating payment", error);
+      res.status(500).send(error);
     } else {
-      // Find the approval link in PayPal's response and forward it to the client
+      // Return the PayPal redirect URL to the front end
       for (let i = 0; i < payment.links.length; i++) {
         if (payment.links[i].rel === "approval_url") {
-          return res.status(200).json({ forwardLink: payment.links[i].href });
+          res.json({ forwardLink: payment.links[i].href });
         }
       }
     }
   });
 };
 
-// Execute PayPal Payment after approval
+// Route for executing the payment
 exports.executePayment = (req, res) => {
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
+  const { totalAmount } = req.body;
 
   const execute_payment_json = {
     payer_id: payerId,
-    transactions: [
-      {
-        amount: {
-          currency: "USD",
-          total: "25.00", // You should replace this dynamically
-        },
-      },
-    ],
+    transactions: [{ amount: { currency: "USD", total: totalAmount } }]
   };
 
   paypal.payment.execute(paymentId, execute_payment_json, (error, payment) => {
     if (error) {
-      console.error("Error executing PayPal payment:", error.response);
-      return res
-        .status(500)
-        .json({ message: "Payment execution failed", error });
+      console.error("Payment execution error", error);
+      res.status(500).send(error);
     } else {
-      console.log("Get Payment Response");
-      console.log(payment);
-      return res.status(200).json({ message: "Payment successful", payment });
+      res.json({ payment });
     }
   });
-};
-
-// Cancel Payment Route
-exports.cancelPayment = (req, res) => {
-  return res.status(200).json({ message: "Payment was canceled." });
 };

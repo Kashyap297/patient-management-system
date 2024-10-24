@@ -20,7 +20,7 @@ const ChatPage = () => {
   let role, loggedInUserId;
 
   // Decode token to get user info
-  if (token) {
+  if (token) { 
     try {
       const decoded = jwtDecode(token);
       role = decoded.role; // Doctor or Patient
