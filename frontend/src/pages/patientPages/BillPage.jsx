@@ -44,6 +44,7 @@ const BillPage = () => {
   };
 
   const handleViewInvoice = (bill) => {
+    console.log(bill)
     setSelectedBill(bill);
     setShowInvoice(true);
   };
@@ -72,48 +73,53 @@ const BillPage = () => {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        {filteredBills.map((bill) => (
-          <div key={bill._id} className="p-4 border rounded-md bg-white shadow-sm flex flex-col">
-            {/* Header Section */}
-            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
-              <p className="font-semibold">
-                Dr. {bill.doctor.firstName} {bill.doctor.lastName}
-              </p>
-              <button onClick={() => handleViewInvoice(bill)} className="text-lg p-1 bg-white text-customBlue">
-                <FaEye />
-              </button>
-            </div>
-
-            {/* Content Section */}
-            <div className="p-2 ">
-              <p className="text-gray-500 flex justify-between">
-                <strong>Hospital Name</strong> {bill.hospital.name}
-              </p>
-              <p className="text-gray-500 flex justify-between">
-                <strong>Bill Created Date</strong> {new Date(bill.billDate).toLocaleDateString()}
-              </p>
-              <p className="text-gray-500 flex justify-between">
-                <strong>Bill Created Time</strong> {bill.billTime}
-              </p>
-              <p className="text-red-500 font-semibold flex justify-between">
-                <strong className="font-medium text-gray-500">Total Bill Amount</strong> ₹{bill.totalAmount.toLocaleString()}
-              </p>
-            </div>
-
-            {/* Footer Section */}
-            <div className="flex justify-end mt-2">
-              {bill.status === "Unpaid" && (
-                <button
-                  className="bg-customBlue text-white py-2 px-4 rounded-lg font-semibold w-full"
-                  onClick={() => handlePayNow(bill)}
-                >
-                  Pay Now
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
+  {filteredBills.map((bill) => (
+    <div key={bill._id} className="p-4 border rounded-md bg-white shadow-sm flex flex-col">
+      {/* Header Section */}
+      <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
+        {bill.doctor ? (
+          <p className="font-semibold">
+            Dr. {bill.doctor.firstName} {bill.doctor.lastName}
+          </p>
+        ) : (
+          <p className="font-semibold">Doctor Information Unavailable</p>
+        )}
+        <button onClick={() => handleViewInvoice(bill)} className="text-lg p-1 bg-white text-customBlue">
+          <FaEye />
+        </button>
       </div>
+
+      {/* Content Section */}
+      <div className="p-2">
+        <p className="text-gray-500 flex justify-between">
+          <strong>Hospital Name</strong> {bill.hospital.name}
+        </p>
+        <p className="text-gray-500 flex justify-between">
+          <strong>Bill Created Date</strong> {new Date(bill.billDate).toLocaleDateString()}
+        </p>
+        <p className="text-gray-500 flex justify-between">
+          <strong>Bill Created Time</strong> {bill.billTime}
+        </p>
+        <p className="text-red-500 font-semibold flex justify-between">
+          <strong className="font-medium text-gray-500">Total Bill Amount</strong> ₹{bill.totalAmount.toLocaleString()}
+        </p>
+      </div>
+
+      {/* Footer Section */}
+      <div className="flex justify-end mt-2">
+        {bill.status === "Unpaid" && (
+          <button
+            className="bg-customBlue text-white py-2 px-4 rounded-lg font-semibold w-full"
+            onClick={() => handlePayNow(bill)}
+          >
+            Pay Now
+          </button>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
+
 
       {showInvoice && selectedBill && (
         <InvoiceModal

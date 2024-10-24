@@ -253,7 +253,9 @@ exports.getUserInvoices = async (req, res) => {
     const userId = req.user._id; // Assuming the user ID is set on the request object by the 'protect' middleware
     const invoices = await Invoice.find({ patient: userId })
       .populate("doctor", "firstName lastName email")
+      .populate("patient", "firstName lastName email")
       .populate("hospital", "name address");
+
 
     if (!invoices || invoices.length === 0) {
       return res.status(404).json({ message: "No invoices found for this user" });

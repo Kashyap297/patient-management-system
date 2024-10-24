@@ -4,6 +4,7 @@ import bg from "../../assets/images/Maskgroup.png";
 import logo from "../../assets/images/logo.png";
 
 const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
+  console.log("bill : ", bill)
   return (
     <div
       className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
@@ -31,18 +32,18 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
           </div>
           <div className="flex justify-between items-center">
             <div>
-              <p className="font-bold text-2xl">Dr. {bill.doctor}</p>
-              <p className="text-gray-600">{bill.hospital}</p>
+              <p className="font-bold text-2xl">Dr. {bill.doctor.firstName} {bill.doctor.lastName}</p>
+              <p className="text-gray-600">{bill.hospital.name}</p>
             </div>
             <div>
               <p>
-                <strong>Bill No:</strong> 1234
+                <strong>Bill No:</strong> {bill.billNumber}
               </p>
               <p>
-                <strong>Bill Date:</strong> 20 June, 2020
+                <strong>Bill Date:</strong> {new Date(bill.billDate).toLocaleDateString()}
               </p>
               <p>
-                <strong>Bill Time:</strong> 10:45 PM
+                <strong>Bill Time:</strong> {bill.billTime}
               </p>
             </div>
           </div>
@@ -53,72 +54,52 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
           {/* First Column */}
           <div>
             <p className="py-1">
-              <strong>Name:</strong> Miracle Kenter
+              <strong>Name:</strong> {bill.patient.firstName} {bill.patient.lastName}
             </p>
             <p className="py-1">
-              <strong>Disease Name:</strong> Stomach Pain
+              <strong>Disease Name:</strong> {bill.diseaseName}
             </p>
             <p className="py-1">
-              <strong>Gender:</strong> Male
+              <strong>Gender:</strong> {bill.gender}
             </p>
           </div>
 
           {/* Second Column */}
           <div>
             <p className="py-1">
-              <strong>Phone Number:</strong> 995796557
+              <strong>Phone Number:</strong> {bill.phoneNumber}
             </p>
             <p className="py-1">
-              <strong>Age:</strong> 36 Years
+              <strong>Age:</strong> {bill.age} Years
             </p>
             <p className="py-1 text-customBlue">
-              <strong className="text-black">Payment Type:</strong> Insurance
+              <strong className="text-black">Payment Type:</strong> {bill.paymentType}
             </p>
           </div>
 
           {/* Last Row Spanning Full Width */}
           <div className="col-span-2">
             <p className="py-1">
-              <strong>Address:</strong> B-105 Virat Bungalows, Jamnagar
+              <strong>Address:</strong> {bill.address}
             </p>
           </div>
         </div>
 
         {/* Itemized List of Services */}
+        {/* For demonstration, I assume that the `bill.description` contains the service description.
+            Adjust the data here according to your object structure. */}
         <div className="rounded-md mb-4">
           <table className="w-full text-left rounded-t-lg">
             <thead>
               <tr className="border-b-2 border-gray-200 bg-customBlue">
                 <th className="p-2">Description</th>
                 <th className="p-2">Amount</th>
-                <th className="p-2">Qty</th>
-                <th className="p-2">Total</th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-b border-gray-200">
-                <td className="p-2">Neuromuscular blockers</td>
-                <td>₹ 12,000.00</td>
-                <td>2</td>
-                <td>₹ 24,000.00</td>
-              </tr>
-              <tr className="border-b border-gray-200">
-                <td className="p-2">Neuromuscular blockers</td>
-                <td>₹ 800.00</td>
-                <td>2</td>
-                <td>₹ 1,600.00</td>
-              </tr>
-              <tr className="border-b border-gray-200">
-                <td className="p-2">Methotrexate (HDMTX)</td>
-                <td>₹ 1,000.00</td>
-                <td>2</td>
-                <td>₹ 2,000.00</td>
-              </tr>
-              <tr>
-                <td className="p-2">Hydroxyurea for sickle cell</td>
-                <td>₹ 20.00</td>
-                <td>2</td>
-                <td>₹ 40.00</td>
+                <td className="p-2">{bill.description}</td>
+                <td>₹ {bill.amount.toLocaleString()}</td>
               </tr>
             </tbody>
           </table>
@@ -128,30 +109,30 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
             <p>
-              <strong>Insurance Company:</strong> HDFC Life Insurance
+              <strong>Insurance Company:</strong> {bill.insuranceDetails.insuranceCompany || "N/A"}
             </p>
             <p>
-              <strong>Insurance Plan:</strong> Health Insurance
+              <strong>Insurance Plan:</strong> {bill.insuranceDetails.insurancePlan || "N/A"}
             </p>
             <p>
-              <strong>Claim Amount:</strong> ₹ 2,000.00
+              <strong>Claim Amount:</strong> ₹ {bill.insuranceDetails.claimAmount || 0}
             </p>
             <p>
-              <strong>Claimed Amount:</strong> ₹ 2,500.00
+              <strong>Claimed Amount:</strong> ₹ {bill.insuranceDetails.claimedAmount || 0}
             </p>
           </div>
           <div className="text-right">
             <p>
-              <strong>Amount:</strong> ₹ 25,840.00
+              <strong>Amount:</strong> ₹ {bill.amount.toLocaleString()}
             </p>
             <p>
-              <strong>Discount 5%:</strong> -₹ 1,292.00
+              <strong>Discount:</strong> -₹ {bill.discount.toLocaleString()}
             </p>
             <p>
-              <strong>Tax:</strong> ₹ 120.00
+              <strong>Tax:</strong> ₹ {bill.tax.toLocaleString()}
             </p>
             <p className="text-xl font-semibold">
-              <strong>Total:</strong> ₹ 24,668.00
+              <strong>Total:</strong> ₹ {bill.totalAmount.toLocaleString()}
             </p>
           </div>
         </div>
