@@ -93,6 +93,7 @@ const AppointmentManagement = () => {
   const [openPaymentReturnModal, setOpenPaymentReturnModal] = useState(false);
   const [openRescheduleModal, setOpenRescheduleModal] = useState(false); // For rescheduling modal
   const [timeSlots, setTimeSlots] = useState([]); // For time slots
+  const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [appointments, setAppointments] = useState({
     today: [],
     upcoming: [],

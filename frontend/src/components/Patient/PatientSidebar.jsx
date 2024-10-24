@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FaFileMedical,
   FaPills,
@@ -15,6 +15,7 @@ import { useBreadcrumb } from "../../context/BreadcrumbContext";
 
 const PatientSidebar = ({ onMenuClick }) => {
   const { updateBreadcrumb } = useBreadcrumb();
+  const navigate = useNavigate()
 
   // State to store the active tab
   const [activeTab, setActiveTab] = useState("Personal Health Record");
