@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { jwtDecode } from "jwt-decode";
-import userImage from '../../assets/images/user.png';
-import chatIcon from '../../assets/images/chat-icon.png';
+import {jwtDecode} from "jwt-decode"; // Correct import
+import userImage from "../../assets/images/user.png";
+import chatIcon from "../../assets/images/chat-icon.png";
 import io from "socket.io-client";
 
+// Initialize socket connection
 const socket = io("http://localhost:8000");
 
 const ChatPage = () => {
@@ -18,10 +19,11 @@ const ChatPage = () => {
   const token = localStorage.getItem("token");
   let role, loggedInUserId;
 
+  // Decode token to get user info
   if (token) {
     try {
       const decoded = jwtDecode(token);
-      role = decoded.role;
+      role = decoded.role; // Doctor or Patient
       loggedInUserId = decoded.id;
     } catch (error) {
       console.error("Error decoding token:", error);
@@ -31,7 +33,7 @@ const ChatPage = () => {
     window.location.href = "/login";
   }
 
-  // Fetch users based on role
+  // Fetch users based on role (doctor or patient)
   useEffect(() => {
     if (!role || !token) return;
 
@@ -68,11 +70,13 @@ const ChatPage = () => {
       };
 
       fetchMessages();
+
       // Join the selected chat room for real-time updates
       socket.emit("joinChat", { chatId: selectedChat });
     }
   }, [selectedChat, token]);
 
+  // Listen for new messages via socket
   useEffect(() => {
     socket.on("newMessage", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
@@ -83,6 +87,7 @@ const ChatPage = () => {
     };
   }, []);
 
+  // Start a chat with the selected user
   const startChat = async (user) => {
     try {
       const response = await fetch("http://localhost:8000/api/chats/start", {
@@ -109,6 +114,7 @@ const ChatPage = () => {
     }
   };
 
+  // Send a new message
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedChat) return;
 
@@ -126,14 +132,7 @@ const ChatPage = () => {
         throw new Error(`Error ${sendMessageResponse.status}: ${sendMessageResponse.statusText}`);
       }
 
-      // socket.emit("sendMessage", {
-      //   chatId: selectedChat,
-      //   senderId: loggedInUserId,
-      //   messageContent: newMessage,
-      // });
-
       setNewMessage(""); // Clear input field after sending the message
-
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -204,8 +203,8 @@ const ChatPage = () => {
             {/* Chat Messages */}
             <div className="flex-1 space-y-4 overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner">
               {Array.isArray(messages) && messages.map((message, index) => (
-                <div key={index} className={`flex ${message.sender === loggedInUserId ? "justify-end" : ""}`}>
-                  <div className={`p-2 rounded-lg ${message.sender === loggedInUserId ? "bg-blue-100" : "bg-gray-200"}`}>
+                <div key={index} className={`flex ${message.sender._id === loggedInUserId ? "justify-end" : "justify-start"}`}>
+                  <div className={`p-2 rounded-lg ${message.sender._id === loggedInUserId ? "bg-blue-100" : "bg-gray-200"}`}>
                     <p>{message.content}</p>
                     <span className="text-xs text-gray-500">{new Date(message.createdAt).toLocaleString()}</span>
                   </div>

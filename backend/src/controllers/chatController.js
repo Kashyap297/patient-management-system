@@ -99,12 +99,16 @@ exports.sendMessage = async (req, res) => {
 
     const newMessage = await Message.create({
       chat: chatId,
-      sender: req.user._id,
+      sender: req.user._id, // Store the sender as the user who sent the request
       content,
     });
 
     // Emit the new message to the room
-    io.to(chatId).emit("newMessage", newMessage);
+    io.to(chatId).emit("newMessage", {
+      content: newMessage.content,
+      sender: req.user._id, // Send back the sender information to the frontend
+      createdAt: newMessage.createdAt,
+    });
 
     res.status(201).json({
       message: "Message sent successfully",
@@ -115,3 +119,4 @@ exports.sendMessage = async (req, res) => {
     res.status(500).json({ message: "Error sending message", error });
   }
 };
+
