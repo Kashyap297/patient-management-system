@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaSearch } from "react-icons/fa";
-import {jwtDecode} from "jwt-decode"; // Correct import
+import { jwtDecode } from "jwt-decode"; // Correct import
 import userImage from "../../assets/images/user.png";
 import chatIcon from "../../assets/images/chat-icon.png";
 import io from "socket.io-client";
@@ -16,11 +16,14 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
 
+  // Ref for the messages container
+  const messagesEndRef = useRef(null);
+
   const token = localStorage.getItem("token");
   let role, loggedInUserId;
 
   // Decode token to get user info
-  if (token) { 
+  if (token) {
     try {
       const decoded = jwtDecode(token);
       role = decoded.role; // Doctor or Patient
@@ -32,6 +35,13 @@ const ChatPage = () => {
   } else {
     window.location.href = "/login";
   }
+
+  // Scroll to the bottom of the chat
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   // Fetch users based on role (doctor or patient)
   useEffect(() => {
@@ -63,6 +73,7 @@ const ChatPage = () => {
           });
           const data = await response.json();
           setMessages(data.messages || []);
+          scrollToBottom(); // Scroll to bottom after messages load
         } catch (error) {
           console.error("Error fetching messages:", error);
           setMessages([]);
@@ -76,10 +87,11 @@ const ChatPage = () => {
     }
   }, [selectedChat, token]);
 
-  // Listen for new messages via socket
+  // Listen for new messages via socket and update the UI immediately
   useEffect(() => {
     socket.on("newMessage", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
+      scrollToBottom(); // Scroll to bottom when a new message is received
     });
 
     return () => {
@@ -133,8 +145,16 @@ const ChatPage = () => {
       }
 
       setNewMessage(""); // Clear input field after sending the message
+      scrollToBottom(); // Scroll to bottom after sending the message
     } catch (error) {
       console.error("Error sending message:", error);
+    }
+  };
+
+  // Handle 'Enter' key for sending message
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
     }
   };
 
@@ -143,7 +163,7 @@ const ChatPage = () => {
   );
 
   return (
-    <div className="flex h-full p-6">
+    <div className="flex h-full p-2">
       {/* Sidebar with Users */}
       <div className="w-1/5 bg-white shadow-sm p-4 rounded-s-xl">
         <div className="mb-4">
@@ -168,7 +188,7 @@ const ChatPage = () => {
                 className={`flex items-center p-2 cursor-pointer ${selectedChatUser && selectedChatUser._id === user._id ? "bg-blue-100" : ""}`}
               >
                 <img
-                  src={user.profileImage || userImage}
+                  src={`http://localhost:8000/${user.profileImage || userImage}`}
                   alt="avatar"
                   className="w-12 h-12 rounded-full mr-4"
                 />
@@ -201,25 +221,29 @@ const ChatPage = () => {
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 space-y-4 overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner">
+            <div className="flex-1 space-y-2 overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner">
               {Array.isArray(messages) && messages.map((message, index) => (
                 <div key={index} className={`flex ${message.sender._id === loggedInUserId ? "justify-end" : "justify-start"}`}>
-                  <div className={`p-2 rounded-lg ${message.sender._id === loggedInUserId ? "bg-blue-100" : "bg-gray-200"}`}>
+                  <div className={`p-2 rounded-lg ${message.sender._id === loggedInUserId ? "bg-blue-100 text-right" : "bg-gray-200 text-left"}`}>
+                    <p className="font-bold">{message.sender.firstName} {message.sender.lastName}</p> {/* Display sender's name */}
                     <p>{message.content}</p>
-                    <span className="text-xs text-gray-500">{new Date(message.createdAt).toLocaleString()}</span>
+                    <span className="text-xs text-gray-500 block mt-1">{new Date(message.createdAt).toLocaleString()}</span>
                   </div>
                 </div>
               ))}
+              {/* This div will always be at the bottom */}
+              <div ref={messagesEndRef}></div>
             </div>
 
             {/* Chat Input */}
-            <div className="mt-4 flex items-center space-x-2 px-2">
+            <div className="flex items-center space-x-2 px-2">
               <input
                 type="text"
                 placeholder="Type your message..."
                 className="w-full px-4 py-4 rounded-lg bg-gray-100 focus:outline-none"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={handleKeyPress} // Handle 'Enter' key press
               />
               <button onClick={sendMessage} className="bg-customBlue text-white px-6 font-semibold py-4 rounded-lg">
                 Send

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaCcMastercard, FaCcVisa } from "react-icons/fa";
 import master from "../../assets/images/mastercard.png";
 import visa from "../../assets/images/visa.png";
+import api from "../../api/api";
 
 const PaymentMethodModal = ({ bill, onClose }) => {
   const [selectedCard, setSelectedCard] = useState("MasterCard");
@@ -91,16 +92,15 @@ const PaymentMethodModal = ({ bill, onClose }) => {
                   field === "holder"
                     ? "Card Holder Name"
                     : field === "number"
-                    ? "Card Number"
-                    : field === "expiry"
-                    ? "MM/YY Expiry Date"
-                    : "CVV"
+                      ? "Card Number"
+                      : field === "expiry"
+                        ? "MM/YY Expiry Date"
+                        : "CVV"
                 }
                 value={cardDetails[field]}
                 onChange={(e) => handleChange(field, e.target.value)}
-                className={`w-full p-4 border rounded-lg ${
-                  errors[field] ? "border-red-500" : "border-gray-300"
-                } focus:outline-none focus:border-blue-500 text-lg`}
+                className={`w-full p-4 border rounded-lg ${errors[field] ? "border-red-500" : "border-gray-300"
+                  } focus:outline-none focus:border-blue-500 text-lg`}
               />
               {errors[field] && (
                 <span className="text-xs text-red-500 mt-1 absolute top-full">

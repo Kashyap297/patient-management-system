@@ -79,6 +79,7 @@ exports.startChat = async (req, res) => {
 
 // Send Message in a Chat
 // controllers/chatController.js
+// controllers/chatController.js
 exports.sendMessage = async (req, res) => {
   const io = require("../utils/socket").getIO();
   const { chatId } = req.params;
@@ -97,16 +98,20 @@ exports.sendMessage = async (req, res) => {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    const newMessage = await Message.create({
+    // Create new message
+    let newMessage = await Message.create({
       chat: chatId,
       sender: req.user._id, // Store the sender as the user who sent the request
       content,
     });
 
+    // Use the newer Mongoose syntax for populate without execPopulate
+    newMessage = await newMessage.populate('sender', 'firstName lastName');
+
     // Emit the new message to the room
     io.to(chatId).emit("newMessage", {
       content: newMessage.content,
-      sender: req.user._id, // Send back the sender information to the frontend
+      sender: newMessage.sender, // Emit populated sender details
       createdAt: newMessage.createdAt,
     });
 
@@ -119,4 +124,3 @@ exports.sendMessage = async (req, res) => {
     res.status(500).json({ message: "Error sending message", error });
   }
 };
-
