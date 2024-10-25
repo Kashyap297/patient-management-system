@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@use "./variables.scss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: variables.$color9;
+  font-family: variables.$Lato;
+  overflow-x: hidden;
+}
+
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.w-15 {
+  width: 15%;
+}
+
+.w-85 {
+  width: 85%;
+}
+
+@media (max-width: 992px) {
+  .w-md-0 {
+    width: 0;
+  }
+
+  .w-md-100 {
+    width: 100%;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.modal-backdrop.show {
+  opacity: .79;
+}

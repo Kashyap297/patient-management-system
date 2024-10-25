@@ -6,8 +6,9 @@ import CustomDateFilter from '../../components/modals/CustomDateFilter.jsx';
 import api from '../../api/api'; // Import the Axios instance from api.js
 import moment from 'moment'; // For handling date comparisons
 import {jwtDecode} from 'jwt-decode'; // To decode the token and extract doctorId
+import TeleConsultationCardPatient from '../../components/TeleConsultationCardPatient.jsx';
 
-const TeleConsultationScreen = () => {
+const TeleConsultation = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [dateRange, setDateRange] = useState('2 March, 2022 - 13 March, 2022');
   const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
@@ -29,7 +30,7 @@ const TeleConsultationScreen = () => {
       const fetchedAppointments = response.data.data;
       // Filter appointments for the logged-in doctor only
       const doctorAppointments = fetchedAppointments.filter(
-        appointment => appointment.doctorId === loggedInDoctorId
+        appointment => appointment.patientId === loggedInDoctorId
       );
       
       setAppointments(doctorAppointments); // Set only the logged-in doctor's appointments
@@ -124,7 +125,7 @@ const TeleConsultationScreen = () => {
       {/* Grid of Patient Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentAppointments.map((patient, index) => (
-          <TeleConsultationCard key={index} patient={patient} />
+          <TeleConsultationCardPatient key={index} patient={patient} />
         ))}
       </div>
 
@@ -138,4 +139,4 @@ const TeleConsultationScreen = () => {
   );
 };
 
-export default TeleConsultationScreen;
+export default TeleConsultation;

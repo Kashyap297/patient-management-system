@@ -14,6 +14,7 @@ import Sidebar from "./Sidebar";
 import ProfileScreen from "../pages/adminPages/ProfileScreen";
 import ChatPage from "../pages/patientPages/ChatPage";
 import EditAppointment from "../pages/doctorPages/EditAppointment";
+import DoctorMeetingConference from "../pages/doctorPages/DoctorMeetingConference";
 
 const DoctorRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const DoctorRoutes = () => {
             <Route path="/prescription-tools/manage" element={<ManagePrescription />} />
             <Route path="/teleconsultation" element={<TeleConsultationScreen />} />
             <Route path="/doctor-chat" element={<ChatPage />} />
+            <Route path="/doctorMeetingConference/:appointmentId" element={<DoctorMeetingConference />} />
             <Route path="/" element={<ProfileScreen />} />
           </Routes>
           {/* <DoctorManagement /> */}

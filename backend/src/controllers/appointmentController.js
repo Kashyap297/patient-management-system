@@ -48,6 +48,9 @@ exports.createAppointment = async (req, res) => {
       });
     }
 
+    // Generate a unique room ID (using doctor and patient IDs)
+    const roomID = `${doctorUser._id}_${user._id}_${Date.now()}`;
+
     // If no conflict, create the appointment
     const newAppointment = await Appointment.create({
       patient: req.user._id,
@@ -64,6 +67,7 @@ exports.createAppointment = async (req, res) => {
       appointmentType,
       status: "Pending",
       doctorFees,
+      roomID,  // Add the generated room ID to the appointment
     });
 
     // Return the new appointment including the generated ID
@@ -116,8 +120,8 @@ exports.getAllAppointments = async (req, res) => {
         patientAge: appointment.patient ? appointment.patient.age : "N/A",
         patientGender: appointment.patient ? appointment.patient.gender : "N/A",
         patientIssue: appointment.patientIssue,
-          //  ? appointment.patient.age
-          //  : "N/A",
+        //  ? appointment.patient.age
+        //  : "N/A",
         diseaseName: appointment.diseaseName,
         doctorId: appointment.doctor ? appointment.doctor._id : null, // Add doctor ID to the response
         patientId: appointment.patient ? appointment.patient._id : null,
@@ -205,6 +209,7 @@ exports.getAppointmentById = async (req, res) => {
         status: appointment.status,
         doctorFees: appointment.doctorFees,
         hospitalName: appointment.hospital,
+        roomID: appointment.roomID, // Provide roomID for video call
       },
     });
   } catch (error) {

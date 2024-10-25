@@ -10,6 +10,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@zegocloud/zego-uikit-prebuilt": "^2.11.2",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "classnames": "^2.5.1",
@@ -26,6 +27,7 @@
     "react-scripts": "5.0.1",
     "react-tabs": "^6.0.2",
     "recharts": "^2.12.7",
+    "sass-embedded": "^1.80.4",
     "socket.io-client": "^4.8.0",
     "sweetalert2": "^11.14.3",
     "web-vitals": "^2.1.4",
@@ -58,6 +60,10 @@
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "postcss-loader": "^8.1.1",
+    "resolve-url-loader": "^5.0.0",
+    "sass": "^1.80.4",
+    "sass-loader": "^16.0.2",
     "tailwindcss": "^3.4.14"
   }
 }

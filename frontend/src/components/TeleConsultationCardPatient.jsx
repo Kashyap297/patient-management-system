@@ -4,14 +4,14 @@ import EventIcon from '@mui/icons-material/Event';
 import { useNavigate } from 'react-router-dom';
 
 // PatientCard component
-const TeleConsultationCard = ({ patient }) => {
+const TeleConsultationCardPatient = ({ patient }) => {
   const navigate = useNavigate();
 
   const handleJoinCall = () => {
     // Assuming patient has a unique id for the appointment or roomId
     const appointmentId = patient.id; // This should be passed as a prop or fetched from the patient data
     // Navigate to the DoctorMeetingConference component with the appointmentId in the URL
-    navigate(`/doctor/doctorMeetingConference/${appointmentId}`);
+    navigate(`/patient/patientMeetingConference/${appointmentId}`);
   };
 
   return (
@@ -58,4 +58,4 @@ const TeleConsultationCard = ({ patient }) => {
   );
 };
 
-export default TeleConsultationCard;
+export default TeleConsultationCardPatient;

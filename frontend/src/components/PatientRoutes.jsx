@@ -16,6 +16,10 @@ import PatientSidebar from "./Patient/PatientSidebar";
 import { BreadcrumbProvider } from "../context/BreadcrumbContext";
 import BookAppointment from "../pages/patientPages/BookAppointment";
 import RescheduleAppointment from "../pages/patientPages/RescheduleAppointment";
+import TeleConsultationScreen from "../pages/doctorPages/TeleConsultationScreen";
+import TeleConsultation from "../pages/patientPages/TeleConsultation";
+import DoctorMeetingConference from "../pages/doctorPages/DoctorMeetingConference";
+import PatientMeetingConference from "../pages/patientPages/PatientMeetingConference";
 
 
 const PatientRoutes = () => {
@@ -38,10 +42,12 @@ const PatientRoutes = () => {
             <Route path="/appointment-booking" element={<AppointmentBookingPage />} />
             <Route path="/rescheduleA-appointment" element={<RescheduleAppointment />} />
             <Route path="/prescription-access" element={<PrescriptionAccessPage />} />
-            <Route path="/tele-access" element={<TeleAccess />} />
+            {/* <Route path="/tele-access" element={<TeleAccess />} /> */}
+            <Route path="/tele-access" element={<TeleConsultation/>} />
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/bills" element={<BillPage />} />
             <Route path="/book-appointment" element={< BookAppointment/>} />
+            <Route path="/patientMeetingConference/:appointmentId" element={<PatientMeetingConference/>} />
           </Routes>
           {/* <DoctorManagement /> */}
         </div>

@@ -62,6 +62,10 @@ const appointmentSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    roomID: {
+      type: String, // Room ID for video call
+      required: true,
+    },
   },
   { timestamps: true }
 );
