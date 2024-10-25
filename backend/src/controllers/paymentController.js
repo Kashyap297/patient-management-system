@@ -2,8 +2,8 @@ const paypal = require("paypal-rest-sdk");
 
 paypal.configure({
   mode: "sandbox", // 'sandbox' for testing, 'live' for production
-  client_id: "Your-PayPal-Client-ID",  // Replace with your client ID
-  client_secret: "Your-PayPal-Client-Secret",  // Replace with your client secret
+  client_id: "AbBvw2_XUvhfKmOWafxTS77MS2lxpmMxJAOYcwRK1ZtRWrMG9XFhUWM1qSAoT1RBf-8RtjTur3mtQ0gT",  // Replace with your client ID
+  client_secret: "EDRKbUQf82m9qi9SaUuUrbrf7hWPyvKregYDSfByYbLS7sQ7r84tsm1U2C0P0ySPwZVuTAFeJj-cr8gX",  // Replace with your client secret
 });
 
 // Route for creating a payment
@@ -15,8 +15,8 @@ exports.createPayment = (req, res) => {
     intent: "sale",
     payer: { payment_method: "paypal" },
     redirect_urls: {
-      return_url: "http://localhost:3000/payment/success", // Your success URL
-      cancel_url: "http://localhost:3000/payment/cancel",  // Your cancel URL
+      return_url: "http://localhost:3000/payment/success",
+      cancel_url: "http://localhost:3000/payment/cancel",
     },
     transactions: [
       {
@@ -25,25 +25,26 @@ exports.createPayment = (req, res) => {
             {
               name: "Hospital Bill Payment",
               sku: "001",
-              price: totalAmount, // Use the total amount from the bill
-              currency: "USD",
+              price: totalAmount,
+              currency: "USD", // Change this to the correct currency code
               quantity: 1,
             },
           ],
         },
         amount: {
-          currency: "USD",
+          currency: "USD", // Ensure this matches the accepted currency in your PayPal account
           total: totalAmount,
         },
         description: "Payment for Hospital Bill",
       },
     ],
   };
+  
 
   paypal.payment.create(create_payment_json, (error, payment) => {
     if (error) {
-      console.error("Error creating PayPal payment:", error);
-      return res.status(500).send(error);
+      console.error("Error creating PayPal payment:", error.response); // Log the actual error response
+      return res.status(500).json({ message: "Payment creation failed", error });
     } else {
       for (let i = 0; i < payment.links.length; i++) {
         if (payment.links[i].rel === "approval_url") {
@@ -53,6 +54,7 @@ exports.createPayment = (req, res) => {
     }
   });
 };
+
 
 // Route for executing the payment
 exports.executePayment = (req, res) => {

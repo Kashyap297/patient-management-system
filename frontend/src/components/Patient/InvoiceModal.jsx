@@ -4,7 +4,6 @@ import bg from "../../assets/images/Maskgroup.png";
 import logo from "../../assets/images/logo.png";
 
 const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
-  console.log("bill : ", bill)
   return (
     <div
       className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"

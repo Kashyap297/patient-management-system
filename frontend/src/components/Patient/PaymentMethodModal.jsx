@@ -27,22 +27,28 @@ const PaymentMethodModal = ({ bill, onClose }) => {
     if (!cardDetails.number) newErrors.number = "Card Number is required";
     if (!cardDetails.expiry) newErrors.expiry = "Expiry Date is required";
     if (!cardDetails.cvv) newErrors.cvv = "CVV is required";
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
       try {
+        // Make an API call to create a PayPal payment
+        console.log(bill.totalAmount)
         const response = await api.post("/payment/create", { totalAmount: bill.totalAmount });
-
+  
         if (response.data.forwardLink) {
+          // Redirect the user to the PayPal approval page
           window.location.href = response.data.forwardLink;
+        } else {
+          alert("Payment creation failed. No approval link found.");
         }
       } catch (error) {
-        console.error("Error processing payment", error);
+        console.error("Error processing payment:", error);
         alert("Payment initiation failed.");
       }
     }
   };
+  
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
