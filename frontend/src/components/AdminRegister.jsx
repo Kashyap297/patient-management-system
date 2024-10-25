@@ -79,7 +79,7 @@ const AdminRegister = () => {
       ...hospitalData,
       country: formData.country, // Set from selected country
     };
-    
+
     try {
       const response = await axios.post("http://localhost:8000/api/hospitals", hospitalPayload);
       if (response.status === 201) {
@@ -147,7 +147,7 @@ const AdminRegister = () => {
         city: formData.city,
         hospital: formData.hospital,
       };
-
+      console.log(adminData)
       try {
         await registerAdmin(adminData);
         alert("Admin registered successfully!");
@@ -344,7 +344,7 @@ const AdminRegister = () => {
                       <div
                         key={index}
                         onClick={() => {
-                          setFormData({ ...formData, hospital: hospital.name });
+                          setFormData({ ...formData, hospital: hospital._id });
                           setIsDropdownOpen(false);
                         }}
                         className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer font-normal"

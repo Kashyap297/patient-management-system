@@ -13,7 +13,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     country: {
       type: String,
-      required: true, 
+      required: true,
     },
     state: {
       type: String,
@@ -64,7 +64,6 @@ const appointmentSchema = new mongoose.Schema(
     },
     roomID: {
       type: String, // Room ID for video call
-      required: true,
     },
   },
   { timestamps: true }
