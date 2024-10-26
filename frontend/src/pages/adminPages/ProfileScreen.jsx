@@ -20,6 +20,7 @@ const ProfileScreen = () => {
     }
   }, []);
 
+
   // Function to render content based on the active section
   const renderContent = () => {
     switch (activeSection) {

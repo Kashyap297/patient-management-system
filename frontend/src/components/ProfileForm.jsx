@@ -29,7 +29,7 @@ const ProfileForm = ({ role }) => {
     };
     fetchProfile();
   }, []);
-
+  console.log(formValues)
   // Handle input field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,9 +75,8 @@ const ProfileForm = ({ role }) => {
             value={formValues.firstName || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${
-              isEditing ? "border-gray-300" : "border-transparent"
-            } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -92,9 +91,8 @@ const ProfileForm = ({ role }) => {
             value={formValues.lastName || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${
-              isEditing ? "border-gray-300" : "border-transparent"
-            } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -109,9 +107,8 @@ const ProfileForm = ({ role }) => {
             value={formValues.email || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${
-              isEditing ? "border-gray-300" : "border-transparent"
-            } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -126,9 +123,8 @@ const ProfileForm = ({ role }) => {
             value={formValues.phoneNumber || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${
-              isEditing ? "border-gray-300" : "border-transparent"
-            } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -141,14 +137,12 @@ const ProfileForm = ({ role }) => {
             <input
               type="text"
               name="hospitalName"
-              value={formValues.hospitalName || ""}
+              value={formValues?.doctorDetails?.hospital.hospitalName || ""}
               onChange={handleChange}
               readOnly={!isEditing}
-              className={`w-full p-2 border ${
-                isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${
-                isEditing ? "bg-white" : "bg-gray-100"
-              }`}
+              className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+                } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
+                }`}
             />
           </div>
         )}
@@ -163,9 +157,8 @@ const ProfileForm = ({ role }) => {
             value={formValues.gender || ""}
             onChange={handleChange}
             disabled={!isEditing}
-            className={`w-full p-2 border ${
-              isEditing ? "border-gray-300" : "border-transparent"
-            } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           >
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -184,9 +177,8 @@ const ProfileForm = ({ role }) => {
             value={formValues.city || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${
-              isEditing ? "border-gray-300" : "border-transparent"
-            } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -201,9 +193,8 @@ const ProfileForm = ({ role }) => {
             value={formValues.state || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${
-              isEditing ? "border-gray-300" : "border-transparent"
-            } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -218,9 +209,8 @@ const ProfileForm = ({ role }) => {
             value={formValues.country || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${
-              isEditing ? "border-gray-300" : "border-transparent"
-            } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -237,11 +227,9 @@ const ProfileForm = ({ role }) => {
                 value={formValues.dob || ""}
                 onChange={handleChange}
                 readOnly={!isEditing}
-                className={`w-full p-2 border ${
-                  isEditing ? "border-gray-300" : "border-transparent"
-                } rounded-md bg-gray-100 ${
-                  isEditing ? "bg-white" : "bg-gray-100"
-                }`}
+                className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+                  } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
+                  }`}
               />
             </div>
 
@@ -254,11 +242,9 @@ const ProfileForm = ({ role }) => {
                 value={formValues.bloodGroup || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`w-full p-2 border ${
-                  isEditing ? "border-gray-300" : "border-transparent"
-                } rounded-md bg-gray-100 ${
-                  isEditing ? "bg-white" : "bg-gray-100"
-                }`}
+                className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
+                  } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
+                  }`}
               >
                 <option value="A+">A+</option>
                 <option value="A-">A-</option>

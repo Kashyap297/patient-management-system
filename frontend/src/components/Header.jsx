@@ -69,35 +69,53 @@ const Header = ({ activeMenu, onSearch }) => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="relative flex items-center bg-gray-100 rounded-full px-4 py-2 space-x-2">
-            <FaSearch className="text-gray-500" />
-            <input
-              type="text"
-              placeholder="Quick Search"
-              className="bg-gray-100 focus:outline-none w-full"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
+          {/* Conditionally render search bar only if userRole is "admin" */}
+          {userRole === "admin" && (
+            <div className="relative flex items-center bg-gray-100 rounded-full px-4 py-2 space-x-2">
+              <FaSearch className="text-gray-500" />
+              <input
+                type="text"
+                placeholder="Quick Search"
+                className="bg-gray-100 focus:outline-none w-full"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
 
-            <div className="flex items-center cursor-pointer" onClick={toggleDropdown}>
-              <span className="text-gray-500 mx-2">{filterOption}</span>
-              <AiOutlineDown className="text-gray-500" />
-            </div>
-
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-40 bg-white border border-gray-200 rounded-md shadow-lg py-1 w-32 z-10">
-                <div onClick={() => handleFilterSelect("All")} className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">All</div>
-                <div onClick={() => handleFilterSelect("Doctor")} className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">Doctor</div>
-                <div onClick={() => handleFilterSelect("Patient")} className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">Patient</div>
+              <div className="flex items-center cursor-pointer" onClick={toggleDropdown}>
+                <span className="text-gray-500 mx-2">{filterOption}</span>
+                <AiOutlineDown className="text-gray-500" />
               </div>
-            )}
-          </div>
+
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-40 bg-white border border-gray-200 rounded-md shadow-lg py-1 w-32 z-10">
+                  <div
+                    onClick={() => handleFilterSelect("All")}
+                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+                  >
+                    All
+                  </div>
+                  <div
+                    onClick={() => handleFilterSelect("Doctor")}
+                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+                  >
+                    Doctor
+                  </div>
+                  <div
+                    onClick={() => handleFilterSelect("Patient")}
+                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+                  >
+                    Patient
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="relative rounded-full bg-gray-100 p-3">
             <FaBell className="text-gray-700" />
           </div>
 
-          <Link to="/admin" className="flex items-center space-x-2">
+          <Link to={`/${userRole}`} className="flex items-center space-x-2">
             <img
               src={profileImage || "http://localhost:8000/default-profile.png"}
               alt="user"
@@ -110,7 +128,7 @@ const Header = ({ activeMenu, onSearch }) => {
           </Link>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

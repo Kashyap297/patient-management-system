@@ -103,15 +103,7 @@ const PatientManagement = () => {
     (appointment) =>
       appointment.patientName
         .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      appointment.patientIssue
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      (appointment.doctorName &&
-        appointment.doctorName
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())) ||
-      appointment.diseaseName.toLowerCase().includes(searchTerm.toLowerCase())
+        .includes(searchTerm.toLowerCase())
   );
 
   const appointmentTypeStyles = {

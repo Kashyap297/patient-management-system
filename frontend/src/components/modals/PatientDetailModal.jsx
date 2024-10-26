@@ -9,7 +9,10 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const PatientDetailsModal = ({ open, handleClose, patient }) => {
   if (!patient) return null; // Ensure a patient is selected before rendering
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB"); // 'en-GB' locale gives dd/mm/yyyy format
+  };
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
@@ -31,17 +34,16 @@ const PatientDetailsModal = ({ open, handleClose, patient }) => {
         <Typography gutterBottom>
           <strong>Appointment Type:</strong>{" "}
           <span
-            className={`badge px-2 py-1 rounded ${
-              patient?.appointmentType === "Online"
-                ? "bg-yellow-200 text-yellow-600"
-                : "bg-blue-200 text-blue-600"
-            }`}
+            className={`badge px-2 py-1 rounded ${patient?.appointmentType === "Online"
+              ? "bg-yellow-200 text-yellow-600"
+              : "bg-blue-200 text-blue-600"
+              }`}
           >
             {patient?.appointmentType}
           </span>
         </Typography>
         <Typography gutterBottom>
-          <strong>Appointment Date:</strong> {patient?.appointmentDate}
+          <strong>Appointment Date:</strong> {formatDate(patient?.appointmentDate)}
         </Typography>
         <Typography gutterBottom>
           <strong>Appointment Time:</strong> {patient?.appointmentTime}
@@ -50,13 +52,14 @@ const PatientDetailsModal = ({ open, handleClose, patient }) => {
           <strong>Patient Name:</strong> {patient?.patientName}
         </Typography>
         <Typography gutterBottom>
-          <strong>Patient Phone Number:</strong> {patient?.phoneNumber}
+          <strong>Patient Phone Number:</strong> {patient?.patientPhoneNumber
+          }
         </Typography>
         <Typography gutterBottom>
-          <strong>Patient Age:</strong> {patient?.age}
+          <strong>Patient Age:</strong> {patient?.patientAge}
         </Typography>
         <Typography gutterBottom>
-          <strong>Patient Gender:</strong> {patient?.gender}
+          <strong>Patient Gender:</strong> {patient?.patientGender}
         </Typography>
         <Typography gutterBottom>
           <strong>Patient Issue:</strong> {patient?.patientIssue}
@@ -68,7 +71,7 @@ const PatientDetailsModal = ({ open, handleClose, patient }) => {
           <strong>Doctor Name:</strong> {patient?.doctorName}
         </Typography>
         <Typography gutterBottom>
-          <strong>Patient Address:</strong> {patient?.address}
+          <strong>Patient Address:</strong> {patient?.patientAddress}
         </Typography>
       </DialogContent>
     </Dialog>
