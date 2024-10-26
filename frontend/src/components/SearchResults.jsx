@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import DoctorOffCanvas from "../components/DoctorOffCanvas";
 import api from "../api/api";
+import userImage from "../assets/images/user.png";
 
 const SearchResults = ({ query, filterOption }) => {
     const [results, setResults] = useState({ doctors: [], patients: [] });
     const [filteredDoctors, setFilteredDoctors] = useState([]);
     const [filteredPatients, setFilteredPatients] = useState([]);
+    const [selectedDoctor, setSelectedDoctor] = useState(null);
+    const [isOffCanvasOpen, setIsOffCanvasOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,6 +58,30 @@ const SearchResults = ({ query, filterOption }) => {
         }
     }, [query, results, filterOption]);
 
+    const handleViewClick = (doctor) => {
+        setSelectedDoctor(doctor);
+        setIsOffCanvasOpen(true);
+    };
+
+    const handleCloseOffCanvas = () => {
+        setIsOffCanvasOpen(false);
+        setSelectedDoctor(null);
+    };
+
+    const handleDeleteDoctor = async (doctorId) => {
+        try {
+            const token = localStorage.getItem("token");
+            await api.delete(`/users/doctors/${doctorId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setFilteredDoctors(filteredDoctors.filter((doctor) => doctor._id !== doctorId));
+        } catch (error) {
+            console.error("Error deleting doctor:", error);
+        }
+    };
+
     return (
         <div className="p-6 bg-white shadow-lg rounded-lg mt-6 h-96 overflow-y-auto">
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Search Results</h2>
@@ -77,19 +107,49 @@ const SearchResults = ({ query, filterOption }) => {
                             {filteredDoctors.map((doctor) => (
                                 <tr key={doctor._id} className="border-b hover:bg-gray-50">
                                     <td className="p-4 flex items-center">
-                                        <img src={doctor.profileImage} alt="Doctor" className="w-10 h-10 rounded-full mr-3" />
+                                        <img
+                                            src={
+                                                doctor.profileImage
+                                                    ? `http://localhost:8000/${doctor.profileImage}`
+                                                    : userImage
+                                            }
+                                            alt="Doctor"
+                                            className="w-10 h-10 rounded-full"
+                                        />
                                         Dr. {doctor.firstName} {doctor.lastName}
                                     </td>
-                                    <td className="p-4">{doctor.gender}</td>
+                                    <td className="p-4">
+                                        <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
+                                            {doctor.gender}
+                                        </span>
+                                    </td>
                                     <td className="p-4">{doctor.doctorDetails?.qualification || "N/A"}</td>
                                     <td className="p-4">{doctor.doctorDetails?.specialtyType || "N/A"}</td>
                                     <td className="p-4 text-blue-500">{doctor.doctorDetails?.workingHours?.workingTime || "N/A"}</td>
                                     <td className="p-4 text-blue-500">{doctor.doctorDetails?.workingHours?.checkupTime || "N/A"}</td>
                                     <td className="p-4 text-blue-500">{doctor.doctorDetails?.workingHours?.breakTime || "N/A"}</td>
-                                    <td className="p-4 flex space-x-3">
-                                        <button className="text-green-500">✔️</button>
-                                        <button className="text-blue-500">👁️</button>
-                                        <button className="text-red-500">🗑️</button>
+                                    <td className="p-4 flex space-x-3 justify-center">
+                                        <button
+                                            onClick={() => handleViewClick(doctor)}
+                                            className="text-customBlue bg-gray-100 p-2 rounded-lg"
+                                            title="View"
+                                        >
+                                            <FaEye />
+                                        </button>
+                                        {/* <Link
+                                            to={`/admin/edit-doctor/${doctor._id}`}
+                                            className="text-green-500 bg-gray-100 p-2 rounded-lg"
+                                            title="Edit"
+                                        >
+                                            <FaEdit />
+                                        </Link> */}
+                                        <button
+                                            onClick={() => handleDeleteDoctor(doctor._id)}
+                                            className="text-red-500 bg-gray-100 p-2 rounded-lg"
+                                            title="Delete"
+                                        >
+                                            <FaTrash />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -136,6 +196,13 @@ const SearchResults = ({ query, filterOption }) => {
                     </table>
                 </div>
             )}
+
+            {/* OffCanvas Component */}
+            <DoctorOffCanvas
+                doctor={selectedDoctor}
+                isOpen={isOffCanvasOpen}
+                onClose={handleCloseOffCanvas}
+            />
         </div>
     );
 };
