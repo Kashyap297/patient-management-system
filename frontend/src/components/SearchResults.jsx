@@ -37,7 +37,6 @@ const SearchResults = ({ query, filterOption }) => {
     }, [query, filterOption]);
 
     useEffect(() => {
-        // Filter doctors based on query
         if (filterOption === "Doctor" || filterOption === "All") {
             const filtered = results.doctors.filter((doctor) =>
                 `${doctor.firstName} ${doctor.lastName}`.toLowerCase().includes(query.toLowerCase())
@@ -45,7 +44,6 @@ const SearchResults = ({ query, filterOption }) => {
             setFilteredDoctors(filtered);
         }
 
-        // Filter patients based on query
         if (filterOption === "Patient" || filterOption === "All") {
             const filtered = results.patients.filter((patient) =>
                 patient.patientName.toLowerCase().includes(query.toLowerCase())
@@ -55,42 +53,42 @@ const SearchResults = ({ query, filterOption }) => {
     }, [query, results, filterOption]);
 
     return (
-        <div className="p-4 bg-white shadow rounded mt-4 h-80 overflow-y-auto">
-            <h2 className="text-lg font-semibold mb-4">Search Results</h2>
+        <div className="p-6 bg-white shadow-lg rounded-lg mt-6 h-96 overflow-y-auto">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Search Results</h2>
 
-            {/* Display Doctor Table */}
+            {/* Doctor Table */}
             {(filterOption === "Doctor" || filterOption === "All") && (
-                <div className="mb-4">
-                    <h3 className="text-md font-semibold mb-2">Doctor</h3>
-                    <table className="w-full border">
+                <div className="mb-8">
+                    <h3 className="text-lg font-bold text-gray-700 mb-4">Doctor</h3>
+                    <table className="w-full border-collapse">
                         <thead>
-                            <tr>
-                                <th>Doctor Name</th>
-                                <th>Gender</th>
-                                <th>Qualification</th>
-                                <th>Specialty</th>
-                                <th>Working Time</th>
-                                <th>Patient Check Up Time</th>
-                                <th>Break Time</th>
-                                <th>Action</th>
+                            <tr className="bg-gray-100 text-left text-gray-600 uppercase text-sm">
+                                <th className="p-4 font-medium">Doctor Name</th>
+                                <th className="p-4 font-medium">Gender</th>
+                                <th className="p-4 font-medium">Qualification</th>
+                                <th className="p-4 font-medium">Specialty</th>
+                                <th className="p-4 font-medium">Working Time</th>
+                                <th className="p-4 font-medium">Check-Up Time</th>
+                                <th className="p-4 font-medium">Break Time</th>
+                                <th className="p-4 font-medium">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredDoctors.map((doctor) => (
-                                <tr key={doctor._id}>
-                                    <td>
-                                        <img src={doctor.profileImage} alt="Doctor" className="w-8 h-8 rounded-full inline-block mr-2" />
+                                <tr key={doctor._id} className="border-b hover:bg-gray-50">
+                                    <td className="p-4 flex items-center">
+                                        <img src={doctor.profileImage} alt="Doctor" className="w-10 h-10 rounded-full mr-3" />
                                         Dr. {doctor.firstName} {doctor.lastName}
                                     </td>
-                                    <td>{doctor.gender}</td>
-                                    <td>{doctor.doctorDetails?.qualification || "N/A"}</td>
-                                    <td>{doctor.doctorDetails?.specialtyType || "N/A"}</td>
-                                    <td>{doctor.doctorDetails?.workingHours?.workingTime || "N/A"}</td>
-                                    <td>{doctor.doctorDetails?.workingHours?.checkupTime || "N/A"}</td>
-                                    <td>{doctor.doctorDetails?.workingHours?.breakTime || "N/A"}</td>
-                                    <td>
-                                        <button className="text-green-500 mr-2">✔️</button>
-                                        <button className="text-blue-500 mr-2">👁️</button>
+                                    <td className="p-4">{doctor.gender}</td>
+                                    <td className="p-4">{doctor.doctorDetails?.qualification || "N/A"}</td>
+                                    <td className="p-4">{doctor.doctorDetails?.specialtyType || "N/A"}</td>
+                                    <td className="p-4 text-blue-500">{doctor.doctorDetails?.workingHours?.workingTime || "N/A"}</td>
+                                    <td className="p-4 text-blue-500">{doctor.doctorDetails?.workingHours?.checkupTime || "N/A"}</td>
+                                    <td className="p-4 text-blue-500">{doctor.doctorDetails?.workingHours?.breakTime || "N/A"}</td>
+                                    <td className="p-4 flex space-x-3">
+                                        <button className="text-green-500">✔️</button>
+                                        <button className="text-blue-500">👁️</button>
                                         <button className="text-red-500">🗑️</button>
                                     </td>
                                 </tr>
@@ -100,33 +98,37 @@ const SearchResults = ({ query, filterOption }) => {
                 </div>
             )}
 
-            {/* Display Patient Table */}
+            {/* Patient Table */}
             {(filterOption === "Patient" || filterOption === "All") && (
                 <div>
-                    <h3 className="text-md font-semibold mb-2">Patient</h3>
-                    <table className="w-full border">
+                    <h3 className="text-lg font-bold text-gray-700 mb-4">Patient</h3>
+                    <table className="w-full border-collapse">
                         <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>Patient Issue</th>
-                                <th>Doctor Name</th>
-                                <th>Disease Name</th>
-                                <th>Appointment Time</th>
-                                <th>Appointment Type</th>
-                                <th>Action</th>
+                            <tr className="bg-gray-100 text-left text-gray-600 uppercase text-sm">
+                                <th className="p-4 font-medium">Patient Name</th>
+                                <th className="p-4 font-medium">Patient Issue</th>
+                                <th className="p-4 font-medium">Doctor Name</th>
+                                <th className="p-4 font-medium">Disease Name</th>
+                                <th className="p-4 font-medium">Appointment Time</th>
+                                <th className="p-4 font-medium">Appointment Type</th>
+                                <th className="p-4 font-medium">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredPatients.map((item) => (
-                                <tr key={item.id}>
-                                    <td>{item.patientName}</td>
-                                    <td>{item.patientIssue}</td>
-                                    <td>{item.doctorName}</td>
-                                    <td>{item.diseaseName}</td>
-                                    <td>{new Date(item.appointmentDate).toLocaleTimeString()}</td>
-                                    <td>{item.appointmentType}</td>
-                                    <td>
-                                        <button className="text-blue-600">View</button>
+                                <tr key={item.id} className="border-b hover:bg-gray-50">
+                                    <td className="p-4">{item.patientName}</td>
+                                    <td className="p-4">{item.patientIssue}</td>
+                                    <td className="p-4">{item.doctorName}</td>
+                                    <td className="p-4">{item.diseaseName}</td>
+                                    <td className="p-4 text-blue-500">{new Date(item.appointmentDate).toLocaleTimeString()}</td>
+                                    <td className="p-4">
+                                        <span className={`px-3 py-1 rounded-full ${item.appointmentType === "Onsite" ? "bg-blue-100 text-blue-600" : "bg-yellow-100 text-yellow-600"}`}>
+                                            {item.appointmentType}
+                                        </span>
+                                    </td>
+                                    <td className="p-4">
+                                        <button className="text-blue-600">👁️</button>
                                     </td>
                                 </tr>
                             ))}

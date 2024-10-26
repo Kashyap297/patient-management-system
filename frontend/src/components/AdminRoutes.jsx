@@ -1,11 +1,11 @@
-import React from "react";
-import { Route, Router, Routes } from "react-router-dom";
-import AdminRegister from "./AdminRegister";
-import Login from "./Login";
+import React, { useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import DoctorManagement from "../pages/adminPages/DoctorManagement";
-import Home from "../pages/Home";
 import Header from "./Header";
+import AdminDashboard from "../pages/adminPages/AdminDashboard";
+import DoctorManagement from "../pages/adminPages/DoctorManagement";
+import PatientManagement from "./PatientManagement";
+import SearchResults from "./SearchResults";
 import AddDoctorForm from "../pages/adminPages/AddDoctorForm";
 import EditDoctor from "../pages/adminPages/EditDoctor";
 import MonitorBilling from "../pages/adminPages/MonitorBilling";
@@ -15,10 +15,6 @@ import Invoice from "../pages/adminPages/Invoice";
 import InsuranceDetail from "../pages/adminPages/InsuranceDetail";
 import EditBill from "./EditBill";
 import ReportingAnalysis from "../pages/adminPages/ReportingAnalysis";
-import AdminDashboard from "../pages/adminPages/AdminDashboard";
-import PatientManagement from "./PatientManagement";
-import ProfileScreen from "../pages/adminPages/ProfileScreen";
-import SearchResults from "./SearchScreen";
 import SelectTemplate from "../pages/adminPages/SelectTemplate";
 import CreateBill from "../pages/adminPages/CreateBillForm";
 import EditInvoice from "../pages/adminPages/EditInvoice";
@@ -27,40 +23,47 @@ import AdminEditProfile from "./Profile/AdminEditProfile";
 import PendingInvoice from "./PendingInvoice";
 
 const AdminRoutes = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterOption, setFilterOption] = useState("All");
+
+  // Callback to handle search input from Header
+  const handleSearch = (query, filter) => {
+    setSearchQuery(query);
+    setFilterOption(filter);
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar role={"admin"} />
       <div className="flex-1 flex flex-col">
-        <Header />
+        <Header onSearch={handleSearch} />
         <div className="flex-1 overflow-y-auto bg-gray-100">
-          <Routes>
-            <Route path="/doctor-management" element={<DoctorManagement />} />
-            <Route path="/dashboard" element={<AdminDashboard />} />
-            <Route path="/patient-management" element={<PatientManagement />} />
-            <Route path="/add-new-doctor" element={<AddDoctorForm />} />
-            <Route path="/edit-doctor/:id" element={<EditDoctor />} />
-            <Route
-              path="/view-doctor/:id"
-              element={<EditDoctor isViewOnly />}
-            />
-            <Route path="/monitor-billing" element={<MonitorBilling />} />
-            <Route path="/insurance-claims" element={<InsuranceClaims />} />
-            <Route path="/select-template" element={<SelectTemplate />} />
-            <Route path="/payment-process" element={<PaymentProcess />} />
-            <Route path="/invoice/:billId/:patientName" element={<Invoice />} />
-            <Route path="/insurance/:id" element={<InsuranceDetail />} />
-            <Route path="/payment/edit/:id" element={<EditBill />} />
-            <Route path="/analytics" element={<ReportingAnalysis />} />
-            {/* <Route path="/" element={<ProfileScreen />} /> */}
-            <Route path="/*" element={<AdminProfile />} />
-            <Route path="/edit-profile" element={<AdminEditProfile />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/create-bill" element={<CreateBill />} />
-            <Route path="/edit-invoice" element={<EditInvoice />} />
-            <Route path="/pending-invoice" element={<PendingInvoice />} />
-
-          </Routes>
-          {/* <DoctorManagement /> */}
+          {/* Conditionally render either the SearchResults or the Routes */}
+          {searchQuery ? (
+            <SearchResults query={searchQuery} filterOption={filterOption} />
+          ) : (
+            <Routes>
+              <Route path="/dashboard" element={<AdminDashboard />} />
+              <Route path="/doctor-management" element={<DoctorManagement />} />
+              <Route path="/patient-management" element={<PatientManagement />} />
+              <Route path="/add-new-doctor" element={<AddDoctorForm />} />
+              <Route path="/edit-doctor/:id" element={<EditDoctor />} />
+              <Route path="/view-doctor/:id" element={<EditDoctor isViewOnly />} />
+              <Route path="/monitor-billing" element={<MonitorBilling />} />
+              <Route path="/insurance-claims" element={<InsuranceClaims />} />
+              <Route path="/select-template" element={<SelectTemplate />} />
+              <Route path="/payment-process" element={<PaymentProcess />} />
+              <Route path="/invoice/:billId/:patientName" element={<Invoice />} />
+              <Route path="/insurance/:id" element={<InsuranceDetail />} />
+              <Route path="/payment/edit/:id" element={<EditBill />} />
+              <Route path="/analytics" element={<ReportingAnalysis />} />
+              <Route path="/*" element={<AdminProfile />} />
+              <Route path="/edit-profile" element={<AdminEditProfile />} />
+              <Route path="/create-bill" element={<CreateBill />} />
+              <Route path="/edit-invoice" element={<EditInvoice />} />
+              <Route path="/pending-invoice" element={<PendingInvoice />} />
+            </Routes>
+          )}
         </div>
       </div>
     </div>

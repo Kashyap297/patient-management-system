@@ -3,19 +3,15 @@ import { AiOutlineDown } from "react-icons/ai";
 import { FaBell, FaSearch } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import { useBreadcrumb } from "../context/BreadcrumbContext";
-import SearchResults from "./SearchResults";
 import { Link } from "react-router-dom";
 
-const Header = ({ activeMenu }) => {
-  const { breadcrumb } = useBreadcrumb();
+const Header = ({ activeMenu, onSearch }) => {
   const [userName, setUserName] = useState("");
   const [userRole, setUserRole] = useState("");
   const [greeting, setGreeting] = useState("");
   const [filterOption, setFilterOption] = useState("All");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSearchResults, setShowSearchResults] = useState(false);
   const [profileImage, setProfileImage] = useState("");
 
   useEffect(() => {
@@ -53,11 +49,13 @@ const Header = ({ activeMenu }) => {
   const handleFilterSelect = (option) => {
     setFilterOption(option);
     setDropdownOpen(false);
+    onSearch(searchQuery, option); // Update search whenever filter changes
   };
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setShowSearchResults(e.target.value.length > 0);
+    const query = e.target.value;
+    setSearchQuery(query);
+    onSearch(query, filterOption); // Call the parent onSearch callback
   };
 
   return (
@@ -112,10 +110,6 @@ const Header = ({ activeMenu }) => {
           </Link>
         </div>
       </div>
-
-      {showSearchResults && (
-        <SearchResults query={searchQuery} filterOption={filterOption} />
-      )}
     </div>
   );
 };
