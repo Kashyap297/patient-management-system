@@ -329,7 +329,7 @@ const AppointmentManagement = () => {
                   <td className="p-3">{appointment.patientName}</td>
                   <td className="p-3">{appointment.diseaseName}</td>
                   <td className="p-3">{appointment.patientIssue}</td>
-                  <td className="p-3">{appointment.appointmentDate}</td>
+                  <td className="p-3">{moment(appointment.appointmentDate).format("DD-MM-YYYY")}</td> {/* Format date here */}
                   <td className="p-3 text-blue-600">{appointment.appointmentTime}</td>
                   <td className="p-3">
                     <span className={`px-3 py-1 text-sm font-medium rounded-full ${appointment.appointmentType === 'Online' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
