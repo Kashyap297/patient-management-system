@@ -13,7 +13,6 @@ import {
 import { HiOutlineLogout } from "react-icons/hi";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import logo from "../assets/images/logo.png";
-import appointment from "../assets/images/appointment.png";
 
 const Sidebar = ({ role }) => {
   const navigate = useNavigate();
