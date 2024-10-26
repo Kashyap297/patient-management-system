@@ -8,6 +8,7 @@ import api from "../../api/api"; // Assuming you have an API setup
 import { jwtDecode } from "jwt-decode";
 import { FaCalendarTimes, FaCalendarCheck } from 'react-icons/fa';  // Cancel and Reschedule appointment icons
 import moment from 'moment';
+import CustomDateFilter from '../../components/modals/CustomDateFilter';
 
 // Modal for Payment Return Confirmation (second image)
 const PaymentReturnModal = ({ open, onClose, onConfirm }) => {
@@ -115,8 +116,6 @@ const AppointmentManagement = () => {
       }
       setTimeSlots(slots);
     };
-    
-    generateTimeSlots();
 
 
     const fetchAppointments = async () => {
@@ -160,6 +159,18 @@ const AppointmentManagement = () => {
   }, []);
 
   const getAppointments = () => {
+    // If custom date filter is applied, override tab filters
+    if (filterDates.fromDate || filterDates.toDate) {
+      return Object.values(appointments).flat().filter((appointment) => {
+        const appointmentDate = new Date(appointment.appointmentDate);
+        const isWithinRange =
+          (!filterDates.fromDate || appointmentDate >= new Date(filterDates.fromDate)) &&
+          (!filterDates.toDate || appointmentDate <= new Date(filterDates.toDate));
+        return isWithinRange;
+      });
+    }
+
+    // Otherwise, return appointments based on the active tab
     switch (activeTab) {
       case 'Today Appointment':
         return appointments.today.filter(app => app.status !== 'Cancelled'); // Exclude cancelled appointments
@@ -173,7 +184,7 @@ const AppointmentManagement = () => {
         return [];
     }
   };
-  
+
 
   const filteredAppointments = getAppointments().filter((appointment) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -246,6 +257,14 @@ const AppointmentManagement = () => {
     }
   };
 
+  const handleApplyDateFilter = (fromDate, toDate) => {
+    setFilterDates({ fromDate, toDate });
+    setOpenCustomDateModal(false); // Close the modal after applying
+  };
+  const handleResetDateFilter = () => {
+    setFilterDates({ fromDate: null, toDate: null });
+    setOpenCustomDateModal(false);
+  };
   return (
     <div className="p-6 bg-white rounded-lg shadow-md m-6">
       <div className="flex justify-between items-center mb-4">
@@ -322,12 +341,12 @@ const AppointmentManagement = () => {
                     <IconButton color="secondary" onClick={() => handleOpenCancelAppointmentModal(appointment)}>
                       <FaCalendarTimes style={{ color: 'red', fontSize: '24px' }} />
                     </IconButton>
-                    
+
                     {/* Reschedule Appointment */}
                     <Link to='/doctor/edit-appointment'>
-                    <IconButton color="primary">
-                      <FaCalendarCheck style={{ color: 'blue', fontSize: '24px' }} />
-                    </IconButton>
+                      <IconButton color="primary">
+                        <FaCalendarCheck style={{ color: 'blue', fontSize: '24px' }} />
+                      </IconButton>
                     </Link>
                   </td>
                 </tr>
@@ -343,7 +362,7 @@ const AppointmentManagement = () => {
         </table>
       </div>
 
-      <CancelAppointmentModal 
+      <CancelAppointmentModal
         open={openCancelAppointmentModal}
         onClose={() => setOpenCancelAppointmentModal(false)}
         onProceed={handlePaymentReturn}
@@ -354,7 +373,12 @@ const AppointmentManagement = () => {
         onClose={() => setOpenPaymentReturnModal(false)}
         onConfirm={handleConfirmCancelAppointment}
       />
-
+      <CustomDateFilter
+        open={openCustomDateModal}
+        onClose={() => setOpenCustomDateModal(false)}
+        onApply={handleApplyDateFilter} // Pass the apply handler to modal
+        onReset={handleResetDateFilter} // Pass the reset handler to modal
+      />
       {/* Reschedule Modal */}
       <RescheduleAppointmentModal
         open={openRescheduleModal}
