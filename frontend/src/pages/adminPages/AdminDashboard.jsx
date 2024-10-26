@@ -7,34 +7,23 @@ import PatientsSummary from "../../components/PatientsSummary";
 
 const AdminDashboard = () => {
   return (
-    <div className="p-8 bg-gray-100">
-      {/* Cards Section for Total Patients, Doctors, Appointments */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatisticsCards />
-      </div>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      {/* Patients Statistics (Graph) */}
-      <div className="mb-8">
-        <PatientsStatistics />
-      </div>
+        <div className="col-span-2 space-y-6">
+          <StatisticsCards />
 
-      {/* Today's Appointments List */}
-      <div className="mb-8">
-        <AppointmentsList />
-      </div>
+          <PatientsStatistics />
 
-      {/* Billing & Payments */}
-      <div className="mb-8 flex w-full border gap-2">
-        <div className="w-[70%]">
-          <BillingTable />
+          <AppointmentsList />
         </div>
-        <div className="w-[30%]">
+
+        {/* Right Panel: Billing Table and Patients Summary */}
+        <div className="space-y-6">
+          <BillingTable />
           <PatientsSummary />
         </div>
       </div>
-
-      {/* Patients Summary (Pie Chart) */}
-      <div></div>
     </div>
   );
 };

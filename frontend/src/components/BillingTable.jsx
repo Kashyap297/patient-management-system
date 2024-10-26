@@ -1,53 +1,27 @@
+import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Visibility } from "@mui/icons-material";
-import noBilling from "../assets/images/no-billing.svg"; // Import your no data image
+import axios from "../api/api"; // Ensure the correct path to your axios setup file
+import noBilling from "../assets/images/no-billing.svg"; // Placeholder image when no bills are found
 
 const BillingTable = () => {
-  const bills = [
-    {
-      id: 5654,
-      patientName: "Charlie Vaccaro",
-      diseaseName: "Colds and Flu",
-      status: "Paid",
-    },
-    {
-      id: 5654,
-      patientName: "James George",
-      diseaseName: "Conjunctivitis",
-      status: "Unpaid",
-    },
-    {
-      id: 5654,
-      patientName: "Craig Torff",
-      diseaseName: "Allergies",
-      status: "Paid",
-    },
-    {
-      id: 5654,
-      patientName: "Chance Lipshutz",
-      diseaseName: "Diarrhea",
-      status: "Unpaid",
-    },
-    {
-      id: 5654,
-      patientName: "Gustavo Saris",
-      diseaseName: "Headaches",
-      status: "Paid",
-    },
-    {
-      id: 5654,
-      patientName: "Carter Bator",
-      diseaseName: "Mononucleosis",
-      status: "Unpaid",
-    },
-    {
-      id: 5654,
-      patientName: "Kadin Schleifer",
-      diseaseName: "Stomach Aches",
-      status: "Paid",
-    },
-  ];
+  const [bills, setBills] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchBills = async () => {
+      try {
+        const response = await axios.get("/invoice");
+        setBills(response.data.data); // Assuming data structure based on your API
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBills();
+  }, []);
   const statusStyles = {
     Paid: "bg-green-100 text-green-600",
     Unpaid: "bg-red-100 text-red-600",
@@ -65,14 +39,15 @@ const BillingTable = () => {
 
       {/* Pending Bills Info */}
       <div className="mb-4 text-sm text-red-500">
-        <strong>Pending Bills:</strong> 50
+        <strong>Pending Bills:</strong> {bills.filter(bill => bill.status === "Unpaid").length}
       </div>
 
-      {/* Check if bills array is empty */}
-      {bills.length > 0 ? (
-        <div className="overflow-auto" style={{ maxHeight: "400px" }}>
+      {loading ? (
+        <p className="text-center">Loading...</p>
+      ) : bills.length > 0 ? (
+        <div className="overflow-auto max-h-96">
           <table className="w-full text-left table-auto">
-            <thead className="sticky top-0 bg-gray-100 z-[1]">
+            <thead className="sticky top-0 bg-gray-100 z-10">
               <tr>
                 <th className="p-3 text-sm font-semibold">Bill No</th>
                 <th className="p-3 text-sm font-semibold">Patient Name</th>
@@ -85,16 +60,12 @@ const BillingTable = () => {
               {bills.map((bill, index) => (
                 <tr key={index} className="border-t">
                   <td className="p-3 text-blue-600 cursor-pointer">
-                    {bill.id}
+                    {bill.billNumber}
                   </td>
-                  <td className="p-3">{bill.patientName}</td>
+                  <td className="p-3">{bill.patient.firstName} {bill.patient.lastName} </td>
                   <td className="p-3">{bill.diseaseName}</td>
                   <td className="p-3">
-                    <span
-                      className={`px-3 py-1 text-sm font-medium rounded-full ${
-                        statusStyles[bill.status]
-                      }`}
-                    >
+                    <span className={`px-3 py-1 text-sm font-medium rounded-full ${statusStyles[bill.status]}`}>
                       {bill.status}
                     </span>
                   </td>
@@ -110,8 +81,8 @@ const BillingTable = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center">
-          {/* Render the image and message if no billing data */}
           <img src={noBilling} alt="No Billing Data" className="w-48 mb-4" />
+          <p className="text-gray-500">No Bills Found</p>
         </div>
       )}
     </div>

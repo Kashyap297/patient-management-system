@@ -1,24 +1,26 @@
+import React from "react";
 
-
-const AppointmentCard = ({ patientName, doctorName, diseaseName, appointmentTime, status }) => {
-  const statusStyles = {
-    Onsite: 'bg-blue-100 text-blue-600',
-    Online: 'bg-yellow-100 text-yellow-600',
-  };
-
+const AppointmentCard = ({ patientName, doctorName, diseaseName, appointmentTime, appointmentType }) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md w-full">
+    <div className="bg-white border rounded-lg shadow-md p-4 min-w-[250px] max-w-[250px]">
       <div className="flex justify-between items-center mb-2">
-        <h4 className="text-lg font-semibold">{patientName}</h4>
-        <span className={`px-3 py-1 text-sm font-medium rounded-full ${statusStyles[status]}`}>
-          {status}
+        <h3 className="text-md font-semibold text-black">{patientName}</h3>
+        <span
+          className={`px-2 py-0.5 text-xs rounded-full ${appointmentType === "Onsite" ? "bg-blue-100 text-blue-600" : "bg-yellow-100 text-yellow-600"
+            }`}
+        >
+          {appointmentType}
         </span>
       </div>
-      <div className="text-sm">
-        <p><strong>Doctor Name: </strong>{doctorName}</p>
-        <p><strong>Disease Name: </strong>{diseaseName}</p>
-        <p><strong>Appointment Time: </strong>{appointmentTime}</p>
-      </div>
+      <p className="text-sm text-gray-500 mb-1">
+        <span className="font-medium">Doctor Name:</span> {doctorName}
+      </p>
+      <p className="text-sm text-gray-500 mb-1">
+        <span className="font-medium">Disease Name:</span> {diseaseName}
+      </p>
+      <p className="text-sm text-gray-500">
+        <span className="font-medium">Appointment Time:</span> {appointmentTime}
+      </p>
     </div>
   );
 };
