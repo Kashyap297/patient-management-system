@@ -108,7 +108,7 @@ exports.createInvoice = async (req, res) => {
 exports.getInvoice = async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id)
-      .populate("doctor", "firstName lastName email") // Populating doctor with selected fields
+      .populate("doctor", "firstName lastName email doctorDetails") // Populating doctor with selected fields
       .populate("patient", "firstName lastName email");
 
     if (!invoice) {
@@ -230,7 +230,7 @@ exports.updateInvoice = async (req, res) => {
 exports.getAllInvoices = async (req, res) => {
   try {
     const invoices = await Invoice.find()
-      .populate("doctor", "firstName lastName email")
+      .populate("doctor", "firstName lastName email description")
       .populate("patient", "firstName lastName email")
       .populate("hospital", "name address");
 
@@ -252,7 +252,7 @@ exports.getUserInvoices = async (req, res) => {
   try {
     const userId = req.user._id; // Assuming the user ID is set on the request object by the 'protect' middleware
     const invoices = await Invoice.find({ patient: userId })
-      .populate("doctor", "firstName lastName email")
+      .populate("doctor", "firstName lastName email description")
       .populate("patient", "firstName lastName email")
       .populate("hospital", "name address");
 

@@ -24,6 +24,7 @@ import CreateBill from "../pages/adminPages/CreateBillForm";
 import EditInvoice from "../pages/adminPages/EditInvoice";
 import AdminProfile from "./AdminProfile";
 import AdminEditProfile from "./Profile/AdminEditProfile";
+import PendingInvoice from "./PendingInvoice";
 
 const AdminRoutes = () => {
   return (
@@ -56,6 +57,8 @@ const AdminRoutes = () => {
             <Route path="/search" element={<SearchResults />} />
             <Route path="/create-bill" element={<CreateBill />} />
             <Route path="/edit-invoice" element={<EditInvoice />} />
+            <Route path="/pending-invoice" element={<PendingInvoice />} />
+
           </Routes>
           {/* <DoctorManagement /> */}
         </div>

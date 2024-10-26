@@ -1,17 +1,30 @@
 import { useEffect, useState } from "react";
-import { Button } from "@mui/material";
 import { Visibility } from "@mui/icons-material";
-import axios from "../api/api"; // Ensure the correct path to your axios setup file
+import api from "../api/api"; // Ensure the correct path to your axios setup file
 import noBilling from "../assets/images/no-billing.svg"; // Placeholder image when no bills are found
+import { Link } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  IconButton,
+  Button,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const BillingTable = () => {
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchBills = async () => {
       try {
-        const response = await axios.get("/invoice");
+        const response = await api.get("/invoice");
         setBills(response.data.data); // Assuming data structure based on your API
       } catch (error) {
         console.error("Error fetching invoices:", error);
@@ -26,21 +39,28 @@ const BillingTable = () => {
     Paid: "bg-green-100 text-green-600",
     Unpaid: "bg-red-100 text-red-600",
   };
+  const handleViewInvoice = (bill) => {
+    navigate(`/admin/invoice/${bill._id}/${bill.patient?.firstName}`);
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Billing & Payments</h2>
-        <Button variant="contained" color="primary" className="!text-sm">
-          + Create Bills
-        </Button>
+        <Link to="/admin/select-template">
+          <Button variant="contained" color="primary" className="!text-sm">
+            + Create Bills
+          </Button>
+        </Link>
       </div>
 
       {/* Pending Bills Info */}
-      <div className="mb-4 text-sm text-red-500">
-        <strong>Pending Bills:</strong> {bills.filter(bill => bill.status === "Unpaid").length}
-      </div>
+      <Link to="/admin/pending-invoice">
+        <div className="mb-4 text-sm text-red-500">
+          <strong>Pending Bills:</strong> {bills.filter(bill => bill.status === "Unpaid").length}
+        </div>
+      </Link>
 
       {loading ? (
         <p className="text-center">Loading...</p>
@@ -70,9 +90,12 @@ const BillingTable = () => {
                     </span>
                   </td>
                   <td className="p-3">
-                    <Button variant="text" color="primary">
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleViewInvoice(bill)}
+                    >
                       <Visibility />
-                    </Button>
+                    </IconButton>
                   </td>
                 </tr>
               ))}
