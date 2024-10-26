@@ -4,6 +4,10 @@ import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import DoctorOffCanvas from "../components/DoctorOffCanvas";
 import api from "../api/api";
 import userImage from "../assets/images/user.png";
+import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
+import { Visibility } from "@mui/icons-material";
+import PatientDetailsModal from "./modals/PatientDetailModal";
+
 
 const SearchResults = ({ query, filterOption }) => {
     const [results, setResults] = useState({ doctors: [], patients: [] });
@@ -11,6 +15,10 @@ const SearchResults = ({ query, filterOption }) => {
     const [filteredPatients, setFilteredPatients] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [isOffCanvasOpen, setIsOffCanvasOpen] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -62,6 +70,10 @@ const SearchResults = ({ query, filterOption }) => {
         setSelectedDoctor(doctor);
         setIsOffCanvasOpen(true);
     };
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedPatient(null);
+    };
 
     const handleCloseOffCanvas = () => {
         setIsOffCanvasOpen(false);
@@ -81,6 +93,28 @@ const SearchResults = ({ query, filterOption }) => {
             console.error("Error deleting doctor:", error);
         }
     };
+
+    const handleViewPatient = async (appointmentId) => {
+        if (!appointmentId) {
+            console.error("Appointment ID is undefined");
+            return;
+        }
+
+        try {
+            const response = await api.get(`/appointments/${appointmentId}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authorization
+                },
+            });
+
+            // Set the selected patient data for the modal
+            setSelectedPatient(response.data.data);
+            setIsModalOpen(true);
+        } catch (error) {
+            console.error("Error fetching appointment details:", error);
+        }
+    };
+
 
     return (
         <div className="p-6 bg-white shadow-lg rounded-lg mt-6 h-96 overflow-y-auto">
@@ -187,8 +221,13 @@ const SearchResults = ({ query, filterOption }) => {
                                             {item.appointmentType}
                                         </span>
                                     </td>
-                                    <td className="p-4">
-                                        <button className="text-blue-600">👁️</button>
+                                    <td className="p-3">
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() => handleViewPatient(item.id)} // Use 'id' instead of '_id'
+                                        >
+                                            <Visibility />
+                                        </IconButton>
                                     </td>
                                 </tr>
                             ))}
@@ -202,6 +241,11 @@ const SearchResults = ({ query, filterOption }) => {
                 doctor={selectedDoctor}
                 isOpen={isOffCanvasOpen}
                 onClose={handleCloseOffCanvas}
+            />
+            <PatientDetailsModal
+                open={isModalOpen}
+                handleClose={handleCloseModal}
+                patient={selectedPatient}
             />
         </div>
     );

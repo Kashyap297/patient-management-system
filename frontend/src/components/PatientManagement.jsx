@@ -196,9 +196,8 @@ const PatientManagement = () => {
                 </td>
                 <td className="p-3">
                   <span
-                    className={`px-3 py-1 text-sm font-medium rounded-full ${
-                      appointmentTypeStyles[appointment.appointmentType]
-                    }`}
+                    className={`px-3 py-1 text-sm font-medium rounded-full ${appointmentTypeStyles[appointment.appointmentType]
+                      }`}
                   >
                     {appointment.appointmentType}
                   </span>
