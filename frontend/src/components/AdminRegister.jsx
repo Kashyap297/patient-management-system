@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AiOutlineDown, AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SidePanel from "./SidePanel";
 import AuthContext from "../context/AuthContext";
 import axios from "axios";
@@ -10,6 +10,7 @@ const AdminRegister = () => {
   const { registerAdmin, authError } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,6 +20,7 @@ const AdminRegister = () => {
     state: "",
     city: "",
     hospital: "",
+    hospitalName: "",   // Hospital name for display
     password: "",
     confirmPassword: "",
     agreeToTerms: false,
@@ -147,10 +149,10 @@ const AdminRegister = () => {
         city: formData.city,
         hospital: formData.hospital,
       };
-      console.log(adminData)
       try {
         await registerAdmin(adminData);
         alert("Admin registered successfully!");
+        navigate('/')
       } catch (error) {
         console.error("Registration failed:", authError);
       }
@@ -321,11 +323,8 @@ const AdminRegister = () => {
               </div>
             </div>
             <div className="relative mb-4">
-              <div
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md text-sm font-normal text-gray-500 cursor-pointer flex justify-between items-center"
-                onClick={toggleDropdown}
-              >
-                {formData.hospital ? formData.hospital : "Select Hospital"}
+              <div className="peer w-full px-4 py-2 border border-gray-300 rounded-md text-sm font-normal text-gray-500 cursor-pointer flex justify-between items-center" onClick={toggleDropdown}>
+                {formData.hospitalName ? formData.hospitalName : "Select Hospital"}  {/* Display hospital name if selected */}
                 <AiOutlineDown />
               </div>
               <label htmlFor="hospital" className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3">
@@ -344,7 +343,7 @@ const AdminRegister = () => {
                       <div
                         key={index}
                         onClick={() => {
-                          setFormData({ ...formData, hospital: hospital._id });
+                          setFormData({ ...formData, hospital: hospital._id, hospitalName: hospital.name, });
                           setIsDropdownOpen(false);
                         }}
                         className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer font-normal"
@@ -355,11 +354,16 @@ const AdminRegister = () => {
                   )}
                   <div className="px-4 py-2">
                     <button
-                      onClick={() => setShowCreateModal(true)}
+                      type="button"  // Change button type to button to prevent form submission
+                      onClick={(e) => {
+                        e.preventDefault();  // Prevent form submission
+                        setShowCreateModal(true);  // Show the create hospital modal
+                      }}
                       className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
                     >
                       Create Hospital
                     </button>
+
                   </div>
                 </div>
               )}
