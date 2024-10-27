@@ -58,7 +58,7 @@ exports.getPrescriptionById = async (req, res) => {
   try {
     const prescription = await Prescription.findById(id)
       .populate("doctor", "firstName lastName specialty")
-      .populate("patient", "firstName lastName age gender address")
+      .populate("patient", "firstName lastName age gender address phoneNumber")
       .populate("appointmentId", "appointmentDate appointmentTime hospital");
 
     if (!prescription) {
@@ -86,7 +86,7 @@ exports.getAllPrescriptionsByUser = async (req, res) => {
     if (req.user.role === "doctor") {
       prescriptions = await Prescription.find({ doctor: req.user._id })
         .populate("doctor", "firstName lastName specialty")
-        .populate("patient", "firstName lastName age gender address")
+        .populate("patient", "firstName lastName age gender address phoneNumber")
         .populate("appointmentId", "appointmentDate appointmentTime hospital");
     }
     // If the logged-in user is a patient, find prescriptions for them

@@ -40,10 +40,13 @@ const ManagePrescription = () => {
     fetchPrescriptions();
   }, []);
 
+  console.log(todayPrescriptions)
+  console.log(olderPrescriptions)
+
   // Handle modal open with prescription details
   const handleModalOpen = (prescriptionId) => {
-    const prescription = todayPrescriptions.find((pres) => pres._id === prescriptionId) 
-                      || olderPrescriptions.find((pres) => pres._id === prescriptionId);
+    const prescription = todayPrescriptions.find((pres) => pres._id === prescriptionId)
+      || olderPrescriptions.find((pres) => pres._id === prescriptionId);
 
     if (prescription) {
       setSelectedPrescription(prescription);

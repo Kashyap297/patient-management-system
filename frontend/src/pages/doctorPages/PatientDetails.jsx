@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, IconButton } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
-import {jwtDecode} from 'jwt-decode'; // Import jwt-decode
+import { jwtDecode } from 'jwt-decode'; // Import jwt-decode
 import api from "../../api/api"; // Adjust the path according to your project structure
 import AddRecordModal from './AddRecordModal'; // Import the AddRecordModal
 
