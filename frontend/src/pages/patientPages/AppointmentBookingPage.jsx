@@ -6,6 +6,10 @@ import DoctorDetailsSidebar from "../../components/Patient/DoctorDetailsSidebar"
 import api from "../../api/api"; // Assuming Axios instance is configured
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Import jwtDecode to extract patient ID
+import { Button } from "@mui/material";
+import { CalendarToday } from "@mui/icons-material";
+import CustomDateFilter from '../../components/modals/CustomDateFilter';
+import moment from "moment";
 
 // Set the app element for the modal to prevent accessibility issues
 Modal.setAppElement("#root");
@@ -15,11 +19,12 @@ const AppointmentBookingPage = () => {
   const [activeTab, setActiveTab] = useState("Scheduled");
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(false); // For button loading state
-
-  const [isModalOpen, setIsModalOpen] = useState(false); // For modal
-  const [appointmentToCancel, setAppointmentToCancel] = useState(null); // To store the appointment to be canceled
+  const [loading, setLoading] = useState(false);
+  const [filterDates, setFilterDates] = useState({ fromDate: null, toDate: null });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [appointmentToCancel, setAppointmentToCancel] = useState(null);
 
   useEffect(() => {
     updateBreadcrumb([
@@ -29,17 +34,16 @@ const AppointmentBookingPage = () => {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      const token = localStorage.getItem("token"); // Get token from local storage
-      if (!token) return; // If no token, do not proceed
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-      const { id } = jwtDecode(token); // Decode the token to get the user ID
+      const { id } = jwtDecode(token);
       try {
         const response = await api.get("/appointments");
-        console.log("API Response:", response.data); // Log to check the response structure
+        console.log("API Response:", response.data);
 
-        // Filter appointments for the logged-in patient
         const userAppointments = response.data.data.filter(appointment => appointment.patientId === id);
-        setAppointments(userAppointments || []); // Set to an empty array if data is undefined
+        setAppointments(userAppointments || []);
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
@@ -48,20 +52,24 @@ const AppointmentBookingPage = () => {
     fetchAppointments();
   }, []);
 
-  // Function to filter appointments based on the selected tab
+  // Function to filter appointments based on the selected tab and date range
   const filteredAppointments = appointments.filter((appointment) => {
+    const appointmentDate = moment(appointment.appointmentDate);
+
+    // Apply date filter if both fromDate and toDate are set
+    const withinDateRange = filterDates.fromDate && filterDates.toDate
+      ? appointmentDate.isBetween(moment(filterDates.fromDate).startOf("day"), moment(filterDates.toDate).endOf("day"), null, "[]")
+      : true;
+
+    // Apply tab filter
     if (activeTab === "Scheduled") {
-      // Show all appointments in Scheduled tab excluding those that are canceled
-      return appointment.status !== "Cancelled";
+      return appointment.status !== "Cancelled" && withinDateRange;
     } else if (activeTab === "Previous") {
-      // Show only completed appointments
-      return appointment.status === "Completed";
+      return appointment.status === "Completed" && withinDateRange;
     } else if (activeTab === "Canceled") {
-      // Show only canceled appointments
-      return appointment.status === "Cancelled";
+      return appointment.status === "Cancelled" && withinDateRange;
     } else if (activeTab === "Pending") {
-      // Show only pending appointments
-      return appointment.status === "Pending";
+      return appointment.status === "Pending" && withinDateRange;
     }
     return false;
   });
@@ -71,19 +79,16 @@ const AppointmentBookingPage = () => {
     setIsSidebarVisible(true);
   };
 
-  // Open modal to confirm cancellation
   const openCancelModal = (appointment) => {
     setAppointmentToCancel(appointment);
     setIsModalOpen(true);
   };
 
-  // Close modal
   const closeModal = () => {
     setIsModalOpen(false);
-    setAppointmentToCancel(null); // Reset the appointment to cancel
+    setAppointmentToCancel(null);
   };
 
-  // Function to cancel an appointment
   const handleCancelAppointment = async () => {
     setLoading(true);
     try {
@@ -92,7 +97,6 @@ const AppointmentBookingPage = () => {
       );
       console.log("Cancel Response:", response.data);
 
-      // Update the appointments after cancellation
       setAppointments((prevAppointments) =>
         prevAppointments.map((appointment) =>
           appointment.id === appointmentToCancel.id
@@ -100,7 +104,7 @@ const AppointmentBookingPage = () => {
             : appointment
         )
       );
-      closeModal(); // Close the modal after canceling
+      closeModal();
     } catch (error) {
       console.error("Error canceling appointment:", error);
       alert("Failed to cancel appointment. Please try again.");
@@ -109,16 +113,25 @@ const AppointmentBookingPage = () => {
     }
   };
 
+  const handleApplyDateFilter = (fromDate, toDate) => {
+    setFilterDates({ fromDate, toDate });
+    setOpenCustomDateModal(false);
+  };
+
+  const handleResetDateFilter = () => {
+    setFilterDates({ fromDate: null, toDate: null });
+    setOpenCustomDateModal(false);
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg m-6 h-full">
-      {/* Tabs for Appointment Types */}
       <div className="flex space-x-4 border-b mb-4">
         {["Scheduled", "Previous", "Canceled", "Pending"].map((tab) => (
           <button
             key={tab}
             className={`py-2 px-4 focus:outline-none font-medium ${activeTab === tab
-                ? "border-b-4 border-customBlue text-customBlue"
-                : "text-gray-500"
+              ? "border-b-4 border-customBlue text-customBlue"
+              : "text-gray-500"
               }`}
             onClick={() => setActiveTab(tab)}
           >
@@ -129,16 +142,26 @@ const AppointmentBookingPage = () => {
 
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">My Appointment</h2>
-        <Link
-          to={"/patient/book-appointment"}
-          className="flex items-center space-x-2 bg-customBlue text-white px-4 py-2 rounded"
-        >
-          <FaCalendarAlt />
-          <span>Book Appointment</span>
-        </Link>
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="outlined"
+            color="secondary"
+            startIcon={<CalendarToday />}
+            className="!text-sm"
+            onClick={() => setOpenCustomDateModal(true)}
+          >
+            Any Date
+          </Button>
+          <Link
+            to={"/patient/book-appointment"}
+            className="flex items-center space-x-2 bg-customBlue text-white px-4 py-2 rounded"
+          >
+            <FaCalendarAlt />
+            <span>Book Appointment</span>
+          </Link>
+        </div>
       </div>
 
-      {/* Appointment List */}
       <div className="grid grid-cols-4 gap-4 overflow-y-auto custom-scroll">
         {filteredAppointments.map((appointment) => (
           <div
@@ -156,12 +179,9 @@ const AppointmentBookingPage = () => {
                 <FaEye />
               </div>
             </div>
-            {/* Card body with appointment details */}
             <div className="p-4 text-sm text-gray-700 space-y-1">
               <p className="flex justify-between items-center text-yellow-500 pb-2">
-                <span className="font-semibold text-gray-500">
-                  Appointment Type
-                </span>
+                <span className="font-semibold text-gray-500">Appointment Type</span>
                 {appointment.appointmentType}
               </p>
               <p className="flex justify-between items-center pb-2">
@@ -169,26 +189,19 @@ const AppointmentBookingPage = () => {
                 {appointment.hospitalName}
               </p>
               <p className="flex justify-between items-center pb-2">
-                <span className="font-semibold text-gray-500">
-                  Appointment Date
-                </span>
+                <span className="font-semibold text-gray-500">Appointment Date</span>
                 {new Date(appointment.appointmentDate).toLocaleDateString()}
               </p>
               <p className="flex justify-between items-center pb-2">
-                <span className="font-semibold text-gray-500">
-                  Appointment Time
-                </span>
+                <span className="font-semibold text-gray-500">Appointment Time</span>
                 {appointment.appointmentTime}
               </p>
               <p className="flex justify-between items-center pb-2">
-                <span className="font-semibold text-gray-500">
-                  Patient Issue
-                </span>
+                <span className="font-semibold text-gray-500">Patient Issue</span>
                 {appointment.diseaseName || "Not specified"}
               </p>
             </div>
 
-            {/* Action buttons */}
             <div className="flex justify-between space-x-2 p-4 bg-white rounded-b-lg">
               {activeTab === "Scheduled" || activeTab === "Pending" ? (
                 <>
@@ -211,7 +224,6 @@ const AppointmentBookingPage = () => {
         ))}
       </div>
 
-      {/* Doctor Details Sidebar */}
       {selectedDoctor && (
         <DoctorDetailsSidebar
           doctor={selectedDoctor}
@@ -220,7 +232,6 @@ const AppointmentBookingPage = () => {
         />
       )}
 
-      {/* Cancel Confirmation Modal */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
@@ -228,22 +239,15 @@ const AppointmentBookingPage = () => {
         overlayClassName="fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center"
       >
         <div className="text-center">
-          {/* Icon */}
           <div className="text-red-600 text-4xl mb-4">
             <FaTrashAlt />
           </div>
-
-          {/* Modal Heading */}
           <h2 className="text-xl font-bold text-gray-800 mb-4">
             Cancel {appointmentToCancel?.appointmentType} Appointment?
           </h2>
-
-          {/* Modal Description */}
           <p className="text-gray-600 mb-6">
             Are you sure you want to cancel this appointment?
           </p>
-
-          {/* Buttons */}
           <div className="flex justify-center space-x-4">
             <button
               className="px-6 py-2 text-gray-700 border border-gray-300 rounded-md font-semibold hover:bg-gray-100"
@@ -260,6 +264,12 @@ const AppointmentBookingPage = () => {
           </div>
         </div>
       </Modal>
+      <CustomDateFilter
+        open={openCustomDateModal}
+        onClose={() => setOpenCustomDateModal(false)}
+        onApply={handleApplyDateFilter}
+        onReset={handleResetDateFilter}
+      />
     </div>
   );
 };

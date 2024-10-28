@@ -1,14 +1,15 @@
 import { Button } from '@mui/material';
 import CallIcon from '@mui/icons-material/Call';
 import EventIcon from '@mui/icons-material/Event';
+import { FaTrashAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 // PatientCard component
-const TeleConsultationCardPatient = ({ patient, activeTab }) => {
+const TeleConsultationCardPatient = ({ patient, activeTab, openCancelModal }) => {
   const navigate = useNavigate();
 
   const handleJoinCall = () => {
-    const appointmentId = patient.id; // This should be passed as a prop or fetched from the patient data
+    const appointmentId = patient.id;
     navigate(`/patient/patientMeetingConference/${appointmentId}`);
   };
 
@@ -48,7 +49,8 @@ const TeleConsultationCardPatient = ({ patient, activeTab }) => {
             <Button
               variant="outlined"
               className="border border-gray-400 text-gray-700 rounded-md hover:bg-gray-100 transition duration-200 flex items-center space-x-1 px-3 py-1 font-semibold"
-              startIcon={<EventIcon />}
+              startIcon={<FaTrashAlt />}
+              onClick={() => openCancelModal(patient)}
             >
               Cancel
             </Button>
