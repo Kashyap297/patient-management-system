@@ -1,3 +1,4 @@
+// TeleConsultation Component
 import { useEffect, useState } from 'react';
 import { Tabs, Tab, Button } from '@mui/material';
 import { DateRange } from '@mui/icons-material';
@@ -5,7 +6,7 @@ import TeleConsultationCard from '../../components/TeleConsultationCard';
 import CustomDateFilter from '../../components/modals/CustomDateFilter.jsx';
 import api from '../../api/api'; // Import the Axios instance from api.js
 import moment from 'moment'; // For handling date comparisons
-import {jwtDecode} from 'jwt-decode'; // To decode the token and extract doctorId
+import { jwtDecode } from 'jwt-decode'; // To decode the token and extract doctorId
 import TeleConsultationCardPatient from '../../components/TeleConsultationCardPatient.jsx';
 
 const TeleConsultation = () => {
@@ -21,7 +22,7 @@ const TeleConsultation = () => {
       const token = localStorage.getItem('token');
       const decodedToken = jwtDecode(token); // Decode the token to get the doctorId
       const loggedInDoctorId = decodedToken.id; // Assuming the token has the doctor's ID as "id"
-      
+
       const response = await api.get('/appointments', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -32,7 +33,7 @@ const TeleConsultation = () => {
       const doctorAppointments = fetchedAppointments.filter(
         appointment => appointment.patientId === loggedInDoctorId
       );
-      
+
       setAppointments(doctorAppointments); // Set only the logged-in doctor's appointments
     } catch (error) {
       console.error('Error fetching appointments:', error);
@@ -53,7 +54,6 @@ const TeleConsultation = () => {
         filteredAppointments = appointments.filter(
           app => moment(app.appointmentDate).isSame(today, 'day')
         );
-        console.log(filteredAppointments)
         break;
       case 1: // Upcoming Appointment
         filteredAppointments = appointments.filter(
@@ -105,7 +105,7 @@ const TeleConsultation = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="p-8 bg-white min-h-screen">
       {/* Tabs for different types of appointments */}
       <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
         <Tab label="Today Appointment" />
@@ -123,17 +123,17 @@ const TeleConsultation = () => {
       </div>
 
       {/* Grid of Patient Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentAppointments.map((patient, index) => (
-          <TeleConsultationCardPatient key={index} patient={patient} />
+          <TeleConsultationCardPatient key={index} patient={patient} activeTab={activeTab} />
         ))}
       </div>
 
       <CustomDateFilter
         open={openCustomDateModal}
         onClose={() => setOpenCustomDateModal(false)}
-        onApply={handleApplyDateFilter} 
-        onReset={handleResetDateFilter} 
+        onApply={handleApplyDateFilter}
+        onReset={handleResetDateFilter}
       />
     </div>
   );

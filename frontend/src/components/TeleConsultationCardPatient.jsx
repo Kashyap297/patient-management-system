@@ -4,55 +4,63 @@ import EventIcon from '@mui/icons-material/Event';
 import { useNavigate } from 'react-router-dom';
 
 // PatientCard component
-const TeleConsultationCardPatient = ({ patient }) => {
+const TeleConsultationCardPatient = ({ patient, activeTab }) => {
   const navigate = useNavigate();
 
   const handleJoinCall = () => {
-    // Assuming patient has a unique id for the appointment or roomId
     const appointmentId = patient.id; // This should be passed as a prop or fetched from the patient data
-    // Navigate to the DoctorMeetingConference component with the appointmentId in the URL
     navigate(`/patient/patientMeetingConference/${appointmentId}`);
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md transition transform hover:-translate-y-1 hover:shadow-xl">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">{patient.patientName}</h3>
-        <p>
-          <strong>Patient Issue: </strong>
-          {patient.patientIssue}
-        </p>
-        <p>
-          <strong>Disease Name: </strong>
-          {patient.diseaseName}
-        </p>
-        <p>
-          <strong>Appointment Date: </strong>
-          {new Date(patient.appointmentDate).toLocaleDateString()}
-        </p>
-        <p>
-          <strong>Appointment Time: </strong>
-          {patient.appointmentTime}
-        </p>
-      </div>
-      <div className="flex gap-4">
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<CallIcon />}
-          className="hover:bg-green-700"
-          onClick={handleJoinCall} // Using the handleJoinCall function
-        >
-          Join Call
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<EventIcon />}
-          className="hover:bg-blue-700"
-        >
-          Reschedule
-        </Button>
+    <div className="bg-white rounded-lg shadow-md transition transform hover:-translate-y-1 hover:shadow-lg border border-gray-200">
+      <h3 className="text-lg font-semibold text-gray-800 bg-slate-100 px-4 py-2 rounded-t-lg border-b border-gray-300">
+        {patient.patientName}
+      </h3>
+      <div className="p-4">
+        <div className="py-4 space-y-2">
+          <div className="flex justify-between text-gray-700">
+            <span className="font-medium">Appointment Type:</span>
+            <span className="text-yellow-600 font-semibold">{patient.appointmentType}</span>
+          </div>
+          <div className="flex justify-between text-gray-700">
+            <span className="font-medium">Hospital Name:</span>
+            <span className="font-semibold">{patient.hospitalName}</span>
+          </div>
+          <div className="flex justify-between text-gray-700">
+            <span className="font-medium">Appointment Date:</span>
+            <span className="font-semibold">
+              {new Date(patient.appointmentDate).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="flex justify-between text-gray-700">
+            <span className="font-medium">Appointment Time:</span>
+            <span className="font-semibold">{patient.appointmentTime}</span>
+          </div>
+          <div className="flex justify-between text-gray-700">
+            <span className="font-medium">Patient Issue:</span>
+            <span className="font-semibold">{patient.patientIssue}</span>
+          </div>
+        </div>
+
+        {activeTab === 0 && (
+          <div className="flex justify-between mt-4">
+            <Button
+              variant="outlined"
+              className="border border-gray-400 text-gray-700 rounded-md hover:bg-gray-100 transition duration-200 flex items-center space-x-1 px-3 py-1 font-semibold"
+              startIcon={<EventIcon />}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-200 flex items-center space-x-1 px-3 py-1 font-semibold"
+              startIcon={<CallIcon />}
+              onClick={handleJoinCall}
+            >
+              Join Call
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
