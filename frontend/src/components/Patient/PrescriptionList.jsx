@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
+import PrescriptionModal from "./PrescritionModal";
 
 const PrescriptionList = () => {
   const navigate = useNavigate();
   const [prescriptions, setPrescriptions] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 
   useEffect(() => {
     const fetchPrescriptions = async () => {
@@ -22,6 +25,17 @@ const PrescriptionList = () => {
 
   const handleViewAll = () => {
     navigate("/patient/prescriptions");
+  };
+
+
+  const openModal = (prescription) => {
+    setSelectedPrescriptionId(prescription._id); // Set prescription ID
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedPrescriptionId(null);
   };
 
   return (
@@ -66,9 +80,9 @@ const PrescriptionList = () => {
                     {prescription.medicines[0]?.name || "N/A"}
                   </td>
                   <td className="py-3 px-2 font-xs flex justify-center">
-                    <button className="text-customBlue flex items-center space-x-2 bg-gray-100 text-md p-1 rounded-md">
-                      <FaEye />
-                    </button>
+                    <div className="text-customBlue p-2 rounded-full bg-white shadow">
+                      <FaEye onClick={() => openModal(prescription)} />
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -76,6 +90,13 @@ const PrescriptionList = () => {
           </table>
         </div>
       </div>
+      {/* Prescription Modal */}
+      {showModal && selectedPrescriptionId && (
+        <PrescriptionModal
+          closeModal={closeModal}
+          prescriptionId={selectedPrescriptionId}
+        />
+      )}
     </div>
   );
 };

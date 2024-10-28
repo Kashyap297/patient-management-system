@@ -33,7 +33,7 @@ const TestReports = () => {
   ];
 
   const handleViewAll = () => {
-    navigate("/patient/test-report"); 
+    navigate("/patient/test-report");
   };
 
   return (
@@ -59,9 +59,8 @@ const TestReports = () => {
               <div className="flex justify-between align-middle items-center">
                 <div className="mr-4 flex mb-1">
                   <img
-                    src={`https://randomuser.me/api/portraits/men/${
-                      index + 30
-                    }.jpg`}
+                    src={`https://randomuser.me/api/portraits/men/${index + 30
+                      }.jpg`}
                     alt={report.doctor}
                     className="w-12 h-12 rounded-full mr-2"
                   />

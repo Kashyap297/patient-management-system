@@ -14,14 +14,17 @@ const PaymentTypeModal = ({ bill, onClose }) => {
       setShowPaymentMethod(true);
     } else {
       try {
-        // For Cash payment, handle payment processing here or close modal
-        await api.post("/payment", {
-          totalAmount: bill.totalAmount,
+        // For Cash payment, update the invoice status to "Paid"
+        await api.patch(`/invoice/${bill._id}`, {
+          status: "Paid", // Update status to "Paid"
+          patient: bill.patient._id, // Include patient ID
+          doctor: bill.doctor._id, // Include doctor ID
         });
-        alert("Cash payment processed!");
-        onClose();
+        alert("Cash payment processed! Invoice status updated to 'Paid'.");
+        onClose(); // Close the modal after processing payment
       } catch (error) {
         console.error("Error processing cash payment:", error);
+        alert("Failed to process cash payment. Please try again.");
       }
     }
   };

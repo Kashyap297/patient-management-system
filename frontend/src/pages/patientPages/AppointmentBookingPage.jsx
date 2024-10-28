@@ -5,6 +5,7 @@ import { FaCalendarAlt, FaTrashAlt, FaRedoAlt, FaEye } from "react-icons/fa";
 import DoctorDetailsSidebar from "../../components/Patient/DoctorDetailsSidebar";
 import api from "../../api/api"; // Assuming Axios instance is configured
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"; // Import jwtDecode to extract patient ID
 
 // Set the app element for the modal to prevent accessibility issues
 Modal.setAppElement("#root");
@@ -28,10 +29,17 @@ const AppointmentBookingPage = () => {
 
   useEffect(() => {
     const fetchAppointments = async () => {
+      const token = localStorage.getItem("token"); // Get token from local storage
+      if (!token) return; // If no token, do not proceed
+
+      const { id } = jwtDecode(token); // Decode the token to get the user ID
       try {
         const response = await api.get("/appointments");
         console.log("API Response:", response.data); // Log to check the response structure
-        setAppointments(response.data.data || []); // Set to an empty array if data is undefined
+
+        // Filter appointments for the logged-in patient
+        const userAppointments = response.data.data.filter(appointment => appointment.patientId === id);
+        setAppointments(userAppointments || []); // Set to an empty array if data is undefined
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
@@ -108,11 +116,10 @@ const AppointmentBookingPage = () => {
         {["Scheduled", "Previous", "Canceled", "Pending"].map((tab) => (
           <button
             key={tab}
-            className={`py-2 px-4 focus:outline-none font-medium ${
-              activeTab === tab
+            className={`py-2 px-4 focus:outline-none font-medium ${activeTab === tab
                 ? "border-b-4 border-customBlue text-customBlue"
                 : "text-gray-500"
-            }`}
+              }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab} Appointment
