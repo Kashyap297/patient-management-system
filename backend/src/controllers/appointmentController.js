@@ -95,7 +95,7 @@ exports.getAllAppointments = async (req, res) => {
     const appointments = await Appointment.find()
       .populate({
         path: "patient",
-        select: "firstName lastName phoneNumber age gender address",
+        select: "firstName lastName phoneNumber age gender address profileImage",
       })
       .populate({
         path: "doctor",
@@ -118,10 +118,9 @@ exports.getAllAppointments = async (req, res) => {
           ? appointment.patient.phoneNumber
           : "N/A",
         patientAge: appointment.patient ? appointment.patient.age : "N/A",
+        profileImage: appointment.patient ? appointment.patient.profileImage : "N/A",
         patientGender: appointment.patient ? appointment.patient.gender : "N/A",
         patientIssue: appointment.patientIssue,
-        //  ? appointment.patient.age
-        //  : "N/A",
         diseaseName: appointment.diseaseName,
         doctorId: appointment.doctor ? appointment.doctor._id : null, // Add doctor ID to the response
         patientId: appointment.patient ? appointment.patient._id : null,

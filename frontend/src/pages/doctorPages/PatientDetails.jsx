@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, IconButton } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
-import { jwtDecode } from 'jwt-decode'; // Import jwt-decode
+import { jwtDecode } from 'jwt-decode';
 import api from "../../api/api"; // Adjust the path according to your project structure
 import AddRecordModal from './AddRecordModal'; // Import the AddRecordModal
 
@@ -21,20 +21,6 @@ const PatientDetail = () => {
       setDoctorId(decodedToken?.id || null);
     }
 
-    // Fetch patient data by ID
-    const fetchPatientData = async () => {
-      try {
-        const response = await api.get(`/users/patients/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setPatientData(response.data);
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-      }
-    };
-
     // Fetch appointments for the patient by filtering from all appointments
     const fetchAppointments = async () => {
       try {
@@ -43,15 +29,42 @@ const PatientDetail = () => {
             Authorization: `Bearer ${token}`
           }
         });
+
         // Filter appointments for this specific patient
-        const patientAppointments = response.data.data.filter(appointment => appointment.patientId === id);
+        const patientAppointments = response.data.data.filter(appointment =>
+          appointment.patientId === id
+        );
+        console.log(patientAppointments)
+        // Set appointments to state
         setAppointments(patientAppointments);
+
+        if (patientAppointments.length > 0) {
+          // Get the first appointment to extract patient data
+          const firstAppointment = patientAppointments[0];
+
+          // Set patient data based on the structure of your appointment object
+          setPatientData({
+            firstName: firstAppointment.patientName,  // patientName
+            lastName: '', // Assuming last name is not provided, set to empty
+            phoneNumber: firstAppointment.patientPhoneNumber, // patientPhoneNumber
+            age: firstAppointment.patientAge,  // patientAge
+            patientIssue: firstAppointment.patientIssue, // patientIssue
+            gender: firstAppointment.patientGender, // patientGender
+            appointmentType: firstAppointment.appointmentType, // appointmentType
+            address: firstAppointment.patientAddress, // patientAddress
+            lastAppointmentDate: firstAppointment.appointmentDate.split('T')[0], // appointmentDate
+            lastAppointmentTime: firstAppointment.appointmentTime, // appointmentTime
+            doctorName: firstAppointment.doctorName, // doctorName
+            profileImage: firstAppointment.profileImage
+          });
+        }
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
     };
 
-    fetchPatientData();
+
+
     fetchAppointments();
   }, [id]);
 
@@ -62,26 +75,71 @@ const PatientDetail = () => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md m-6">
       <h2 className="text-lg font-semibold mb-4">Patient Details</h2>
-
       {/* Patient Details Section */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-4">
-          <img src="https://via.placeholder.com/150" alt="Patient" className="w-24 h-24 rounded-full" />
-          <div>
-            <h3 className="text-xl font-semibold">{`${patientData.firstName} ${patientData.lastName}`}</h3>
-            <p>Patient Number: {patientData.phoneNumber}</p>
-            <p>Patient Age: {patientData.age} Years</p>
-            <p>Patient Gender: {patientData.gender}</p>
-          </div>
-        </div>
-        <div className="text-right">
+      <div className="bg-gray-50 p-4 rounded-lg mb-6 border">
+        <div className="text-right mt-2 mb-2">
           <Button variant="contained" color="primary" onClick={() => setModalOpen(true)}>
             + Add Record
           </Button>
         </div>
+        <div className="flex justify-between items-start">
+          <div className="flex-shrink-0">
+            <img
+              src={`http://localhost:8000/${patientData.profileImage}`}
+              alt="Patient"
+              className="w-32 h-32 rounded-full object-cover"
+            />
+          </div>
+
+          <div className="flex-grow ml-6 mt-4">
+            <div className="grid grid-cols-5 gap-x-12 gap-y-4">
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Patient Name</p>
+                {`${patientData.firstName} ${patientData.lastName}`}
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Patient Number</p>
+                {patientData.phoneNumber}
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Doctor Name</p>
+                {`Dr. ${patientData.doctorName}`}
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Patient Age</p>
+                {patientData.age} Years
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Patient Issue</p>
+                {patientData.patientIssue}
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Patient Gender</p>
+                {patientData.gender}
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Appointment Type</p>
+                {patientData.appointmentType}
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Patient Address</p>
+                {patientData.address}
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Last Appointment Date</p>
+                {patientData.lastAppointmentDate}
+              </div>
+              <div className="font-semibold leading-5">
+                <p className="text-gray-400">Last Appointment Time</p>
+                {patientData.lastAppointmentTime}
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      {/* Appointment Details */}
+      {/* All Appointments Section */}
       <div className="bg-gray-50 p-4 rounded-lg">
         <h3 className="text-lg font-semibold mb-4">All Appointments</h3>
         <table className="min-w-full table-auto">
@@ -123,7 +181,7 @@ const PatientDetail = () => {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         patientId={id}
-        doctorId={doctorId} // Pass the decoded doctorId
+        doctorId={doctorId}
         onSuccess={() => {
           console.log("Record added successfully");
           setModalOpen(false);
@@ -131,6 +189,8 @@ const PatientDetail = () => {
       />
     </div>
   );
+
+
 };
 
 export default PatientDetail;
