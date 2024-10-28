@@ -12,7 +12,6 @@ const PatientDetails = () => {
     const fetchPatientDetails = async () => {
       try {
         const response = await api.get("/users/profile");
-        console.log(response.data)
         setPatient(response.data); // Assuming response.data contains the patient object
         setLoading(false);
       } catch (error) {
@@ -24,7 +23,6 @@ const PatientDetails = () => {
 
     fetchPatientDetails();
   }, []);
-  console.log(patient)
 
   if (loading) {
     return <div>Loading...</div>;
