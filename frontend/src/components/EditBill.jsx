@@ -110,7 +110,7 @@ const EditBill = () => {
         },
       });
       alert("Bill updated successfully");
-      navigate("/billing-process"); // Navigate back after saving
+      navigate("/admin/payment-process"); // Navigate back after saving
     } catch (error) {
       console.error("Error updating bill:", error);
       alert("Failed to update the bill. Please try again.");

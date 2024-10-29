@@ -7,12 +7,11 @@ import CashPaymentModal from "../../components/modals/CashPaymentModal";
 
 const PaymentProcess = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [billingData, setBillingData] = useState([]); // State for fetched billing data
+  const [billingData, setBillingData] = useState([]);
   const [selectedBill, setSelectedBill] = useState(null);
   const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch billing data from the API
   useEffect(() => {
     const fetchBillingData = async () => {
       try {
@@ -21,12 +20,11 @@ const PaymentProcess = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        setBillingData(response.data.data); // Update with the fetched data
+        setBillingData(response.data.data);
       } catch (error) {
         console.error("Error fetching billing data:", error);
       }
     };
-
     fetchBillingData();
   }, []);
 
@@ -37,14 +35,64 @@ const PaymentProcess = () => {
 
   const handleClosePaymentModal = () => {
     setPaymentModalOpen(false);
-    setSelectedBill(null); // Reset the selected bill after closing
+    setSelectedBill(null);
   };
 
-  const handlePayment = (amount) => {
-    console.log(
-      `Payment of ₹${amount} made for bill number ${selectedBill.billNumber}`
-    );
-    // Handle the payment logic here (e.g., API call)
+  const handlePayment = async (amount) => {
+    const totalAmount = selectedBill.totalAmount;
+    const newRemainingAmount = totalAmount - (selectedBill.paidAmount || 0) - amount;
+
+    if (newRemainingAmount <= 0) {
+      // Full payment
+      try {
+        const response = await api.patch(`/invoice/${selectedBill._id}`, {
+          status: "Paid",
+          paidAmount: totalAmount, // Fully paid, update the amount in the database
+          remainingAmount: 0,
+          patient: selectedBill.patient._id,
+          doctor: selectedBill.doctor._id
+        });
+        console.log("Invoice marked as paid:", response.data);
+
+        setBillingData((prevData) =>
+          prevData.map((bill) =>
+            bill._id === selectedBill._id
+              ? { ...bill, status: "Paid", paidAmount: totalAmount, remainingAmount: 0 }
+              : bill
+          )
+        );
+      } catch (error) {
+        console.error("Error updating invoice status:", error);
+      }
+    } else {
+      // Partial payment
+      try {
+        const response = await api.patch(`/invoice/${selectedBill._id}`, {
+          paidAmount: (selectedBill.paidAmount || 0) + amount,
+          totalAmount: newRemainingAmount,
+          status: "Unpaid",
+          patient: selectedBill.patient._id,
+          doctor: selectedBill.doctor._id
+        });
+        console.log("Partial payment updated:", response.data);
+
+        setBillingData((prevData) =>
+          prevData.map((bill) =>
+            bill._id === selectedBill._id
+              ? {
+                ...bill,
+                paidAmount: (selectedBill.paidAmount || 0) + amount,
+                remainingAmount: newRemainingAmount,
+                status: "Unpaid"
+              }
+              : bill
+          )
+        );
+      } catch (error) {
+        console.error("Error updating partial payment:", error);
+      }
+    }
+    handleClosePaymentModal();
   };
 
   const filteredBillingData = billingData.filter(
@@ -129,6 +177,8 @@ const PaymentProcess = () => {
           open={isPaymentModalOpen}
           handleClose={handleClosePaymentModal}
           handlePayment={handlePayment}
+          totalAmount={selectedBill.totalAmount}
+          paidAmount={selectedBill.paidAmount || 0}
         />
       )}
     </div>

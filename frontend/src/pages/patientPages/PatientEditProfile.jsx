@@ -86,13 +86,13 @@ const PatientEditProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Creating FormData object
     const formDataToSend = new FormData();
-    
+
     // Add validation logic if needed
     let validationErrors = {};
-    
+
     // Basic validation
     if (!formData.firstName) validationErrors.firstName = "First Name is required";
     if (!formData.lastName) validationErrors.lastName = "Last Name is required";
@@ -107,44 +107,44 @@ const PatientEditProfile = () => {
     if (!formData.state) validationErrors.state = "State is required";
     if (!formData.city) validationErrors.city = "City is required";
     if (!formData.address) validationErrors.address = "Address is required";
-  
+
     // If there are validation errors, stop the process and show the errors
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    
+
     // Append text fields
     for (const key in formData) {
       if (key !== "profileImage" && formData[key]) {
         formDataToSend.append(key, formData[key]);
       }
     }
-  
+
     // Append the image file only if it exists
     if (formData.profileImage) {
       formDataToSend.append("profileImage", formData.profileImage);  // This key should match the Multer field
     }
-  
+
     try {
       const token = localStorage.getItem("token");
       if (token) {
         const decodedToken = jwtDecode(token);
         const patientId = decodedToken.id;
-  
+
         await api.patch(`/users/patients/${patientId}`, formDataToSend, {
-          headers: { 
-            "Authorization": `Bearer ${token}`, 
+          headers: {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "multipart/form-data",  // Let browser set this for FormData
           },
         });
-  
+
         Swal.fire({
           icon: "success",
           title: "Profile updated successfully!",
           confirmButtonText: "OK",
         });
-  
+
         navigate("/patient"); // Redirect after success
       }
     } catch (err) {
@@ -195,7 +195,7 @@ const PatientEditProfile = () => {
         <form className="w-4/5 pl-8" onSubmit={handleSubmit}>
           <h3 className="text-xl font-semibold mb-6">Edit Profile</h3>
           <div className="grid grid-cols-3 gap-4">
-          <div className="relative mb-4">
+            <div className="relative mb-4">
               <input
                 type="text"
                 id="firstName"
@@ -487,7 +487,7 @@ const PatientEditProfile = () => {
             <button
               type="button"
               className="px-6 py-2 rounded bg-gray-200 text-gray-700"
-              onClick={() => setFormData({})} // Clear form on cancel (optional)
+              onClick={() => navigate("/patient")}
             >
               Cancel
             </button>

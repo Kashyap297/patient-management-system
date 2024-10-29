@@ -1,15 +1,20 @@
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, Box, Button, TextField, Typography } from '@mui/material';
 
-const CashPaymentModal = ({ open, handleClose, handlePayment }) => {
+const CashPaymentModal = ({ open, handleClose, handlePayment, totalAmount, paidAmount }) => {
   const [amount, setAmount] = useState('');
   const [isPayEnabled, setIsPayEnabled] = useState(false);
+  const [remainingAmount, setRemainingAmount] = useState(totalAmount - paidAmount);
+
+  useEffect(() => {
+    setRemainingAmount(totalAmount - paidAmount);
+  }, [totalAmount, paidAmount]);
 
   // Validate payment amount and enable/disable Pay button
   const handleAmountChange = (e) => {
-    const enteredAmount = e.target.value;
+    const enteredAmount = parseFloat(e.target.value);
     setAmount(enteredAmount);
-    setIsPayEnabled(enteredAmount > 0);
+    setIsPayEnabled(enteredAmount > 0 && enteredAmount <= remainingAmount);
   };
 
   const handleSubmit = (e) => {
@@ -25,6 +30,15 @@ const CashPaymentModal = ({ open, handleClose, handlePayment }) => {
       <Box className="p-6 bg-white rounded-md shadow-lg w-80 mx-auto my-20">
         <Typography variant="h6" className="mb-4">
           Cash Payment
+        </Typography>
+        <Typography variant="body2" className="mb-2">
+          Total Amount: ₹{totalAmount}
+        </Typography>
+        <Typography variant="body2" className="mb-2">
+          Paid Amount: ₹{paidAmount}
+        </Typography>
+        <Typography variant="body2" className="mb-4">
+          Remaining Amount: ₹{remainingAmount}
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
