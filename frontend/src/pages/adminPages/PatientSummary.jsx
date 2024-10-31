@@ -1,39 +1,76 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
 } from 'recharts';
 import classNames from 'classnames';
+import api from '../../api/api';
 
 const PatientSummary = () => {
   const [activeTab, setActiveTab] = useState('Week');
-
-  // Sample data for weekly and daily views
-  const weeklyData = [
-    { day: 'Mon', newPatient: 10, oldPatient: 20 },
-    { day: 'Tue', newPatient: 20, oldPatient: 30 },
-    { day: 'Wed', newPatient: 30, oldPatient: 15 },
-    { day: 'Thu', newPatient: 25, oldPatient: 35 },
-    { day: 'Fri', newPatient: 40, oldPatient: 25 },
-    { day: 'Sat', newPatient: 20, oldPatient: 45 },
-    { day: 'Sun', newPatient: 15, oldPatient: 30 },
-  ];
-
-  const dailyData = [
-    { hour: '12 AM', newPatient: 5, oldPatient: 15 },
-    { hour: '1 AM', newPatient: 10, oldPatient: 20 },
-    { hour: '2 AM', newPatient: 8, oldPatient: 10 },
-    { hour: '3 AM', newPatient: 6, oldPatient: 14 },
-    { hour: '4 AM', newPatient: 12, oldPatient: 9 },
-    { hour: '5 AM', newPatient: 15, oldPatient: 18 },
-    { hour: '6 AM', newPatient: 20, oldPatient: 25 },
-    { hour: '7 AM', newPatient: 12, oldPatient: 22 },
-  ];
+  const [chartData, setChartData] = useState([]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  const chartData = activeTab === 'Week' ? weeklyData : dailyData;
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await api.get('/users/patients');
+        const patients = response.data;
+
+        const currentDate = new Date();
+        const weeklySummary = [
+          { day: 'Mon', newPatient: 0, oldPatient: 0 },
+          { day: 'Tue', newPatient: 0, oldPatient: 0 },
+          { day: 'Wed', newPatient: 0, oldPatient: 0 },
+          { day: 'Thu', newPatient: 0, oldPatient: 0 },
+          { day: 'Fri', newPatient: 0, oldPatient: 0 },
+          { day: 'Sat', newPatient: 0, oldPatient: 0 },
+          { day: 'Sun', newPatient: 0, oldPatient: 0 },
+        ];
+        const dailySummary = Array.from({ length: 7 }, (_, i) => ({
+          date: new Date(currentDate - (i * 24 * 60 * 60 * 1000)).toLocaleDateString("en-GB", { day: 'numeric', month: 'short' }),
+          newPatient: 0,
+          oldPatient: 0
+        })).reverse();
+
+        patients.forEach(patient => {
+          const createdAt = new Date(patient.createdAt);
+          const daysAgo = Math.floor((currentDate - createdAt) / (1000 * 60 * 60 * 24));
+
+          const patientType = daysAgo < 7 ? 'newPatient' : 'oldPatient';
+
+          if (activeTab === 'Week') {
+            const dayOfWeek = createdAt.toLocaleString('en-US', { weekday: 'short' });
+            const dayIndex = weeklySummary.findIndex(day => day.day === dayOfWeek);
+            if (dayIndex >= 0) {
+              weeklySummary[dayIndex][patientType] += 1;
+            }
+          } else {
+            const dateString = createdAt.toLocaleDateString("en-GB", { day: 'numeric', month: 'short' });
+            const dayIndex = dailySummary.findIndex(day => day.date === dateString);
+            if (dayIndex >= 0) {
+              dailySummary[dayIndex][patientType] += 1;
+            }
+          }
+        });
+
+        setChartData(activeTab === 'Week' ? weeklySummary : dailySummary);
+      } catch (error) {
+        console.error('Error fetching patient data:', error);
+      }
+    };
+
+    fetchPatientData();
+  }, [activeTab]);
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -65,16 +102,25 @@ const PatientSummary = () => {
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey={activeTab === 'Week' ? 'day' : 'hour'} />
+          <XAxis dataKey={activeTab === 'Week' ? 'day' : 'date'} />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="newPatient" stroke="#FFA500" activeDot={{ r: 8 }} name="New Patient" />
-          <Line type="monotone" dataKey="oldPatient" stroke="#1E90FF" name="Old Patient" />
+          <Line
+            type="monotone"
+            dataKey="newPatient"
+            stroke="#FFA500"
+            activeDot={{ r: 8 }}
+            name="New Patient"
+          />
+          <Line
+            type="monotone"
+            dataKey="oldPatient"
+            stroke="#1E90FF"
+            name="Old Patient"
+          />
         </LineChart>
       </ResponsiveContainer>
-
-     
     </div>
   );
 };
