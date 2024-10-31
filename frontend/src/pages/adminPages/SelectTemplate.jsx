@@ -21,7 +21,7 @@ const SelectTemplate = () => {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const editMode = location.state?.editMode || false; // Get editMode from the navigation state
+  const editMode = location.state?.editMode || false;
 
   const handleSelectTemplate = (template) => {
     setSelectedTemplate(template);
