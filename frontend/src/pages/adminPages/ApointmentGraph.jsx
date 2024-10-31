@@ -1,36 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import classNames from 'classnames';
+import api from "../../api/api"; // Import the API utility
 
 const AppointmentGraph = () => {
   const [activeTab, setActiveTab] = useState('Year'); // default tab
+  const [yearlyData, setYearlyData] = useState([]);
+  const [monthlyData, setMonthlyData] = useState([]);
 
-  // Sample data for the Yearly and Monthly Graphs
-  const yearlyData = [
-    { year: '2017', onlineConsultation: 10, otherAppointment: 5 },
-    { year: '2018', onlineConsultation: 15, otherAppointment: 12 },
-    { year: '2019', onlineConsultation: 20, otherAppointment: 18 },
-    { year: '2020', onlineConsultation: 25, otherAppointment: 20 },
-    { year: '2021', onlineConsultation: 50, otherAppointment: 35 },
-    { year: '2022', onlineConsultation: 40, otherAppointment: 30 },
-    { year: '2023', onlineConsultation: 10, otherAppointment: 5 },
-    { year: '2024', onlineConsultation: 30, otherAppointment: 25 },
-  ];
+  // Fetch appointment data from the API
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await api.get("/appointments");
+        const appointments = response.data.data;
 
-  const monthlyData = [
-    { month: 'Jan', onlineConsultation: 5, otherAppointment: 3 },
-    { month: 'Feb', onlineConsultation: 10, otherAppointment: 6 },
-    { month: 'Mar', onlineConsultation: 15, otherAppointment: 9 },
-    { month: 'Apr', onlineConsultation: 20, otherAppointment: 12 },
-    { month: 'May', onlineConsultation: 30, otherAppointment: 20 },
-    { month: 'Jun', onlineConsultation: 25, otherAppointment: 18 },
-    { month: 'Jul', onlineConsultation: 35, otherAppointment: 25 },
-    { month: 'Aug', onlineConsultation: 20, otherAppointment: 15 },
-    { month: 'Sep', onlineConsultation: 10, otherAppointment: 8 },
-    { month: 'Oct', onlineConsultation: 12, otherAppointment: 9 },
-    { month: 'Nov', onlineConsultation: 5, otherAppointment: 3 },
-    { month: 'Dec', onlineConsultation: 8, otherAppointment: 6 },
-  ];
+        // Process yearly data
+        const yearlySummary = {};
+        appointments.forEach((appointment) => {
+          const year = new Date(appointment.appointmentDate).getFullYear();
+          if (!yearlySummary[year]) {
+            yearlySummary[year] = { year, onlineConsultation: 0, onsiteAppointment: 0 };
+          }
+          if (appointment.appointmentType === "Online") {
+            yearlySummary[year].onlineConsultation += 1;
+          } else {
+            yearlySummary[year].onsiteAppointment += 1;
+          }
+        });
+        setYearlyData(Object.values(yearlySummary));
+
+        // Process monthly data for the current year
+        const currentYear = new Date().getFullYear();
+        const monthlySummary = Array(12).fill(null).map((_, index) => ({
+          month: new Date(0, index).toLocaleString("default", { month: "short" }),
+          onlineConsultation: 0,
+          onsiteAppointment: 0,
+        }));
+        
+        appointments.forEach((appointment) => {
+          const date = new Date(appointment.appointmentDate);
+          if (date.getFullYear() === currentYear) {
+            const monthIndex = date.getMonth();
+            if (appointment.appointmentType === "Online") {
+              monthlySummary[monthIndex].onlineConsultation += 1;
+            } else {
+              monthlySummary[monthIndex].onsiteAppointment += 1;
+            }
+          }
+        });
+        setMonthlyData(monthlySummary);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -71,8 +97,8 @@ const AppointmentGraph = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="onlineConsultation" fill="#1E90FF" name="Online Consultation" />
-          <Bar dataKey="otherAppointment" fill="#00BFFF" name="Other Appointment" />
+          <Bar dataKey="onlineConsultation" fill="#1E90FF" name="Online Consultation" radius={[10, 10, 0, 0]} />
+          <Bar dataKey="onsiteAppointment" fill="#00BFFF" name="Other Appointment" radius={[10, 10, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
