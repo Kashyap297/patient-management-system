@@ -150,7 +150,7 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
 
         {/* Contact Info */}
         <div className="text-center mt-6">
-          <p>Call: +90854 22354 | Email: hello@gmail.com</p>
+          <p>Call: +1111111111 | Email: hello@gmail.com</p>
         </div>
       </div>
     </div>

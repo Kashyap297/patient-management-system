@@ -151,7 +151,7 @@ const Invoice = () => {
 
       {/* Footer */}
       <div className="text-center text-sm bg-customBlue p-2 rounded-b-lg text-white flex justify-between mt-4">
-        <p>Call: +90854 22354</p>
+        <p>Call: +7895461204</p>
         <p>Email: Hello@Gmail.com</p>
       </div>
     </div>

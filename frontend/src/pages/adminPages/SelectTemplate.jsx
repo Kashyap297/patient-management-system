@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import template1Image from "../../assets/images/template1.png";
 import template2Image from "../../assets/images/template2.png";
+import InvoiceTemplate1 from "./InvoiceTemplate1"; 
 import { useNavigate, useLocation } from "react-router-dom";
+import InvoiceTemplate2 from "./InvoiceTemplate2";
 
 const templateData = [
   {
     id: 1,
     name: "Template 1",
     image: template1Image,
+    component: <InvoiceTemplate2 />, // Assigning the component to render
   },
   {
     id: 2,
     name: "Template 2",
     image: template2Image,
+    component: <InvoiceTemplate1 />, // Assigning the component to render
   },
-  // Add more templates as necessary
 ];
 
 const SelectTemplate = () => {
@@ -74,6 +77,18 @@ const SelectTemplate = () => {
           >
             Select {selectedTemplate.name}
           </button>
+        </div>
+      )}
+
+      {/* Render the selected invoice template component */}
+      {selectedTemplate && (
+        <div className="mt-12">
+          <h2 className="text-xl font-semibold text-center mb-4">
+            Preview of {selectedTemplate.name}
+          </h2>
+          <div className="rounded-lg">
+            {selectedTemplate.component}
+          </div>
         </div>
       )}
     </div>
