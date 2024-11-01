@@ -603,6 +603,7 @@ const CreateBill = () => {
                   name="insuranceCompany"
                   value={formValues.insuranceCompany}
                   onChange={handleInputChange}
+                  required={formValues.paymentType === "Insurance"}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -612,6 +613,7 @@ const CreateBill = () => {
                   name="insurancePlan"
                   value={formValues.insurancePlan}
                   onChange={handleInputChange}
+                  required={formValues.paymentType === "Insurance"}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -621,6 +623,7 @@ const CreateBill = () => {
                   name="claimAmount"
                   value={formValues.claimAmount}
                   onChange={handleInputChange}
+                  required={formValues.paymentType === "Insurance"}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -630,6 +633,7 @@ const CreateBill = () => {
                   name="claimedAmount"
                   value={formValues.claimedAmount}
                   onChange={handleInputChange}
+                  required={formValues.paymentType === "Insurance"}
                 />
               </Grid>
             </>

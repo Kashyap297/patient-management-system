@@ -30,6 +30,7 @@ const InsuranceClaims = () => {
     };
     fetchInsuranceClaimsData();
   }, []);
+  console.log(insuranceClaimsData)
 
   // Filtered data based on search term
   const filteredData = insuranceClaimsData.filter((claim) => {
