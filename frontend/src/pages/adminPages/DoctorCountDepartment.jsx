@@ -1,24 +1,40 @@
-
+import { useState, useEffect } from 'react';
 import { Group } from '@mui/icons-material';
+import api from '../../api/api';
 
 const DoctorCountDepartment = () => {
-    const doctorData = [
-        { name: 'Cardiology', count: 8 },
-        { name: 'Endocrinologist', count: 22 },
-        { name: 'Gastroenterologist', count: 15 },
-        { name: 'Anesthesiologist', count: 11 },
-        { name: 'Pediatrician', count: 10 },
-        { name: 'Ophthalmologist', count: 8 },
-        { name: 'Orthopedic', count: 12 },
-        { name: 'Dermatologist', count: 9 },
-        { name: 'Neurologist', count: 18 },
-        { name: 'Oncologist', count: 14 },
-        { name: 'Urologist', count: 7 },
-        { name: 'Nephrologist', count: 13 },
-        { name: 'Pulmonologist', count: 16 },
-        { name: 'Rheumatologist', count: 6 },
-        { name: 'Gynecologist', count: 20 },
-    ];
+  const [doctorSpecialtyCount, setDoctorSpecialtyCount] = useState([]);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await api.get('/users/doctors');
+        const doctors = response.data;
+
+        // Process and count doctors by specialty
+        const specialtyCountMap = doctors.reduce((acc, doctor) => {
+          const specialty = doctor.doctorDetails?.specialtyType || 'General';
+          if (!acc[specialty]) {
+            acc[specialty] = 0;
+          }
+          acc[specialty] += 1;
+          return acc;
+        }, {});
+
+        // Convert the map to an array for rendering
+        const specialtyCountArray = Object.keys(specialtyCountMap).map((specialty) => ({
+          name: specialty,
+          count: specialtyCountMap[specialty],
+        }));
+
+        setDoctorSpecialtyCount(specialtyCountArray);
+      } catch (error) {
+        console.error('Error fetching doctor data:', error);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md max-h-[400px]">
@@ -35,7 +51,7 @@ const DoctorCountDepartment = () => {
       <div className="overflow-y-auto max-h-[250px]">
         <table className="min-w-full">
           <tbody>
-            {doctorData.map((item, index) => (
+            {doctorSpecialtyCount.map((item, index) => (
               <tr key={index} className="border-t">
                 <td className="p-3 text-left">{item.name}</td>
                 <td className="p-3 text-right flex justify-end items-center gap-2">
