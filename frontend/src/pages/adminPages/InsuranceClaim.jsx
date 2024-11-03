@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
-import { IconButton } from "@mui/material";
-import { Visibility } from "@mui/icons-material";
+import { FaEye, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/api"; // Import your API utility
+import api from "../../api/api";
 
 const InsuranceClaims = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [insuranceClaimsData, setInsuranceClaimsData] = useState([]); // State for fetched data
+  const [insuranceClaimsData, setInsuranceClaimsData] = useState([]);
 
-  // Fetch insurance claim data from the API
   useEffect(() => {
     const fetchInsuranceClaimsData = async () => {
       try {
@@ -19,7 +17,6 @@ const InsuranceClaims = () => {
           },
         });
 
-        // Filter only the entries with paymentType "Insurance"
         const filteredData = response.data.data.filter(
           (entry) => entry.paymentType === "Insurance"
         );
@@ -30,9 +27,7 @@ const InsuranceClaims = () => {
     };
     fetchInsuranceClaimsData();
   }, []);
-  console.log(insuranceClaimsData)
 
-  // Filtered data based on search term
   const filteredData = insuranceClaimsData.filter((claim) => {
     const lowercasedTerm = searchTerm.toLowerCase();
     return (
@@ -54,62 +49,79 @@ const InsuranceClaims = () => {
   });
 
   const handleViewDetails = (claim) => {
-    // Navigate to the detailed insurance page
-    // navigate(`/admin/insurance/${billNo}`);
     navigate(`/admin/invoice/${claim._id}/${claim.patient?.firstName}`);
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md m-6">
+    <div className="p-6 bg-white rounded-2xl shadow-md h-full">
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Insurance Claims</h2>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border p-2 rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-        />
+        <h2 className="text-xl font-semibold text-[#030229]">Insurance Claims</h2>
+        <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2  max-w-lg">
+          <FaSearch className="text-gray-500 mr-2" />
+          <input
+            type="text"
+            placeholder="Search Patient"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="bg-[#f6f8fb] focus:outline-none w-full"
+          />
+        </div>
       </div>
 
-      <div className="overflow-auto">
-        <table className="min-w-full table-auto">
-          <thead className="bg-gray-100 sticky top-0">
+      {/* Insurance Claims Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full bg-white rounded-2xl overflow-hidden">
+          <thead className="bg-[#f6f8fb]">
             <tr>
-              <th className="p-3 text-left text-sm font-semibold">Bill No</th>
-              <th className="p-3 text-left text-sm font-semibold">Doctor Name</th>
-              <th className="p-3 text-left text-sm font-semibold">Patient Name</th>
-              <th className="p-3 text-left text-sm font-semibold">Disease Name</th>
-              <th className="p-3 text-left text-sm font-semibold">Insurance Company</th>
-              <th className="p-3 text-left text-sm font-semibold">Insurance Plan</th>
-              <th className="p-3 text-left text-sm font-semibold">Bill Date</th>
-              <th className="p-3 text-left text-sm font-semibold">Action</th>
+              <th className="px-6 py-4 text-left font-semibold">Bill No</th>
+              <th className="px-6 py-4 text-left font-semibold">Doctor Name</th>
+              <th className="px-6 py-4 text-left font-semibold">Patient Name</th>
+              <th className="px-6 py-4 text-left font-semibold">Disease Name</th>
+              <th className="px-6 py-4 text-left font-semibold">Insurance Company</th>
+              <th className="px-6 py-4 text-left font-semibold">Insurance Plan</th>
+              <th className="px-6 py-4 text-left font-semibold">Bill Date</th>
+              <th className="px-6 py-4 text-left font-semibold">Action</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length > 0 ? (
               filteredData.map((claim, index) => (
-                <tr key={index} className="border-t">
-                  <td className="p-3 text-blue-600 cursor-pointer">{claim.billNumber}</td>
-                  <td className="p-3">{`${claim.doctor.firstName} ${claim.doctor.lastName}`}</td>
-                  <td className="p-3">{`${claim.patient.firstName} ${claim.patient.lastName}`}</td>
-                  <td className="p-3">{claim.diseaseName}</td>
-                  <td className="p-3">{claim.insuranceDetails.insuranceCompany}</td>
-                  <td className="p-3 text-blue-600">{claim.insuranceDetails.insurancePlan}</td>
-                  <td className="p-3">{new Date(claim.billDate).toLocaleDateString()}</td>
-                  <td className="p-3">
-                    <IconButton
-                      color="primary"
+                <tr key={index} className="border-b">
+                  <td className="px-6 py-4 text-[#4F4F4F] font-semibold">
+                    <span className="bg-[#f6f8fb] px-4 py-2 rounded-full text-[#718EBF]">
+                      {claim.billNumber}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-[#4F4F4F]">
+                    {`${claim.doctor.firstName} ${claim.doctor.lastName}`}
+                  </td>
+                  <td className="px-6 py-4 text-[#4F4F4F]">
+                    {`${claim.patient.firstName} ${claim.patient.lastName}`}
+                  </td>
+                  <td className="px-6 py-4 text-[#4F4F4F]">{claim.diseaseName}</td>
+                  <td className="px-6 py-4 text-[#4F4F4F]">
+                    {claim.insuranceDetails.insuranceCompany}
+                  </td>
+                  <td className="px-6 py-4 text-[#4F4F4F]">
+                    <span className="text-blue-500">{claim.insuranceDetails.insurancePlan}</span>
+                  </td>
+                  <td className="px-6 py-4 text-[#4F4F4F]">
+                    {new Date(claim.billDate).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      className="text-blue-500 hover:bg-gray-100 p-2 rounded-lg"
                       onClick={() => handleViewDetails(claim)}
                     >
-                      <Visibility />
-                    </IconButton>
+                      <FaEye />
+                    </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="p-3 text-center text-gray-500">
+                <td colSpan="8" className="text-center py-16 text-gray-500">
                   No claims found
                 </td>
               </tr>

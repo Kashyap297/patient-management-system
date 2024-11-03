@@ -37,7 +37,7 @@ const AdminRoutes = () => {
       <Sidebar role={"admin"} />
       <div className="flex-1 flex flex-col">
         <Header onSearch={handleSearch} />
-        <div className="flex-1 overflow-y-auto bg-gray-100">
+        <div className="flex-1 overflow-y-auto bg-gray-100 p-5">
           {/* Conditionally render either the SearchResults or the Routes */}
           {searchQuery ? (
             <SearchResults query={searchQuery} filterOption={filterOption} />

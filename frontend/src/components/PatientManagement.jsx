@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
-import { Search, Visibility } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { FaEye, FaSearch } from "react-icons/fa";
+import api from "../api/api";
 import PatientDetailsModal from "../components/modals/PatientDetailModal";
-import api from "../api/api"; // Import your API utility
+import noRecordImage from "../assets/images/NoPatient.png";
 
 const PatientManagement = () => {
   const [activeTab, setActiveTab] = useState("Today Appointment");
@@ -12,13 +12,12 @@ const PatientManagement = () => {
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
 
-  // Fetch all appointments
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         const response = await api.get("/appointments", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authorization
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
         setAppointments(response.data.data);
@@ -30,10 +29,8 @@ const PatientManagement = () => {
     fetchAppointments();
   }, [activeTab]);
 
-  // Filter appointments based on the selected tab
   const filterAppointments = (appointments, tab) => {
-    const today = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD format
-
+    const today = new Date().toISOString().split("T")[0];
     let filtered = [];
     switch (tab) {
       case "Today Appointment":
@@ -82,11 +79,10 @@ const PatientManagement = () => {
     try {
       const response = await api.get(`/appointments/${appointmentId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authorization
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      // Set the selected patient data for the modal
       setSelectedPatient(response.data.data);
       setIsModalOpen(true);
     } catch (error) {
@@ -101,9 +97,7 @@ const PatientManagement = () => {
 
   const filteredAndSearchedAppointments = filteredAppointments.filter(
     (appointment) =>
-      appointment.patientName
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
+      appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const appointmentTypeStyles = {
@@ -112,106 +106,134 @@ const PatientManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md m-6">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex space-x-8 text-sm font-semibold text-gray-500">
+    <div className="p-6 bg-gray-100 h-full">
+      <div className="bg-white p-4 rounded-lg h-full shadow-md">
+        {/* Tabs */}
+        <div className="flex space-x-4 mb-4 border-b">
           {[
             "Today Appointment",
             "Upcoming Appointment",
             "Previous Appointment",
             "Cancel Appointment",
           ].map((tab) => (
-            <Button
+            <button
               key={tab}
-              className={
+              className={`py-2 px-4  ${
                 activeTab === tab
-                  ? "!text-blue-600 !border-b-2 !border-blue-600"
-                  : "text-gray-400"
-              }
+                  ? "border-b-2 border-[#0eabeb] text-[#0eabeb]"
+                  : "text-[#667080]"
+              }`}
               onClick={() => handleTabChange(tab)}
             >
               {tab}
-            </Button>
+            </button>
           ))}
         </div>
-        <TextField
-          variant="outlined"
-          placeholder="Search Patient"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton>
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+
+        {/* Header and Search Bar */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold ms-3">{activeTab}</h2>
+          <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2 w-full max-w-md">
+            <FaSearch className="text-gray-500 mr-2" />
+            <input
+              type="text"
+              placeholder="Search Patient"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-gray-100 focus:outline-none w-full"
+            />
+          </div>
+        </div>
+
+        {/* Patient Table */}
+        <div className="max-h-[620px] overflow-y-auto custom-scroll rounded-t-2xl">
+          <table className="min-w-full bg-white table-auto rounded-t-2xl bg-[#F6F8FB]">
+            <thead className="sticky top-0 rounded-t-2xl bg-[#F6F8FB]">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-semibold">
+                  Patient Name
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">
+                  Patient Issue
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">
+                  Doctor Name
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">
+                  Disease Name
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">
+                  Appointment Time
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">
+                  Appointment Type
+                </th>
+                <th className="px-6 py-3 text-center text-sm font-semibold">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAndSearchedAppointments.length > 0 ? (
+                filteredAndSearchedAppointments.map((appointment) => (
+                  <tr key={appointment.id} className="border-b">
+                    <td className="px-6 py-4">{appointment.patientName}</td>
+                    <td className="px-6 py-4">{appointment.patientIssue}</td>
+                    <td className="px-6 py-4">
+                      {appointment.doctorName || "N/A"}
+                    </td>
+                    <td className="px-6 py-4">{appointment.diseaseName}</td>
+                    <td className="px-6 py-4 text-blue-600">
+                      <span className={"px-4 py-2 rounded-full bg-[#f6f8fb]"}>
+                        {appointment.appointmentTime}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-4 py-2 rounded-full ${
+                          appointmentTypeStyles[appointment.appointmentType]
+                        }`}
+                      >
+                        {appointment.appointmentType}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        className="text-blue-600"
+                        onClick={() => handleViewPatient(appointment.id)}
+                      >
+                        <FaEye />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center py-16">
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={noRecordImage}
+                        alt="No Patient Found"
+                        className="w-96 mb-4"
+                      />
+                      <p className="text-gray-500">No records found</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className="max-h-[600px] overflow-y-auto">
-        <table className="min-w-full table-auto">
-          <thead className="sticky top-0 bg-gray-100 z-10">
-            <tr>
-              <th className="p-3 text-left text-sm font-semibold">
-                Patient Name
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Patient Issue
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Doctor Name
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Disease Name
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Appointment Time
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">
-                Appointment Type
-              </th>
-              <th className="p-3 text-left text-sm font-semibold">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAndSearchedAppointments.map((appointment, index) => (
-              <tr key={index} className="border-t">
-                <td className="p-3">{appointment.patientName}</td>
-                <td className="p-3">{appointment.patientIssue}</td>
-                <td className="p-3">{appointment.doctorName || "N/A"}</td>
-                <td className="p-3">{appointment.diseaseName}</td>
-                <td className="p-3 text-blue-600">
-                  {appointment.appointmentTime}
-                </td>
-                <td className="p-3">
-                  <span
-                    className={`px-3 py-1 text-sm font-medium rounded-full ${appointmentTypeStyles[appointment.appointmentType]
-                      }`}
-                  >
-                    {appointment.appointmentType}
-                  </span>
-                </td>
-                <td className="p-3">
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleViewPatient(appointment.id)} // Use 'id' instead of '_id'
-                  >
-                    <Visibility />
-                  </IconButton>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <PatientDetailsModal
-        open={isModalOpen}
-        handleClose={handleCloseModal}
-        patient={selectedPatient}
-      />
+      {/* Patient Details Modal */}
+      {isModalOpen && (
+        <PatientDetailsModal
+          open={isModalOpen}
+          handleClose={handleCloseModal}
+          patient={selectedPatient}
+        />
+      )}
     </div>
   );
 };
