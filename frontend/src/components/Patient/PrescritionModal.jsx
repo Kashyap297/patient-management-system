@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FaDownload } from "react-icons/fa";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import logo from "../../assets/images/logo.png";
 import api from "../../api/api";
+import signature from "../../assets/images/signature.svg";
+
 
 const PrescriptionModal = ({ prescriptionId, closeModal }) => {
   const [prescriptionData, setPrescriptionData] = useState(null);
@@ -19,7 +23,7 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
     if (prescriptionId) {
       fetchPrescription();
     }
-  }, [prescriptionId]); // Add prescriptionId as dependency
+  }, [prescriptionId]);
 
   if (!prescriptionData) return null;
 
@@ -32,9 +36,20 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
     prescriptionDate,
   } = prescriptionData;
 
+  const handleDownload = async () => {
+    const input = document.getElementById('prescription-modal-content');
+    const canvas = await html2canvas(input);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgWidth = 190;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+    pdf.save(`Prescription_${patient.firstName}_${patient.lastName}.pdf`);
+  };
+
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 overflow-y-auto">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 overflow-y-auto" id="prescription-modal-content">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Prescription</h2>
           <button onClick={closeModal} className="bg-red-500 text-white rounded-full px-2 py-1 text-sm">X</button>
@@ -55,7 +70,6 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
           </div>
 
           <div className="grid gap-4 text-sm mb-4">
-            {/* Row 1 */}
             <div className="flex justify-between items-center">
               <p className="flex items-center">
                 <strong>Hospital Name :</strong>
@@ -68,8 +82,6 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
                 </span>
               </p>
             </div>
-
-            {/* Row 2 */}
             <div className="flex justify-between items-center">
               <p className="flex items-center">
                 <strong>Patient Name :</strong>
@@ -82,16 +94,12 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
                 <span className="ml-2 text-gray-600">{patient.age} Years</span>
               </p>
             </div>
-
-            {/* Row 3 */}
             <div className="flex justify-between items-start">
               <p className="flex items-center">
                 <strong>Gender :</strong>
                 <span className="ml-2 text-gray-600">{patient.gender}</span>
               </p>
             </div>
-
-            {/* Row 4 */}
             <div>
               <p className="flex items-start">
                 <strong>Address :</strong>
@@ -146,12 +154,15 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
           <div className="text-center">
             <p className="text-gray-500 text-sm italic">Doctor Signature</p>
             <img
-              src="path-to-signature-image.png"
+              src={signature}
               alt="Doctor Signature"
               className="mt-2"
             />
           </div>
-          <button className="bg-customBlue text-white px-6 py-2 rounded flex items-center space-x-2">
+          <button
+            onClick={handleDownload}
+            className="bg-customBlue text-white px-6 py-2 rounded flex items-center space-x-2"
+          >
             <FaDownload />
             <span>Download</span>
           </button>
