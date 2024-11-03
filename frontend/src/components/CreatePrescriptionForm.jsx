@@ -1,41 +1,40 @@
-import { useState, useEffect } from 'react';
-import { TextField, Button, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { IconButton } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FieldArray, Formik, Form } from 'formik';
-import * as Yup from 'yup';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import api from "../api/api"; // Adjust the path according to your project structure
 
 const CreatePrescriptionForm = () => {
-  const { id } = useParams(); // Get the appointment ID from route params
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [initialValues, setInitialValues] = useState({
+  const [formValues, setFormValues] = useState({
     appointmentId: id,
     patientName: '',
     patientAge: '',
     patientGender: '',
-    medicines: [{ medicineName: '', strength: '', dose: '', duration: '', whenToTake: '' }],
+    medicines: [
+      { medicineName: '', strength: '', dose: '', duration: '', whenToTake: '', isEnabled: true },
+      { medicineName: '', strength: '', dose: '', duration: '', whenToTake: '', isEnabled: false },
+    ],
     additionalNote: '',
   });
 
   const doseOptions = ['1-1-1', '1-1-0', '1-0-1', '1-0-0', '0-1-1', '0-0-1'];
   const whenToTakeOptions = ['Before Food', 'After Food', 'With Food'];
 
-  // Fetch the appointment data to pre-fill the patient details
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       try {
         const response = await api.get(`/appointments/${id}`);
         const appointment = response.data.data;
 
-        setInitialValues({
-          appointmentId: id,
+        setFormValues((prevValues) => ({
+          ...prevValues,
           patientName: appointment.patientName,
           patientAge: appointment.patientAge,
           patientGender: appointment.patientGender,
-          medicines: [{ medicineName: '', strength: '', dose: '', duration: '', whenToTake: '' }],
-          additionalNote: '',
-        });
+        }));
       } catch (error) {
         console.error('Error fetching appointment details:', error);
       }
@@ -44,44 +43,57 @@ const CreatePrescriptionForm = () => {
     fetchAppointmentDetails();
   }, [id]);
 
-  const validationSchema = Yup.object().shape({
-    medicines: Yup.array().of(
-      Yup.object().shape({
-        medicineName: Yup.string().required('Required'),
-        strength: Yup.string().required('Required'),
-        dose: Yup.string().required('Required'),
-        duration: Yup.string().required('Required'),
-        whenToTake: Yup.string().required('Required'),
-      })
-    ),
-    additionalNote: Yup.string(),
-  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+  };
 
-  const handleSubmit = async (values) => {
+  const handleMedicineChange = (index, field, value) => {
+    const updatedMedicines = [...formValues.medicines];
+    updatedMedicines[index][field] = value;
+    setFormValues({ ...formValues, medicines: updatedMedicines });
+  };
+
+  const handleAddRow = (index) => {
+    const updatedMedicines = [...formValues.medicines];
+    updatedMedicines[index].isEnabled = true;
+
+    // Add a new disabled row if it's the last row
+    if (index === formValues.medicines.length - 1) {
+      updatedMedicines.push({ medicineName: '', strength: '', dose: '', duration: '', whenToTake: '', isEnabled: false });
+    }
+
+    setFormValues({ ...formValues, medicines: updatedMedicines });
+  };
+
+  const handleRemoveMedicine = (index) => {
+    const updatedMedicines = formValues.medicines.filter((_, i) => i !== index);
+    setFormValues({ ...formValues, medicines: updatedMedicines });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const payload = {
-        appointmentId: values.appointmentId,
-        medicines: values.medicines.map((med) => ({
+        appointmentId: formValues.appointmentId,
+        medicines: formValues.medicines.filter(med => med.isEnabled).map((med) => ({
           name: med.medicineName,
           strength: med.strength,
           dose: med.dose,
           duration: med.duration,
           whenToTake: med.whenToTake,
         })),
-        additionalNote: values.additionalNote,
+        additionalNote: formValues.additionalNote,
       };
 
-      // Step 1: Create the prescription
-      const response = await api.post('/prescription', payload);
-      console.log('Prescription created successfully:', response.data);
-
-      // Step 2: Update the appointment status to "Completed"
-      await api.patch(`/appointments/${values.appointmentId}`, {
+      await api.post('/prescription', payload);
+      await api.patch(`/appointments/${formValues.appointmentId}`, {
         status: 'Completed',
       });
       alert('Prescription created successfully and appointment marked as Completed');
-
-      // Navigate back after successful submission
       navigate(`/doctor/prescription-tools/create`);
     } catch (error) {
       console.error('Error creating prescription or updating appointment status:', error);
@@ -89,164 +101,167 @@ const CreatePrescriptionForm = () => {
   };
 
   return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ values, handleChange, handleBlur, errors, touched }) => (
-        <Form className="flex flex-col gap-6 p-8 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Create Prescription</h2>
-          
-          {/* Patient Info */}
-          <div className="grid grid-cols-3 gap-4">
-            <TextField
-              label="Patient Name"
-              name="patientName"
-              value={values.patientName}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.patientName && Boolean(errors.patientName)}
-              helperText={touched.patientName && errors.patientName}
-              fullWidth
-              disabled
-              className="bg-gray-50"
-            />
-            <TextField
-              label="Age"
-              name="patientAge"
-              type="number"
-              value={values.patientAge}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.patientAge && Boolean(errors.patientAge)}
-              helperText={touched.patientAge && errors.patientAge}
-              fullWidth
-              disabled
-              className="bg-gray-50"
-            />
-            <TextField
-              label="Gender"
-              name="patientGender"
-              value={values.patientGender}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.patientGender && Boolean(errors.patientGender)}
-              helperText={touched.patientGender && errors.patientGender}
-              fullWidth
-              disabled
-              className="bg-gray-50"
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 p-8 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-auto">
+      <h2 className="text-3xl font-bold mb-6">Create Prescription</h2>
+
+      {/* Patient Info */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="relative mb-2">
+          <input
+            type="text"
+            name="patientName"
+            value={formValues.patientName}
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-50"
+            placeholder=" "
+            disabled
+          />
+          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+            Patient Name
+          </label>
+        </div>
+        <div className="relative mb-4">
+          <input
+            type="number"
+            name="patientAge"
+            value={formValues.patientAge}
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-50"
+            placeholder=" "
+            disabled
+          />
+          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+            Age
+          </label>
+        </div>
+        <div className="relative mb-4">
+          <input
+            type="text"
+            name="patientGender"
+            value={formValues.patientGender}
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-50"
+            placeholder=" "
+            disabled
+          />
+          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+            Gender
+          </label>
+        </div>
+      </div>
+
+      {/* Medicines Table */}
+      <h2 className="text-2xl font-semibold mb-4">Drug Prescription</h2>
+      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_2fr_auto] gap-4 text-sm font-semibold p-3 rounded-t-2xl bg-[#F6F8FB]">
+        <div>Medicine Name</div>
+        <div>Strength</div>
+        <div>Dose</div>
+        <div>Duration</div>
+        <div>When to Take</div>
+        <div></div>
+      </div>
+      {formValues.medicines.map((medicine, index) => (
+        <div
+          key={index}
+          className={`grid grid-cols-[2fr_1fr_1fr_1fr_2fr_auto] gap-4 items-center mb-4 ${
+            medicine.isEnabled ? 'bg-white' : 'bg-gray-100'
+          }`}
+        >
+          <div className="relative">
+            <input
+              type="text"
+              name={`medicineName`}
+              value={medicine.medicineName}
+              onChange={(e) => handleMedicineChange(index, 'medicineName', e.target.value)}
+              className="peer w-full px-4 py-2 border rounded-md focus:outline-none"
+              placeholder="Enter Medicine"
+              disabled={!medicine.isEnabled}
             />
           </div>
+          <div className="relative">
+            <input
+              type="text"
+              name={`strength`}
+              value={medicine.strength}
+              onChange={(e) => handleMedicineChange(index, 'strength', e.target.value)}
+              className="peer w-full px-4 py-2 border rounded-md focus:outline-none"
+              placeholder="Strength"
+              disabled={!medicine.isEnabled}
+            />
+          </div>
+          <div className="relative">
+            <select
+              name="dose"
+              value={medicine.dose}
+              onChange={(e) => handleMedicineChange(index, 'dose', e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded-md focus:outline-none"
+              disabled={!medicine.isEnabled}
+            >
+              <option value="">Dose</option>
+              {doseOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="relative">
+            <input
+              type="text"
+              name={`duration`}
+              value={medicine.duration}
+              onChange={(e) => handleMedicineChange(index, 'duration', e.target.value)}
+              className="peer w-full px-4 py-2 border rounded-md focus:outline-none"
+              placeholder="Duration"
+              disabled={!medicine.isEnabled}
+            />
+          </div>
+          <div className="relative">
+            <select
+              name="whenToTake"
+              value={medicine.whenToTake}
+              onChange={(e) => handleMedicineChange(index, 'whenToTake', e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded-md focus:outline-none"
+              disabled={!medicine.isEnabled}
+            >
+              <option value="">When to take</option>
+              {whenToTakeOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+          <IconButton
+            onClick={() => medicine.isEnabled ? handleRemoveMedicine(index) : handleAddRow(index)}
+            className={medicine.isEnabled ? 'text-red-500' : 'text-green-500'}
+          >
+            {medicine.isEnabled ? <DeleteIcon /> : <AddIcon />}
+          </IconButton>
+        </div>
+      ))}
 
-          {/* Medicines Table */}
-          <h2 className="text-2xl font-semibold mb-4">Drug Prescription</h2>
-          <FieldArray name="medicines">
-            {({ push, remove }) => (
-              <>
-                <div className="grid grid-cols-6 gap-4 text-sm font-semibold mb-2">
-                  <div>Medicine Name</div>
-                  <div>Strength</div>
-                  <div>Dose</div>
-                  <div>Duration</div>
-                  <div>When to Take</div>
-                  <div></div>
-                </div>
-                {values.medicines.map((medicine, index) => (
-                  <div key={index} className="grid grid-cols-6 gap-4 mb-4">
-                    <TextField
-                      label="Medicine Name"
-                      name={`medicines[${index}].medicineName`}
-                      value={medicine.medicineName}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      fullWidth
-                    />
-                    <TextField
-                      label="Strength"
-                      name={`medicines[${index}].strength`}
-                      value={medicine.strength}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      fullWidth
-                    />
-                    <FormControl fullWidth>
-                      <InputLabel>Dose</InputLabel>
-                      <Select
-                        name={`medicines[${index}].dose`}
-                        value={medicine.dose}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      >
-                        {doseOptions.map((option) => (
-                          <MenuItem key={option} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <TextField
-                      label="Duration"
-                      name={`medicines[${index}].duration`}
-                      value={medicine.duration}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      fullWidth
-                    />
-                    <FormControl fullWidth>
-                      <InputLabel>When to Take</InputLabel>
-                      <Select
-                        name={`medicines[${index}].whenToTake`}
-                        value={medicine.whenToTake}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      >
-                        {whenToTakeOptions.map((option) => (
-                          <MenuItem key={option} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <IconButton onClick={() => remove(index)} className="text-red-500">
-                      <DeleteIcon />
-                    </IconButton>
-                  </div>
-                ))}
-                <Button
-                  variant="contained"
-                  onClick={() =>
-                    push({ medicineName: '', strength: '', dose: '', duration: '', whenToTake: '' })
-                  }
-                  className="bg-blue-500 text-white"
-                >
-                  Add Medicine
-                </Button>
-              </>
-            )}
-          </FieldArray>
+      {/* Additional Note */}
+      <div className="relative mb-6">
+  <textarea
+    name="additionalNote"
+    className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 resize-none"
+    placeholder=" "
+    value={formValues.additionalNote}
+    onChange={handleChange}
+    rows="4"
+  />
+  <label
+    htmlFor="additionalNote"
+    className="absolute left-4 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-placeholder-shown:top-2 peer-placeholder-shown:left-4 peer-focus:-top-2.5 peer-focus:left-4"
+  >
+    Additional Note
+  </label>
+</div>
 
-          {/* Additional Note */}
-          <TextField
-            label="Additional Note"
-            name="additionalNote"
-            value={values.additionalNote}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            fullWidth
-            multiline
-            rows={4}
-            className="mt-6 bg-gray-50"
-          />
 
-          {/* Submit Button */}
-          <Button type="submit" variant="contained" className="mt-6 bg-blue-500 text-white">
-            Submit
-          </Button>
-        </Form>
-      )}
-    </Formik>
+      {/* Submit Button */}
+      <button type="submit" className="bg-blue-600 text-white rounded-md px-6 py-2">
+        Submit
+      </button>
+    </form>
   );
 };
 

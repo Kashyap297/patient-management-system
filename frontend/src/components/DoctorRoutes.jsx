@@ -24,7 +24,7 @@ const DoctorRoutes = () => {
       <Sidebar role={"doctor"} />
       <div className="flex-1 flex flex-col">
         <Header />
-        <div className="flex-1 overflow-y-auto bg-gray-100">
+        <div className="flex-1 overflow-y-auto bg-gray-100 p-6">
           <Routes>
             <Route path="/appointment-management" element={<AppointmentManagement />} />
             <Route path="/appointment-time-slot" element={<AppointmentTimeSlot />} />

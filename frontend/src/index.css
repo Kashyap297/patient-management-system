@@ -39,3 +39,31 @@ code {
   -ms-overflow-style: none !important; /* Hide scrollbar for Internet Explorer and Edge */
   scrollbar-width: none !important; /* Hide scrollbar for Firefox */
 }
+/* CSS for Active and Inactive Rows */
+.active-row {
+  background-color: #ffffff; /* White background for active rows */
+  border: 1px solid #e5e7eb; /* Light gray border */
+}
+
+.inactive-row {
+  background-color: #f9fafb; /* Light gray background for inactive rows */
+  border: 1px dashed #d1d5db; /* Dashed light gray border */
+  color: #9ca3af; /* Light gray text color */
+}
+
+.input-field {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.input-field:disabled {
+  background-color: transparent;
+  cursor: not-allowed;
+}
+
+.input-field.active {
+  background-color: #ffffff;
+}
+
+.input-field.inactive {
+  background-color: #f9fafb;
+}
