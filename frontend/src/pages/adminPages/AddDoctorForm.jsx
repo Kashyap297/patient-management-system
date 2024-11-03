@@ -155,7 +155,7 @@ const AddDoctorForm = () => {
                 <label className="text-gray-700 text-sm font-medium">
                   Upload Signature
                 </label>
-                <div className="flex-col items-center justify-center border border-dashed border-gray-300 rounded-md p-5 w-full mt-2 h-48">
+                <div className="flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl p-5 w-full mt-2 h-48">
                   <div className="flex align-middle justify-center h-full items-center">
                     {signature ? (
                       <img
@@ -166,7 +166,7 @@ const AddDoctorForm = () => {
                     ) : (
                       <div>
                         <div className="flex justify-center">
-                          <FiUpload className="text-gray-500 text-2xl" />
+                          <FiUpload className="text-[#030229] text-2xl" />
                         </div>
                         <div className="text-center mt-2">
                           <label className="text-blue-500 cursor-pointer">
@@ -373,9 +373,9 @@ const AddDoctorForm = () => {
           <div className="flex justify-end mt-4">
             <button
               type="submit"
-              className="bg-customBlue text-white px-4 py-2 rounded-xl flex items-center space-x-2"
+              className="bg-[#f6f8fb] hover:bg-[#0eabeb] text-[#4f4f4f] hover:text-white transi px-12 py-2 rounded-xl flex items-center space-x-2"
             >
-              Add Doctor
+              Add 
             </button>
           </div>
         </form>
@@ -398,14 +398,14 @@ const InputField = ({
       type={type}
       id={id}
       name={id}
-      className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+      className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
       placeholder={placeholder || `Enter ${label}`}
       value={value}
       onChange={onChange}
     />
     <label
       htmlFor={id}
-      className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
+      className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
     >
       {label}
     </label>
@@ -418,7 +418,7 @@ const SelectField = ({ id, label, options, value, onChange }) => (
     <select
       id={id}
       name={id}
-      className="peer w-full px-4 py-2 border border-gray-300 rounded-md text-gray-500 focus:outline-none"
+      className="peer w-full px-4 py-2 border border-gray-300 rounded-xl text-[#030229] focus:outline-none"
       value={value}
       onChange={onChange}
     >
@@ -431,7 +431,7 @@ const SelectField = ({ id, label, options, value, onChange }) => (
     </select>
     <label
       htmlFor={id}
-      className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
+      className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
     >
       {label}
     </label>
@@ -445,14 +445,14 @@ const InputFieldWithIcon = ({ id, label, icon, value, onChange }) => (
       type="text"
       id={id}
       name={id}
-      className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+      className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
       placeholder={`Enter ${label}`}
       value={value}
       onChange={onChange}
     />
     <label
       htmlFor={id}
-      className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
+      className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
     >
       {label}
     </label>

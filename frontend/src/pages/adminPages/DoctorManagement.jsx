@@ -11,6 +11,8 @@ const DoctorManagement = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isOffCanvasOpen, setIsOffCanvasOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [doctorToDelete, setDoctorToDelete] = useState(null);
 
   // Fetch doctors from API
   useEffect(() => {
@@ -22,7 +24,6 @@ const DoctorManagement = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("API Response:", response.data);
         setDoctors(response.data);
       } catch (error) {
         console.error("Error fetching doctors:", error);
@@ -42,21 +43,33 @@ const DoctorManagement = () => {
     setSelectedDoctor(null);
   };
 
-  const handleDeleteDoctor = async (doctorId) => {
+  const handleDeleteClick = (doctorId) => {
+    setDoctorToDelete(doctorId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setDoctorToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!doctorToDelete) return;
+
     try {
       const token = localStorage.getItem("token");
-      await api.delete(`/users/doctors/${doctorId}`, {
+      await api.delete(`/users/doctors/${doctorToDelete}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setDoctors(doctors.filter((doctor) => doctor._id !== doctorId));
+      setDoctors(doctors.filter((doctor) => doctor._id !== doctorToDelete));
+      handleCloseModal(); // Close modal after deletion
     } catch (error) {
       console.error("Error deleting doctor:", error);
     }
   };
 
-  // Filter doctors based on search term
   const filteredDoctors = doctors.filter((doctor) =>
     `${doctor.firstName} ${doctor.lastName}`
       .toLowerCase()
@@ -65,8 +78,7 @@ const DoctorManagement = () => {
 
   return (
     <div className="p-6 bg-gray-100 h-full">
-      <div className="bg-white p-4 rounded-lg">
-        {/* Header section */}
+      <div className="bg-white p-4 rounded-lg h-full">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Doctor Management</h2>
           <div className="flex items-center space-x-4">
@@ -90,7 +102,6 @@ const DoctorManagement = () => {
           </div>
         </div>
 
-        {/* Table structure with header */}
         <table className="w-full bg-white rounded-lg overflow-hidden">
           <thead>
             <tr className="bg-gray-100">
@@ -121,7 +132,7 @@ const DoctorManagement = () => {
             </tr>
           </thead>
           {filteredDoctors.length > 0 ? (
-            <tbody>
+            <tbody className="h-[50px] custom-scroll overflow-y-auto">
               {filteredDoctors.map((doctor) => (
                 <tr key={doctor._id} className="border-b">
                   <td className="px-6 py-4 flex items-center space-x-3">
@@ -136,7 +147,7 @@ const DoctorManagement = () => {
                     />
                     <span>{`${doctor.firstName} ${doctor.lastName}`}</span>
                   </td>
-                  <td className="px-6 py-4 ">
+                  <td className="px-6 py-4">
                     <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
                       {doctor.gender}
                     </span>
@@ -162,9 +173,8 @@ const DoctorManagement = () => {
                       {doctor.doctorDetails.workingHours?.breakTime || "N/A"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-xl text-center  h-full">
+                  <td className="px-6 py-4 text-xl text-center h-full">
                     <div className="flex items-center justify-center space-x-4">
-                      {" "}
                       <button
                         onClick={() => handleViewClick(doctor)}
                         className="text-customBlue bg-gray-100 p-2 rounded-lg"
@@ -180,7 +190,7 @@ const DoctorManagement = () => {
                         <FaEdit />
                       </Link>
                       <button
-                        onClick={() => handleDeleteDoctor(doctor._id)}
+                        onClick={() => handleDeleteClick(doctor._id)}
                         className="text-red-500 hover:text-red-600 bg-gray-100 p-2 rounded-lg"
                         title="Delete"
                       >
@@ -215,6 +225,45 @@ const DoctorManagement = () => {
         isOpen={isOffCanvasOpen}
         onClose={handleCloseOffCanvas}
       />
+
+      {/* Delete Confirmation Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+        <div className="bg-white rounded-lg w-80 p-6 relative shadow-lg border-t-8 border-[#e11d29]">
+          
+          {/* Red circular icon container */}
+          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#e11d29] rounded-full w-16 h-16 flex items-center justify-center">
+            <i className="text-white text-3xl">🗑️</i> {/* Bin Icon */}
+          </div>
+          
+          <div className="text-center mt-8">
+            <h2 className="text-lg font-bold text-[#030229] mb-2">
+              Delete Doctor Details?
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this doctor details?
+            </p>
+      
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="text-gray-700 px-4 py-2 rounded-xl w-full hover:bg-[#f6f8fb] border"
+              >
+                No
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                type="submit"
+                className="bg-[#f6f8fb] text-[#4F4F4F] px-4 py-2 rounded-xl hover:text-white hover:bg-[#0EABEB] w-full"
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>      
+      )}
     </div>
   );
 };

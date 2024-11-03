@@ -184,7 +184,7 @@ const EditDoctor = () => {
                 {/* Signature Image Upload */}
                 <div className="mb-4">
                   <label className="text-gray-700 text-sm font-medium">Upload Signature</label>
-                  <div className="flex-col items-center justify-center border border-dashed border-gray-300 rounded-md p-10 w-full mt-2">
+                  <div className="flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl p-10 w-full mt-2">
                     {signatureImagePreview ? (
                       <img
                         src={signatureImagePreview}
@@ -249,8 +249,8 @@ const EditDoctor = () => {
             )}
 
             <div className="flex justify-end">
-              <button type="submit" className="mt-4 py-2 px-6 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                Save Changes
+              <button type="submit" className="mt-4 py-2 px-8 bg-[#f6f8fb] text-[#4f4f4f] hover:bg-[#0eabeb] hover:text-white rounded-xl">
+                Save
               </button>
             </div>
           </form>
@@ -263,14 +263,14 @@ const EditDoctor = () => {
 // Input field components
 const InputField = ({ id, label, type = "text", placeholder = "", value, onChange }) => (
   <div className="relative mb-4">
-    <input type={type} id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none" placeholder={placeholder || `Enter ${label}`} value={value} onChange={onChange} />
+    <input type={type} id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none" placeholder={placeholder || `Enter ${label}`} value={value} onChange={onChange} />
     <label htmlFor={id} className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200">{label}</label>
   </div>
 );
 
 const SelectField = ({ id, label, options, value, onChange }) => (
   <div className="relative mb-4">
-    <select id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-md text-gray-500 focus:outline-none" value={value} onChange={onChange}>
+    <select id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-xl text-gray-500 focus:outline-none" value={value} onChange={onChange}>
       <option value="">{`Select ${label}`}</option>
       {options.map((option) => (
         <option key={option} value={option}>{option}</option>
@@ -282,7 +282,7 @@ const SelectField = ({ id, label, options, value, onChange }) => (
 
 const InputFieldWithIcon = ({ id, label, icon, value, onChange }) => (
   <div className="relative mb-4">
-    <input type="text" id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none" placeholder={`Enter ${label}`} value={value} onChange={onChange} />
+    <input type="text" id={id} name={id} className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none" placeholder={`Enter ${label}`} value={value} onChange={onChange} />
     <label htmlFor={id} className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200">{label}</label>
     {icon}
   </div>
