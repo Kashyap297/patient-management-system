@@ -4,14 +4,25 @@ import logo from "../assets/images/logo.png";
 import vector1 from "../assets/images/Vector1.png";
 import vector2 from "../assets/images/Vector2.png";
 import { Link, useNavigate } from "react-router-dom";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Import icons
 import AuthContext from "../context/AuthContext";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const { resetPassword, authError } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,11 +42,10 @@ const ResetPassword = () => {
     } else {
       setErrors({});
       try {
-        // Get the email from localStorage
         const email = localStorage.getItem("email");
         await resetPassword({ password: newPassword, email });
         alert("Password reset successful");
-        localStorage.removeItem("email"); // Clean up the email after resetting password
+        localStorage.removeItem("email");
         navigate("/");
       } catch {
         setErrors({ confirmPassword: authError });
@@ -49,18 +59,14 @@ const ResetPassword = () => {
       <div className="w-1/2 flex justify-center items-center bg-white p-10">
         <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Reset Password</h2>
-          <p className="mb-4 text-sm">
-            Please enter your new password and confirm it to reset your
-            password.
-          </p>
           <form onSubmit={handleSubmit}>
             {/* New Password Input */}
             <div className="relative mb-4">
               <input
-                type="password"
-                id="password"
-                name="password"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
+                type={showNewPassword ? "text" : "password"}
+                id="newPassword"
+                name="newPassword"
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 ${
                   errors.newPassword ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter New Password"
@@ -68,26 +74,34 @@ const ResetPassword = () => {
                 onChange={(e) => setNewPassword(e.target.value)}
               />
               <label
-                htmlFor="email"
-                className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200  peer-focus:-top-2.5 peer-focus:left-3"
+                htmlFor="newPassword"
+                className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
               >
                 New Password<span className="text-red-500">*</span>
               </label>
+              {/* Toggle New Password Visibility Icon */}
+              <div
+                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                onClick={toggleNewPasswordVisibility}
+              >
+                {showNewPassword ? (
+                  <AiOutlineEyeInvisible className="text-gray-500" />
+                ) : (
+                  <AiOutlineEye className="text-gray-500" />
+                )}
+              </div>
               {errors.newPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.newPassword}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
               )}
             </div>
 
             {/* Confirm Password Input */}
-
             <div className="relative mb-4">
               <input
-                type="password"
-                id="password"
-                name="password"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                name="confirmPassword"
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 ${
                   errors.confirmPassword ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Confirm Password"
@@ -95,30 +109,34 @@ const ResetPassword = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <label
-                htmlFor="email"
-                className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200  peer-focus:-top-2.5 peer-focus:left-3"
+                htmlFor="confirmPassword"
+                className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
               >
                 Confirm Password<span className="text-red-500">*</span>
               </label>
+              {/* Toggle Confirm Password Visibility Icon */}
+              <div
+                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                onClick={toggleConfirmPasswordVisibility}
+              >
+                {showConfirmPassword ? (
+                  <AiOutlineEyeInvisible className="text-gray-500" />
+                ) : (
+                  <AiOutlineEye className="text-gray-500" />
+                )}
+              </div>
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.confirmPassword}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
               )}
             </div>
 
             <button
               type="submit"
-              className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+              className="w-full py-2 bg-[#f6f8fb] text-[#4f4f4f] rounded-xl hover:bg-[#0eabeb] hover:text-white transition duration-200"
             >
               Reset Password
             </button>
           </form>
-          <p className="text-center mt-4 text-sm">
-            <Link to="/" className="text-blue-500 hover:underline">
-              Back to Login
-            </Link>
-          </p>
         </div>
       </div>
 
@@ -139,15 +157,10 @@ const ResetPassword = () => {
         {/* Banner Content */}
         <div className="text-center">
           <img src={logo} alt="Logo" className="mb-4 mx-auto w-60 h-30" />
-          <img
-            src={logoBanner}
-            alt="Banner"
-            className="w-full max-w-lg mx-auto"
-          />
+          <img src={logoBanner} alt="Banner" className="w-full max-w-lg mx-auto" />
           <h2 className="text-4xl font-bold mt-4">Hospital</h2>
           <p className="text-gray-600 mt-2 font-semibold">
-            You Can stay your Hospital and Contact
-            <br /> With Your Facility.
+            Stay connected with your hospital and manage your appointments.
           </p>
         </div>
       </div>

@@ -39,10 +39,10 @@ const ForgetPassword = () => {
   return (
     <div className="min-h-screen flex">
       <div className="w-1/2 flex justify-center items-center bg-white p-10">
-        <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-lg">
-          <h2 className="text-3xl font-bold mb-6">Forgot Password</h2>
-          <p className="mb-4 text-sm">
-            Enter your email and we'll send you an OTP to reset your password.
+        <div className="w-3/4 bg-white p-10 rounded-lg shadow-lg">
+          <h2 className="text-3xl font-bold mb-4">Forgot Password</h2>
+          <p className="mb-4 text-sm text-gray-500 mb-5">
+          Enter your email and we’ll send you a otp to reset your password.
           </p>
           <form onSubmit={handleSubmit}>
             <div className="relative mb-4">
@@ -50,20 +50,27 @@ const ForgetPassword = () => {
                 type="text"
                 id="email"
                 name="email"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0  ${
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 }`}
-                placeholder="Enter Your Email"
+                placeholder="Enter Email or Phone Number"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              <label
+                htmlFor="email"
+                className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+              >
+                Email or Phone<span className="text-red-500">*</span>
+              </label>
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
               )}
             </div>
+
             <button
               type="submit"
-              className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+              className="w-full py-2 bg-[#f6f8fb] text-[#4F4F4F] hover:text-white rounded-md hover:bg-[#0eabeb] transition duration-200"
             >
               Get OTP
             </button>
