@@ -16,7 +16,7 @@
       patientAge: "",
       patientGender: "",
       medicines: [
-        {
+        { 
           medicineName: "",
           strength: "",
           dose: "",
@@ -63,8 +63,8 @@
     }, [id]);
 
     useEffect(() => {
-      onFormUpdate(formValues);
-    }, [formValues, onFormUpdate]);
+      onFormUpdate(formValues, id);
+    }, [formValues, onFormUpdate, id]);
 
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -124,38 +124,38 @@
       return Object.keys(formErrors).length === 0;
     };
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      if (!validateForm()) return;
+    // const handleSubmit = async (e) => {
+    //   e.preventDefault();
+    //   if (!validateForm()) return;
 
-      try {
-        const payload = {
-          appointmentId: formValues.appointmentId,
-          medicines: formValues.medicines
-            .filter((med) => med.isEnabled)
-            .map((med) => ({
-              name: med.medicineName,
-              strength: med.strength,
-              dose: med.dose,
-              duration: med.duration,
-              whenToTake: med.whenToTake,
-            })),
-          additionalNote: formValues.additionalNote,
-        };
+    //   try {
+    //     const payload = {
+    //       appointmentId: formValues.appointmentId,
+    //       medicines: formValues.medicines
+    //         .filter((med) => med.isEnabled)
+    //         .map((med) => ({
+    //           name: med.medicineName,
+    //           strength: med.strength,
+    //           dose: med.dose,
+    //           duration: med.duration,
+    //           whenToTake: med.whenToTake,
+    //         })),
+    //       additionalNote: formValues.additionalNote,
+    //     };
 
-        await api.post("/prescription", payload);
-        await api.patch(`/appointments/${formValues.appointmentId}`, {
-          status: "Completed",
-        });
-        alert("Prescription created successfully and appointment marked as Completed");
-        navigate(`/doctor/prescription-tools/create`);
-      } catch (error) {
-        console.error("Error creating prescription or updating appointment status:", error);
-      }
-    };
+    //     await api.post("/prescription", payload);
+    //     await api.patch(`/appointments/${formValues.appointmentId}`, {
+    //       status: "Completed",
+    //     });
+    //     alert("Prescription created successfully and appointment marked as Completed");
+    //     navigate(`/doctor/prescription-tools/create`);
+    //   } catch (error) {
+    //     console.error("Error creating prescription or updating appointment status:", error);
+    //   }
+    // };
 
     return (
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 bg-white w-full max-w-4xl mx-auto">
+      <form className="flex flex-col gap-6 bg-white w-full max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold">Create Prescription</h2>
 
         {/* Patient Info */}
@@ -327,12 +327,12 @@
         </div>
 
         {/* Submit Button */}
-        <button
+        {/* <button
           type="submit"
           className="bg-blue-600 text-white rounded-md px-6 py-2"
         >
           Submit
-        </button>
+        </button> */}
       </form>
     );
   };

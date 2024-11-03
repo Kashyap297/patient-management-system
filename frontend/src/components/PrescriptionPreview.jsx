@@ -3,9 +3,11 @@ import { jwtDecode } from "jwt-decode";
 import signature from "../assets/images/signature.svg";
 import logo from "../assets/images/logo.png";
 import api from "../api/api";
+import { useNavigate } from "react-router-dom";
 
-const PrescriptionPreview = ({ prescriptionData }) => {
+const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
   const [doctorDetails, setDoctorDetails] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Decode the token to get the doctor ID
@@ -28,6 +30,31 @@ const PrescriptionPreview = ({ prescriptionData }) => {
     fetchDoctorDetails();
   }, []);
   console.log(doctorDetails);
+
+  const handleSendPrescription = async () => {
+    try {
+      const payload = {
+        appointmentId: appointmentId,
+        medicines: prescriptionData.medicines
+          .filter((med) => med.isEnabled)
+          .map((med) => ({
+            name: med.medicineName,
+            strength: med.strength,
+            dose: med.dose,
+            duration: med.duration,
+            whenToTake: med.whenToTake,
+          })),
+        additionalNote: prescriptionData.additionalNote,
+      };
+
+      await api.post("/prescription", payload);
+      await api.patch(`/appointments/${appointmentId}`, { status: "Completed" });
+      alert("Prescription created successfully and appointment marked as Completed");
+      navigate(`/doctor/prescription-tools/create`);
+    } catch (error) {
+      console.error("Error creating prescription or updating appointment status:", error);
+    }
+  };
 
   return (
     <div className="bg-white w-full">
@@ -175,7 +202,10 @@ const PrescriptionPreview = ({ prescriptionData }) => {
           />
           <p className="text-gray-500 text-sm">Doctor Signature</p>
         </div>
-        <button className="bg-blue-600 text-white px-6 py-2 rounded">
+        <button
+          onClick={handleSendPrescription}
+          className="bg-blue-600 text-white px-6 py-2 rounded"
+        >
           Send
         </button>
       </div>
