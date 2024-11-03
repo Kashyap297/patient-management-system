@@ -54,12 +54,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="firstName"
             name="firstName"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.firstName}
           />
           <label
             htmlFor="firstName"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             First Name <span className="text-red-500">*</span>
           </label>
@@ -72,12 +72,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="lastName"
             name="lastName"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.lastName}
           />
           <label
             htmlFor="lastName"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             Last Name <span className="text-red-500">*</span>
           </label>
@@ -90,12 +90,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="email"
             name="email"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.email}
           />
           <label
             htmlFor="email"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             Email Address <span className="text-red-500">*</span>
           </label>
@@ -108,12 +108,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="phoneNumber"
             name="phoneNumber"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.phoneNumber}
           />
           <label
             htmlFor="phoneNumber"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             Phone Number <span className="text-red-500">*</span>
           </label>
@@ -126,12 +126,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="hospitalName"
             name="hospitalName"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.adminhospital?.name || ""} // Hospital name from API
           />
           <label
             htmlFor="hospitalName"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             Hospital Name <span className="text-red-500">*</span>
           </label>
@@ -144,12 +144,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="hospitalAddress"
             name="hospitalAddress"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.adminhospital?.address || ""} // Hospital address from API
           />
           <label
             htmlFor="hospitalAddress"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             Hospital Address <span className="text-red-500">*</span>
           </label>
@@ -162,12 +162,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="city"
             name="city"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.city}
           />
           <label
             htmlFor="city"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             City <span className="text-red-500">*</span>
           </label>
@@ -180,12 +180,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="state"
             name="state"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.state}
           />
           <label
             htmlFor="state"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             State <span className="text-red-500">*</span>
           </label>
@@ -198,12 +198,12 @@ const AdminProfileView = ({ onEdit }) => {
             disabled
             id="country"
             name="country"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0 text-gray-400 bg-white"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-400 bg-white"
             value={profileData.country}
           />
           <label
             htmlFor="country"
-            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
           >
             Country <span className="text-red-500">*</span>
           </label>

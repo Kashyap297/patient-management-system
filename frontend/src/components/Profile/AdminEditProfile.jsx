@@ -86,25 +86,25 @@ const AdminEditProfile = ({ onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataObj = new FormData();
-  
+
     // Add main fields to FormData
     Object.entries(formData).forEach(([key, value]) => {
       if (key !== "profileImage") {
         formDataObj.append(key, value);
       }
     });
-  
+
     // Add profile image if it's a File instance
     if (formData.profileImage instanceof File) {
       formDataObj.append("profileImage", formData.profileImage);
     }
-  
+
     try {
       // Add the Authorization header with the token
       await api.patch("/users/profile", formDataObj, {
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`, // Assuming token is stored in localStorage
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming token is stored in localStorage
         },
       });
       Swal.fire({
@@ -140,9 +140,9 @@ const AdminEditProfile = ({ onCancel }) => {
           <div className="flex justify-center">
             <button
               onClick={() => fileInputRef.current.click()}
-              className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-1 rounded-md mt-2 hover:bg-gray-200"
+              className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-xl mt-2 hover:bg-gray-200"
             >
-              <FiCamera className="text-gray-500" />
+              <FiCamera className="text-[#030229]" />
               <span>Change Profile</span>
             </button>
             <input
@@ -164,10 +164,10 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="firstName"
                 value={formData.firstName || ""}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
                 placeholder="First Name"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 First Name <span className="text-red-500">*</span>
               </label>
             </div>
@@ -179,10 +179,10 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="lastName"
                 value={formData.lastName || ""}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
                 placeholder="Last Name"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 Last Name <span className="text-red-500">*</span>
               </label>
             </div>
@@ -194,10 +194,10 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="email"
                 value={formData.email || ""}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
                 placeholder="Email Address"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 Email Address <span className="text-red-500">*</span>
               </label>
             </div>
@@ -209,10 +209,10 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="phoneNumber"
                 value={formData.phoneNumber || ""}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
                 placeholder="Phone Number"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 Phone Number <span className="text-red-500">*</span>
               </label>
             </div>
@@ -223,7 +223,7 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="adminhospital"
                 value={formData.adminhospital}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
               >
                 <option value="">Select Hospital</option>
                 {hospitals.map((hospital) => (
@@ -232,7 +232,7 @@ const AdminEditProfile = ({ onCancel }) => {
                   </option>
                 ))}
               </select>
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 Hospital Name <span className="text-red-500">*</span>
               </label>
             </div>
@@ -243,12 +243,12 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
               >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 Gender <span className="text-red-500">*</span>
               </label>
             </div>
@@ -260,10 +260,10 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
                 placeholder="City"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 City <span className="text-red-500">*</span>
               </label>
             </div>
@@ -275,10 +275,10 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="state"
                 value={formData.state}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
                 placeholder="State"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 State <span className="text-red-500">*</span>
               </label>
             </div>
@@ -290,22 +290,32 @@ const AdminEditProfile = ({ onCancel }) => {
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-md"
+                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
                 placeholder="Country"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 Country <span className="text-red-500">*</span>
               </label>
             </div>
           </form>
           <div className="flex justify-end mt-4">
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              className="px-6 py-2 bg-customBlue text-white rounded-md font-medium"
-            >
-              Save
-            </button>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <button
+                type="button"
+                onClick={() => navigate("/admin")} // Adjust this path as needed
+                className="text-gray-700 px-4 py-2 rounded-xl w-full hover:bg-[#f6f8fb] border"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleSubmit}
+                type="submit"
+                className="px-4 py-2 rounded-xl text-white bg-[#0EABEB] w-full"
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -67,7 +67,7 @@ const ChangePassword = () => {
     <div className="w-3/5 p-6">
       <div className="justify-between items-center mb-6">
         <h3 className="text-2xl font-semibold mb-2">Change Password</h3>
-        <p className="text-sm">
+        <p className="text-sm text-[#4f4f4f]">
           To change your password, please fill in the fields below. Your
           password must contain at least 8 characters, it must also include at
           least one uppercase letter, one lowercase letter, one number, and one
@@ -87,14 +87,14 @@ const ChangePassword = () => {
         {({ isSubmitting }) => (
           <Form className="space-y-6">
             {/* Current Password */}
-            <div className="relative">
+            <div className="relative mb-5">
               <Field
                 type={showPassword.current ? "text" : "password"}
                 name="currentPassword"
                 placeholder="Enter Current Password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 Current Password <span className="text-red-500">*</span>
               </label>
               <ErrorMessage
@@ -116,9 +116,9 @@ const ChangePassword = () => {
                 type={showPassword.new ? "text" : "password"}
                 name="newPassword"
                 placeholder="Enter New Password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl "
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 New Password <span className="text-red-500">*</span>
               </label>
               <ErrorMessage
@@ -140,9 +140,9 @@ const ChangePassword = () => {
                 type={showPassword.confirm ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="Enter Confirm Password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl "
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
                 Confirm Password <span className="text-red-500">*</span>
               </label>
               <ErrorMessage
@@ -161,7 +161,7 @@ const ChangePassword = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2 bg-blue-500 text-white rounded-md font-medium hover:bg-blue-600 transition duration-200"
+              className="w-full py-2 bg-[#0eabeb] text-white rounded-xl font-medium hover:bg-[#0eabeb] transition duration-200"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Changing Password..." : "Change Password"}

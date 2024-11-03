@@ -40,7 +40,7 @@ const ProfileSidebar = () => {
           to=""
           end
           className={({ isActive }) => 
-            `flex items-center p-2 rounded-lg ${isActive ? "text-customBlue bg-blue-100 font-semibold" : "text-gray-700 bg-gray-100"}`
+            `flex items-center px-4 py-4 bg-[#f6f8fb] rounded-lg ${isActive ? "text-customBlue font-semibold" : "text-gray-700 "}`
           }
         >
           <FaUser className="inline-block w-5 h-5 mr-2" />
@@ -50,7 +50,7 @@ const ProfileSidebar = () => {
         <NavLink
           to="change-password"
           className={({ isActive }) => 
-            `flex items-center p-2 rounded-lg ${isActive ? "text-customBlue bg-blue-100 font-semibold" : "text-gray-700 bg-gray-100"}`
+            `flex items-center px-4 py-4 bg-[#f6f8fb] rounded-lg ${isActive ? "text-customBlue font-semibold" : "text-gray-700 "}`
           }
         >
           <FaLock className="inline-block w-5 h-5 mr-2" />
@@ -60,7 +60,7 @@ const ProfileSidebar = () => {
         <NavLink
           to="terms-and-conditions"
           className={({ isActive }) => 
-            `flex items-center p-2 rounded-lg ${isActive ? "text-customBlue bg-blue-100 font-semibold" : "text-gray-700 bg-gray-100"}`
+            `flex items-center px-4 py-4 bg-[#f6f8fb] rounded-lg ${isActive ? "text-customBlue font-semibold" : "text-gray-700 "}`
           }
         >
           <FaFileContract className="inline-block w-5 h-5 mr-2" />
@@ -70,7 +70,7 @@ const ProfileSidebar = () => {
         <NavLink
           to="privacy-policy"
           className={({ isActive }) => 
-            `flex items-center p-2 rounded-lg ${isActive ? "text-customBlue bg-blue-100 font-semibold" : "text-gray-700 bg-gray-100"}`
+            `flex items-center px-4 py-4 bg-[#f6f8fb] rounded-lg ${isActive ? "text-customBlue font-semibold" : "text-gray-700 "}`
           }
         >
           <FaShieldAlt className="inline-block w-5 h-5 mr-2" />
