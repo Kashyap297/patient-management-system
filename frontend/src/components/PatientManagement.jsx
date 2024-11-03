@@ -106,7 +106,7 @@ const PatientManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 h-full">
+    <div className="bg-gray-100 h-full">
       <div className="bg-white p-4 rounded-lg h-full shadow-md">
         {/* Tabs */}
         <div className="flex space-x-4 mb-4 border-b">

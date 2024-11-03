@@ -77,7 +77,7 @@ const DoctorManagement = () => {
   );
 
   return (
-    <div className="p-6 bg-gray-100 h-full">
+    <div className="bg-gray-100 h-full">
       <div className="bg-white p-4 rounded-lg h-full">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Doctor Management</h2>
