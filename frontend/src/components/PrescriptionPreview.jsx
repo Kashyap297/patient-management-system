@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import signature from "../assets/images/signature.svg";
 import logo from "../assets/images/logo.png";
 import api from "../api/api";
 import { useNavigate } from "react-router-dom";
 
-const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
+const PrescriptionPreview = ({ prescriptionData, appointmentId }) => {
   const [doctorDetails, setDoctorDetails] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Decode the token to get the doctor ID
     const fetchDoctorDetails = async () => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
           const decodedToken = jwtDecode(token);
-          const doctorId = decodedToken.id; // Adjust according to your token payload structure
+          const doctorId = decodedToken.id;
 
-          // Fetch doctor details based on the decoded ID
           const response = await api.get(`/users/doctors/${doctorId}`);
           setDoctorDetails(response.data);
         }
@@ -29,7 +27,6 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
 
     fetchDoctorDetails();
   }, []);
-  console.log(doctorDetails);
 
   const handleSendPrescription = async () => {
     try {
@@ -50,14 +47,14 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
       await api.post("/prescription", payload);
       await api.patch(`/appointments/${appointmentId}`, { status: "Completed" });
       alert("Prescription created successfully and appointment marked as Completed");
-      navigate(`/doctor/prescription-tools/create`);
+      navigate(`/doctor/prescription-tools/manage`);
     } catch (error) {
       console.error("Error creating prescription or updating appointment status:", error);
     }
   };
 
   return (
-    <div className="bg-white w-full">
+    <div className="bg-white w-full flex flex-col h-full justify-between">
       {/* Header Section */}
       <div className="bg-[#f6f8fb] p-3 mb-3 rounded-2xl">
         <div className="flex justify-between items-center">
@@ -79,26 +76,20 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
         {/* Patient and Prescription Details */}
         <div className="p-4 rounded-md bg-gray-50">
           <div className="grid grid-cols-2 gap-y-2 text-sm text-gray-700">
-            {/* Left Column */}
             <div>
               <div className="flex">
                 <p className="font-semibold">Hospital Name :</p>
                 <p className="text-gray-500 ml-2">
-                  {doctorDetails?.doctorDetails.hospital.hospitalName ||
-                    "Medical Center"}
+                  {doctorDetails?.doctorDetails.hospital.hospitalName || "Medical Center"}
                 </p>
               </div>
               <div className="flex mt-2">
                 <p className="font-semibold">Patient Name :</p>
-                <p className="text-gray-500 ml-2">
-                  {prescriptionData?.patientName}
-                </p>
+                <p className="text-gray-500 ml-2">{prescriptionData?.patientName}</p>
               </div>
               <div className="flex mt-2">
                 <p className="font-semibold">Gender :</p>
-                <p className="text-gray-500 ml-2">
-                  {prescriptionData?.patientGender}
-                </p>
+                <p className="text-gray-500 ml-2">{prescriptionData?.patientGender}</p>
               </div>
               <div className="flex mt-2 col-12">
                 <p className="font-semibold">Address :</p>
@@ -108,24 +99,16 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
               </div>
             </div>
 
-            {/* Right Column */}
             <div>
               <div className="flex">
                 <p className="font-semibold">Prescription Date :</p>
                 <p className="text-gray-500 ml-2">
-                  {new Date().toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                 </p>
               </div>
-
               <div className="flex mt-2">
                 <p className="font-semibold">Age :</p>
-                <p className="text-gray-500 ml-2">
-                  {prescriptionData?.patientAge} Years
-                </p>
+                <p className="text-gray-500 ml-2">{prescriptionData?.patientAge} Years</p>
               </div>
             </div>
           </div>
@@ -133,25 +116,15 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
       </div>
 
       {/* Medicines Table */}
-      <div className="mb-6 rounded-lg overflow-hidden">
+      <div className="mb-6 rounded-lg overflow-hidden flex-grow">
         <table className="w-full text-left">
           <thead className="bg-[#f6f8fb]">
             <tr>
-              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">
-                Medicine Name
-              </th>
-              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">
-                Strength
-              </th>
-              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">
-                Dose
-              </th>
-              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">
-                Duration
-              </th>
-              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">
-                When to take
-              </th>
+              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">Medicine Name</th>
+              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">Strength</th>
+              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">Dose</th>
+              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">Duration</th>
+              <th className="px-4 py-2 border-b font-semibold text-sm text-gray-700">When to take</th>
             </tr>
           </thead>
           <tbody>
@@ -159,20 +132,14 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
               .filter((medicine) => medicine.isEnabled)
               .map((medicine, index) => (
                 <tr key={index} className="text-sm text-gray-700">
-                  <td className="px-4 py-2 border-b">
-                    {medicine.medicineName}
-                  </td>
+                  <td className="px-4 py-2 border-b">{medicine.medicineName}</td>
                   <td className="px-4 py-2 border-b">{medicine.strength}</td>
                   <td className="px-4 py-2 border-b">{medicine.dose}</td>
                   <td className="px-4 py-2 border-b">
-                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                      {medicine.duration}
-                    </span>
+                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full">{medicine.duration}</span>
                   </td>
                   <td className="px-4 py-2 border-b">
-                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
-                      {medicine.whenToTake}
-                    </span>
+                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full">{medicine.whenToTake}</span>
                   </td>
                 </tr>
               ))}
@@ -188,15 +155,11 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId  }) => {
         </p>
       </div>
 
-      {/* Doctor Signature and Send Button */}
-      <div className="flex justify-between items-center mt-8">
+      {/* Doctor Signature and Send Button at the Bottom */}
+      <div className="flex justify-between items-center mt-8 p-4 bg-white sticky bottom-0">
         <div className="text-center">
           <img
-            src={
-              doctorDetails?.signatureImage
-                ? `http://localhost:8000/${doctorDetails.signatureImage}`
-                : signature
-            }
+            src={doctorDetails?.signatureImage ? `http://localhost:8000/${doctorDetails.signatureImage}` : signature}
             alt="Doctor's Signature"
             className="w-24 mx-auto"
           />
