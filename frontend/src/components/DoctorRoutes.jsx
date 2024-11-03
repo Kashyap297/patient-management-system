@@ -17,6 +17,7 @@ import EditAppointment from "../pages/doctorPages/EditAppointment";
 import DoctorMeetingConference from "../pages/doctorPages/DoctorMeetingConference";
 import DoctorProfile from "./DoctorProfile";
 import DoctorEditProfile from "./Profile/DoctorEditProfile";
+import CreatePrescriptionPage from "./CreatePrescriptionPage";
 
 const DoctorRoutes = () => {
   return (
@@ -33,7 +34,7 @@ const DoctorRoutes = () => {
             <Route path="/patient-detail/:id" element={<PatientDetail />} />
             <Route path="/prescription-tools/create" element={<CreatePrescriptionScreen />} />
             <Route path="/prescription-view/:id" element={<PrescriptionView />} />
-            <Route path="/create-prescription/:id" element={<CreatePrescriptionForm />} />
+            <Route path="/create-prescription/:id" element={<CreatePrescriptionPage />} />
             <Route path="/prescription-tools/manage" element={<ManagePrescription />} />
             <Route path="/teleconsultation" element={<TeleConsultationScreen />} />
             <Route path="/doctor-chat" element={<ChatPage />} />

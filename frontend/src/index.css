@@ -67,3 +67,15 @@ code {
 .input-field.inactive {
   background-color: #f9fafb;
 }
+
+.input-field {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.input-field:focus {
+  border-color: #4a90e2;
+}
