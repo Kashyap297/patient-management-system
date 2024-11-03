@@ -4,6 +4,9 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./context/AuthContext";
+// In src/index.js or src/App.js
+import 'typeface-lato';
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
