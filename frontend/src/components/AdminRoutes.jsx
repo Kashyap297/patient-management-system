@@ -22,11 +22,10 @@ import AdminProfile from "./AdminProfile";
 import AdminEditProfile from "./Profile/AdminEditProfile";
 import PendingInvoice from "./PendingInvoice";
 
-const AdminRoutes = () => {
+const AdminRoutes = ({ onLogout }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("All");
 
-  // Callback to handle search input from Header
   const handleSearch = (query, filter) => {
     setSearchQuery(query);
     setFilterOption(filter);
@@ -34,11 +33,10 @@ const AdminRoutes = () => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#f6f8fb]">
-      <Sidebar role={"admin"} />
+      <Sidebar role={"admin"} onLogout={onLogout} />
       <div className="flex-1 flex flex-col bg-[#f6f8fb]">
         <Header onSearch={handleSearch} />
         <div className="flex-1 overflow-y-auto bg-[#f6f8fb] p-5">
-          {/* Conditionally render either the SearchResults or the Routes */}
           {searchQuery ? (
             <SearchResults query={searchQuery} filterOption={filterOption} />
           ) : (

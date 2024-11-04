@@ -14,7 +14,7 @@ import { HiOutlineLogout } from "react-icons/hi";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 
-const Sidebar = ({ role }) => {
+const Sidebar = ({ role, onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [openBilling, setOpenBilling] = useState(false);
@@ -58,6 +58,7 @@ const Sidebar = ({ role }) => {
 
   const handleLogout = () => {
     localStorage.clear();
+    onLogout();
     navigate("/");
   };
 

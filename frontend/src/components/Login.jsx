@@ -1,11 +1,10 @@
-// src/components/Login.js
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import SidePanel from "./SidePanel";
 import AuthContext from "../context/AuthContext";
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const { loginUser, authError } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +19,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset errors before validation
     let validationErrors = {};
     setErrors({});
 
@@ -35,21 +33,18 @@ const Login = () => {
       setErrors(validationErrors);
     } else {
       try {
-        // Call login function from AuthContext
         const { token, role } = await loginUser({ email, password });
 
-        // Store token in localStorage
         localStorage.setItem("token", token);
+        setIsAuthenticated(true); // Set authenticated state to true
 
-        // Redirect based on user role
         if (role === "admin") {
-          navigate("/admin");
+          navigate("/admin/dashboard");
         } else if (role === "doctor") {
-          navigate("/doctor");
+          navigate("/doctor/appointment-management");
         } else if (role === "patient") {
           navigate("/patient");
         } else {
-          // If role is undefined or unexpected, redirect to a generic page
           navigate("/home");
         }
       } catch (error) {
@@ -64,7 +59,6 @@ const Login = () => {
         <div className="w-full max-w-md bg-white p-10 rounded-xl shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Login</h2>
           <form onSubmit={handleSubmit}>
-            {/* Email or Phone Input */}
             <div className="relative mb-4">
               <input
                 type="text"
@@ -87,7 +81,6 @@ const Login = () => {
               )}
             </div>
 
-            {/* Password Input */}
             <div className="relative mb-4">
               <input
                 type={showPassword ? "password" : "text"}
@@ -108,8 +101,6 @@ const Login = () => {
               {errors.password && (
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
               )}
-
-              {/* Toggle Password Visibility Icon */}
               <div
                 className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
                 onClick={togglePasswordVisibility}
@@ -151,8 +142,6 @@ const Login = () => {
           </p>
         </div>
       </div>
-
-      {/* Right Side - Banner & Vector Section */}
       <SidePanel />
     </div>
   );

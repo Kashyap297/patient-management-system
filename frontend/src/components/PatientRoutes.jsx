@@ -23,10 +23,10 @@ import PatientMeetingConference from "../pages/patientPages/PatientMeetingConfer
 
 
 
-const PatientRoutes = () => {
+const PatientRoutes = ( {onLogout} ) => {
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar role={"patient"} />
+      <Sidebar role={"patient"}  onLogout={onLogout}/>
       {/* <BreadcrumbProvider> */}
       {/* <PatientSidebar /> */}
       {/* </BreadcrumbProvider> */}

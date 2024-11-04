@@ -19,10 +19,10 @@ import DoctorProfile from "./DoctorProfile";
 import DoctorEditProfile from "./Profile/DoctorEditProfile";
 import CreatePrescriptionPage from "./CreatePrescriptionPage";
 
-const DoctorRoutes = () => {
+const DoctorRoutes = ( {onLogout} ) => {
   return (
     <div className="flex h-screen overflow-hidden bg-[#f6f8fb]">
-      <Sidebar role={"doctor"} />
+      <Sidebar role={"doctor"}  onLogout={onLogout} />
       <div className="flex-1 flex flex-col bg-[#f6f8fb]">
         <Header />
         <div className="flex-1 overflow-y-auto bg-[#f6f8fb] p-6">
