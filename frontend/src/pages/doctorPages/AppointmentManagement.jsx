@@ -266,7 +266,7 @@ const AppointmentManagement = () => {
     setOpenCustomDateModal(false);
   };
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md m-6">
+    <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
         <div className="flex space-x-8 text-sm font-semibold text-gray-500">
           {['Today Appointment', 'Upcoming Appointment', 'Previous Appointment', 'Cancel Appointment'].map((tab) => (

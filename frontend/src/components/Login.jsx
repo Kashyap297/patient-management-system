@@ -41,7 +41,7 @@ const Login = ({ setIsAuthenticated }) => {
         if (role === "admin") {
           navigate("/admin/dashboard");
         } else if (role === "doctor") {
-          navigate("/doctor/appointment-management");
+          navigate("/doctor");
         } else if (role === "patient") {
           navigate("/patient");
         } else {

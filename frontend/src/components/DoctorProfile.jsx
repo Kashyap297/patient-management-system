@@ -14,12 +14,12 @@ const DoctorProfile = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="relative bg-gray-100  py-16 px-36  h-full">
+        <div className="relative bg-gray-100 py-16 px-36 h-full">
             {/* Header */}
             <ProfileHeader title="Profile Setting" />
 
             {/* Main Container */}
-            <div className="flex flex-col md:flex-row w-full mt-8  mx-auto bg-white shadow-lg rounded-lg overflow-hidden z-10 relative">
+            <div className="flex flex-col md:flex-row w-full mt-8  mx-auto bg-white shadow-lg rounded-xl overflow-hidden z-10 relative">
                 {/* Sidebar */}
                 <div className="w-full md:w-1/4 bg-white p-6 border-r">
                     <ProfileSidebar />
