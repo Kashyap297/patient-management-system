@@ -21,11 +21,11 @@ import CreatePrescriptionPage from "./CreatePrescriptionPage";
 
 const DoctorRoutes = () => {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-[#f6f8fb]">
       <Sidebar role={"doctor"} />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-[#f6f8fb]">
         <Header />
-        <div className="flex-1 overflow-y-auto bg-gray-100 p-6">
+        <div className="flex-1 overflow-y-auto bg-[#f6f8fb] p-6">
           <Routes>
             <Route path="/appointment-management" element={<AppointmentManagement />} />
             <Route path="/appointment-time-slot" element={<AppointmentTimeSlot />} />

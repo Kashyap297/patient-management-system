@@ -33,9 +33,9 @@ const AdminRoutes = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-[#f6f8fb]">
       <Sidebar role={"admin"} />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-[#f6f8fb]">
         <Header onSearch={handleSearch} />
         <div className="flex-1 overflow-y-auto bg-[#f6f8fb] p-5">
           {/* Conditionally render either the SearchResults or the Routes */}
