@@ -100,7 +100,7 @@ exports.getAllAppointments = async (req, res) => {
       .populate({
         path: "doctor",
         select:
-          "firstName lastName doctorDetails.qualification doctorDetails.specialtyType doctorDetails.experience doctorDetails.hospital _id", // Add _id here to ensure doctor ID is included
+          "firstName lastName profileImage doctorDetails.qualification doctorDetails.specialtyType doctorDetails.experience doctorDetails.hospital _id", // Add _id here to ensure doctor ID is included
       });
 
     res.status(200).json({
@@ -169,7 +169,7 @@ exports.getAppointmentById = async (req, res) => {
       .populate({
         path: "doctor",
         select:
-          "firstName lastName specialty qualification experience hospital",
+          "firstName lastName profileImage specialty qualification experience hospital",
       });
 
     if (!appointment) {
