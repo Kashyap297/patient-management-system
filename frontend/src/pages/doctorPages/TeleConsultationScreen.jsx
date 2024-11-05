@@ -1,82 +1,76 @@
 import { useEffect, useState } from 'react';
-import { Tabs, Tab, Button } from '@mui/material';
-import { DateRange } from '@mui/icons-material';
+import { FaCalendar, FaCalendarAlt } from 'react-icons/fa';
 import TeleConsultationCard from '../../components/TeleConsultationCard';
 import CustomDateFilter from '../../components/modals/CustomDateFilter.jsx';
-import api from '../../api/api'; // Import the Axios instance from api.js
-import moment from 'moment'; // For handling date comparisons
-import {jwtDecode} from 'jwt-decode'; // To decode the token and extract doctorId
+import api from '../../api/api';
+import moment from 'moment';
+import {jwtDecode} from 'jwt-decode';
 
 const TeleConsultationScreen = () => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState("Today Appointment");
   const [dateRange, setDateRange] = useState('2 March, 2022 - 13 March, 2022');
   const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [filterDates, setFilterDates] = useState({ fromDate: null, toDate: null });
-  const [appointments, setAppointments] = useState([]); // State to store appointments
-
-  // Fetch the appointments for the logged-in doctor
-  const fetchAppointments = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const decodedToken = jwtDecode(token); // Decode the token to get the doctorId
-      const loggedInDoctorId = decodedToken.id; // Assuming the token has the doctor's ID as "id"
-      
-      const response = await api.get('/appointments', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const fetchedAppointments = response.data.data;
-      // Filter appointments for the logged-in doctor only
-      const doctorAppointments = fetchedAppointments.filter(
-        appointment => appointment.doctorId === loggedInDoctorId
-      );
-      
-      setAppointments(doctorAppointments); // Set only the logged-in doctor's appointments
-    } catch (error) {
-      console.error('Error fetching appointments:', error);
-    }
-  };
+  const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
-    fetchAppointments(); // Fetch appointments when the component mounts
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const decodedToken = jwtDecode(token);
+        const doctorId = decodedToken.id;
+
+        const response = await api.get('/appointments', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const doctorAppointments = response.data.data.filter(
+          appointment => appointment.doctorId === doctorId
+        );
+
+        setAppointments(doctorAppointments);
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
+    };
+
+    fetchAppointments();
   }, []);
 
-  // Function to get data based on active tab and appointment status
   const getCurrentAppointments = () => {
-    const today = moment().startOf('day'); // Start of today for comparison
+    const today = moment().startOf('day');
     let filteredAppointments;
 
     switch (activeTab) {
-      case 0: // Today Appointment
-        filteredAppointments = appointments.filter(
-          app => moment(app.appointmentDate).isSame(today, 'day')
-        );
-        console.log(filteredAppointments)
-        break;
-      case 1: // Upcoming Appointment
-        filteredAppointments = appointments.filter(
-          app => moment(app.appointmentDate).isAfter(today)
+      case "Today Appointment":
+        filteredAppointments = appointments.filter(app =>
+          moment(app.appointmentDate).isSame(today, 'day')
         );
         break;
-      case 2: // Previous Appointment
-        filteredAppointments = appointments.filter(
-          app => moment(app.appointmentDate).isBefore(today)
+      case "Upcoming Appointment":
+        filteredAppointments = appointments.filter(app =>
+          moment(app.appointmentDate).isAfter(today)
         );
         break;
-      case 3: // Cancelled Appointment
+      case "Previous Appointment":
+        filteredAppointments = appointments.filter(app =>
+          moment(app.appointmentDate).isBefore(today)
+        );
+        break;
+      case "Cancel Appointment":
         filteredAppointments = appointments.filter(app => app.status === 'Cancelled');
         break;
       default:
         filteredAppointments = appointments;
     }
 
-    // If filter dates are selected, filter the appointments by date range
     if (filterDates.fromDate && filterDates.toDate) {
       const fromDate = moment(filterDates.fromDate).startOf('day');
       const toDate = moment(filterDates.toDate).endOf('day');
 
-      return filteredAppointments.filter((appointment) => {
+      return filteredAppointments.filter(appointment => {
         const appointmentDate = moment(appointment.appointmentDate);
         return appointmentDate.isBetween(fromDate, toDate, null, '[]');
       });
@@ -89,50 +83,66 @@ const TeleConsultationScreen = () => {
 
   const handleApplyDateFilter = (fromDate, toDate) => {
     if (fromDate && toDate) {
-      // Update the date range display
-      setDateRange(`${new Date(fromDate).toLocaleDateString()} - ${new Date(toDate).toLocaleDateString()}`);
+      setDateRange(`${moment(fromDate).format("D MMM, YYYY")} - ${moment(toDate).format("D MMM, YYYY")}`);
       setFilterDates({ fromDate, toDate });
     }
-    setOpenCustomDateModal(false); // Close modal after applying filter
+    setOpenCustomDateModal(false);
   };
 
-  // Handler for resetting the date filter
   const handleResetDateFilter = () => {
-    setFilterDates({ fromDate: null, toDate: null }); // Clear the filter dates
-    setDateRange('2 Jan, 2022 - 13 Jan, 2022'); // Reset to default date range
-    setOpenCustomDateModal(false); // Close modal
+    setFilterDates({ fromDate: null, toDate: null });
+    setDateRange('2 Jan, 2022 - 13 Jan, 2022');
+    setOpenCustomDateModal(false);
   };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      {/* Tabs for different types of appointments */}
-      <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
-        <Tab label="Today Appointment" />
-        <Tab label="Upcoming Appointment" />
-        <Tab label="Previous Appointment" />
-        <Tab label="Cancel Appointment" />
-      </Tabs>
-
-      {/* Date range display */}
-      <div className="mt-4 mb-6 flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Teleconsultation Module</h2>
-        <Button variant="outlined" startIcon={<DateRange />} color="secondary" onClick={() => setOpenCustomDateModal(true)}>
-          {dateRange}
-        </Button>
-      </div>
-
-      {/* Grid of Patient Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentAppointments.map((patient, index) => (
-          <TeleConsultationCard key={index} patient={patient} />
+    <div className="bg-white h-full p-6 rounded-xl shadow-md">
+      {/* Tabs for appointment types */}
+      <div className="flex space-x-4 mb-4 border-b">
+        {["Today Appointment", "Upcoming Appointment", "Previous Appointment", "Cancel Appointment"].map((tab) => (
+          <button
+            key={tab}
+            className={`py-2 px-4 ${
+              activeTab === tab ? "border-b-2 border-[#0eabeb] text-[#0eabeb]" : "text-[#667080]"
+            }`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab}
+          </button>
         ))}
       </div>
 
+      {/* Date Range and Filter Button */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold">{activeTab}</h2>
+        <button
+          onClick={() => setOpenCustomDateModal(true)}
+          className="border border-gray-300 px-4 py-2 rounded-xl text-gray-600 flex items-center space-x-1 hover:bg-gray-100 transition"
+        >
+          <FaCalendarAlt className="text-[#1E1E1E]" />
+          <span>{dateRange}</span>
+        </button>
+      </div>
+
+      {/* Appointment Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {currentAppointments.length > 0 ? (
+          currentAppointments.map((appointment, index) => (
+            <TeleConsultationCard key={index} patient={appointment} />
+          ))
+        ) : (
+          <div className="col-span-full text-center py-16">
+            <p className="text-gray-500">No appointments found for the selected date range or criteria.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Custom Date Filter Modal */}
       <CustomDateFilter
         open={openCustomDateModal}
         onClose={() => setOpenCustomDateModal(false)}
-        onApply={handleApplyDateFilter} 
-        onReset={handleResetDateFilter} 
+        onApply={handleApplyDateFilter}
+        onReset={handleResetDateFilter}
       />
     </div>
   );

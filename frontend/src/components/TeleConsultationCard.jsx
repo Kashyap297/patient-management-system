@@ -1,58 +1,57 @@
-import { Button } from '@mui/material';
-import CallIcon from '@mui/icons-material/Call';
-import EventIcon from '@mui/icons-material/Event';
 import { useNavigate } from 'react-router-dom';
+import { FaPhoneAlt, FaCalendarAlt } from 'react-icons/fa';
 
-// PatientCard component
 const TeleConsultationCard = ({ patient }) => {
   const navigate = useNavigate();
 
   const handleJoinCall = () => {
-    // Assuming patient has a unique id for the appointment or roomId
-    const appointmentId = patient.id; // This should be passed as a prop or fetched from the patient data
-    // Navigate to the DoctorMeetingConference component with the appointmentId in the URL
+    const appointmentId = patient.id;
     navigate(`/doctor/doctorMeetingConference/${appointmentId}`);
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md transition transform hover:-translate-y-1 hover:shadow-xl">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">{patient.patientName}</h3>
-        <p>
-          <strong>Patient Issue: </strong>
-          {patient.patientIssue}
-        </p>
-        <p>
-          <strong>Disease Name: </strong>
-          {patient.diseaseName}
-        </p>
-        <p>
-          <strong>Appointment Date: </strong>
-          {new Date(patient.appointmentDate).toLocaleDateString()}
-        </p>
-        <p>
-          <strong>Appointment Time: </strong>
-          {patient.appointmentTime}
-        </p>
+    <div className="bg-white shadow-lg rounded-xl w-full relative hover:shadow-xl transition-shadow duration-300 ease-in-out border">
+      {/* Header */}
+      <div className="flex justify-between items-center px-4 py-2 rounded-t-xl bg-[#f6f8fb]">
+        <h3 className="text-lg font-semibold text-gray-800">{patient.patientName}</h3>
       </div>
-      <div className="flex gap-4">
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<CallIcon />}
-          className="hover:bg-green-700"
-          onClick={handleJoinCall} // Using the handleJoinCall function
+
+      {/* Details */}
+      <div className="text-sm text-[#818194] space-y-2 px-4 py-2">
+        <div className="flex justify-between">
+          <p>Patient Issue</p>
+          <span className="font-semibold text-[#4F4F4F]">{patient.patientIssue}</span>
+        </div>
+        <div className="flex justify-between">
+          <p>Disease Name</p>
+          <span className="font-semibold text-[#4F4F4F]">{patient.diseaseName}</span>
+        </div>
+        <div className="flex justify-between">
+          <p>Appointment Date</p>
+          <span className="font-semibold text-[#4F4F4F]">{new Date(patient.appointmentDate).toLocaleDateString()}</span>
+        </div>
+        <div className="flex justify-between">
+          <p>Appointment Time</p>
+          <span className="font-semibold text-[#4F4F4F]">{patient.appointmentTime}</span>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-4 px-4 py-3">
+        <button
+          onClick={handleJoinCall}
+          className="bg-[#39973d] text-white flex items-center justify-center gap-2 px-4 py-2 rounded-xl w-full transition hover:bg-green-700"
         >
-          Join Call
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<EventIcon />}
-          className="hover:bg-blue-700"
+          <FaPhoneAlt className="text-white" />
+          <span>Join Call</span>
+        </button>
+        <button
+          onClick={() => console.log("Reschedule Clicked")} // Placeholder for reschedule action
+          className="bg-[#0eabeb] text-white flex items-center justify-center gap-2 px-4 py-2 rounded-xl w-full transition hover:bg-[#0c9ed1]"
         >
-          Reschedule
-        </Button>
+          <FaCalendarAlt className="text-white" />
+          <span>Reschedule</span>
+        </button>
       </div>
     </div>
   );
