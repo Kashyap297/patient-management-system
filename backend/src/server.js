@@ -42,6 +42,12 @@ dbConnection();
 // Serve static files from the 'uploads' folder inside 'src'
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// Root route to check if API is live
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "API is live!" });
+});
+
+
 // Routes setup
 app.use("/api/users", userRoutes);
 app.use("/api", hospitalRoutes);
