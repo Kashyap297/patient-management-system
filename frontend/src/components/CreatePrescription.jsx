@@ -1,52 +1,75 @@
-import { Button } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { useNavigate } from 'react-router-dom';
+import { Button } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useNavigate } from "react-router-dom";
 
-const CreatePrescription = ({ id,patientid, name, age, gender, appointmentType, time, status }) => {
+const CreatePrescription = ({
+  id,
+  patientid,
+  name,
+  age,
+  gender,
+  appointmentType,
+  time,
+  status,
+}) => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 w-full relative hover:shadow-xl transition-shadow duration-300 ease-in-out">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="font-bold text-lg text-gray-800">{name}</h2>
+    <div className="bg-white shadow-lg rounded-xl w-full relative hover:shadow-xl transition-shadow duration-300 ease-in-out border">
+      <div className="flex justify-between items-center px-4 py-2 mb-4 rounded-t-xl bg-[#f6f8fb]">
+        <h2 className="font-bold text-lg text-gray-800 ">{name}</h2>
         <div className="flex items-center">
-          {status === 'completed' ? (
-            <span className="bg-green-100 text-green-500 px-2 py-1 rounded-full text-sm font-medium mr-2">
-              Completed
+          {status === "completed" ? (
+            <span className="bg-[#e3eee8] text-[#39973D] px-3 py-2 rounded-full text-sm font-medium mr-2">
+              Old
             </span>
           ) : (
-            <span className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-sm font-medium mr-2">
+            <span className="bg-[#dff0f9] text-[#0EABEB] px-3 py-2 rounded-full text-sm font-medium mr-2">
               New
             </span>
           )}
-          <VisibilityIcon className="text-gray-400 cursor-pointer" onClick={() => navigate(`/doctor/prescription-view/${patientid}`)} />
+          <VisibilityIcon
+            className="text-gray-400 cursor-pointer hover:text-[#0EABEB] transition"
+            onClick={() => navigate(`/doctor/prescription-view/${patientid}`)}
+          />
         </div>
       </div>
-      <div className="text-sm text-gray-600 space-y-2 mb-4">
-        <p>
-          Appointment Type: <span className="text-blue-500 font-semibold">{appointmentType}</span>
-        </p>
-        <p>
-          Patient Age: <span className="font-semibold">{age} Years</span>
-        </p>
-        <p>
-          Patient Gender: <span className="font-semibold">{gender}</span>
-        </p>
-        <p>
-          Appointment Time: <span className="font-semibold">{time}</span>
-        </p>
+      <div className="text-sm text-[#818194] space-y-2 px-4">
+        <div className="flex justify-between">
+          <p>Appointment Type</p>
+          <span className="font-semibold text-[#5678E9]">
+            {appointmentType}
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <p>Patient Age</p>
+          <span className="font-semibold text-[#4F4F4F]">{age} Years</span>
+        </div>
+        <div className="flex justify-between">
+          <p>Patient Gender</p>
+          <span className="font-semibold text-[#4F4F4F]">{gender}</span>
+        </div>
+        <div className="flex justify-between">
+          <p>Appointment Time</p>
+          <span className="font-semibold text-[#4F4F4F]">{time}</span>
+        </div>
       </div>
-      <Button
-        variant="contained"
-        className="bg-blue-500 text-white w-full py-2"
-        style={{
-          borderRadius: "8px",
-        }}
-        onClick={() => navigate(`/doctor/create-prescription/${id}`)}
-        disabled={status === 'completed'}  // Disable button if appointment is completed
-      >
-        {status === 'completed' ? 'Prescription Completed' : 'Create Prescription'}
-      </Button>
+
+      <div className="px-4 py-3">
+        <button
+          variant="contained"
+          className="bg-[#0eabeb] text-white w-full py-2 rounded-xl"
+          style={{
+            borderRadius: "8px",
+          }}
+          onClick={() => navigate(`/doctor/create-prescription/${id}`)}
+          disabled={status === "completed"} // Disable button if appointment is completed
+        >
+          {status === "completed"
+            ? "Prescription Completed"
+            : "Create Prescription"}
+        </button>
+      </div>
     </div>
   );
 };
