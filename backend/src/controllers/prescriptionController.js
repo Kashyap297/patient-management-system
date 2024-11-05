@@ -59,7 +59,7 @@ exports.getPrescriptionById = async (req, res) => {
     const prescription = await Prescription.findById(id)
       .populate("doctor", "firstName lastName specialty")
       .populate("patient", "firstName lastName age gender address phoneNumber")
-      .populate("appointmentId", "appointmentDate appointmentTime hospital");
+      .populate("appointmentId", "appointmentDate appointmentTime appointmentType hospital");
 
     if (!prescription) {
       return res.status(404).json({ message: "Prescription not found" });
@@ -87,14 +87,14 @@ exports.getAllPrescriptionsByUser = async (req, res) => {
       prescriptions = await Prescription.find({ doctor: req.user._id })
         .populate("doctor", "firstName lastName specialty")
         .populate("patient", "firstName lastName age gender address phoneNumber")
-        .populate("appointmentId", "appointmentDate appointmentTime hospital");
+        .populate("appointmentId", "appointmentDate appointmentTime appointmentType hospital");
     }
     // If the logged-in user is a patient, find prescriptions for them
     else if (req.user.role === "patient") {
       prescriptions = await Prescription.find({ patient: req.user._id })
         .populate("doctor", "firstName lastName specialty")
         .populate("patient", "firstName lastName age gender address")
-        .populate("appointmentId", "appointmentDate appointmentTime hospital");
+        .populate("appointmentId", "appointmentDate appointmentTime appointmentType hospital");
     }
     // If the user is neither a doctor nor a patient, deny access
     else {
