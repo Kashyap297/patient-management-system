@@ -4,6 +4,7 @@ import { Close } from '@mui/icons-material';
 import moment from 'moment';
 import api from '../../api/api';
 import { jwtDecode } from 'jwt-decode';
+import { FaCalendarAlt, FaCalendarCheck } from 'react-icons/fa';
 
 // Modal for Rescheduling Appointment
 const RescheduleAppointmentModal = ({ open, onClose, appointment, timeSlots, onSave }) => {
@@ -17,44 +18,78 @@ const RescheduleAppointmentModal = ({ open, onClose, appointment, timeSlots, onS
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-[320px]">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-blue-500">Reschedule Appointment</h2>
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Select Date</label>
-          <TextField
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-1/5">
+        
+        {/* Modal Header */}
+        <h2 className="text-xl font-bold text-[#030229] mb-4 pb-2 border-b">
+          Reschedule Appointment
+        </h2>
+
+        {/* Date Picker Field with Floating Label */}
+        <div className="relative mb-4">
+          <input
             type="date"
-            variant="outlined"
+            id="select-date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            fullWidth
+            className={`peer w-full px-4 py-2 border text-gray-700 rounded-xl bg-gray-50 focus:outline-none focus:ring-0 ${
+              selectedDate ? 'border-gray-300' : 'border-red-500'
+            }`}
           />
+          <label
+            htmlFor="select-date"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-xs font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+          >
+            Select Date <span className="text-red-500">*</span>
+          </label>
         </div>
-        <div className="mb-4">
-          <label className="block mb-2">Select Time</label>
+
+        {/* Time Slot Selector with Floating Label */}
+        <div className="relative mb-6">
           <select
-            className="w-full p-2 border rounded"
+            id="select-time"
             value={selectedTimeSlot}
             onChange={(e) => setSelectedTimeSlot(e.target.value)}
+            className={`peer custom-scroll w-full px-4 py-2 border rounded-xl text-gray-700 bg-gray-50 focus:outline-none focus:ring-0 ${
+              selectedTimeSlot ? 'border-gray-300' : 'border-red-500'
+            }`}
           >
+            <option value="">Select Time</option>
             {timeSlots.map((time, index) => (
               <option key={index} value={time}>
                 {time}
               </option>
             ))}
           </select>
+          <label
+            htmlFor="select-time"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-xs font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+          >
+            Select Time <span className="text-red-500">*</span>
+          </label>
         </div>
-        <div className="flex justify-end">
-          <Button variant="outlined" onClick={onClose} className="mr-2">Cancel</Button>
-          <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
+
+        {/* Action Buttons */}
+        <div className="flex justify-between mt-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex items-center justify-center text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-100 border border-gray-300 w-1/2 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            type="button"
+            className="flex items-center justify-center bg-[#0EABEB] text-white px-4 py-2 rounded-xl w-1/2 font-medium ml-4"
+          >
+            <FaCalendarCheck className="mr-2" />
+            Reschedule
+          </button>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 

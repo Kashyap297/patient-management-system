@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import {jwtDecode} from 'jwt-decode'; // Ensure you're importing jwt-decode correctly
+import React, { useState, useEffect } from "react";
+import moment from "moment";
+import { jwtDecode } from "jwt-decode"; // Ensure you're importing jwt-decode correctly
 import api from "../../api/api"; // Assuming you have an API setup
+import { FaClock, FaTrash } from "react-icons/fa";
 
 // Modal Component for writing a note and disabling the appointment
 const WriteNoteModal = ({ show, onClose, appointment, onSaveNote }) => {
@@ -10,39 +11,98 @@ const WriteNoteModal = ({ show, onClose, appointment, onSaveNote }) => {
   if (!show || !appointment) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-1/2 shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Not Available</h2>
-        <p><strong>{moment(appointment.appointmentDate).format('dddd, DD MMMM YYYY')}</strong> {appointment.appointmentTime}</p>
-        <textarea
-          className="w-full p-2 border rounded mb-4"
-          placeholder="Add Note"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          rows="4"
-        ></textarea>
-        <div className="flex justify-end">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded mr-2">Cancel</button>
-          <button onClick={() => onSaveNote(note)} className="px-4 py-2 bg-green-500 text-white rounded">Disable</button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded-xl p-6 shadow-lg w-1/5">
+        {/* Modal Header */}
+        <h2 className="text-xl font-bold text-[#030229] mb-4 border-b pb-2">
+          Not Available
+        </h2>
+
+        {/* Appointment Date and Time */}
+        <div className="flex items-center mb-4 text-gray-600">
+          <FaClock className="text-gray-500 mr-2" />
+          <span>
+            {moment(appointment.appointmentDate).format("dddd, DD MMMM YYYY")}{" "}
+            {appointment.appointmentTime}
+          </span>
+        </div>
+
+        {/* Note Text Area */}
+        <div className="relative mb-6">
+          <textarea
+            id="note"
+            name="note"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 text-gray-700 resize-none"
+            placeholder="Add Note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows="4"
+          ></textarea>
+          <label
+            htmlFor="note"
+            className="absolute left-4 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]  peer-placeholder-shown:left-4 peer-focus:-top-2.5 peer-focus:left-4"
+          >
+            Add Note <span className="text-red-500">*</span>
+          </label>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-between">
+          <button
+            onClick={onClose}
+            className="w-1/2 py-2 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-100 mr-2 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSaveNote(note)}
+            className="w-1/2 py-2 flex items-center justify-center text-white bg-[#0eabeb] rounded-xl  font-medium"
+          >
+            Disable
+          </button>
         </div>
       </div>
     </div>
   );
 };
-
 // "Not Available" Modal with Edit/Delete buttons
 const NotAvailableModal = ({ show, appointment, note, onEdit, onDelete }) => {
   if (!show || !appointment) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-1/2 shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Not Available</h2>
-        <p><strong>{moment(appointment.appointmentDate).format('dddd, DD MMMM YYYY')}</strong> {appointment.appointmentTime}</p>
-        <p className="mt-2 mb-4">{note}</p>
-        <div className="flex justify-end">
-          <button onClick={onEdit} className="px-4 py-2 bg-green-500 text-white rounded mr-2">Edit</button>
-          <button onClick={onDelete} className="px-4 py-2 bg-red-500 text-white rounded">Delete</button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded-xl p-6 shadow-lg w-1/5">
+        {/* Modal Header */}
+        <h2 className="text-xl font-bold text-[#030229] mb-4 border-b pb-2">
+          Not Available
+        </h2>
+
+        {/* Appointment Date and Time */}
+        <div className="flex items-center mb-4 text-gray-600">
+          <FaClock className="text-gray-500 mr-2" />
+          <span>
+            {moment(appointment.appointmentDate).format("dddd, DD MMMM YYYY")}{" "}
+            {appointment.appointmentTime}
+          </span>
+        </div>
+        <div className="flex items-center mb-4 text-gray-600">
+          <FaClock className="text-gray-500 mr-2" />
+          <p>{note}</p>
+        </div>
+        {/* Action Buttons */}
+        <div className="flex justify-between">
+          <button
+            onClick={onEdit}
+            className="w-1/2 py-2 text-white bg-[#39973d] border border-[#39973d] rounded-xl hover:bg-[#39973d] mr-2 font-medium"
+          >
+            Edit
+          </button>
+          <button
+            onClick={onDelete}
+            className="w-1/2 py-2 flex items-center justify-center text-white bg-red-500 rounded-xl font-medium"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
@@ -51,47 +111,103 @@ const NotAvailableModal = ({ show, appointment, note, onEdit, onDelete }) => {
 
 // Modal for editing and rescheduling the time slot
 const EditSlotModal = ({ show, appointment, timeSlots, onClose, onSave }) => {
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState(appointment ? appointment.appointmentTime : '');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(
+    appointment ? appointment.appointmentTime : ""
+  );
 
   if (!show || !appointment) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-1/2 shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Edit Slot</h2>
-        <label className="block mb-2">Select Time Slot</label>
-        <select
-          className="w-full p-2 border rounded mb-4"
-          value={selectedTimeSlot}
-          onChange={(e) => setSelectedTimeSlot(e.target.value)}
-        >
-          {timeSlots.map((time, index) => (
-            <option key={index} value={time}>
-              {time}
-            </option>
-          ))}
-        </select>
-        <div className="flex justify-end">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded mr-2">Cancel</button>
-          <button onClick={() => onSave(selectedTimeSlot)} className="px-4 py-2 bg-blue-500 text-white rounded">Save</button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded-xl p-6 shadow-lg w-1/5">
+        {/* Modal Header */}
+        <h2 className="text-xl font-bold text-[#030229] mb-4 border-b pb-2">
+          Edit Slot
+        </h2>
+
+        {/* Time Slot Selector */}
+        <div className="relative mb-6">
+          <select
+            id="select-time"
+            value={selectedTimeSlot}
+            onChange={(e) => setSelectedTimeSlot(e.target.value)}
+            className={`peer custom-scroll w-full px-4 py-2 border rounded-xl text-gray-700 bg-gray-50 focus:outline-none focus:ring-0 ${
+              selectedTimeSlot ? "border-gray-300" : "border-red-500"
+            }`}
+          >
+            <option value="">Select Time</option>
+            {timeSlots.map((time, index) => (
+              <option key={index} value={time}>
+                {time}
+              </option>
+            ))}
+          </select>
+          <label
+            htmlFor="select-time"
+            className="absolute left-3 -top-2.5 px-1 bg-white text-xs font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
+          >
+            Select Time <span className="text-red-500">*</span>
+          </label>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-between">
+          <button
+            onClick={onClose}
+            className="w-[48%] py-2 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-100 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSave(selectedTimeSlot)}
+            className="w-[48%] py-2 text-white bg-[#0eabeb] rounded-xl font-medium"
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-// Delete Confirmation Modal
 const DeleteConfirmationModal = ({ show, onConfirmDelete, onCancel }) => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-1/3 shadow-lg text-center">
-        <h3 className="text-xl font-bold mb-4">Delete Time Slot?</h3>
-        <p>This slot is to be deleted.</p>
-        <div className="flex justify-center mt-4">
-          <button onClick={onCancel} className="px-4 py-2 bg-gray-300 rounded mr-4">No</button>
-          <button onClick={onConfirmDelete} className="px-4 py-2 bg-blue-500 text-white rounded">Yes</button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded-xl p-6 shadow-lg w-1/5 text-center relative border-t-8 border-[#E11D29] ">
+        
+        {/* Icon at the Top */}
+        <div className="flex justify-center mb-4">
+          <div className="bg-red-500 text-white rounded-full p-4">
+            <FaTrash className="text-3xl" />
+          </div>
+        </div>
+
+        {/* Modal Header */}
+        <h3 className="text-xl font-bold text-[#030229] mb-2">
+          Delete Time Slot?
+        </h3>
+
+        {/* Modal Description */}
+        <p className="text-sm text-gray-600 mb-6">
+          This slot is to be deleted.
+        </p>
+
+        {/* Action Buttons */}
+        <div className="flex justify-between">
+          <button
+            onClick={onCancel}
+            className="w-1/2 py-2 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-100 mr-2 font-medium"
+          >
+            No
+          </button>
+          <button
+            onClick={onConfirmDelete}
+            className="w-1/2 py-2 text-white bg-[#0EABEB] rounded-xl font-medium"
+          >
+            Yes
+          </button>
         </div>
       </div>
     </div>
@@ -100,7 +216,9 @@ const DeleteConfirmationModal = ({ show, onConfirmDelete, onCancel }) => {
 
 // Main Appointment Time Slot Component
 const AppointmentTimeSlot = () => {
-  const [currentWeekStart, setCurrentWeekStart] = useState(moment().startOf('week'));
+  const [currentWeekStart, setCurrentWeekStart] = useState(
+    moment().startOf("week")
+  );
   const [appointments, setAppointments] = useState([]);
   const [timeSlots, setTimeSlots] = useState([]);
   const [showNoteModal, setShowNoteModal] = useState(false);
@@ -115,7 +233,7 @@ const AppointmentTimeSlot = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         const decodedToken = jwtDecode(token);
         const doctorId = decodedToken.id;
 
@@ -144,7 +262,9 @@ const AppointmentTimeSlot = () => {
   const generateTimeSlots = () => {
     const slots = [];
     for (let hour = 8; hour <= 20; hour++) {
-      const timeString = `${hour < 12 ? hour : hour - 12}:00 ${hour < 12 ? 'AM' : 'PM'}`;
+      const timeString = `${hour < 12 ? hour : hour - 12}:00 ${
+        hour < 12 ? "AM" : "PM"
+      }`;
       slots.push(timeString);
     }
     setTimeSlots(slots);
@@ -157,10 +277,10 @@ const AppointmentTimeSlot = () => {
   // Helper function to get appointments for a specific time slot and day
   const getAppointmentsForSlot = (day, timeSlot) => {
     return appointments.filter(
-      (appointment) => 
-        moment(appointment.appointmentDate).format('YYYY-MM-DD') === day &&
+      (appointment) =>
+        moment(appointment.appointmentDate).format("YYYY-MM-DD") === day &&
         appointment.appointmentTime === timeSlot &&
-        appointment.status !== 'Cancelled'
+        appointment.status !== "Cancelled"
     );
   };
 
@@ -178,9 +298,12 @@ const AppointmentTimeSlot = () => {
 
   const handleSaveTimeSlot = async (newTimeSlot) => {
     try {
-      const response = await api.patch(`/appointments/reschedule/${selectedAppointment.id}`, {
-        appointmentTime: newTimeSlot,
-      });
+      const response = await api.patch(
+        `/appointments/reschedule/${selectedAppointment.id}`,
+        {
+          appointmentTime: newTimeSlot,
+        }
+      );
 
       if (response.status === 200) {
         const updatedAppointments = appointments.map((appt) =>
@@ -204,7 +327,9 @@ const AppointmentTimeSlot = () => {
         status: "Cancelled",
       });
 
-      setAppointments(appointments.filter((appt) => appt.id !== selectedAppointment.id));
+      setAppointments(
+        appointments.filter((appt) => appt.id !== selectedAppointment.id)
+      );
       setShowDeleteModal(false);
       setSelectedAppointment(null);
     } catch (error) {
@@ -218,14 +343,22 @@ const AppointmentTimeSlot = () => {
       <div className="flex justify-between items-center mb-4">
         <button
           className="px-4 py-2 bg-gray-300 rounded"
-          onClick={() => setCurrentWeekStart(moment(currentWeekStart).subtract(7, 'days'))}
+          onClick={() =>
+            setCurrentWeekStart(moment(currentWeekStart).subtract(7, "days"))
+          }
         >
           &lt;
         </button>
         <h1 className="text-xl font-bold">
-          {moment(currentWeekStart).format('DD MMMM, YYYY')} - {moment(currentWeekStart).add(6, 'days').format('DD MMMM, YYYY')}
+          {moment(currentWeekStart).format("DD MMMM, YYYY")} -{" "}
+          {moment(currentWeekStart).add(6, "days").format("DD MMMM, YYYY")}
         </h1>
-        <button className="px-4 py-2 bg-gray-300 rounded" onClick={() => setCurrentWeekStart(moment(currentWeekStart).add(7, 'days'))}>
+        <button
+          className="px-4 py-2 bg-gray-300 rounded"
+          onClick={() =>
+            setCurrentWeekStart(moment(currentWeekStart).add(7, "days"))
+          }
+        >
           &gt;
         </button>
       </div>
@@ -235,8 +368,12 @@ const AppointmentTimeSlot = () => {
         <thead>
           <tr>
             <th className="border px-4 py-2">Time</th>
-            {Array.from({ length: 7 }, (_, i) => moment(currentWeekStart).add(i, 'days').format('ddd D')).map((day) => (
-              <th key={day} className="border px-4 py-2">{day}</th>
+            {Array.from({ length: 7 }, (_, i) =>
+              moment(currentWeekStart).add(i, "days").format("ddd D")
+            ).map((day) => (
+              <th key={day} className="border px-4 py-2">
+                {day}
+              </th>
             ))}
           </tr>
         </thead>
@@ -244,7 +381,9 @@ const AppointmentTimeSlot = () => {
           {timeSlots.map((time) => (
             <tr key={time}>
               <td className="border px-4 py-2">{time}</td>
-              {Array.from({ length: 7 }, (_, i) => moment(currentWeekStart).add(i, 'days').format('YYYY-MM-DD')).map((day) => {
+              {Array.from({ length: 7 }, (_, i) =>
+                moment(currentWeekStart).add(i, "days").format("YYYY-MM-DD")
+              ).map((day) => {
                 const appointmentsForSlot = getAppointmentsForSlot(day, time);
 
                 return (
