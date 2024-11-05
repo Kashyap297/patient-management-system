@@ -178,9 +178,9 @@ const PatientEditProfile = () => {
               className="w-full h-full rounded-full object-cover"
             />
           </div>
-          <label className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-1 rounded-md mt-2 hover:bg-gray-200 cursor-pointer">
-            <AiOutlineCamera className="text-gray-500" />
-            <span>Change Profile</span>
+          <label className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-3 rounded-xl mt-2 hover:bg-gray-200 cursor-pointer">
+            <AiOutlineCamera className="text-gray-500 text-lg" />
+            <span className="text-lg">Change Profile</span>
             <input
               type="file"
               name="profileImage"
@@ -200,7 +200,7 @@ const PatientEditProfile = () => {
                 type="text"
                 id="firstName"
                 name="firstName"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.firstName}
                 onChange={handleChange}
@@ -218,7 +218,7 @@ const PatientEditProfile = () => {
                 type="text"
                 id="lastName"
                 name="lastName"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.lastName}
                 onChange={handleChange}
@@ -238,7 +238,7 @@ const PatientEditProfile = () => {
                 type="text"
                 id="phoneNumber"
                 name="phoneNumber"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.phoneNumber}
                 onChange={handleChange}
@@ -258,7 +258,7 @@ const PatientEditProfile = () => {
                 type="email"
                 id="email"
                 name="email"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.email}
                 onChange={handleChange}
@@ -277,7 +277,7 @@ const PatientEditProfile = () => {
               <select
                 id="gender"
                 name="gender"
-                className="peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none"
                 value={formData.gender}
                 onChange={handleChange}
               >
@@ -300,7 +300,7 @@ const PatientEditProfile = () => {
                 type="date"
                 id="dob"
                 name="dob"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 value={formData.dob}
                 onChange={handleChange}
               />
@@ -319,7 +319,7 @@ const PatientEditProfile = () => {
                 type="number"
                 id="age"
                 name="age"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.age}
                 onChange={handleChange}
@@ -338,7 +338,7 @@ const PatientEditProfile = () => {
               <select
                 id="bloodGroup"
                 name="bloodGroup"
-                className="peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none"
                 value={formData.bloodGroup}
                 onChange={handleChange}
               >
@@ -367,7 +367,7 @@ const PatientEditProfile = () => {
                 type="number"
                 id="height"
                 name="height"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.height}
                 onChange={handleChange}
@@ -387,7 +387,7 @@ const PatientEditProfile = () => {
                 type="number"
                 id="weight"
                 name="weight"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.weight}
                 onChange={handleChange}
@@ -407,7 +407,7 @@ const PatientEditProfile = () => {
                 type="text"
                 id="country"
                 name="country"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.country}
                 onChange={handleChange}
@@ -427,7 +427,7 @@ const PatientEditProfile = () => {
                 type="text"
                 id="state"
                 name="state"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.state}
                 onChange={handleChange}
@@ -447,7 +447,7 @@ const PatientEditProfile = () => {
                 type="text"
                 id="city"
                 name="city"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.city}
                 onChange={handleChange}
@@ -467,7 +467,7 @@ const PatientEditProfile = () => {
                 type="text"
                 id="address"
                 name="address"
-                className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+                className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
                 placeholder=" "
                 value={formData.address}
                 onChange={handleChange}
@@ -486,14 +486,14 @@ const PatientEditProfile = () => {
           <div className="flex justify-end gap-4 mt-6 col-span-3">
             <button
               type="button"
-              className="px-6 py-2 rounded bg-gray-200 text-gray-700"
+              className="px-6 py-2 rounded-xl hover:bg-gray-100 text-gray-700 border bg-white"  
               onClick={() => navigate("/patient")}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 rounded bg-blue-500 text-white"
+              className="px-6 py-2 rounded-xl bg-[#0eabeb] text-white"
             >
               Save
             </button>

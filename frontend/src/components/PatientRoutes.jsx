@@ -32,7 +32,7 @@ const PatientRoutes = ( {onLogout} ) => {
       {/* </BreadcrumbProvider> */}
       <div className="flex-1 flex flex-col">
         <Header />
-        <div className="flex-1 overflow-y-auto bg-gray-100">
+        <div className="flex-1 overflow-y-auto bg-gray-100 p-6">
           <Routes>
             {/* <Route path="/" element={<ProfileScreen />} /> */}
             <Route path="/" element={<PatientDashboard />} />
@@ -41,7 +41,7 @@ const PatientRoutes = ( {onLogout} ) => {
             <Route path="/test-report" element={<TestReportPage />} />
             <Route path="/medical-history" element={<MedicalHistoryPage />} />
             <Route path="/appointment-booking" element={<AppointmentBookingPage />} />
-            <Route path="/rescheduleA-appointment" element={<RescheduleAppointment />} />
+            <Route path="/reschedule-appointment" element={<RescheduleAppointment />} />
             <Route path="/prescription-access" element={<PrescriptionAccessPage />} />
             {/* <Route path="/tele-access" element={<TeleAccess />} /> */}
             <Route path="/tele-access" element={<TeleConsultation/>} />

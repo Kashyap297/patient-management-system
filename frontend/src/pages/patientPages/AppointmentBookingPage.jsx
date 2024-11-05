@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Import jwtDecode to extract patient ID
 import { Button } from "@mui/material";
 import { CalendarToday } from "@mui/icons-material";
-import CustomDateFilter from '../../components/modals/CustomDateFilter';
+import CustomDateFilter from "../../components/modals/CustomDateFilter";
 import moment from "moment";
 
 // Set the app element for the modal to prevent accessibility issues
@@ -22,7 +22,10 @@ const AppointmentBookingPage = () => {
   const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filterDates, setFilterDates] = useState({ fromDate: null, toDate: null });
+  const [filterDates, setFilterDates] = useState({
+    fromDate: null,
+    toDate: null,
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
 
@@ -40,9 +43,9 @@ const AppointmentBookingPage = () => {
       const { id } = jwtDecode(token);
       try {
         const response = await api.get("/appointments");
-        console.log("API Response:", response.data);
-
-        const userAppointments = response.data.data.filter(appointment => appointment.patientId === id);
+        const userAppointments = response.data.data.filter(
+          (appointment) => appointment.patientId === id
+        );
         setAppointments(userAppointments || []);
       } catch (error) {
         console.error("Error fetching appointments:", error);
@@ -55,13 +58,16 @@ const AppointmentBookingPage = () => {
   // Function to filter appointments based on the selected tab and date range
   const filteredAppointments = appointments.filter((appointment) => {
     const appointmentDate = moment(appointment.appointmentDate);
+    const withinDateRange =
+      filterDates.fromDate && filterDates.toDate
+        ? appointmentDate.isBetween(
+            moment(filterDates.fromDate).startOf("day"),
+            moment(filterDates.toDate).endOf("day"),
+            null,
+            "[]"
+          )
+        : true;
 
-    // Apply date filter if both fromDate and toDate are set
-    const withinDateRange = filterDates.fromDate && filterDates.toDate
-      ? appointmentDate.isBetween(moment(filterDates.fromDate).startOf("day"), moment(filterDates.toDate).endOf("day"), null, "[]")
-      : true;
-
-    // Apply tab filter
     if (activeTab === "Scheduled") {
       return appointment.status !== "Cancelled" && withinDateRange;
     } else if (activeTab === "Previous") {
@@ -95,8 +101,6 @@ const AppointmentBookingPage = () => {
       const response = await api.patch(
         `/appointments/cancel/${appointmentToCancel.id}`
       );
-      console.log("Cancel Response:", response.data);
-
       setAppointments((prevAppointments) =>
         prevAppointments.map((appointment) =>
           appointment.id === appointmentToCancel.id
@@ -123,16 +127,24 @@ const AppointmentBookingPage = () => {
     setOpenCustomDateModal(false);
   };
 
+  const dateRangeLabel =
+    filterDates.fromDate && filterDates.toDate
+      ? `${moment(filterDates.fromDate).format("D MMM, YYYY")} - ${moment(
+          filterDates.toDate
+        ).format("D MMM, YYYY")}`
+      : "Any Date";
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg m-6 h-full">
+    <div className="bg-white p-6 rounded-lg shadow-lg h-100">
       <div className="flex space-x-4 border-b mb-4">
         {["Scheduled", "Previous", "Canceled", "Pending"].map((tab) => (
           <button
             key={tab}
-            className={`py-2 px-4 focus:outline-none font-medium ${activeTab === tab
-              ? "border-b-4 border-customBlue text-customBlue"
-              : "text-gray-500"
-              }`}
+            className={`py-2 px-4 focus:outline-none font-medium ${
+              activeTab === tab
+                ? "border-b-4 border-customBlue text-customBlue"
+                : "text-gray-500"
+            }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab} Appointment
@@ -143,77 +155,102 @@ const AppointmentBookingPage = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">My Appointment</h2>
         <div className="flex items-center space-x-4">
-          <Button
-            variant="outlined"
-            color="secondary"
-            startIcon={<CalendarToday />}
-            className="!text-sm"
-            onClick={() => setOpenCustomDateModal(true)}
+          <div
+            className="flex items-center border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+            onClick={() => setOpenCustomDateModal(true)} // Ensure the modal opens on click
           >
-            Any Date
-          </Button>
+            <CalendarToday className="text-gray-600 mr-2" />
+            <span className="text-gray-800">{dateRangeLabel}</span>
+            {filterDates.fromDate && filterDates.toDate && (
+              <button
+                className="ml-2 text-red-500"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent closing modal on reset click
+                  handleResetDateFilter();
+                }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
           <Link
             to={"/patient/book-appointment"}
-            className="flex items-center space-x-2 bg-customBlue text-white px-4 py-2 rounded"
+            className="flex items-center space-x-2 bg-customBlue text-white px-4 py-2 rounded-xl"
           >
             <FaCalendarAlt />
             <span>Book Appointment</span>
           </Link>
         </div>
       </div>
-
-      <div className="grid grid-cols-4 gap-4 overflow-y-auto custom-scroll">
+      <div className="grid grid-cols-4 gap-4 custom-scroll overflow-y-auto h-full">
         {filteredAppointments.map((appointment) => (
           <div
             key={appointment.id}
-            className="border rounded-lg shadow-md bg-white transition"
+            className="bg-white  rounded-xl w-full relative hover:shadow-xl transition-shadow duration-300 ease-in-out border"
           >
-            <div className="flex justify-between items-center p-2 bg-gray-50 rounded-t-lg">
-              <h4 className="font-semibold">
+            {/* Card Header */}
+            <div className="flex justify-between items-center px-4 py-2 bg-[#f6f8fb] rounded-t-xl">
+              <h4 className="font-bold text-lg text-gray-800">
                 {appointment.doctorName || "Doctor Name"}
               </h4>
               <div
-                className="text-customBlue p-2 rounded-lg bg-white shadow cursor-pointer"
+                className="text-gray-400 cursor-pointer hover:text-[#0EABEB] transition"
                 onClick={() => handleViewDetails(appointment)}
               >
-                <FaEye />
+                <FaEye className="text-lg" />
               </div>
             </div>
-            <div className="p-4 text-sm text-gray-700 space-y-1">
-              <p className="flex justify-between items-center text-yellow-500 pb-2">
-                <span className="font-semibold text-gray-500">Appointment Type</span>
-                {appointment.appointmentType}
-              </p>
-              <p className="flex justify-between items-center pb-2">
-                <span className="font-semibold text-gray-500">Hospital Name</span>
-                {appointment.hospitalName}
-              </p>
-              <p className="flex justify-between items-center pb-2">
-                <span className="font-semibold text-gray-500">Appointment Date</span>
-                {new Date(appointment.appointmentDate).toLocaleDateString()}
-              </p>
-              <p className="flex justify-between items-center pb-2">
-                <span className="font-semibold text-gray-500">Appointment Time</span>
-                {appointment.appointmentTime}
-              </p>
-              <p className="flex justify-between items-center pb-2">
-                <span className="font-semibold text-gray-500">Patient Issue</span>
-                {appointment.diseaseName || "Not specified"}
-              </p>
+
+            {/* Card Body */}
+            <div className="text-sm text-[#818194] space-y-2 px-4 py-2">
+              <div className="flex justify-between">
+                <span className=" text-gray-500">Appointment Type</span>
+                <span className="font-semibold text-[#FFC313]">
+                  {appointment.appointmentType}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className=" text-gray-500">Hospital Name</span>
+                <span className="font-semibold text-[#4F4F4F]">
+                  {appointment.hospitalName}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className=" text-gray-500">Appointment Date</span>
+                <span className="font-semibold text-[#4F4F4F]">
+                  {new Date(appointment.appointmentDate).toLocaleDateString()}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className=" text-gray-500">Appointment Time</span>
+                <span className="font-semibold text-[#4F4F4F]">
+                  {appointment.appointmentTime}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className=" text-gray-500">Patient Issue</span>
+                <span className="font-semibold text-[#4F4F4F]">
+                  {appointment.diseaseName || "Not specified"}
+                </span>
+              </div>
             </div>
 
-            <div className="flex justify-between space-x-2 p-4 bg-white rounded-b-lg">
+            {/* Action Buttons */}
+            <div className="px-4 py-3 flex justify-between space-x-2 bg-white rounded-b-xl">
               {activeTab === "Scheduled" || activeTab === "Pending" ? (
                 <>
                   <button
-                    className="flex items-center justify-center space-x-1 border-2 px-3 py-2 rounded-md text-gray-600 w-1/2"
+                    className="flex items-center justify-center space-x-1 border-2 px-3 py-2 rounded-xl text-gray-600 w-1/2 hover:bg-gray-100 transition"
                     onClick={() => openCancelModal(appointment)}
                     disabled={loading}
                   >
                     <FaTrashAlt />
                     <span>{loading ? "Canceling..." : "Cancel"}</span>
                   </button>
-                  <Link to='/patient/rescheduleA-appointment' className="flex items-center justify-center space-x-1 bg-customBlue px-3 py-2 rounded-md text-white w-1/2">
+                  <Link
+                    to="/patient/reschedule-appointment"
+                    className="flex items-center justify-center space-x-1 bg-[#0EABEB] px-3 py-2 rounded-xl text-white w-1/2 hover:bg-[#0c97cc] transition"
+                  >
                     <FaRedoAlt />
                     <span>Reschedule</span>
                   </Link>
@@ -223,7 +260,6 @@ const AppointmentBookingPage = () => {
           </div>
         ))}
       </div>
-
       {selectedDoctor && (
         <DoctorDetailsSidebar
           doctor={selectedDoctor}
@@ -264,6 +300,7 @@ const AppointmentBookingPage = () => {
           </div>
         </div>
       </Modal>
+
       <CustomDateFilter
         open={openCustomDateModal}
         onClose={() => setOpenCustomDateModal(false)}
