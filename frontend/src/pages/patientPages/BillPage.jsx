@@ -54,7 +54,7 @@ const BillPage = () => {
   );
 
   return (
-    <div className="m-6 p-6 bg-white rounded-lg h-full">
+    <div className="p-6 bg-white rounded-xl h-full">
       <div className="mb-4 flex space-x-6">
         <button
           onClick={() => setActiveTab("unpaid")}
@@ -72,7 +72,7 @@ const BillPage = () => {
 
       <div className="grid grid-cols-4 gap-4">
         {filteredBills.map((bill) => (
-          <div key={bill._id} className="p-4 border rounded-md bg-white shadow-sm flex flex-col">
+          <div key={bill._id} className="p-4 border rounded-xl bg-white shadow-sm flex flex-col">
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
               {bill.doctor ? (
                 <p className="font-semibold">
@@ -103,7 +103,7 @@ const BillPage = () => {
             <div className="flex justify-end mt-2">
               {bill.status === "Unpaid" && (
                 <button
-                  className="bg-customBlue text-white py-2 px-4 rounded-lg font-semibold w-full"
+                  className="bg-customBlue text-white py-2 px-4 rounded-xl font-semibold w-full"
                   onClick={() => handlePayNow(bill)}
                 >
                   Pay Now

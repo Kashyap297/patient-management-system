@@ -41,7 +41,7 @@ const PrescriptionPage = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg m-6 h-full">
+    <div className="bg-white p-6 rounded-lg shadow-lg h-full">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Prescriptions</h2>
         {/* Search Bar */}

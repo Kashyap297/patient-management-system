@@ -1,10 +1,9 @@
 import { Button } from '@mui/material';
 import CallIcon from '@mui/icons-material/Call';
 import EventIcon from '@mui/icons-material/Event';
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaTrashAlt, FaEye } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-// PatientCard component
 const TeleConsultationCardPatient = ({ patient, activeTab, openCancelModal }) => {
   const navigate = useNavigate();
 
@@ -14,55 +13,64 @@ const TeleConsultationCardPatient = ({ patient, activeTab, openCancelModal }) =>
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md transition transform hover:-translate-y-1 hover:shadow-lg border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-800 bg-slate-100 px-4 py-2 rounded-t-lg border-b border-gray-300">
-        {patient.patientName}
-      </h3>
-      <div className="p-4">
-        <div className="py-4 space-y-2">
-          <div className="flex justify-between text-gray-700">
-            <span className="font-medium">Appointment Type:</span>
-            <span className="text-yellow-600 font-semibold">{patient.appointmentType}</span>
+    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out border border-gray-200 w-full relative">
+      {/* Card Header */}
+      <div className="flex justify-between items-center px-4 py-2 bg-[#f6f8fb] rounded-t-xl border-b border-gray-300">
+        <h3 className="text-lg font-bold text-gray-800">
+          Dr. {patient.patientName || "Doctor Name"}
+        </h3>
+        {/* <div className="flex space-x-2">
+          <div className="text-gray-400 cursor-pointer hover:text-[#0EABEB] transition">
+            <EventIcon className="text-lg" />
           </div>
-          <div className="flex justify-between text-gray-700">
-            <span className="font-medium">Hospital Name:</span>
-            <span className="font-semibold">{patient.hospitalName}</span>
+          <div className="text-gray-400 cursor-pointer hover:text-[#0EABEB] transition">
+            <FaEye className="text-lg" />
           </div>
-          <div className="flex justify-between text-gray-700">
-            <span className="font-medium">Appointment Date:</span>
-            <span className="font-semibold">
-              {new Date(patient.appointmentDate).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="flex justify-between text-gray-700">
-            <span className="font-medium">Appointment Time:</span>
-            <span className="font-semibold">{patient.appointmentTime}</span>
-          </div>
-          <div className="flex justify-between text-gray-700">
-            <span className="font-medium">Patient Issue:</span>
-            <span className="font-semibold">{patient.patientIssue}</span>
-          </div>
-        </div>
+        </div> */}
+      </div>
 
-        {activeTab === 0 && (
-          <div className="flex justify-between mt-4">
-            <Button
-              variant="outlined"
-              className="border border-gray-400 text-gray-700 rounded-md hover:bg-gray-100 transition duration-200 flex items-center space-x-1 px-3 py-1 font-semibold"
-              startIcon={<FaTrashAlt />}
-              onClick={() => openCancelModal(patient)}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-200 flex items-center space-x-1 px-3 py-1 font-semibold"
-              startIcon={<CallIcon />}
-              onClick={handleJoinCall}
-            >
-              Join Call
-            </Button>
-          </div>
-        )}
+      {/* Card Body */}
+      <div className="text-sm text-[#818194] space-y-2 px-4 py-4">
+        <div className="flex justify-between">
+          <span className="text-gray-500 font-medium">Appointment Type</span>
+          <span className="font-semibold text-[#FFC313]">{patient.appointmentType || "Online"}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-500 font-medium">Hospital Name</span>
+          <span className="font-semibold text-[#4F4F4F]">{patient.hospitalName || "Not specified"}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-500 font-medium">Appointment Date</span>
+          <span className="font-semibold text-[#4F4F4F]">
+            {new Date(patient.appointmentDate).toLocaleDateString()}
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-500 font-medium">Appointment Time</span>
+          <span className="font-semibold text-[#4F4F4F]">{patient.appointmentTime}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-500 font-medium">Patient Issue</span>
+          <span className="font-semibold text-[#4F4F4F]">{patient.patientIssue || "Feeling Tired"}</span>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="px-4 py-3 flex justify-between space-x-2 bg-white rounded-b-xl">
+        <button
+          className="flex items-center justify-center space-x-1 border-2 px-3 py-2 rounded-xl text-gray-600 w-1/2 hover:bg-gray-100 transition"
+          onClick={() => openCancelModal(patient)}
+        >
+          <EventIcon />
+          <span>Cancel</span>
+        </button>
+        <button
+          className="flex items-center justify-center space-x-1 bg-green-500 px-3 py-2 rounded-xl text-white w-1/2 hover:bg-green-600 transition"
+          onClick={handleJoinCall}
+        >
+          <CallIcon />
+          <span>Join Call</span>
+        </button>
       </div>
     </div>
   );
