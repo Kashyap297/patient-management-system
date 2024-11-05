@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode"; // Correct import
 import userImage from "../../assets/images/user.png";
 import chatIcon from "../../assets/images/chat-icon.png";
 import io from "socket.io-client";
+import NoChatWithSomeone from "../../assets/images/NoChatWithSomeone.png";
 
 // Initialize socket connection
 const socket = io("http://localhost:8000");
@@ -161,11 +162,10 @@ const ChatPage = () => {
   const filteredUserList = userList.filter(user =>
     `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   return (
-    <div className="flex h-full p-2">
+    <div className="flex h-full p-2 bg-[#ffffff] rounded-xl">
       {/* Sidebar with Users */}
-      <div className="w-1/5 bg-white shadow-sm p-4 rounded-s-xl">
+      <div className="w-1/5 bg-white p-4 rounded-s-xl">
         <div className="mb-4">
           <h2 className="text-xl font-semibold">Chat</h2>
           <div className="relative mt-2">
@@ -179,7 +179,7 @@ const ChatPage = () => {
             <FaSearch className="absolute top-2 right-4 text-gray-500" />
           </div>
         </div>
-        <div className="space-y-2 h-full">
+        <div className="space-y-2 h-[640px] custom-scroll overflow-y-auto">
           {filteredUserList.length > 0 ? (
             filteredUserList.map((user) => (
               <div
@@ -202,7 +202,7 @@ const ChatPage = () => {
             <div className="flex flex-col items-center justify-center text-gray-500 py-4 h-full">
               <img src={chatIcon} alt="icon" className="h-24 w-24" />
               <p className="py-4">No users found</p>
-            </div>
+            </div>  
           )}
         </div>
       </div>
@@ -213,7 +213,7 @@ const ChatPage = () => {
           <>
             {/* Chat Header */}
             <div className="flex items-center p-4 bg-white">
-              <img src={selectedChatUser.profileImage || userImage} alt="avatar" className="w-12 h-12 rounded-full mr-4" />
+              <img src={`http://localhost:8000/${selectedChatUser.profileImage || userImage}`} alt="avatar" className="w-12 h-12 rounded-full mr-4" />
               <div>
                 <h3 className="font-semibold">{selectedChatUser.firstName} {selectedChatUser.lastName}</h3>
                 <p className="text-gray-500">Last seen at 9:00 PM</p>
@@ -221,7 +221,7 @@ const ChatPage = () => {
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 space-y-2 overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner">
+            <div className="flex-1 space-y-2 custom-scroll overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner">
               {Array.isArray(messages) && messages.map((message, index) => (
                 <div key={index} className={`flex ${message.sender._id === loggedInUserId ? "justify-end" : "justify-start"}`}>
                   <div className={`p-2 rounded-lg ${message.sender._id === loggedInUserId ? "bg-blue-100 text-right" : "bg-gray-200 text-left"}`}>
@@ -252,8 +252,7 @@ const ChatPage = () => {
           </>
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-gray-500">
-            <img src={chatIcon} alt="No chat" />
-            <p className="text-xl text-gray-400 py-6">No chat with someone</p>
+            <img src={NoChatWithSomeone} alt="No chat" />
           </div>
         )}
       </div>
