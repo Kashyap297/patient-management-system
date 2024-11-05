@@ -17,7 +17,7 @@ const DoctorDetailsDrawer = ({ open, onClose, doctor }) => {
           <img
             src={
               doctor?.profileImage
-                ? `http://localhost:8000/${doctor.profileImage}`
+                ? `https://patient-management-system-vyv0.onrender.com/${doctor.profileImage}`
                 : "https://via.placeholder.com/100"
             }
             alt={doctor?.firstName}
@@ -114,7 +114,7 @@ const DoctorDetailsDrawer = ({ open, onClose, doctor }) => {
             <img
               src={
                 doctor?.signatureImage
-                  ? `http://localhost:8000/${doctor.signatureImage}`
+                  ? `https://patient-management-system-vyv0.onrender.com/${doctor.signatureImage}`
                   : "https://via.placeholder.com/100x50"
               }
               alt="Doctor Signature"

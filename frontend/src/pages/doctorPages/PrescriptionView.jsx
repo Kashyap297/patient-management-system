@@ -99,7 +99,7 @@ const PrescriptionView = () => {
             <img
               src={
                 patient.profileImage
-                  ? `http://localhost:8000/${patient.profileImage}`
+                  ? `https://patient-management-system-vyv0.onrender.com/${patient.profileImage}`
                   : patientImage
               }
               alt="Patient"
@@ -202,7 +202,7 @@ const PrescriptionView = () => {
                     <div className="px-4 py-4">
                       <div className="border rounded-lg  overflow-hidden">
                         <img
-                          src={`http://localhost:8000/${file.url}`}
+                          src={`https://patient-management-system-vyv0.onrender.com/${file.url}`}
                           alt="Document"
                           className="w-full h-full object-cover"
                         />

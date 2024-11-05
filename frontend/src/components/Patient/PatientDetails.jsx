@@ -54,7 +54,7 @@ const PatientDetails = () => {
         {/* Patient Image */}
         <div className="flex-shrink-0">
           <img
-            src={`http://localhost:8000/${patient.profileImage}`}
+            src={`https://patient-management-system-vyv0.onrender.com/${patient.profileImage}`}
             alt="Patient"
             className="w-32 h-32 rounded-full object-cover"
           />

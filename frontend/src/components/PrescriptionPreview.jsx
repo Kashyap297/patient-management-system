@@ -159,7 +159,7 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId }) => {
       <div className="flex justify-between items-center mt-8 p-4 bg-white sticky bottom-0">
         <div className="text-center">
           <img
-            src={doctorDetails?.signatureImage ? `http://localhost:8000/${doctorDetails.signatureImage}` : signature}
+            src={doctorDetails?.signatureImage ? `https://patient-management-system-vyv0.onrender.com/${doctorDetails.signatureImage}` : signature}
             alt="Doctor's Signature"
             className="w-24 mx-auto"
           />

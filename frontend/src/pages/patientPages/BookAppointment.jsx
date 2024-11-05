@@ -467,7 +467,7 @@ const BookAppointment = () => {
             <div className="bg-white shadow-lg rounded-xl p-6">
               <div className="flex items-center mb-4">
                 <img
-                  src={`http://localhost:8000/${
+                  src={`https://patient-management-system-vyv0.onrender.com/${
                     doctorDetails.profileImage || noappointmentrecord
                   }`}
                   alt="Doctor"

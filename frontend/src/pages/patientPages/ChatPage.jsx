@@ -7,7 +7,7 @@ import io from "socket.io-client";
 import NoChatWithSomeone from "../../assets/images/NoChatWithSomeone.png";
 
 // Initialize socket connection
-const socket = io("http://localhost:8000");
+const socket = io("https://patient-management-system-vyv0.onrender.com");
 
 const ChatPage = () => {
   const [selectedChatUser, setSelectedChatUser] = useState(null);
@@ -51,7 +51,7 @@ const ChatPage = () => {
     const fetchUsers = async () => {
       const endpoint = role === "doctor" ? "/api/users/patients" : "/api/users/doctors";
       try {
-        const response = await fetch(`http://localhost:8000${endpoint}`, {
+        const response = await fetch(`https://patient-management-system-vyv0.onrender.com${endpoint}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -69,7 +69,7 @@ const ChatPage = () => {
     if (selectedChat) {
       const fetchMessages = async () => {
         try {
-          const response = await fetch(`http://localhost:8000/api/chats/${selectedChat}/messages`, {
+          const response = await fetch(`https://patient-management-system-vyv0.onrender.com/api/chats/${selectedChat}/messages`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await response.json();
@@ -103,7 +103,7 @@ const ChatPage = () => {
   // Start a chat with the selected user
   const startChat = async (user) => {
     try {
-      const response = await fetch("http://localhost:8000/api/chats/start", {
+      const response = await fetch("https://patient-management-system-vyv0.onrender.com/api/chats/start", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -132,7 +132,7 @@ const ChatPage = () => {
     if (!newMessage.trim() || !selectedChat) return;
 
     try {
-      const sendMessageResponse = await fetch(`http://localhost:8000/api/chats/${selectedChat}/message`, {
+      const sendMessageResponse = await fetch(`https://patient-management-system-vyv0.onrender.com/api/chats/${selectedChat}/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +188,7 @@ const ChatPage = () => {
                 className={`flex items-center p-2 cursor-pointer ${selectedChatUser && selectedChatUser._id === user._id ? "bg-blue-100" : ""}`}
               >
                 <img
-                  src={`http://localhost:8000/${user.profileImage || userImage}`}
+                  src={`https://patient-management-system-vyv0.onrender.com/${user.profileImage || userImage}`}
                   alt="avatar"
                   className="w-12 h-12 rounded-full mr-4"
                 />
@@ -213,7 +213,7 @@ const ChatPage = () => {
           <>
             {/* Chat Header */}
             <div className="flex items-center p-4 bg-white">
-              <img src={`http://localhost:8000/${selectedChatUser.profileImage || userImage}`} alt="avatar" className="w-12 h-12 rounded-full mr-4" />
+              <img src={`https://patient-management-system-vyv0.onrender.com/${selectedChatUser.profileImage || userImage}`} alt="avatar" className="w-12 h-12 rounded-full mr-4" />
               <div>
                 <h3 className="font-semibold">{selectedChatUser.firstName} {selectedChatUser.lastName}</h3>
                 <p className="text-gray-500">Last seen at 9:00 PM</p>

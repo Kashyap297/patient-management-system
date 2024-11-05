@@ -131,7 +131,7 @@ const AdminEditProfile = ({ onCancel }) => {
           <img
             src={
               formData.profileImage && !(formData.profileImage instanceof File)
-                ? `http://localhost:8000/${formData.profileImage}`
+                ? `https://patient-management-system-vyv0.onrender.com/${formData.profileImage}`
                 : userImage
             }
             alt="Profile"
