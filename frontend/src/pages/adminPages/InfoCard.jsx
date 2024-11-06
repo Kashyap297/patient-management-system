@@ -1,4 +1,7 @@
-const InfoCard = ({ icon, label, value, iconBgColor, borderColor }) => {
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
+const InfoCard = ({ icon, label, value, iconBgColor, borderColor, loading }) => {
   return (
     <div className={`flex items-center bg-white shadow-md p-4 rounded-xl border-l-4 ${borderColor} w-full min-w-[220px]`}>
       <div className={`p-2 rounded-full ${iconBgColor} flex items-center justify-center`}>
@@ -6,7 +9,9 @@ const InfoCard = ({ icon, label, value, iconBgColor, borderColor }) => {
       </div>
       <div className="ml-4 flex w-full justify-between items-center">
         <p className="text-sm text-[#1A202C] font-medium">{label}</p>
-        <p className="text-2xl font-semibold text-[#2D3748]">{value}</p>
+        <p className="text-2xl font-semibold text-[#2D3748]">
+          {loading ? <Skeleton width={50} /> : value}
+        </p>
       </div>
     </div>
   );

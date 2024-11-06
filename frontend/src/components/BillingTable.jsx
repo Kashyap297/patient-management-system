@@ -52,9 +52,9 @@ const BillingTable = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Billing & Payments</h2>
         <Link to="/admin/select-template">
-          <Button variant="contained" color="primary" className="!text-sm">
+          <button variant="contained" color="primary" className="bg-[#0eabeb] px-3 py-2 rounded-xl text-white">
             + Create Bills
-          </Button>
+          </button>
         </Link>
       </div>
 
@@ -67,7 +67,7 @@ const BillingTable = () => {
       </Link>
 
       {loading ? (
-        <div className="overflow-auto max-h-96">
+        <div className="overflow-y-auto h-96 custom-scroll">
           <table className="w-full text-left table-auto">
             <thead className="sticky top-0 bg-gray-100 z-10">
               <tr>
@@ -92,7 +92,7 @@ const BillingTable = () => {
           </table>
         </div>
       ) : bills.length > 0 ? (
-        <div className="overflow-auto max-h-96">
+        <div className="overflow-auto max-h-96 custom-scroll">
           <table className="w-full text-left table-auto">
             <thead className="sticky top-0 bg-gray-100 z-10">
               <tr>

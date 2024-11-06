@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FaEye, FaSearch } from "react-icons/fa";
+import Skeleton from "react-loading-skeleton";
 import api from "../api/api";
 import PatientDetailsModal from "../components/modals/PatientDetailModal";
 import noRecordImage from "../assets/images/NoPatient.png";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const PatientManagement = () => {
   const [activeTab, setActiveTab] = useState("Today Appointment");
@@ -11,6 +13,7 @@ const PatientManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -22,8 +25,10 @@ const PatientManagement = () => {
         });
         setAppointments(response.data.data);
         filterAppointments(response.data.data, activeTab);
+        setLoading(false); // Set loading to false after fetching data
       } catch (error) {
         console.error("Error fetching appointments:", error);
+        setLoading(false); // Set loading to false in case of error
       }
     };
     fetchAppointments();
@@ -110,18 +115,11 @@ const PatientManagement = () => {
       <div className="bg-white p-4 rounded-lg h-full shadow-md">
         {/* Tabs */}
         <div className="flex space-x-4 mb-4 border-b">
-          {[
-            "Today Appointment",
-            "Upcoming Appointment",
-            "Previous Appointment",
-            "Cancel Appointment",
-          ].map((tab) => (
+          {["Today Appointment", "Upcoming Appointment", "Previous Appointment", "Cancel Appointment"].map((tab) => (
             <button
               key={tab}
-              className={`py-2 px-4  ${
-                activeTab === tab
-                  ? "border-b-2 border-[#0eabeb] text-[#0eabeb]"
-                  : "text-[#667080]"
+              className={`py-2 px-4 ${
+                activeTab === tab ? "border-b-2 border-[#0eabeb] text-[#0eabeb]" : "text-[#667080]"
               }`}
               onClick={() => handleTabChange(tab)}
             >
@@ -150,38 +148,35 @@ const PatientManagement = () => {
           <table className="min-w-full bg-white table-auto rounded-t-2xl bg-[#F6F8FB]">
             <thead className="sticky top-0 rounded-t-2xl bg-[#F6F8FB]">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
-                  Patient Name
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
-                  Patient Issue
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
-                  Doctor Name
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
-                  Disease Name
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
-                  Appointment Time
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
-                  Appointment Type
-                </th>
-                <th className="px-6 py-3 text-center text-sm font-semibold">
-                  Action
-                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">Patient Name</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">Patient Issue</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">Doctor Name</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">Disease Name</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">Appointment Time</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">Appointment Type</th>
+                <th className="px-6 py-3 text-center text-sm font-semibold">Action</th>
               </tr>
             </thead>
             <tbody>
-              {filteredAndSearchedAppointments.length > 0 ? (
+              {loading ? (
+                // Display skeleton loaders when data is loading
+                [...Array(5)].map((_, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4"><Skeleton width="100%" height={20} /></td>
+                    <td className="px-6 py-4"><Skeleton width="100%" height={20} /></td>
+                    <td className="px-6 py-4"><Skeleton width="100%" height={20} /></td>
+                    <td className="px-6 py-4"><Skeleton width="100%" height={20} /></td>
+                    <td className="px-6 py-4"><Skeleton width="100%" height={20} /></td>
+                    <td className="px-6 py-4"><Skeleton width="100%" height={20} /></td>
+                    <td className="px-6 py-4 text-center"><Skeleton width={30} height={20} /></td>
+                  </tr>
+                ))
+              ) : filteredAndSearchedAppointments.length > 0 ? (
                 filteredAndSearchedAppointments.map((appointment) => (
                   <tr key={appointment.id} className="border-b">
                     <td className="px-6 py-4">{appointment.patientName}</td>
                     <td className="px-6 py-4">{appointment.patientIssue}</td>
-                    <td className="px-6 py-4">
-                      {appointment.doctorName || "N/A"}
-                    </td>
+                    <td className="px-6 py-4">{appointment.doctorName || "N/A"}</td>
                     <td className="px-6 py-4">{appointment.diseaseName}</td>
                     <td className="px-6 py-4 text-blue-600">
                       <span className={"px-4 py-2 rounded-full bg-[#f6f8fb]"}>
@@ -211,11 +206,7 @@ const PatientManagement = () => {
                 <tr>
                   <td colSpan="7" className="text-center py-16">
                     <div className="flex flex-col items-center">
-                      <img
-                        src={noRecordImage}
-                        alt="No Patient Found"
-                        className="w-96 mb-4"
-                      />
+                      <img src={noRecordImage} alt="No Patient Found" className="w-96 mb-4" />
                       <p className="text-gray-500">No records found</p>
                     </div>
                   </td>

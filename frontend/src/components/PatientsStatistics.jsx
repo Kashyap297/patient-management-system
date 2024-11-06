@@ -120,7 +120,7 @@ const PatientsStatistics = () => {
             <button
               key={time}
               className={`px-4 py-2 text-sm font-medium rounded ${
-                timeframe === time ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                timeframe === time ? 'bg-[#0eabeb] text-white' : 'bg-gray-200 text-gray-700'
               }`}
               onClick={() => setTimeframe(time)}
             >

@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { FaEye, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
 import api from "../../api/api";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const InsuranceClaims = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [insuranceClaimsData, setInsuranceClaimsData] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const fetchInsuranceClaimsData = async () => {
@@ -21,8 +24,10 @@ const InsuranceClaims = () => {
           (entry) => entry.paymentType === "Insurance"
         );
         setInsuranceClaimsData(filteredData);
+        setLoading(false); // Set loading to false after data is fetched
       } catch (error) {
         console.error("Error fetching insurance claims:", error);
+        setLoading(false); // Set loading to false in case of an error
       }
     };
     fetchInsuranceClaimsData();
@@ -57,7 +62,7 @@ const InsuranceClaims = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-[#030229]">Insurance Claims</h2>
-        <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2  max-w-lg">
+        <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2 max-w-lg">
           <FaSearch className="text-gray-500 mr-2" />
           <input
             type="text"
@@ -85,7 +90,21 @@ const InsuranceClaims = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.length > 0 ? (
+            {loading ? (
+              // Display skeleton rows when loading
+              [...Array(5)].map((_, index) => (
+                <tr key={index}>
+                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={120} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={120} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={120} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={150} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={100} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={30} height={20} /></td>
+                </tr>
+              ))
+            ) : filteredData.length > 0 ? (
               filteredData.map((claim, index) => (
                 <tr key={index} className="border-b">
                   <td className="px-6 py-4 text-[#4F4F4F] font-semibold">
@@ -104,7 +123,9 @@ const InsuranceClaims = () => {
                     {claim.insuranceDetails.insuranceCompany}
                   </td>
                   <td className="px-6 py-4 text-[#4F4F4F]">
-                    <span className="text-blue-500">{claim.insuranceDetails.insurancePlan}</span>
+                    <span className="text-blue-500">
+                      {claim.insuranceDetails.insurancePlan}
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-[#4F4F4F]">
                     {new Date(claim.billDate).toLocaleDateString()}

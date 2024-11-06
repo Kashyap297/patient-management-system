@@ -296,7 +296,7 @@ const CreateBill = () => {
                   selectedFile ? URL.createObjectURL(selectedFile) : selectImage
                 }
                 alt="Hospital Logo"
-                className="w-24 h-24 object-cover rounded-full"
+                className="w-full h-28 object-cover "
               />
               <span className="mt-2 text-gray-600">
                 {selectedFile ? selectedFile.name : "Upload Logo"}

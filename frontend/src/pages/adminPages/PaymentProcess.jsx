@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import { FaEye, FaDollarSign, FaEdit, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
 import api from "../../api/api";
 import CashPaymentModal from "../../components/modals/CashPaymentModal";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const PaymentProcess = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [billingData, setBillingData] = useState([]);
   const [selectedBill, setSelectedBill] = useState(null);
   const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +26,7 @@ const PaymentProcess = () => {
       } catch (error) {
         console.error("Error fetching billing data:", error);
       }
+      setLoading(false); // Set loading to false after data is fetched
     };
     fetchBillingData();
   }, []);
@@ -44,30 +48,22 @@ const PaymentProcess = () => {
 
   const handlePayment = async (amount) => {
     const totalAmount = selectedBill.totalAmount;
-    const newRemainingAmount =
-      totalAmount - (selectedBill.paidAmount || 0) - amount;
+    const newRemainingAmount = totalAmount - (selectedBill.paidAmount || 0) - amount;
 
+    // Updating the status based on the payment
     if (newRemainingAmount <= 0) {
-      // Full payment
       try {
         const response = await api.patch(`/invoice/${selectedBill._id}`, {
           status: "Paid",
-          paidAmount: totalAmount, // Fully paid, update the amount in the database
+          paidAmount: totalAmount,
           remainingAmount: 0,
           patient: selectedBill.patient._id,
           doctor: selectedBill.doctor._id,
         });
-        console.log("Invoice marked as paid:", response.data);
-
         setBillingData((prevData) =>
           prevData.map((bill) =>
             bill._id === selectedBill._id
-              ? {
-                  ...bill,
-                  status: "Paid",
-                  paidAmount: totalAmount,
-                  remainingAmount: 0,
-                }
+              ? { ...bill, status: "Paid", paidAmount: totalAmount, remainingAmount: 0 }
               : bill
           )
         );
@@ -83,17 +79,10 @@ const PaymentProcess = () => {
           patient: selectedBill.patient._id,
           doctor: selectedBill.doctor._id,
         });
-        console.log("Payment updated:", response.data);
-
         setBillingData((prevData) =>
           prevData.map((bill) =>
             bill._id === selectedBill._id
-              ? {
-                  ...bill,
-                  paidAmount: (selectedBill.paidAmount || 0) + amount,
-                  remainingAmount: newRemainingAmount,
-                  status: newRemainingAmount <= 0 ? "Paid" : "Unpaid",
-                }
+              ? { ...bill, paidAmount: (selectedBill.paidAmount || 0) + amount, remainingAmount: newRemainingAmount, status: newRemainingAmount <= 0 ? "Paid" : "Unpaid" }
               : bill
           )
         );
@@ -126,7 +115,7 @@ const PaymentProcess = () => {
           <input
             type="text"
             placeholder="Quick Search"
-            className="bg-[#f6f8fb] focus:outline-none w-full" 
+            className="bg-[#f6f8fb] focus:outline-none w-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -139,15 +128,9 @@ const PaymentProcess = () => {
           <thead className="bg-[#f6f8fb]">
             <tr>
               <th className="px-6 py-4 text-left font-semibold">Bill Number</th>
-              <th className="px-6 py-4 text-left font-semibold">
-                Patient Name
-              </th>
-              <th className="px-6 py-4 text-left font-semibold">
-                Disease Name
-              </th>
-              <th className="px-6 py-4 text-left font-semibold">
-                Phone Number
-              </th>
+              <th className="px-6 py-4 text-left font-semibold">Patient Name</th>
+              <th className="px-6 py-4 text-left font-semibold">Disease Name</th>
+              <th className="px-6 py-4 text-left font-semibold">Phone Number</th>
               <th className="px-6 py-4 text-left font-semibold">Status</th>
               <th className="px-6 py-4 text-left font-semibold">Date</th>
               <th className="px-6 py-4 text-left font-semibold">Time</th>
@@ -155,7 +138,20 @@ const PaymentProcess = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredBillingData.length > 0 ? (
+            {loading ? (
+              [...Array(5)].map((_, index) => (
+                <tr key={index}>
+                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={120} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={120} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={100} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={100} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
+                  <td className="px-6 py-4"><Skeleton width={60} height={20} /></td>
+                </tr>
+              ))
+            ) : filteredBillingData.length > 0 ? (
               filteredBillingData.map((bill, index) => (
                 <tr key={index} className="border-b">
                   <td className="px-6 py-4">
@@ -177,7 +173,6 @@ const PaymentProcess = () => {
                       {bill.status || "Unpaid"}
                     </span>
                   </td>
-
                   <td className="px-6 py-4 text-[#4F4F4F]">
                     {new Date(bill.billDate).toLocaleDateString()}
                   </td>
