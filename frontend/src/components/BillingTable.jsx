@@ -14,12 +14,13 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
+import Skeleton from "react-loading-skeleton";
 import { useNavigate } from "react-router-dom";
 
 const BillingTable = () => {
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -35,10 +36,12 @@ const BillingTable = () => {
 
     fetchBills();
   }, []);
+
   const statusStyles = {
     Paid: "bg-green-100 text-green-600",
     Unpaid: "bg-red-100 text-red-600",
   };
+
   const handleViewInvoice = (bill) => {
     navigate(`/admin/invoice/${bill._id}/${bill.patient?.firstName}`);
   };
@@ -58,12 +61,36 @@ const BillingTable = () => {
       {/* Pending Bills Info */}
       <Link to="/admin/pending-invoice">
         <div className="mb-4 text-sm text-red-500">
-          <strong>Pending Bills:</strong> {bills.filter(bill => bill.status === "Unpaid").length}
+          <strong>Pending Bills:</strong>{" "}
+          {loading ? <Skeleton width={50} /> : bills.filter(bill => bill.status === "Unpaid").length}
         </div>
       </Link>
 
       {loading ? (
-        <p className="text-center">Loading...</p>
+        <div className="overflow-auto max-h-96">
+          <table className="w-full text-left table-auto">
+            <thead className="sticky top-0 bg-gray-100 z-10">
+              <tr>
+                <th className="p-3 text-sm font-semibold">Bill No</th>
+                <th className="p-3 text-sm font-semibold">Patient Name</th>
+                <th className="p-3 text-sm font-semibold">Disease Name</th>
+                <th className="p-3 text-sm font-semibold">Status</th>
+                <th className="p-3 text-sm font-semibold">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array(5).fill().map((_, index) => (
+                <tr key={index} className="border-t">
+                  <td className="p-3"><Skeleton width={100} /></td>
+                  <td className="p-3"><Skeleton width={150} /></td>
+                  <td className="p-3"><Skeleton width={150} /></td>
+                  <td className="p-3"><Skeleton width={80} /></td>
+                  <td className="p-3"><Skeleton width={40} height={24} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : bills.length > 0 ? (
         <div className="overflow-auto max-h-96">
           <table className="w-full text-left table-auto">
@@ -82,7 +109,9 @@ const BillingTable = () => {
                   <td className="p-3 text-blue-600 cursor-pointer">
                     {bill.billNumber}
                   </td>
-                  <td className="p-3">{bill.patient.firstName} {bill.patient.lastName} </td>
+                  <td className="p-3">
+                    {bill.patient.firstName} {bill.patient.lastName}
+                  </td>
                   <td className="p-3">{bill.diseaseName}</td>
                   <td className="p-3">
                     <span className={`px-3 py-1 text-sm font-medium rounded-full ${statusStyles[bill.status]}`}>
@@ -90,10 +119,7 @@ const BillingTable = () => {
                     </span>
                   </td>
                   <td className="p-3">
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleViewInvoice(bill)}
-                    >
+                    <IconButton color="primary" onClick={() => handleViewInvoice(bill)}>
                       <Visibility />
                     </IconButton>
                   </td>

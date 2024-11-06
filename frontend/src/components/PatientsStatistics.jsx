@@ -1,7 +1,8 @@
-// src/components/PatientsStatistics.jsx
 import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import api from '../api/api';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,35 +11,34 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const PatientsStatistics = () => {
-  const [timeframe, setTimeframe] = useState('Year'); // Initialize with 'Year'
+  const [timeframe, setTimeframe] = useState('Year');
   const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPatientData = async () => {
+      setLoading(true); // Set loading to true when data fetching starts
       try {
-        const response = await api.get('/users/patients'); // Adjust endpoint as needed
+        const response = await api.get('/users/patients');
         const patients = response.data;
 
-        // Filter and count registrations based on the selected timeframe
         const currentDate = new Date();
         const dataCounts = Array(timeframe === 'Year' ? 12 : (timeframe === 'Month' ? 30 : 7)).fill(0);
 
-        patients.forEach(patient => {
+        patients.forEach((patient) => {
           const registrationDate = new Date(patient.createdAt);
 
           if (timeframe === 'Year' && registrationDate.getFullYear() === currentDate.getFullYear()) {
-            const month = registrationDate.getMonth(); // Get month index (0-11)
+            const month = registrationDate.getMonth();
             dataCounts[month]++;
-          } else if (timeframe === 'Month' &&
-            registrationDate.getMonth() === currentDate.getMonth() &&
-            registrationDate.getFullYear() === currentDate.getFullYear()) {
-            const day = registrationDate.getDate() - 1; // Get day (0-based)
+          } else if (timeframe === 'Month' && registrationDate.getMonth() === currentDate.getMonth() && registrationDate.getFullYear() === currentDate.getFullYear()) {
+            const day = registrationDate.getDate() - 1;
             dataCounts[day]++;
           } else if (timeframe === 'Week') {
             const daysDifference = Math.floor((currentDate - registrationDate) / (1000 * 60 * 60 * 24));
@@ -51,19 +51,20 @@ const PatientsStatistics = () => {
         setChartData(dataCounts);
       } catch (error) {
         console.error('Error fetching patient data:', error);
+      } finally {
+        setLoading(false); // Set loading to false when data fetching is done
       }
     };
 
     fetchPatientData();
   }, [timeframe]);
 
-  // Define the chart data based on chartData
   const data = {
     labels: timeframe === 'Year'
       ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       : timeframe === 'Month'
-        ? Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`)
-        : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      ? Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`)
+      : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
         label: 'Patients Registered',
@@ -74,16 +75,16 @@ const PatientsStatistics = () => {
         pointBackgroundColor: '#fff',
         pointBorderColor: '#A35DFF',
         tension: 0.4,
-        pointRadius: 4
-      }
-    ]
+        pointRadius: 4,
+      },
+    ],
   };
 
   const options = {
     responsive: true,
     plugins: {
       legend: {
-        display: false
+        display: false,
       },
       tooltip: {
         callbacks: {
@@ -96,18 +97,18 @@ const PatientsStatistics = () => {
               label += context.parsed.y.toLocaleString();
             }
             return label;
-          }
-        }
-      }
+          },
+        },
+      },
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 5
-        }
-      }
-    }
+          stepSize: 5,
+        },
+      },
+    },
   };
 
   return (
@@ -118,7 +119,9 @@ const PatientsStatistics = () => {
           {['Year', 'Month', 'Week'].map((time) => (
             <button
               key={time}
-              className={`px-4 py-2 text-sm font-medium rounded ${timeframe === time ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+              className={`px-4 py-2 text-sm font-medium rounded ${
+                timeframe === time ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+              }`}
               onClick={() => setTimeframe(time)}
             >
               {time}
@@ -126,7 +129,15 @@ const PatientsStatistics = () => {
           ))}
         </div>
       </div>
-      <Line data={data} options={options} />
+
+      {/* Skeleton Loader or Chart */}
+      {loading ? (
+        <div className="mt-6">
+          <Skeleton height={300} />
+        </div>
+      ) : (
+        <Line data={data} options={options} className="mt-6" />
+      )}
     </div>
   );
 };

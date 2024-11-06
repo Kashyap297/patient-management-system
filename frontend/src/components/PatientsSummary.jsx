@@ -8,6 +8,8 @@ import {
 } from 'chart.js';
 import axios from '../api/api';
 import dayjs from 'dayjs';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -78,7 +80,7 @@ const PatientsSummary = () => {
       <div className="flex">
         <div className="relative w-1/2 flex items-center justify-center">
           {loading ? (
-            <p>Loading...</p>
+            <Skeleton circle={true} height={150} width={150} />
           ) : (
             <>
               <Doughnut data={data} options={options} />
@@ -93,17 +95,29 @@ const PatientsSummary = () => {
           <ul>
             <li className="flex items-center justify-between mb-2">
               <span className="text-sm">New Patients (Today)</span>
-              <span className="text-sm text-gray-500">{patientData.newPatients}</span>
+              {loading ? (
+                <Skeleton width={30} height={15} />
+              ) : (
+                <span className="text-sm text-gray-500">{patientData.newPatients}</span>
+              )}
               <span className="w-3 h-3 bg-[#F6C762] rounded-full ml-2"></span>
             </li>
             <li className="flex items-center justify-between mb-2">
               <span className="text-sm">Old Patients</span>
-              <span className="text-sm text-gray-500">{patientData.oldPatients}</span>
+              {loading ? (
+                <Skeleton width={30} height={15} />
+              ) : (
+                <span className="text-sm text-gray-500">{patientData.oldPatients}</span>
+              )}
               <span className="w-3 h-3 bg-[#44C27F] rounded-full ml-2"></span>
             </li>
             <li className="flex items-center justify-between">
               <span className="text-sm">Total Patients</span>
-              <span className="text-sm text-gray-500">{patientData.totalPatients}</span>
+              {loading ? (
+                <Skeleton width={30} height={15} />
+              ) : (
+                <span className="text-sm text-gray-500">{patientData.totalPatients}</span>
+              )}
               <span className="w-3 h-3 bg-[#4C49ED] rounded-full ml-2"></span>
             </li>
           </ul>

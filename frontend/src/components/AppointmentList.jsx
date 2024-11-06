@@ -3,6 +3,8 @@ import api from "../api/api"; // Import the api instance
 import AppointmentCard from "./AppointmentCard";
 import noAppointment from "../assets/images/noAppointment.png";
 import moment from "moment"; // for date formatting and comparisons
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const AppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
@@ -36,13 +38,20 @@ const AppointmentsList = () => {
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Today's Appointments List</h2>
-        {/* <a href="/appointments" className="text-blue-600">
-          View All
-        </a> */}
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex gap-4 w-max overflow-x-auto">
+          {/* Skeleton loading placeholders for Appointment Cards */}
+          {Array(3).fill().map((_, index) => (
+            <div key={index} className="w-64">
+              <Skeleton height={80} className="mb-2 rounded-lg" />
+              <Skeleton height={15} width="80%" className="mb-1" />
+              <Skeleton height={15} width="60%" className="mb-1" />
+              <Skeleton height={15} width="40%" />
+            </div>
+          ))}
+        </div>
       ) : appointments.length > 0 ? (
         <div className="overflow-x-auto">
           <div className="flex gap-4 w-max">
