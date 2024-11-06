@@ -378,7 +378,7 @@ const BookAppointment = () => {
           <div className="w-full p-4">
             <div className="flex justify-between items-center mb-4">
               <button
-                className="px-4 py-2 bg-gray-300 rounded"
+                className="px-4 py-2 bg-gray-300 rounded-xl hover:bg-gray-400 transition"
                 onClick={handlePreviousWeek}
                 disabled={moment(currentWeekStart).isSameOrBefore(
                   moment(),
@@ -387,29 +387,29 @@ const BookAppointment = () => {
               >
                 &lt;
               </button>
-              <h1 className="text-xl font-bold">
+              <h1 className="text-xl font-bold text-[#0eabeb]">
                 {moment(currentWeekStart).format("DD MMMM, YYYY")} -{" "}
                 {moment(currentWeekStart)
                   .add(6, "days")
                   .format("DD MMMM, YYYY")}
               </h1>
               <button
-                className="px-4 py-2 bg-gray-300 rounded"
+                className="px-4 py-2 bg-gray-300 rounded-xl hover:bg-gray-400 transition"
                 onClick={handleNextWeek}
               >
                 &gt;
               </button>
             </div>
-            <table className="min-w-full table-auto border-collapse bg-white rounded-xl shadow-lg">
-              <thead className="bg-gray-100">
+            <table className="min-w-full table-auto border-collapse bg-white rounded-xl shadow-lg overflow-hidden">
+              <thead className="bg-[#f6f8fb]">
                 <tr>
-                  <th className="px-6 py-3 text-sm font-semibold text-gray-600 border-b">
+                  <th className="px-6 py-3 text-sm font-semibold text-gray-600 border-b border-gray-300">
                     Time
                   </th>
                   {days.map((day) => (
                     <th
                       key={day}
-                      className="px-6 py-3 text-sm font-semibold text-gray-600 border-b"
+                      className="px-6 py-3 text-sm font-semibold text-[#0eabeb] border-b border-gray-300"
                     >
                       {moment(day).format("ddd D")}
                     </th>
@@ -429,25 +429,31 @@ const BookAppointment = () => {
                 ) : (
                   timeSlots.map((slot) => (
                     <tr key={slot.time} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-gray-700 text-sm border-b">
+                      <td className="px-6 py-4 text-[#0eabeb] font-semibold text-sm border-b border-gray-200">
                         {slot.time}
                       </td>
                       {days.map((day) => (
                         <td
                           key={day}
-                          className="px-6 py-4 text-center border-b"
+                          className="px-4 py-3 text-center border-b border-gray-200"
                         >
                           {isSlotBooked(slot.time, day) ? (
                             <span className="text-gray-400">Booked</span>
                           ) : slot.status === "Available" ? (
                             <span
-                              className="bg-blue-500 text-white px-3 py-1 rounded-full cursor-pointer"
+                              className="bg-[#0eabeb] text-white px-3 py-3 rounded-md cursor-pointer hover:bg-[#0eabee] hover:shadow-md transition"
                               onClick={() => handleSlotClick(slot.time, day)}
                             >
                               Available
                             </span>
                           ) : slot.status === "Lunch Break" ? (
-                            <span className="text-yellow-500">Lunch Break</span>
+                            <span className="text-yellow-500 font-medium">
+                              Lunch Break
+                            </span>
+                          ) : slot.status === "Not Available" ? (
+                            <span className="text-red-500 font-medium">
+                              Not Available
+                            </span>
                           ) : (
                             <span className="text-gray-400">{slot.status}</span>
                           )}
