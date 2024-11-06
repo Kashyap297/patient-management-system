@@ -338,7 +338,7 @@ const AppointmentTimeSlot = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md m-6">
+    <div className="p-6 bg-white rounded-lg shadow-md">
       {/* Week Navigation */}
       <div className="flex justify-between items-center mb-4">
         <button
