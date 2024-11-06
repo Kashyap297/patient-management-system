@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, RadioGroup, FormControlLabel, Radio, Select, MenuItem } from '@mui/material';
 
 const AddFieldModal = ({ open, handleClose, handleAddField }) => {
   const [fieldType, setFieldType] = useState('Dropdown');
@@ -26,55 +25,106 @@ const AddFieldModal = ({ open, handleClose, handleAddField }) => {
     handleClose();
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Add New Field</DialogTitle>
-      <DialogContent>
-        <RadioGroup value={fieldType} onChange={(e) => setFieldType(e.target.value)}>
-          <FormControlLabel value="Dropdown" control={<Radio />} label="Dropdown" />
-          <FormControlLabel value="Text Field" control={<Radio />} label="Text Field" />
-        </RadioGroup>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+        <h2 className="text-xl font-bold mb-4">Add New Field</h2>
+
+        <div className="mb-4">
+          <label className="font-medium">Field Type</label>
+          <div className="flex space-x-4 mt-2">
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                value="Dropdown"
+                checked={fieldType === 'Dropdown'}
+                onChange={(e) => setFieldType(e.target.value)}
+                className="form-radio"
+              />
+              <span>Dropdown</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                value="Text Field"
+                checked={fieldType === 'Text Field'}
+                onChange={(e) => setFieldType(e.target.value)}
+                className="form-radio"
+              />
+              <span>Text Field</span>
+            </label>
+          </div>
+        </div>
 
         {fieldType === 'Dropdown' && (
           <>
-            <Select
-              value={selectionType}
-              onChange={(e) => setSelectionType(e.target.value)}
-              fullWidth
-              style={{ marginBottom: '16px' }}
-            >
-              <MenuItem value="Single">Single</MenuItem>
-              <MenuItem value="Multiple">Multiple</MenuItem>
-            </Select>
+            <div className="mb-4">
+              <label className="block font-medium">Selection Type</label>
+              <select
+                value={selectionType}
+                onChange={(e) => setSelectionType(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg mt-1"
+              >
+                <option value="Single">Single</option>
+                <option value="Multiple">Multiple</option>
+              </select>
+            </div>
 
             {dropdownOptions.map((option, index) => (
-              <TextField
-                key={index}
-                value={option}
-                onChange={(e) => handleOptionChange(index, e.target.value)}
-                fullWidth
-                margin="normal"
-                placeholder={`Value ${index + 1}`}
-              />
+              <div className="relative mb-4" key={index}>
+                <input
+                  type="text"
+                  value={option}
+                  onChange={(e) => handleOptionChange(index, e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  placeholder={`Option ${index + 1}`}
+                />
+              </div>
             ))}
-            <Button onClick={addOptionField}>Add Option</Button>
+
+            <button
+              type="button"
+              onClick={addOptionField}
+              className="text-blue-500 hover:text-blue-600"
+            >
+              + Add Option
+            </button>
           </>
         )}
 
         {fieldType === 'Text Field' && (
-          <TextField
-            fullWidth
-            label="Text Field Label"
-            value={textFieldLabel}
-            onChange={(e) => setTextFieldLabel(e.target.value)}
-          />
+          <div className="relative mb-4">
+            <input
+              type="text"
+              placeholder="Enter Text Field Label"
+              value={textFieldLabel}
+              onChange={(e) => setTextFieldLabel(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            />
+            <label className="absolute left-3 -top-3 px-1 bg-white text-sm font-medium">
+              Text Field Label
+            </label>
+          </div>
         )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleAdd} color="primary">Add</Button>
-      </DialogActions>
-    </Dialog>
+
+        <div className="flex justify-end space-x-4 mt-4">
+          <button
+            onClick={handleClose}
+            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleAdd}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
