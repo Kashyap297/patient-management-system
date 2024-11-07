@@ -3,6 +3,7 @@ import PrescriptionModal from "../../components/modals/PrescriptionModal";
 import api from "../../api/api";
 import { FaEye, FaFemale, FaMale } from "react-icons/fa";
 import NoDataFound from "../../assets/images/NoDataFound.png";
+import SkeletonRow from "../../components/SkeletonRow"; // Import SkeletonRow component
 
 const ManagePrescription = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -11,8 +12,8 @@ const ManagePrescription = () => {
   const [todayPrescriptions, setTodayPrescriptions] = useState([]);
   const [olderPrescriptions, setOlderPrescriptions] = useState([]);
   const [selectedPrescription, setSelectedPrescription] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state
 
-  // Fetch prescriptions for today and older ones
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
@@ -31,13 +32,14 @@ const ManagePrescription = () => {
         setOlderPrescriptions(olderData);
       } catch (error) {
         console.error("Error fetching prescriptions:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
       }
     };
 
     fetchPrescriptions();
   }, []);
 
-  // Handle modal open with prescription details
   const handleModalOpen = (prescriptionId) => {
     const prescription =
       todayPrescriptions.find((pres) => pres._id === prescriptionId) ||
@@ -61,11 +63,9 @@ const ManagePrescription = () => {
     Onsite: "bg-blue-100 text-blue-600",
   };
 
-  // Choose the appropriate data based on the active tab
   const currentPrescriptions =
     activeTab === 0 ? todayPrescriptions : olderPrescriptions;
 
-  // Filter the prescription data based on search input
   const filteredPrescriptions = currentPrescriptions.filter(
     (prescription) =>
       prescription.patient.firstName
@@ -74,12 +74,10 @@ const ManagePrescription = () => {
       prescription.patient.phoneNumber.includes(searchTerm) ||
       prescription.patient.age.toString().includes(searchTerm)
   );
-  console.log(filteredPrescriptions);
 
   return (
     <div className="bg-gray-100 h-full">
       <div className="bg-white p-4 rounded-lg h-full shadow-md">
-        {/* Tabs */}
         <div className="flex space-x-4 mb-4 border-b">
           {["Today's Prescriptions", "Older Prescriptions"].map(
             (tab, index) => (
@@ -98,7 +96,6 @@ const ManagePrescription = () => {
           )}
         </div>
 
-        {/* Search Field */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold ms-3">
             {activeTab === 0 ? "Today's Prescriptions" : "Older Prescriptions"}
@@ -114,7 +111,6 @@ const ManagePrescription = () => {
           </div>
         </div>
 
-        {/* Prescription Table */}
         <div className="max-h-[620px] overflow-y-auto custom-scroll rounded-t-2xl">
           <table className="min-w-full bg-white table-auto rounded-t-2xl bg-[#F6F8FB]">
             <thead className="sticky top-0 rounded-t-2xl bg-[#F6F8FB]">
@@ -143,67 +139,74 @@ const ManagePrescription = () => {
               </tr>
             </thead>
             <tbody className="text-center">
-              {filteredPrescriptions.length > 0 ? (
-                filteredPrescriptions.map((prescription, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="px-6 py-4">
-                      {prescription.patient.firstName}{" "}
-                      {prescription.patient.lastName}
-                    </td>
-                    <td className="px-6 py-4">
-                      {prescription.patient.phoneNumber}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-4 py-2 rounded-full ${
-                          appointmentTypeStyles[prescription.appointmentId.appointmentType]
-                        }`}
-                      >
-                        {prescription.appointmentId.appointmentType}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-blue-600">
-                      <span className="px-4 py-2 rounded-full bg-[#f6f8fb]">
-                        {prescription.appointmentId.appointmentTime}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">{prescription.patient.age}</td>
-                    <td className="px-6 py-4 m-auto">
-                      {prescription.patient.gender === "Male" ? (
-                        <FaMale className="text-blue-500 w-5 h-5 m-auto" />
-                      ) : (
-                        <FaFemale className="text-red-500 w-5 h-5 m-auto" />
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => handleModalOpen(prescription._id)}
-                        className="text-blue-600"
-                      >
-                        <FaEye />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="text-center py-16">
-                    <div className="flex flex-col items-center">
-                      <img
-                        src={NoDataFound}
-                        alt="No Prescription Found"
-                        className="w-80 mb-4"
-                      />
-                    </div>
-                  </td>
-                </tr>
-              )}
+              {loading
+                ? Array(5)
+                    .fill(0)
+                    .map((_, index) => <SkeletonRow key={index} />) // Display skeleton rows while loading
+                : filteredPrescriptions.length > 0 ? (
+                    filteredPrescriptions.map((prescription, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="px-6 py-4">
+                          {prescription.patient.firstName}{" "}
+                          {prescription.patient.lastName}
+                        </td>
+                        <td className="px-6 py-4">
+                          {prescription.patient.phoneNumber}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`px-4 py-2 rounded-full ${
+                              appointmentTypeStyles[
+                                prescription.appointmentId.appointmentType
+                              ]
+                            }`}
+                          >
+                            {prescription.appointmentId.appointmentType}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-blue-600">
+                          <span className="px-4 py-2 rounded-full bg-[#f6f8fb]">
+                            {prescription.appointmentId.appointmentTime}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          {prescription.patient.age}
+                        </td>
+                        <td className="px-6 py-4 m-auto">
+                          {prescription.patient.gender === "Male" ? (
+                            <FaMale className="text-blue-500 w-5 h-5 m-auto" />
+                          ) : (
+                            <FaFemale className="text-red-500 w-5 h-5 m-auto" />
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <button
+                            onClick={() => handleModalOpen(prescription._id)}
+                            className="text-blue-600"
+                          >
+                            <FaEye />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center py-16">
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={NoDataFound}
+                            alt="No Prescription Found"
+                            className="w-80 mb-4"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Prescription Modal */}
       {selectedPrescription && (
         <PrescriptionModal
           open={modalOpen}

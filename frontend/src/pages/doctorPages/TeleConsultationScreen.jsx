@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { FaCalendar, FaCalendarAlt } from 'react-icons/fa';
+import { FaCalendarAlt } from 'react-icons/fa';
 import TeleConsultationCard from '../../components/TeleConsultationCard';
-import CustomDateFilter from '../../components/modals/CustomDateFilter.jsx';
+import CustomDateFilter from '../../components/modals/CustomDateFilter';
+import SkeletonCard from '../../components/SkeletonCard'; // Skeleton component
 import api from '../../api/api';
 import moment from 'moment';
 import {jwtDecode} from 'jwt-decode';
@@ -12,6 +13,7 @@ const TeleConsultationScreen = () => {
   const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [filterDates, setFilterDates] = useState({ fromDate: null, toDate: null });
   const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -33,6 +35,8 @@ const TeleConsultationScreen = () => {
         setAppointments(doctorAppointments);
       } catch (error) {
         console.error('Error fetching appointments:', error);
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched
       }
     };
 
@@ -126,7 +130,11 @@ const TeleConsultationScreen = () => {
 
       {/* Appointment Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {currentAppointments.length > 0 ? (
+        {loading ? (
+          Array(8) // Display 8 skeleton cards while loading
+            .fill(0)
+            .map((_, index) => <SkeletonCard key={index} />)
+        ) : currentAppointments.length > 0 ? (
           currentAppointments.map((appointment, index) => (
             <TeleConsultationCard key={index} patient={appointment} />
           ))
