@@ -10,6 +10,8 @@ import { Button } from "@mui/material";
 import { CalendarToday } from "@mui/icons-material";
 import CustomDateFilter from "../../components/modals/CustomDateFilter";
 import moment from "moment";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 // Set the app element for the modal to prevent accessibility issues
 Modal.setAppElement("#root");
@@ -21,7 +23,8 @@ const AppointmentBookingPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
   const [filterDates, setFilterDates] = useState({
     fromDate: null,
     toDate: null,
@@ -49,12 +52,13 @@ const AppointmentBookingPage = () => {
         setAppointments(userAppointments || []);
       } catch (error) {
         console.error("Error fetching appointments:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
       }
     };
 
     fetchAppointments();
   }, []);
-
   // Function to filter appointments based on the selected tab and date range
   const filteredAppointments = appointments.filter((appointment) => {
     const appointmentDate = moment(appointment.appointmentDate);
@@ -183,7 +187,17 @@ const AppointmentBookingPage = () => {
         </div>
       </div>
       <div className="grid grid-cols-4 gap-4 custom-scroll overflow-y-auto h-full">
-        {filteredAppointments.map((appointment) => (
+      {loading
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-xl p-4 border">
+                <Skeleton height={20} width="60%" className="mb-2" />
+                <Skeleton height={20} width="80%" className="mb-2" />
+                <Skeleton height={20} width="70%" className="mb-2" />
+                <Skeleton height={20} width="50%" className="mb-2" />
+                <Skeleton height={20} width="70%" />
+              </div>
+            ))
+          : filteredAppointments.map((appointment) => (
           <div
             key={appointment.id}
             className="bg-white  rounded-xl w-full relative hover:shadow-xl transition-shadow duration-300 ease-in-out border"

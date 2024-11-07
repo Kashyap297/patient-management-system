@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import api from "../../api/api";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const PatientDetails = () => {
   const [patient, setPatient] = useState(null);
@@ -12,12 +14,12 @@ const PatientDetails = () => {
     const fetchPatientDetails = async () => {
       try {
         const response = await api.get("/users/profile");
-        setPatient(response.data); // Assuming response.data contains the patient object
-        setLoading(false);
+        setPatient(response.data);
       } catch (error) {
         setError("Failed to load patient details. Please try again.");
-        setLoading(false);
         console.error("Error fetching patient details:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -25,7 +27,33 @@ const PatientDetails = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-lg">
+        <div className="flex justify-between items-center mb-6">
+          <Skeleton width={150} height={30} />
+          <Skeleton width={100} height={40} />
+        </div>
+        <div className="flex justify-between items-start">
+          <div className="flex-shrink-0">
+            <Skeleton circle width={128} height={128} />
+          </div>
+          <div className="flex-grow ml-6">
+            <div className="grid grid-cols-7 gap-x-12 gap-y-4">
+              {Array.from({ length: 12 }).map((_, index) => (
+                <div key={index} className="font-semibold leading-5">
+                  <Skeleton width={100} height={20} />
+                  <Skeleton width={150} height={20} />
+                </div>
+              ))}
+              <div className="col-span-2 font-semibold leading-5">
+                <Skeleton width={100} height={20} />
+                <Skeleton width="100%" height={40} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -38,7 +66,6 @@ const PatientDetails = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg">
-      {/* Heading and Edit Button */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Patient Details</h2>
         <Link
@@ -51,7 +78,6 @@ const PatientDetails = () => {
       </div>
 
       <div className="flex justify-between items-start">
-        {/* Patient Image */}
         <div className="flex-shrink-0">
           <img
             src={`https://patient-management-system-vyv0.onrender.com/${patient.profileImage}`}
@@ -60,7 +86,6 @@ const PatientDetails = () => {
           />
         </div>
 
-        {/* Patient Information */}
         <div className="flex-grow ml-6">
           <div className="grid grid-cols-7 gap-x-12 gap-y-4">
             <div className="font-semibold leading-5">

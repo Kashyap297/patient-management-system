@@ -3,20 +3,25 @@ import { FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import PrescriptionModal from "./PrescritionModal";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const PrescriptionList = () => {
   const navigate = useNavigate();
   const [prescriptions, setPrescriptions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state for skeletons
 
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
         const response = await api.get("/prescription");
-        setPrescriptions(response.data.prescriptions || []); // Set prescriptions data from API response
+        setPrescriptions(response.data.prescriptions || []);
       } catch (error) {
         console.error("Error fetching prescriptions:", error);
+      } finally {
+        setLoading(false); // Stop loading after fetch
       }
     };
 
@@ -27,9 +32,8 @@ const PrescriptionList = () => {
     navigate("/patient/prescriptions");
   };
 
-
   const openModal = (prescription) => {
-    setSelectedPrescriptionId(prescription._id); // Set prescription ID
+    setSelectedPrescriptionId(prescription._id);
     setShowModal(true);
   };
 
@@ -51,8 +55,7 @@ const PrescriptionList = () => {
         </a>
       </div>
 
-      {/* Scrollable container for the table body */}
-      <div className="rounded-xl overflow-hidden ">
+      <div className="rounded-xl overflow-hidden">
         <table className="w-full text-left">
           <thead>
             <tr className="bg-gray-100">
@@ -64,32 +67,50 @@ const PrescriptionList = () => {
           </thead>
         </table>
 
-        {/* Scrollable tbody */}
+        {/* Skeleton Loader */}
         <div className="overflow-y-auto custom-scroll h-[210px]">
           <table className="w-full text-left">
             <tbody>
-              {prescriptions.map((prescription) => (
-                <tr key={prescription._id} className="border-t">
-                  <td className="py-3 px-2 font-xs">
-                    {prescription.appointmentId.hospital}
-                  </td>
-                  <td className="py-3 px-2 font-xs">
-                    {new Date(prescription.prescriptionDate).toLocaleDateString()}
-                  </td>
-                  <td className="py-3 px-2 font-xs">
-                    {prescription.medicines[0]?.name || "N/A"}
-                  </td>
-                  <td className="py-3 px-2 font-xs flex justify-center">
-                    <div className="text-customBlue p-2 rounded-full bg-white shadow">
-                      <FaEye onClick={() => openModal(prescription)} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {loading
+                ? Array.from({ length: 5 }).map((_, index) => (
+                    <tr key={index} className="border-t">
+                      <td className="py-3 px-2">
+                        <Skeleton width="80%" />
+                      </td>
+                      <td className="py-3 px-2">
+                        <Skeleton width="60%" />
+                      </td>
+                      <td className="py-3 px-2">
+                        <Skeleton width="50%" />
+                      </td>
+                      <td className="py-3 px-2 flex justify-center">
+                        <Skeleton circle width={30} height={30} />
+                      </td>
+                    </tr>
+                  ))
+                : prescriptions.map((prescription) => (
+                    <tr key={prescription._id} className="border-t">
+                      <td className="py-3 px-2 font-xs">
+                        {prescription.appointmentId.hospital}
+                      </td>
+                      <td className="py-3 px-2 font-xs">
+                        {new Date(prescription.prescriptionDate).toLocaleDateString()}
+                      </td>
+                      <td className="py-3 px-2 font-xs">
+                        {prescription.medicines[0]?.name || "N/A"}
+                      </td>
+                      <td className="py-3 px-2 font-xs flex justify-center">
+                        <div className="text-customBlue p-2 rounded-full bg-white shadow">
+                          <FaEye onClick={() => openModal(prescription)} />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>
       </div>
+
       {/* Prescription Modal */}
       {showModal && selectedPrescriptionId && (
         <PrescriptionModal

@@ -5,10 +5,12 @@ import jsPDF from 'jspdf';
 import logo from "../../assets/images/logo.png";
 import api from "../../api/api";
 import signature from "../../assets/images/signature.svg";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const PrescriptionModal = ({ prescriptionId, closeModal }) => {
   const [prescriptionData, setPrescriptionData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPrescription = async () => {
@@ -17,6 +19,8 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
         setPrescriptionData(response.data.prescription);
       } catch (error) {
         console.error("Error fetching prescription data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -24,17 +28,6 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
       fetchPrescription();
     }
   }, [prescriptionId]);
-
-  if (!prescriptionData) return null;
-
-  const {
-    doctor,
-    patient,
-    appointmentId,
-    medicines,
-    additionalNote,
-    prescriptionDate,
-  } = prescriptionData;
 
   const handleDownload = async () => {
     const input = document.getElementById('prescription-modal-content');
@@ -44,8 +37,25 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
     const imgWidth = 190;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
     pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-    pdf.save(`Prescription_${patient.firstName}_${patient.lastName}.pdf`);
+    pdf.save(`Prescription_${prescriptionData.patient.firstName}_${prescriptionData.patient.lastName}.pdf`);
   };
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 overflow-y-auto">
+          <Skeleton height={30} width={200} className="mb-4" />
+          <Skeleton height={150} className="mb-4" />
+          <Skeleton count={5} height={20} className="mb-2" />
+          <Skeleton height={40} width={100} />
+        </div>
+      </div>
+    );
+  }
+
+  if (!prescriptionData) return null;
+
+  const { doctor, patient, appointmentId, medicines, additionalNote, prescriptionDate } = prescriptionData;
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
@@ -153,11 +163,7 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
         <div className="flex justify-between items-center">
           <div className="text-center">
             <p className="text-gray-500 text-sm italic">Doctor Signature</p>
-            <img
-              src={signature}
-              alt="Doctor Signature"
-              className="mt-2"
-            />
+            <img src={signature} alt="Doctor Signature" className="mt-2" />
           </div>
           <button
             onClick={handleDownload}

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FaHospital, FaUserMd, FaCalendarAlt, FaInfoCircle, FaUsers } from "react-icons/fa"; // FontAwesome Icons
 import api from "../../api/api"; // Adjust the path according to your project structure
 import { jwtDecode } from "jwt-decode";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const PatientStatus = () => {
   const [status, setStatus] = useState({
@@ -11,34 +13,40 @@ const PatientStatus = () => {
     xyz: "",
     description: "",
   });
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const fetchLastAppointment = async () => {
-      const token = localStorage.getItem("token"); // Get token from local storage
-      if (!token) return; // If no token, do not proceed
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-      const { id } = jwtDecode(token); // Decode the token to get the user ID
+      const { id } = jwtDecode(token);
       try {
-        const response = await api.get("/appointments"); // Fetch all appointments
-        // Filter appointments for the logged-in user
-        const userAppointments = response.data.data.filter(appointment => appointment.patientId === id);
+        const response = await api.get("/appointments");
+        const userAppointments = response.data.data.filter(
+          (appointment) => appointment.patientId === id
+        );
 
-        // Find the last appointment by date
-        const sortedAppointments = userAppointments.sort((a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate));
-        const lastAppointment = sortedAppointments[0]; // Get the most recent appointment
-        console.log(lastAppointment)
-        // Set status based on last appointment details
+        const sortedAppointments = userAppointments.sort(
+          (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
+        );
+        const lastAppointment = sortedAppointments[0];
+
         if (lastAppointment) {
           setStatus({
             hospital: lastAppointment.hospitalName || "Shamuba Hospital",
             doctor: lastAppointment.doctorName || "Dr. Mathew Best",
             date: new Date(lastAppointment.appointmentDate).toLocaleDateString() || "2 Jan, 2022",
             xyz: lastAppointment.patientIssue || "Chance Carder",
-            description: lastAppointment.description || "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+            description:
+              lastAppointment.description ||
+              "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
           });
         }
       } catch (error) {
         console.error("Error fetching appointments:", error);
+      } finally {
+        setLoading(false); // Stop loading after data is fetched
       }
     };
 
@@ -56,7 +64,9 @@ const PatientStatus = () => {
           <div className="flex-shrink-0 bg-blue-100 p-3 rounded-full">
             <FaHospital className="text-blue-600" size={24} />
           </div>
-          <p className="font-semibold text-blue-900">{status.hospital}</p>
+          <p className="font-semibold text-blue-900">
+            {loading ? <Skeleton width={100} /> : status.hospital}
+          </p>
         </div>
 
         {/* Second column: Doctor's Name */}
@@ -64,7 +74,9 @@ const PatientStatus = () => {
           <div className="flex-shrink-0 bg-green-100 p-3 rounded-full">
             <FaUserMd className="text-green-500" size={24} />
           </div>
-          <p className="font-semibold text-gray-800">{status.doctor}</p>
+          <p className="font-semibold text-gray-800">
+            {loading ? <Skeleton width={100} /> : status.doctor}
+          </p>
         </div>
 
         {/* First column: Date */}
@@ -72,7 +84,9 @@ const PatientStatus = () => {
           <div className="flex-shrink-0 bg-purple-100 p-3 rounded-full">
             <FaCalendarAlt className="text-purple-500" size={24} />
           </div>
-          <p className="text-gray-600">{status.date}</p>
+          <p className="text-gray-600">
+            {loading ? <Skeleton width={80} /> : status.date}
+          </p>
         </div>
 
         {/* Second column: Additional Info */}
@@ -80,7 +94,9 @@ const PatientStatus = () => {
           <div className="flex-shrink-0 bg-purple-100 p-3 rounded-full">
             <FaUsers className="text-purple-500" size={24} />
           </div>
-          <p className="text-gray-600">{status.xyz}</p>
+          <p className="text-gray-600">
+            {loading ? <Skeleton width={80} /> : status.xyz}
+          </p>
         </div>
 
         {/* Full row for description */}
@@ -88,7 +104,9 @@ const PatientStatus = () => {
           <div className="flex-shrink-0 bg-blue-100 p-3 rounded-full">
             <FaInfoCircle className="text-blue-500" size={24} />
           </div>
-          <p className="text-gray-600 text-sm">{status.description}</p>
+          <p className="text-gray-600 text-sm">
+            {loading ? <Skeleton count={2} /> : status.description}
+          </p>
         </div>
       </div>
     </div>

@@ -3,35 +3,39 @@ import PaymentTypeModal from "../../components/Patient/PaymentTypeModal";
 import InvoiceModal from "../../components/Patient/InvoiceModal";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
 import { FaEye } from "react-icons/fa";
-import api from "../../api/api"; // Assuming you have an API setup
+import api from "../../api/api";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const BillPage = () => {
   const [bills, setBills] = useState([]);
   const [selectedBill, setSelectedBill] = useState(null);
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showInvoice, setShowInvoice] = useState(false);
-  const [activeTab, setActiveTab] = useState("unpaid"); // To toggle between paid and unpaid tabs
+  const [activeTab, setActiveTab] = useState("unpaid");
   const { updateBreadcrumb } = useBreadcrumb();
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
-    updateBreadcrumb([
-      { label: "Bills", path: "/patient/bills" },
-    ]);
+    updateBreadcrumb([{ label: "Bills", path: "/patient/bills" }]);
   }, []);
 
   useEffect(() => {
     const fetchUserBills = async () => {
       try {
-        const token = localStorage.getItem("token"); // Replace this with the appropriate method of retrieving the token
+        setLoading(true); // Start loading state
+        const token = localStorage.getItem("token");
         const response = await api.get("/invoice/user/invoice", {
           headers: {
-            Authorization: `Bearer ${token}`, // Attach the token here
+            Authorization: `Bearer ${token}`,
           },
         });
         const userBills = response.data.data || [];
         setBills(userBills);
       } catch (error) {
         console.error("Error fetching bills:", error);
+      } finally {
+        setLoading(false); // Stop loading state
       }
     };
 
@@ -39,16 +43,15 @@ const BillPage = () => {
   }, []);
 
   const handlePayNow = (bill) => {
-    setSelectedBill(bill); // Set the selected bill for payment
-    setShowPaymentType(true); // Show payment type modal
+    setSelectedBill(bill);
+    setShowPaymentType(true);
   };
 
   const handleViewInvoice = (bill) => {
-    setSelectedBill(bill); // Set the selected bill for viewing invoice
-    setShowInvoice(true); // Show invoice modal
+    setSelectedBill(bill);
+    setShowInvoice(true);
   };
 
-  // Filter bills based on the activeTab state ('unpaid' or 'paid')
   const filteredBills = bills.filter((bill) =>
     activeTab === "paid" ? bill.status === "Paid" : bill.status === "Unpaid"
   );
@@ -58,60 +61,73 @@ const BillPage = () => {
       <div className="mb-4 flex space-x-6">
         <button
           onClick={() => setActiveTab("unpaid")}
-          className={`text-lg font-semibold px-3 ${activeTab === "unpaid" ? "text-customBlue border-b-4 border-customBlue" : "text-gray-500"}`}
+          className={`text-lg font-semibold px-3 ${
+            activeTab === "unpaid" ? "text-customBlue border-b-4 border-customBlue" : "text-gray-500"
+          }`}
         >
           Unpaid Bills
         </button>
         <button
           onClick={() => setActiveTab("paid")}
-          className={`text-lg font-semibold px-3 ${activeTab === "paid" ? "text-customBlue border-b-4 border-customBlue" : "text-gray-500"}`}
+          className={`text-lg font-semibold px-3 ${
+            activeTab === "paid" ? "text-customBlue border-b-4 border-customBlue" : "text-gray-500"
+          }`}
         >
           Paid Bills
         </button>
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        {filteredBills.map((bill) => (
-          <div key={bill._id} className="p-4 border rounded-xl bg-white shadow-sm flex flex-col">
-            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
-              {bill.doctor ? (
-                <p className="font-semibold">
-                  Dr. {bill.doctor.firstName} {bill.doctor.lastName}
-                </p>
-              ) : (
-                <p className="font-semibold">Doctor Information Unavailable</p>
-              )}
-              <button onClick={() => handleViewInvoice(bill)} className="text-lg p-1 bg-white text-customBlue">
-                <FaEye />
-              </button>
-            </div>
-            <div className="p-2">
-              <p className="text-gray-500 flex justify-between">
-                <strong>Hospital Name</strong> {bill.hospital.name}
-              </p>
-              <p className="text-gray-500 flex justify-between">
-                <strong>Bill Created Date</strong> {new Date(bill.billDate).toLocaleDateString()}
-              </p>
-              <p className="text-gray-500 flex justify-between">
-                <strong>Bill Created Time</strong> {bill.billTime}
-              </p>
-              <p className="text-red-500 font-semibold flex justify-between">
-                <strong className="font-medium text-gray-500">Total Bill Amount</strong> ₹{bill.totalAmount.toLocaleString()}
-              </p>
-            </div>
-
-            <div className="flex justify-end mt-2">
-              {bill.status === "Unpaid" && (
-                <button
-                  className="bg-customBlue text-white py-2 px-4 rounded-xl font-semibold w-full"
-                  onClick={() => handlePayNow(bill)}
-                >
-                  Pay Now
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
+        {loading
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="p-4 border rounded-xl bg-white shadow-sm">
+                <Skeleton height={20} width="60%" className="mb-2" />
+                <Skeleton height={15} width="80%" />
+                <Skeleton height={15} width="70%" className="my-1" />
+                <Skeleton height={15} width="50%" />
+                <Skeleton height={30} width="100%" className="mt-3" />
+              </div>
+            ))
+          : filteredBills.map((bill) => (
+              <div key={bill._id} className="p-4 border rounded-xl bg-white shadow-sm flex flex-col">
+                <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
+                  {bill.doctor ? (
+                    <p className="font-semibold">
+                      Dr. {bill.doctor.firstName} {bill.doctor.lastName}
+                    </p>
+                  ) : (
+                    <p className="font-semibold">Doctor Information Unavailable</p>
+                  )}
+                  <button onClick={() => handleViewInvoice(bill)} className="text-lg p-1 bg-white text-customBlue">
+                    <FaEye />
+                  </button>
+                </div>
+                <div className="p-2">
+                  <p className="text-gray-500 flex justify-between">
+                    <strong>Hospital Name</strong> {bill.hospital.name}
+                  </p>
+                  <p className="text-gray-500 flex justify-between">
+                    <strong>Bill Created Date</strong> {new Date(bill.billDate).toLocaleDateString()}
+                  </p>
+                  <p className="text-gray-500 flex justify-between">
+                    <strong>Bill Created Time</strong> {bill.billTime}
+                  </p>
+                  <p className="text-red-500 font-semibold flex justify-between">
+                    <strong className="font-medium text-gray-500">Total Bill Amount</strong> ₹{bill.totalAmount.toLocaleString()}
+                  </p>
+                </div>
+                <div className="flex justify-end mt-2">
+                  {bill.status === "Unpaid" && (
+                    <button
+                      className="bg-customBlue text-white py-2 px-4 rounded-xl font-semibold w-full"
+                      onClick={() => handlePayNow(bill)}
+                    >
+                      Pay Now
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
       </div>
 
       {showInvoice && selectedBill && (
@@ -128,7 +144,7 @@ const BillPage = () => {
 
       {showPaymentType && selectedBill && (
         <PaymentTypeModal
-          bill={selectedBill} // Pass the selected bill as a prop
+          bill={selectedBill}
           onClose={() => setShowPaymentType(false)}
         />
       )}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FaCalendarAlt, FaDownload, FaEye, FaImage } from "react-icons/fa";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
-import logo from "../../assets/images/logo.png";
 import PrescriptionModal from "../../components/Patient/PrescritionModal";
 import api from "../../api/api";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const PrescriptionAccessPage = () => {
   const { updateBreadcrumb } = useBreadcrumb();
@@ -23,7 +24,7 @@ const PrescriptionAccessPage = () => {
     const fetchPrescriptions = async () => {
       try {
         setLoading(true);
-        setError(null); // Reset error before fetching data
+        setError(null);
 
         const response = await api.get("/prescription");
         console.log("API Response:", response.data);
@@ -54,14 +55,6 @@ const PrescriptionAccessPage = () => {
     setSelectedPrescriptionId(null);
   };
 
-  if (loading) {
-    return <div className="text-center text-gray-600">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
-  }
-
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg h-full">
       <div className="flex justify-between items-center mb-4">
@@ -74,7 +67,22 @@ const PrescriptionAccessPage = () => {
 
       {/* Prescription Cards */}
       <div className="grid grid-cols-4 gap-4 overflow-y-auto custom-scroll">
-        {prescriptions.length > 0 ? (
+        {loading ? (
+          Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="border rounded-lg shadow-md p-4">
+              <Skeleton height={24} width="60%" className="mb-2" />
+              <div className="flex space-x-2">
+                <Skeleton height={32} width={32} />
+                <Skeleton height={32} width={32} />
+              </div>
+              <Skeleton height={16} width="80%" className="my-2" />
+              <Skeleton height={16} width="70%" />
+              <Skeleton height={16} width="50%" />
+            </div>
+          ))
+        ) : error ? (
+          <div className="text-center text-red-500">{error}</div>
+        ) : prescriptions.length > 0 ? (
           prescriptions.map((prescription) => (
             <div
               key={prescription._id}
@@ -136,7 +144,7 @@ const PrescriptionAccessPage = () => {
                   <FaImage />
                 </div>
                 <div className="ml-2">
-                  <p className=" font-semibold">Prescription.jpg</p>
+                  <p className="font-semibold">Prescription.jpg</p>
                   <p className="text-xs text-gray-500">5.09 MB</p>
                 </div>
               </div>
