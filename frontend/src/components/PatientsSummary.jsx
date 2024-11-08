@@ -27,7 +27,6 @@ const PatientsSummary = () => {
         let newPatients = 0;
         let oldPatients = 0;
 
-        // Count new and old patients based on creation date
         patients.forEach((patient) => {
           const registrationDate = dayjs(patient.createdAt);
           if (registrationDate.isSame(today, 'day')) {
@@ -37,7 +36,6 @@ const PatientsSummary = () => {
           }
         });
 
-        // Set the counts in the state
         setPatientData({
           newPatients,
           oldPatients,
@@ -53,7 +51,6 @@ const PatientsSummary = () => {
     fetchPatientData();
   }, []);
 
-  // Data for the Doughnut chart
   const data = {
     labels: ['New Patients', 'Old Patients'],
     datasets: [
@@ -75,10 +72,10 @@ const PatientsSummary = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
       <h2 className="text-lg font-semibold mb-4">Patients Summary</h2>
-      <div className="flex">
-        <div className="relative w-1/2 flex items-center justify-center">
+      <div className="flex flex-col md:flex-row items-center">
+        <div className="relative w-full md:w-1/2 flex items-center justify-center mb-6 md:mb-0">
           {loading ? (
             <Skeleton circle={true} height={150} width={150} />
           ) : (
@@ -86,12 +83,14 @@ const PatientsSummary = () => {
               <Doughnut data={data} options={options} />
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <p className="text-gray-400 text-sm">Total Patients</p>
-                <p className="text-2xl font-semibold text-blue-600">{patientData.totalPatients}</p>
+                <p className="text-xl sm:text-2xl font-semibold text-blue-600">
+                  {patientData.totalPatients}
+                </p>
               </div>
             </>
           )}
         </div>
-        <div className="w-1/2 flex flex-col justify-center pl-6">
+        <div className="w-full md:w-1/2 flex flex-col justify-center pl-0 md:pl-6">
           <ul>
             <li className="flex items-center justify-between mb-2">
               <span className="text-sm">New Patients (Today)</span>

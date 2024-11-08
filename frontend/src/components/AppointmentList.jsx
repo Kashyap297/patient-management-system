@@ -35,16 +35,16 @@ const AppointmentsList = () => {
   }, []);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Today's Appointments List</h2>
+        <h2 className="text-lg sm:text-xl font-semibold">Today's Appointments</h2>
       </div>
 
       {loading ? (
-        <div className="flex gap-4 w-max overflow-x-auto">
+        <div className="flex gap-4 overflow-x-auto">
           {/* Skeleton loading placeholders for Appointment Cards */}
           {Array(3).fill().map((_, index) => (
-            <div key={index} className="w-64">
+            <div key={index} className="min-w-[200px] sm:min-w-[250px]">
               <Skeleton height={80} className="mb-2 rounded-lg" />
               <Skeleton height={15} width="80%" className="mb-1" />
               <Skeleton height={15} width="60%" className="mb-1" />
@@ -53,17 +53,17 @@ const AppointmentsList = () => {
           ))}
         </div>
       ) : appointments.length > 0 ? (
-        <div className="overflow-x-auto">
-          <div className="flex gap-4 w-max">
-            {appointments.map((appointment, index) => (
-              <AppointmentCard key={index} {...appointment} />
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+          {appointments.map((appointment, index) => (
+            <div key={index} className="w-full sm:w-64">
+              <AppointmentCard {...appointment} />
+            </div>
+          ))}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center">
-          <img src={noAppointment} alt="No Appointments" className="w-48 mb-4" />
-          <p className="text-gray-500">No Appointments Found for Today</p>
+          <img src={noAppointment} alt="No Appointments" className="w-32 sm:w-48 mb-4" />
+          <p className="text-gray-500 text-sm sm:text-base">No Appointments Found for Today</p>
         </div>
       )}
     </div>

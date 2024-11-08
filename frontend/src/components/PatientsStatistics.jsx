@@ -23,7 +23,7 @@ const PatientsStatistics = () => {
 
   useEffect(() => {
     const fetchPatientData = async () => {
-      setLoading(true); // Set loading to true when data fetching starts
+      setLoading(true);
       try {
         const response = await api.get('/users/patients');
         const patients = response.data;
@@ -52,7 +52,7 @@ const PatientsStatistics = () => {
       } catch (error) {
         console.error('Error fetching patient data:', error);
       } finally {
-        setLoading(false); // Set loading to false when data fetching is done
+        setLoading(false);
       }
     };
 
@@ -112,14 +112,14 @@ const PatientsStatistics = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Patients Statistics</h2>
-        <div className="flex gap-2">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-center">
+        <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-0">Patients Statistics</h2>
+        <div className="flex gap-1 sm:gap-2">
           {['Year', 'Month', 'Week'].map((time) => (
             <button
               key={time}
-              className={`px-4 py-2 text-sm font-medium rounded ${
+              className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded ${
                 timeframe === time ? 'bg-[#0eabeb] text-white' : 'bg-gray-200 text-gray-700'
               }`}
               onClick={() => setTimeframe(time)}
@@ -136,7 +136,9 @@ const PatientsStatistics = () => {
           <Skeleton height={300} />
         </div>
       ) : (
-        <Line data={data} options={options} className="mt-6" />
+        <div className="mt-6">
+          <Line data={data} options={options} />
+        </div>
       )}
     </div>
   );

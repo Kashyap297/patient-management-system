@@ -44,7 +44,7 @@ const StatisticsCards = () => {
   }, []);
 
   return (
-    <div className="flex gap-6 justify-between rounded-2xl">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 rounded-2xl">
       <InfoCard
         icon={<Group className="text-blue-600" />}
         label="Total Patients"

@@ -16,9 +16,10 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="col-span-2 space-y-6">
+    <div className="min-h-screen p-4">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Left Panel: Statistics and Appointments */}
+        <div className="lg:col-span-2 space-y-6">
           {loading ? <Skeleton height={100} /> : <StatisticsCards />}
           {loading ? <Skeleton height={200} /> : <PatientsStatistics />}
           {loading ? <Skeleton height={300} /> : <AppointmentsList />}
