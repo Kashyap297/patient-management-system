@@ -200,7 +200,7 @@ const AdminRegister = () => {
 
   return (
     <div className="min-h-screen flex">
-      <div className="w-1/2 flex justify-center items-center bg-white p-10">
+      <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
         <div className="w-full max-w-xl bg-white p-10 rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Registration</h2>
           {authError && (
@@ -714,8 +714,9 @@ const AdminRegister = () => {
           </p>
         </div>
       </div>
-
-      <SidePanel />
+      <div className="hidden md:flex md:w-1/2">
+        <SidePanel />
+      </div>
     </div>
   );
 };
