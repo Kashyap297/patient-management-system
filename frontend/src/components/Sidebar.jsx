@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Collapse } from "@mui/material";
-import { HiOutlineLogout } from "react-icons/hi";
+import { HiOutlineLogout, HiMenuAlt2 } from "react-icons/hi";
 import { useNavigate, NavLink } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 import { ReactComponent as DashboardIcon } from "../assets/images/Dashboard.svg";
-import { ReactComponent as DoctorManagementIcon } from "../assets/images/DoctorManagement.svg"; // Import DoctorManagement SVG as a React component
+import { ReactComponent as DoctorManagementIcon } from "../assets/images/DoctorManagement.svg";
 import { ReactComponent as VectorIcon } from "../assets/images/Vector.svg";
 import { ReactComponent as ReportIcon } from "../assets/images/Report.svg";
 import { ReactComponent as BilingIcon } from "../assets/images/Billing.svg";
@@ -22,6 +22,7 @@ const Sidebar = ({ role, onLogout }) => {
   const navigate = useNavigate();
   const [openBilling, setOpenBilling] = useState(false);
   const [activeTab, setActiveTab] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to control sidebar visibility on small screens
 
   const tabs = {
     admin: [
@@ -80,6 +81,7 @@ const Sidebar = ({ role, onLogout }) => {
   const handleMenuClick = (path, label) => {
     setActiveTab(label);
     if (path) navigate(path);
+    setIsSidebarOpen(false); // Close sidebar on small screens after clicking a link
   };
 
   const handleToggleBilling = () => {
@@ -87,25 +89,39 @@ const Sidebar = ({ role, onLogout }) => {
   };
 
   return (
-    <div className="w-72 bg-white h-full shadow-lg flex flex-col justify-between">
-      {/* Logo Section */}
-      <div className="py-4">
-        <img src={logo} alt="Hospital Logo" className="w-48 mx-auto mb-4" />
-      </div>
+    <div className="flex">
+      {/* Sidebar Toggle Button for small screens */}
+      <button
+        className="p-2 bg-white text-gray-600 md:hidden"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+      >
+        <HiMenuAlt2 size={24} />
+      </button>
 
-      {/* Menu Items */}
-      <ul className="flex-grow">
-        {tabs[role].map((item, index) => (
-          <li key={index} className="py-2">
-            {!item.subMenu ? (
-              <NavLink
-                to={item.path}
-                className={`relative flex items-center w-full px-6 py-4 font-semibold ${
-                  activeTab === item.label ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
-                }`}
-                onClick={() => handleMenuClick(item.path, item.label)}
-              >
-                {/* Conditionally apply color for SVG icons based on active tab */}
+      {/* Sidebar */}
+      <div
+        className={`fixed md:relative z-30 transition-transform duration-300 transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 w-64 md:w-72 bg-white h-full flex flex-col justify-between`}
+      >
+        {/* Logo Section */}
+        <div className="py-4 flex items-center justify-center md:justify-start md:px-6 m-auto">
+          <img src={logo} alt="Hospital Logo" className="w-40 md:w-48" />
+        </div>
+
+        {/* Menu Items */}
+        <ul className="flex-grow">
+          {tabs[role].map((item, index) => (
+            <li key={index} className="py-2">
+              {!item.subMenu ? (
+                <NavLink
+                  to={item.path}
+                  className={`relative flex items-center w-full px-6 py-4 font-semibold ${
+                    activeTab === item.label ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
+                  }`}
+                  onClick={() => handleMenuClick(item.path, item.label)}
+                >
+                   {/* Conditionally apply color for SVG icons based on active tab */}
                 {item.icon === DashboardIcon || item.icon === DoctorManagementIcon  ? (
                   <item.icon
                     className="mr-3 transition duration-300 z-20 relative"
@@ -118,75 +134,84 @@ const Sidebar = ({ role, onLogout }) => {
                     }`}
                   />
                 )}
-                <span className="relative z-20">{item.label}</span>
+                  <span className="relative z-20">{item.label}</span>
 
-                {/* Active Tab Background & Border */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${
-                    activeTab === item.label ? "opacity-100" : "group-hover:opacity-100"
-                  } transition duration-300 z-10`}
-                ></div>
-                <div
-                  className={`absolute top-0 right-0 h-10 bg-[#0EABEB] ${
-                    activeTab === item.label ? "w-2 opacity-100" : "group-hover:w-2 opacity-0"
-                  } rounded-tl-lg rounded-bl-lg transition-all duration-300 z-10`}
-                ></div>
-              </NavLink>
-            ) : (
-              <div>
-                <button
-                  onClick={handleToggleBilling}
-                  className={`flex items-center w-full px-6 py-4 font-semibold ${
-                    openBilling ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
-                  }`}
-                >
-                  <item.icon className={`mr-4 ${openBilling ? "text-[#0EABEB]" : "text-[#818194]"}`} />
-                  <span>{item.label}</span>
-                </button>
-                <Collapse in={openBilling} timeout="auto" unmountOnExit>
-                  <ul>
-                    {item.subMenu.map((subItem, subIndex) => (
-                      <li key={subIndex}>
-                        <NavLink
-                          to={subItem.path}
-                          className={`relative flex items-center w-full pl-12 py-3 font-semibold ${
-                            activeTab === subItem.label ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
-                          }`}
-                          onClick={() => handleMenuClick(subItem.path, subItem.label)}
-                        >
-                          <span className="relative z-20">{subItem.label}</span>
-                          {/* Active Tab Background & Border */}
-                          <div
-                            className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${
-                              activeTab === subItem.label ? "opacity-100" : "group-hover:opacity-100"
-                            } transition duration-300 z-10`}
-                          ></div>
-                          <div
-                            className={`absolute top-0 right-0 h-10 bg-[#0EABEB] ${
-                              activeTab === subItem.label ? "w-2 opacity-100" : "group-hover:w-2 opacity-0"
-                            } rounded-tl-lg rounded-bl-lg transition-all duration-300 z-10`}
-                          ></div>
-                        </NavLink>
-                      </li>
-                    ))}
-                  </ul>
-                </Collapse>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
+                  {/* Active Tab Background & Border */}
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${
+                      activeTab === item.label ? "opacity-100" : "group-hover:opacity-100"
+                    } transition duration-300 z-10`}
+                  ></div>
+                  <div
+                    className={`absolute top-0 right-0 h-10 bg-[#0EABEB] ${
+                      activeTab === item.label ? "w-2 opacity-100" : "group-hover:w-2 opacity-0"
+                    } rounded-tl-lg rounded-bl-lg transition-all duration-300 z-10`}
+                  ></div>
+                </NavLink>
+              ) : (
+                <div>
+                  <button
+                    onClick={handleToggleBilling}
+                    className={`flex items-center w-full px-6 py-4 font-semibold ${
+                      openBilling ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
+                    }`}
+                  >
+                    <item.icon className={`mr-4 ${openBilling ? "text-[#0EABEB]" : "text-[#818194]"}`} />
+                    <span>{item.label}</span>
+                  </button>
+                  <Collapse in={openBilling} timeout="auto" unmountOnExit>
+                    <ul>
+                      {item.subMenu.map((subItem, subIndex) => (
+                        <li key={subIndex}>
+                          <NavLink
+                            to={subItem.path}
+                            className={`relative flex items-center w-full pl-12 py-3 font-semibold ${
+                              activeTab === subItem.label ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
+                            }`}
+                            onClick={() => handleMenuClick(subItem.path, subItem.label)}
+                          >
+                            <span className="relative z-20">{subItem.label}</span>
+                            {/* Active Tab Background & Border */}
+                            <div
+                              className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${
+                                activeTab === subItem.label ? "opacity-100" : "group-hover:opacity-100"
+                              } transition duration-300 z-10`}
+                            ></div>
+                            <div
+                              className={`absolute top-0 right-0 h-10 bg-[#0EABEB] ${
+                                activeTab === subItem.label ? "w-2 opacity-100" : "group-hover:w-2 opacity-0"
+                              } rounded-tl-lg rounded-bl-lg transition-all duration-300 z-10`}
+                            ></div>
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </Collapse>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
 
-      {/* Logout Button */}
-      <div className="mb-5">
-        <button
-          onClick={handleLogout}
-          className="flex items-center w-full py-3 text-red-500 font-semibold bg-red-100 px-6"
-        >
-          <HiOutlineLogout className="mr-2 text-lg" />
-          Logout
-        </button>
+        {/* Logout Button */}
+        <div className="mb-5">
+          <button
+            onClick={handleLogout}
+            className="flex items-center w-full py-3 text-red-500 font-semibold bg-red-100 px-6"
+          >
+            <HiOutlineLogout className="mr-2 text-lg" />
+            Logout
+          </button>
+        </div>
       </div>
+
+      {/* Overlay for sidebar on small screens */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 z-20 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
     </div>
   );
 };
