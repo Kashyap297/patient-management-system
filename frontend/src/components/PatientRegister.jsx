@@ -127,7 +127,7 @@ const PatientRegister = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Form Section */}
-      <div className="w-1/2 flex justify-center items-center bg-white p-10">
+      <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
         <div className="w-full max-w-xl bg-white p-10 rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Registration</h2>
           <form onSubmit={handleSubmit}>
@@ -138,7 +138,7 @@ const PatientRegister = () => {
                   type="text"
                   id="firstName"
                   name="firstName"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                   placeholder="Enter First Name"
                   value={formData.firstName}
                   onChange={handleChange}
@@ -160,7 +160,7 @@ const PatientRegister = () => {
                   type="text"
                   id="lastName"
                   name="lastName"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                   placeholder="Enter Last Name"
                   value={formData.lastName}
                   onChange={handleChange}
@@ -184,7 +184,7 @@ const PatientRegister = () => {
                   type="email"
                   id="email"
                   name="email"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                   placeholder="Enter Email Address"
                   value={formData.email}
                   onChange={handleChange}
@@ -204,7 +204,7 @@ const PatientRegister = () => {
                   type="text"
                   id="phoneNumber"
                   name="phoneNumber"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                   placeholder="Enter Phone Number"
                   value={formData.phoneNumber}
                   onChange={handleChange}
@@ -230,7 +230,7 @@ const PatientRegister = () => {
                   type="number"
                   id="age"
                   name="age"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                   placeholder="Enter Age"
                   value={formData.age}
                   onChange={handleChange}
@@ -250,7 +250,7 @@ const PatientRegister = () => {
                   type="number"
                   id="height"
                   name="height"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                   placeholder="Enter Height"
                   value={formData.height}
                   onChange={handleChange}
@@ -270,7 +270,7 @@ const PatientRegister = () => {
                   type="number"
                   id="weight"
                   name="weight"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                   placeholder="Enter Weight"
                   value={formData.weight}
                   onChange={handleChange}
@@ -293,7 +293,7 @@ const PatientRegister = () => {
                 <select
                   id="gender"
                   name="gender"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
                   value={formData.gender}
                   onChange={handleChange}
                 >
@@ -316,7 +316,7 @@ const PatientRegister = () => {
                 <select
                   id="bloodGroup"
                   name="bloodGroup"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
                   value={formData.bloodGroup}
                   onChange={handleChange}
                 >
@@ -347,7 +347,7 @@ const PatientRegister = () => {
                   type="date"
                   id="dateOfBirth"
                   name="dateOfBirth"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-0`}
                   placeholder="Select Date"
                   value={formData.dateOfBirth}
                   onChange={handleChange}
@@ -373,7 +373,7 @@ const PatientRegister = () => {
                   type="text"
                   id="address"
                   name="address"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                   placeholder="Enter Address"
                   value={formData.address}
                   onChange={handleChange}
@@ -394,7 +394,7 @@ const PatientRegister = () => {
                 <select
                   id="country"
                   name="country"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
                   value={formData.country}
                   onChange={handleCountryChange}
                 >
@@ -421,7 +421,7 @@ const PatientRegister = () => {
                 <select
                   id="state"
                   name="state"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
                   value={formData.state}
                   onChange={handleStateChange}
                 >
@@ -448,7 +448,7 @@ const PatientRegister = () => {
                 <select
                   id="city"
                   name="city"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-md focus:outline-none focus:ring-0`}
+                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
                   value={formData.city}
                   onChange={handleChange}
                 >
@@ -477,7 +477,7 @@ const PatientRegister = () => {
                 type={showPassword ? "password" : "text"}
                 id="password"
                 name="password"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                 placeholder="Enter Password"
                 value={formData.password}
                 onChange={handleChange}
@@ -506,7 +506,7 @@ const PatientRegister = () => {
                 type={showConfirmPassword ? "password" : "text"}
                 id="confirmPassword"
                 name="confirmPassword"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0`}
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
@@ -560,7 +560,7 @@ const PatientRegister = () => {
             )}
             <button
               type="submit"
-              className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+              className="w-full py-2  bg-[#f6f8fb] text-[#4f4f4f] rounded-xl hover:bg-[#0eabeb] hover:text-white transition duration-200"
             >
               Register
             </button>
@@ -574,8 +574,9 @@ const PatientRegister = () => {
         </div>
       </div>
 
-      {/* Right Side - Banner & Vector Section */}
-      <SidePanel />
+      <div className="hidden md:flex md:w-1/2">
+        <SidePanel />
+      </div>
     </div>
   );
 };

@@ -55,7 +55,7 @@ const Login = ({ setIsAuthenticated }) => {
 
   return (
     <div className="min-h-screen flex">
-      <div className="w-1/2 flex justify-center items-center bg-white p-10">
+      <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
         <div className="w-full max-w-md bg-white p-10 rounded-xl shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Login</h2>
           <form onSubmit={handleSubmit}>
@@ -64,8 +64,9 @@ const Login = ({ setIsAuthenticated }) => {
                 type="text"
                 id="email"
                 name="email"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl  focus:outline-none focus:ring-0  ${errors.email ? "border-red-500" : "border-gray-300"
-                  }`}
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl  focus:outline-none focus:ring-0  ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Enter Email or Phone Number"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -86,8 +87,9 @@ const Login = ({ setIsAuthenticated }) => {
                 type={showPassword ? "password" : "text"}
                 id="password"
                 name="password"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 ${errors.password ? "border-red-500" : "border-gray-300"
-                  }`}
+                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0 ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Enter Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -142,7 +144,9 @@ const Login = ({ setIsAuthenticated }) => {
           </p>
         </div>
       </div>
-      <SidePanel />
+      <div className="hidden md:flex md:w-1/2">
+        <SidePanel />
+      </div>
     </div>
   );
 };

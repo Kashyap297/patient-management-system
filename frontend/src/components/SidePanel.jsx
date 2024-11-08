@@ -8,7 +8,7 @@ import vector from "../assets/images/Vector.png";
 
 const SidePanel = () => {
   return (
-    <div className="w-1/2 bg-gray-100 relative flex justify-center items-center">
+    <div className="w-full bg-gray-100 relative flex justify-center items-center">
       {/* Vectors */}
       <img
         src={vector1}
@@ -31,7 +31,7 @@ const SidePanel = () => {
         <img
           src={vector3}
           alt="Vector Bottom Right"
-          className="absolute top-0 right-0 w-40 h-30"
+          className="absolute top-20 right-0 w-30 h-30"
         />
         <img src={logo} alt="Logo" className="mb-4 mx-auto w-60 h-30" />
         <img

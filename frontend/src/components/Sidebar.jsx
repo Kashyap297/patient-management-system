@@ -1,16 +1,7 @@
 import React, { useState } from "react";
 import { Collapse } from "@mui/material";
-import {
-  FaUserInjured,
-  FaFileInvoiceDollar,
-  FaChartBar,
-  FaCalendarAlt,
-  FaCommentDots,
-  FaFileMedical,
-  FaPills,
-} from "react-icons/fa";
 import { HiOutlineLogout } from "react-icons/hi";
-import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 import { ReactComponent as DashboardIcon } from "../assets/images/Dashboard.svg";
 import { ReactComponent as DoctorManagementIcon } from "../assets/images/DoctorManagement.svg"; // Import DoctorManagement SVG as a React component
@@ -29,7 +20,6 @@ import { ReactComponent as healthIcon } from "../assets/images/health.svg";
 
 const Sidebar = ({ role, onLogout }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [openBilling, setOpenBilling] = useState(false);
   const [activeTab, setActiveTab] = useState(null);
 

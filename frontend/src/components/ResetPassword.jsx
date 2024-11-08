@@ -6,6 +6,8 @@ import vector2 from "../assets/images/Vector2.png";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Import icons
 import AuthContext from "../context/AuthContext";
+import forgetPassword from "../assets/images/forgetpassword.png";
+
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -56,7 +58,7 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Form Section */}
-      <div className="w-1/2 flex justify-center items-center bg-white p-10">
+      <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
         <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Reset Password</h2>
           <form onSubmit={handleSubmit}>
@@ -141,7 +143,7 @@ const ResetPassword = () => {
       </div>
 
       {/* Right Side - Banner & Vector Section */}
-      <div className="w-1/2 bg-gray-100 relative flex justify-center items-center">
+      <div className="hidden md:w-1/2 bg-gray-100 relative md:flex justify-center items-center">
         {/* Vectors */}
         <img
           src={vector1}
@@ -157,7 +159,7 @@ const ResetPassword = () => {
         {/* Banner Content */}
         <div className="text-center">
           <img src={logo} alt="Logo" className="mb-4 mx-auto w-60 h-30" />
-          <img src={logoBanner} alt="Banner" className="w-full max-w-lg mx-auto" />
+          <img src={forgetPassword} alt="Banner" className="w-full max-w-lg mx-auto" />
           <h2 className="text-4xl font-bold mt-4">Hospital</h2>
           <p className="text-gray-600 mt-2 font-semibold">
             Stay connected with your hospital and manage your appointments.
