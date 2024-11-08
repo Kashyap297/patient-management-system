@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import logo from "../assets/images/logo.png";
 import vector1 from "../assets/images/Vector1.png";
 import vector2 from "../assets/images/Vector2.png";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import forgetPassword from "../assets/images/forgetpassword.png";
 

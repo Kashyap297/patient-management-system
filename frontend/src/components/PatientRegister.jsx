@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import SidePanel from "./SidePanel";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // For password visibility toggle
-import axios from "axios";
 import api from "../api/api";
 // Import country JSON data
 import countryData from "../countryjson/countries+states+cities.json";
