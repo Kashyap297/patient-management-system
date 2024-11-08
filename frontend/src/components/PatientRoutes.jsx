@@ -20,18 +20,23 @@ import TeleConsultationScreen from "../pages/doctorPages/TeleConsultationScreen"
 import TeleConsultation from "../pages/patientPages/TeleConsultation";
 import DoctorMeetingConference from "../pages/doctorPages/DoctorMeetingConference";
 import PatientMeetingConference from "../pages/patientPages/PatientMeetingConference";
+import { useState } from "react";
 
 
 
 const PatientRoutes = ( {onLogout} ) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar role={"patient"}  onLogout={onLogout}/>
+      <Sidebar role={"patient"}  onLogout={onLogout} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
       {/* <BreadcrumbProvider> */}
       {/* <PatientSidebar /> */}
       {/* </BreadcrumbProvider> */}
       <div className="flex-1 flex flex-col">
-        <Header />
+        <Header toggleSidebar={toggleSidebar}/>
         <div className="flex-1 overflow-y-auto bg-gray-100 p-6">
           <Routes>
             {/* <Route path="/" element={<ProfileScreen />} /> */}

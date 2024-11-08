@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Collapse } from "@mui/material";
-import { HiOutlineLogout, HiMenuAlt2 } from "react-icons/hi";
+import { HiOutlineLogout } from "react-icons/hi";
 import { useNavigate, NavLink } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 import { ReactComponent as DashboardIcon } from "../assets/images/Dashboard.svg";
@@ -18,11 +18,10 @@ import { ReactComponent as TelePatientIcon } from "../assets/images/TelePatient.
 import { ReactComponent as appPatientIcon } from "../assets/images/appPatient.svg";
 import { ReactComponent as healthIcon } from "../assets/images/health.svg";
 
-const Sidebar = ({ role, onLogout }) => {
+const Sidebar = ({ role, onLogout, isSidebarOpen, setIsSidebarOpen }) => {
   const navigate = useNavigate();
   const [openBilling, setOpenBilling] = useState(false);
   const [activeTab, setActiveTab] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to control sidebar visibility on small screens
 
   const tabs = {
     admin: [
@@ -36,7 +35,11 @@ const Sidebar = ({ role, onLogout }) => {
         icon: DoctorManagementIcon,
         path: "/admin/doctor-management",
       },
-      { label: "Patient Management", icon: VectorIcon, path: "/admin/patient-management" },
+      {
+        label: "Patient Management",
+        icon: VectorIcon,
+        path: "/admin/patient-management",
+      },
       {
         label: "Billing And Payments",
         icon: BilingIcon,
@@ -46,11 +49,23 @@ const Sidebar = ({ role, onLogout }) => {
           { label: "Payment Process", path: "/admin/payment-process" },
         ],
       },
-      { label: "Reporting And Analytics", icon: ReportIcon, path: "/admin/analytics" },
+      {
+        label: "Reporting And Analytics",
+        icon: ReportIcon,
+        path: "/admin/analytics",
+      },
     ],
     doctor: [
-      { label: "Appointment Management", icon: calendariconIcon, path: "/doctor/appointment-management" },
-      { label: "Patient Record Access", icon: PatientRecordIcon, path: "/doctor/patient-record-access" },
+      {
+        label: "Appointment Management",
+        icon: calendariconIcon,
+        path: "/doctor/appointment-management",
+      },
+      {
+        label: "Patient Record Access",
+        icon: PatientRecordIcon,
+        path: "/doctor/patient-record-access",
+      },
       {
         label: "Prescription Tools",
         icon: PrescriptioniconIcon,
@@ -59,14 +74,30 @@ const Sidebar = ({ role, onLogout }) => {
           { label: "Manage", path: "/doctor/prescription-tools/manage" },
         ],
       },
-      { label: "Teleconsultation", icon: TeleAccessIcon, path: "/doctor/teleconsultation" },
+      {
+        label: "Teleconsultation",
+        icon: TeleAccessIcon,
+        path: "/doctor/teleconsultation",
+      },
       { label: "Chat", icon: ChatIcon, path: "/doctor/doctor-chat" },
     ],
     patient: [
       { label: "Personal Health Record", icon: healthIcon, path: "/patient" },
-      { label: "Appointment Booking", icon: appPatientIcon, path: "/patient/appointment-booking" },
-      { label: "Prescription Access", icon: PrescriptioniconIcon, path: "/patient/prescription-access" },
-      { label: "Teleconsultation Access", icon: TelePatientIcon, path: "/patient/tele-access" },
+      {
+        label: "Appointment Booking",
+        icon: appPatientIcon,
+        path: "/patient/appointment-booking",
+      },
+      {
+        label: "Prescription Access",
+        icon: PrescriptioniconIcon,
+        path: "/patient/prescription-access",
+      },
+      {
+        label: "Teleconsultation Access",
+        icon: TelePatientIcon,
+        path: "/patient/tele-access",
+      },
       { label: "Chat", icon: ChatIcon, path: "/patient/chat" },
       { label: "Bills", icon: PatientBillIcon, path: "/patient/bills" },
     ],
@@ -81,7 +112,7 @@ const Sidebar = ({ role, onLogout }) => {
   const handleMenuClick = (path, label) => {
     setActiveTab(label);
     if (path) navigate(path);
-    setIsSidebarOpen(false); // Close sidebar on small screens after clicking a link
+    setIsSidebarOpen(false);
   };
 
   const handleToggleBilling = () => {
@@ -90,14 +121,6 @@ const Sidebar = ({ role, onLogout }) => {
 
   return (
     <div className="flex">
-      {/* Sidebar Toggle Button for small screens */}
-      <button
-        className="p-2 bg-white text-gray-600 md:hidden"
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-      >
-        <HiMenuAlt2 size={24} />
-      </button>
-
       {/* Sidebar */}
       <div
         className={`fixed md:relative z-30 transition-transform duration-300 transform ${
@@ -117,34 +140,45 @@ const Sidebar = ({ role, onLogout }) => {
                 <NavLink
                   to={item.path}
                   className={`relative flex items-center w-full px-6 py-4 font-semibold ${
-                    activeTab === item.label ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
+                    activeTab === item.label
+                      ? "text-[#0EABEB]"
+                      : "hover:text-[#0EABEB] text-[#818194]"
                   }`}
                   onClick={() => handleMenuClick(item.path, item.label)}
                 >
-                   {/* Conditionally apply color for SVG icons based on active tab */}
-                {item.icon === DashboardIcon || item.icon === DoctorManagementIcon  ? (
-                  <item.icon
-                    className="mr-3 transition duration-300 z-20 relative"
-                    style={{ fill: activeTab === item.label ? "#0EABEB" :  "#818194" }}
-                  />
-                ) : (
-                  <item.icon
-                    className={`mr-3 transition duration-300 z-20 relative ${
-                      activeTab === item.label ? "text-[#0EABEB]" : "text-[#818194]"
-                    }`}
-                  />
-                )}
+                  {/* Conditionally apply color for SVG icons based on active tab */}
+                  {item.icon === DashboardIcon ||
+                  item.icon === DoctorManagementIcon ? (
+                    <item.icon
+                      className="mr-3 transition duration-300 z-20 relative"
+                      style={{
+                        fill: activeTab === item.label ? "#0EABEB" : "#818194",
+                      }}
+                    />
+                  ) : (
+                    <item.icon
+                      className={`mr-3 transition duration-300 z-20 relative ${
+                        activeTab === item.label
+                          ? "text-[#0EABEB]"
+                          : "text-[#818194]"
+                      }`}
+                    />
+                  )}
                   <span className="relative z-20">{item.label}</span>
 
                   {/* Active Tab Background & Border */}
                   <div
                     className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${
-                      activeTab === item.label ? "opacity-100" : "group-hover:opacity-100"
+                      activeTab === item.label
+                        ? "opacity-100"
+                        : "group-hover:opacity-100"
                     } transition duration-300 z-10`}
                   ></div>
                   <div
                     className={`absolute top-0 right-0 h-10 bg-[#0EABEB] ${
-                      activeTab === item.label ? "w-2 opacity-100" : "group-hover:w-2 opacity-0"
+                      activeTab === item.label
+                        ? "w-2 opacity-100"
+                        : "group-hover:w-2 opacity-0"
                     } rounded-tl-lg rounded-bl-lg transition-all duration-300 z-10`}
                   ></div>
                 </NavLink>
@@ -153,10 +187,16 @@ const Sidebar = ({ role, onLogout }) => {
                   <button
                     onClick={handleToggleBilling}
                     className={`flex items-center w-full px-6 py-4 font-semibold ${
-                      openBilling ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
+                      openBilling
+                        ? "text-[#0EABEB]"
+                        : "hover:text-[#0EABEB] text-[#818194]"
                     }`}
                   >
-                    <item.icon className={`mr-4 ${openBilling ? "text-[#0EABEB]" : "text-[#818194]"}`} />
+                    <item.icon
+                      className={`mr-4 ${
+                        openBilling ? "text-[#0EABEB]" : "text-[#818194]"
+                      }`}
+                    />
                     <span>{item.label}</span>
                   </button>
                   <Collapse in={openBilling} timeout="auto" unmountOnExit>
@@ -166,11 +206,17 @@ const Sidebar = ({ role, onLogout }) => {
                           <NavLink
                             to={subItem.path}
                             className={`relative flex items-center w-full pl-12 py-3 font-semibold ${
-                              activeTab === subItem.label ? "text-[#0EABEB]" : "hover:text-[#0EABEB] text-[#818194]"
+                              activeTab === subItem.label
+                                ? "text-[#0EABEB]"
+                                : "hover:text-[#0EABEB] text-[#818194]"
                             }`}
-                            onClick={() => handleMenuClick(subItem.path, subItem.label)}
+                            onClick={() =>
+                              handleMenuClick(subItem.path, subItem.label)
+                            }
                           >
-                            <span className="relative z-20">{subItem.label}</span>
+                            <span className="relative z-20">
+                              {subItem.label}
+                            </span>
                             {/* Active Tab Background & Border */}
                             <div
                               className={`absolute inset-0 bg-gradient-to-r from-[#E0F3FB] to-white opacity-0 ${

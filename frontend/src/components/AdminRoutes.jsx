@@ -24,6 +24,7 @@ import PendingInvoice from "./PendingInvoice";
 
 const AdminRoutes = ({ onLogout }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [filterOption, setFilterOption] = useState("All");
 
   const handleSearch = (query, filter) => {
@@ -31,11 +32,15 @@ const AdminRoutes = ({ onLogout }) => {
     setFilterOption(filter);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#f6f8fb]">
-      <Sidebar role={"admin"} onLogout={onLogout} />
+      <Sidebar role={"admin"} onLogout={onLogout} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
       <div className="flex-1 flex flex-col bg-[#f6f8fb]">
-        <Header onSearch={handleSearch} />
+        <Header onSearch={handleSearch} toggleSidebar={toggleSidebar}/>
         <div className="flex-1 overflow-y-auto bg-[#f6f8fb] p-5">
           {searchQuery ? (
             <SearchResults query={searchQuery} filterOption={filterOption} />

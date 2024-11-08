@@ -18,13 +18,19 @@ import DoctorMeetingConference from "../pages/doctorPages/DoctorMeetingConferenc
 import DoctorProfile from "./DoctorProfile";
 import DoctorEditProfile from "./Profile/DoctorEditProfile";
 import CreatePrescriptionPage from "./CreatePrescriptionPage";
+import { useState } from "react";
 
 const DoctorRoutes = ( {onLogout} ) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   return (
     <div className="flex h-screen overflow-hidden bg-[#f6f8fb]">
-      <Sidebar role={"doctor"}  onLogout={onLogout} />
+      <Sidebar role={"doctor"}  onLogout={onLogout} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
       <div className="flex-1 flex flex-col bg-[#f6f8fb]">
-        <Header />
+        <Header toggleSidebar={toggleSidebar}/>
         <div className="flex-1 overflow-y-auto bg-[#f6f8fb] p-6">
           <Routes>
             <Route path="/appointment-management" element={<AppointmentManagement />} />
