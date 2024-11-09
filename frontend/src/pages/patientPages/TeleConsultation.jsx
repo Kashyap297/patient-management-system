@@ -131,7 +131,7 @@ const TeleConsultation = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg min-h-screen">
+    <div className="bg-white p-6 rounded-xl shadow-lg min-h-screen">
       <div className="flex space-x-4 border-b mb-4">
         {['Today Appointment', 'Upcoming Appointment', 'Previous Appointment', 'Cancel Appointment'].map((tab) => (
           <button
@@ -165,7 +165,7 @@ const TeleConsultation = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {loading
           ? Array.from({ length: 8 }).map((_, index) => (
-              <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+              <div key={index} className="bg-white p-4 rounded-xl shadow-md">
                 <Skeleton height={20} width="60%" className="mb-2" />
                 <Skeleton height={15} width="80%" className="mb-1" />
                 <Skeleton height={15} width="70%" className="mb-1" />
@@ -192,7 +192,7 @@ const TeleConsultation = () => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        className="bg-white rounded-lg shadow-lg p-6 max-w-sm mx-auto my-20 border-t-4 border-red-500"
+        className="bg-white rounded-xl shadow-lg p-6 max-w-sm mx-auto my-20 border-t-4 border-red-500"
         overlayClassName="fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center"
       >
         <div className="text-center">

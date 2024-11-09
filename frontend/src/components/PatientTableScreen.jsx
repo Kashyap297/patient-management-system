@@ -49,7 +49,7 @@ const PatientTable = ({ searchTerm }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-6 rounded-xl shadow-md">
       {filteredPatients.length > 0 ? (
         <table className="w-full text-left table-auto">
           <thead className="bg-gray-100">

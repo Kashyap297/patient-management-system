@@ -112,231 +112,62 @@ const EditBill = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Edit Bill</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4 border rounded-xl p-5">
-        <div className="relative mb-4">
-          <input
-            type="text"
-            name="patientName"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Patient Name"
-            value={formData.patientName}
-            onChange={handleInputChange}
-            disabled
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Patient Name
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="text"
-            name="phoneNumber"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Phone Number"
-            value={formData.phoneNumber}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Phone Number
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <select
-            name="gender"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            value={formData.gender}
-            onChange={handleInputChange}
-          >
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Gender
-          </label>
-        </div>
+    <div className="p-4 md:p-6 bg-white rounded-xl shadow-md">
+      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Edit Bill</h2>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 border rounded-xl p-4 md:p-6">
+        
+        {[
+          { label: "Patient Name", name: "patientName", type: "text", disabled: true },
+          { label: "Phone Number", name: "phoneNumber", type: "text" },
+          { label: "Gender", name: "gender", type: "select", options: ["Male", "Female", "Other"] },
+          { label: "Age", name: "age", type: "number" },
+          { label: "Doctor Name", name: "doctorName", type: "text", disabled: true },
+          { label: "Disease Name", name: "diseaseName", type: "text" },
+          { label: "Description", name: "description", type: "text" },
+          { label: "Payment Type", name: "paymentType", type: "select", options: ["Online", "Cash", "Card", "Insurance"] },
+          { label: "Bill Date", name: "billDate", type: "date" },
+          { label: "Bill Time", name: "billTime", type: "time" },
+          { label: "Bill Number", name: "billNumber", type: "text", disabled: true },
+          { label: "Amount", name: "amount", type: "number" },
+          { label: "Tax (%)", name: "tax", type: "number" },
+          { label: "Discount", name: "discount", type: "number" },
+          { label: "Total Amount", name: "totalAmount", type: "text", disabled: true },
+          { label: "Address", name: "address", type: "text" },
+        ].map((field, index) => (
+          <div className="relative mb-4" key={index}>
+            {field.type === "select" ? (
+              <select
+                name={field.name}
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
+                value={formData[field.name]}
+                onChange={handleInputChange}
+              >
+                <option value="">{`Select ${field.label}`}</option>
+                {field.options.map((option) => (
+                  <option value={option} key={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type={field.type}
+                name={field.name}
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
+                placeholder={field.label}
+                value={formData[field.name]}
+                onChange={handleInputChange}
+                disabled={field.disabled}
+              />
+            )}
+            <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
+              {field.label}
+            </label>
+          </div>
+        ))}
 
-        <div className="relative mb-4">
-          <input
-            type="number"
-            name="age"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Age"
-            value={formData.age}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Age
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="text"
-            name="doctorName"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Doctor Name"
-            value={formData.doctorName}
-            onChange={handleInputChange}
-            disabled
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Doctor Name
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="text"
-            name="diseaseName"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Disease Name"
-            value={formData.diseaseName}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Disease Name
-          </label>
-        </div>
-
-        <div className="relative mb-4">
-          <input
-            type="text"
-            name="description"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Description
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <select
-            name="paymentType"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            value={formData.paymentType}
-            onChange={handleInputChange}
-          >
-            <option value="">Select Payment Type</option>
-            <option value="Online">Online</option>
-            <option value="Cash">Cash</option>
-            <option value="Card">Card</option>
-            <option value="Insurance">Insurance</option>
-          </select>
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Payment Type
-          </label>
-        </div>
-
-        <div className="relative mb-4">
-          <input
-            type="date"
-            name="billDate"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            value={formData.billDate}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Bill Date
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="time"
-            name="billTime"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            value={formData.billTime}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Bill Time
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="text"
-            name="billNumber"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Bill Number"
-            value={formData.billNumber}
-            onChange={handleInputChange}
-            disabled
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Bill Number
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="number"
-            name="amount"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Amount"
-            value={formData.amount}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Amount
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="number"
-            name="tax"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Tax (%)"
-            value={formData.tax}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Tax (%)
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="number"
-            name="discount"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Discount"
-            value={formData.discount}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Discount
-          </label>
-        </div>
-        <div className="relative mb-4">
-          <input
-            type="text"
-            name="totalAmount"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Total Amount"
-            value={formData.totalAmount}
-            disabled
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Total Amount
-          </label>
-        </div>
-        <div className="relative mb-4 ">
-          <input
-            type="text"
-            name="address"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Address"
-            value={formData.address}
-            onChange={handleInputChange}
-          />
-          <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-            Address
-          </label>
-        </div>
-
-        <div className="col-span-4 flex justify-end">
-          <button type="submit" className="px-6 py-2 bg-[#0eabeb] text-white rounded-lg ">
+        <div className="col-span-1 md:col-span-2 lg:col-span-4 flex justify-end">
+          <button type="submit" className="px-4 py-2 bg-[#0eabeb] text-white rounded-xl ">
             Save
           </button>
         </div>

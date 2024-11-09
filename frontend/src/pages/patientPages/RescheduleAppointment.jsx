@@ -175,7 +175,7 @@ const RescheduleAppointment = () => {
 
   const renderAppointmentGrid = () => {
     return (
-      <table className="min-w-full table-auto border-collapse bg-white rounded-lg shadow overflow-hidden">
+      <table className="min-w-full table-auto border-collapse bg-white rounded-xl shadow overflow-hidden">
         <thead>
           <tr>
             <th className="border px-4 py-2 bg-gray-100 text-sm font-semibold text-gray-600">
@@ -245,7 +245,7 @@ const RescheduleAppointment = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-6 bg-white rounded-xl shadow-md">
       <h2 className="text-2xl font-semibold mb-6 text-[#030229]">
         Appointment Time Slot
       </h2>

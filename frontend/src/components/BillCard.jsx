@@ -10,7 +10,7 @@ const BillCard = ({ bill }) => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 w-full">
+    <div className="bg-white shadow-md rounded-xl p-4 w-full">
       <div className="flex justify-between items-center mb-2">
         <span className="text-lg font-semibold">
           Bill No: <a href="#">{bill.id}</a>

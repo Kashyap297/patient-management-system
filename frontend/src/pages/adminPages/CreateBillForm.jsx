@@ -272,7 +272,7 @@ const CreateBill = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-8 bg-white rounded-lg shadow-lg">
+      <div className="p-8 bg-white rounded-xl shadow-lg">
         <h1 className="text-2xl font-semibold mb-6">Create Bill</h1>
 
         <h2 className="text-lg font-semibold mb-4">Hospital Details</h2>

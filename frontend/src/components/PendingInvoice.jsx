@@ -42,7 +42,7 @@ const PendingInvoice = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md m-4">
+        <div className="bg-white p-6 rounded-xl shadow-md m-4">
             <h2 className="text-xl font-semibold mb-6">Pending Bills ({pendingInvoices.length})</h2>
 
             {loading ? (
@@ -50,7 +50,7 @@ const PendingInvoice = () => {
             ) : pendingInvoices.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {pendingInvoices.map((invoice, index) => (
-                        <div key={index} className="p-4 bg-gray-50 rounded-lg shadow flex flex-col justify-between">
+                        <div key={index} className="p-4 bg-gray-50 rounded-xl shadow flex flex-col justify-between">
                             <div>
                                 <div className="flex justify-between items-center mb-2">
                                     <h3 className="text-md font-bold">

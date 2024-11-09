@@ -184,7 +184,7 @@ const ChatScreen = () => {
   return (
     <div className="flex h-[calc(100vh-80px)] p-4 bg-gray-100">
       {/* Chat List (Sidebar) */}
-      <div className="w-1/3 bg-white shadow-lg rounded-lg p-4 overflow-auto">
+      <div className="w-1/3 bg-white shadow-lg rounded-xl p-4 overflow-auto">
         <div className="mb-4">
           <TextField
             fullWidth
@@ -225,7 +225,7 @@ const ChatScreen = () => {
       </div>
 
       {/* Chat Window */}
-      <div className="flex-1 bg-white shadow-lg rounded-lg ml-4 p-4 flex flex-col">
+      <div className="flex-1 bg-white shadow-lg rounded-xl ml-4 p-4 flex flex-col">
         <div className="flex items-center mb-4">
           <Avatar src={selectedChat.profile} alt={selectedChat.name} />
           <div className="ml-4">
@@ -239,7 +239,7 @@ const ChatScreen = () => {
           {selectedChat.chat.map((msg, index) => (
             <div key={index} className={`mb-2 ${msg.sender === 'You' ? 'text-right' : 'text-left'}`}>
               <div className="inline-block">
-                <p className="bg-gray-200 rounded-lg p-2 max-w-xs inline-block text-sm">
+                <p className="bg-gray-200 rounded-xl p-2 max-w-xs inline-block text-sm">
                   {msg.message}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">{msg.time}</p>
@@ -247,13 +247,13 @@ const ChatScreen = () => {
               {/* Show image if it's an image message */}
               {msg.type === 'image' && (
                 <div className="my-2">
-                  <img src={msg.imageUrl} alt="Chat Image" className="max-w-xs rounded-lg" />
+                  <img src={msg.imageUrl} alt="Chat Image" className="max-w-xs rounded-xl" />
                   <p className="text-xs text-gray-500">{msg.time}</p>
                 </div>
               )}
               {/* Show file if it's a file message */}
               {msg.type === 'file' && (
-                <div className="my-2 inline-block bg-gray-100 p-2 rounded-lg">
+                <div className="my-2 inline-block bg-gray-100 p-2 rounded-xl">
                   <p className="text-blue-500">{msg.fileName}</p>
                   <p className="text-xs text-gray-500">{msg.fileSize}</p>
                 </div>

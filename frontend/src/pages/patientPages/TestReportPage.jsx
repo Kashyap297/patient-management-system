@@ -101,7 +101,7 @@ const TestReportPage = () => {
   
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg  h-full">
+    <div className="bg-white p-6 rounded-xl shadow-lg  h-full">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Test Reports</h2>
         
@@ -112,7 +112,7 @@ const TestReportPage = () => {
         {testReport.map((testReport, index) => (
           <div
             key={index}
-            className="border rounded-lg  shadow-md   transition"
+            className="border rounded-xl  shadow-md   transition"
           >
             {/* Card header with doctor name and eye icon */}
             <div className="flex justify-between items-center p-2 bg-gray-50 rounded-t-lg  mb-4">

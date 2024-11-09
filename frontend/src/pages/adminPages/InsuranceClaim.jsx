@@ -9,7 +9,7 @@ const InsuranceClaims = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [insuranceClaimsData, setInsuranceClaimsData] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchInsuranceClaimsData = async () => {
@@ -24,10 +24,10 @@ const InsuranceClaims = () => {
           (entry) => entry.paymentType === "Insurance"
         );
         setInsuranceClaimsData(filteredData);
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching insurance claims:", error);
-        setLoading(false); // Set loading to false in case of an error
+        setLoading(false);
       }
     };
     fetchInsuranceClaimsData();
@@ -58,11 +58,11 @@ const InsuranceClaims = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-md h-full">
+    <div className="p-4 md:p-6 bg-white rounded-2xl shadow-md h-full">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-[#030229]">Insurance Claims</h2>
-        <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2 max-w-lg">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
+        <h2 className="text-lg md:text-xl font-semibold text-[#030229]">Insurance Claims</h2>
+        <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2 w-full md:max-w-lg">
           <FaSearch className="text-gray-500 mr-2" />
           <input
             type="text"
@@ -79,60 +79,51 @@ const InsuranceClaims = () => {
         <table className="w-full bg-white rounded-2xl overflow-hidden">
           <thead className="bg-[#f6f8fb]">
             <tr>
-              <th className="px-6 py-4 text-left font-semibold">Bill No</th>
-              <th className="px-6 py-4 text-left font-semibold">Doctor Name</th>
-              <th className="px-6 py-4 text-left font-semibold">Patient Name</th>
-              <th className="px-6 py-4 text-left font-semibold">Disease Name</th>
-              <th className="px-6 py-4 text-left font-semibold">Insurance Company</th>
-              <th className="px-6 py-4 text-left font-semibold">Insurance Plan</th>
-              <th className="px-6 py-4 text-left font-semibold">Bill Date</th>
-              <th className="px-6 py-4 text-left font-semibold">Action</th>
+              {["Bill No", "Doctor Name", "Patient Name", "Disease Name", "Insurance Company", "Insurance Plan", "Bill Date", "Action"].map((header) => (
+                <th key={header} className="px-4 md:px-6 py-2 md:py-4 text-left font-semibold text-sm md:text-base">
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              // Display skeleton rows when loading
               [...Array(5)].map((_, index) => (
                 <tr key={index}>
-                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={120} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={120} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={120} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={150} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={100} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={30} height={20} /></td>
+                  {["80", "120", "120", "120", "150", "100", "80", "30"].map((width, i) => (
+                    <td key={i} className="px-4 py-3"><Skeleton width={width} height={20} /></td>
+                  ))}
                 </tr>
               ))
             ) : filteredData.length > 0 ? (
               filteredData.map((claim, index) => (
                 <tr key={index} className="border-b">
-                  <td className="px-6 py-4 text-[#4F4F4F] font-semibold">
-                    <span className="bg-[#f6f8fb] px-4 py-2 rounded-full text-[#718EBF]">
+                  <td className="px-4 py-3 text-[#4F4F4F] font-semibold">
+                    <span className="bg-[#f6f8fb] px-2 md:px-4 py-1 md:py-2 rounded-full text-[#718EBF]">
                       {claim.billNumber}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-[#4F4F4F]">
+                  <td className="px-4 py-3 text-[#4F4F4F]">
                     {`${claim.doctor.firstName} ${claim.doctor.lastName}`}
                   </td>
-                  <td className="px-6 py-4 text-[#4F4F4F]">
+                  <td className="px-4 py-3 text-[#4F4F4F]">
                     {`${claim.patient.firstName} ${claim.patient.lastName}`}
                   </td>
-                  <td className="px-6 py-4 text-[#4F4F4F]">{claim.diseaseName}</td>
-                  <td className="px-6 py-4 text-[#4F4F4F]">
+                  <td className="px-4 py-3 text-[#4F4F4F]">{claim.diseaseName}</td>
+                  <td className="px-4 py-3 text-[#4F4F4F]">
                     {claim.insuranceDetails.insuranceCompany}
                   </td>
-                  <td className="px-6 py-4 text-[#4F4F4F]">
+                  <td className="px-4 py-3 text-[#4F4F4F]">
                     <span className="text-blue-500">
                       {claim.insuranceDetails.insurancePlan}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-[#4F4F4F]">
+                  <td className="px-4 py-3 text-[#4F4F4F]">
                     {new Date(claim.billDate).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-3">
                     <button
-                      className="text-blue-500 hover:bg-gray-100 p-2 rounded-lg"
+                      className="text-blue-500 hover:bg-gray-100 p-2 rounded-xl"
                       onClick={() => handleViewDetails(claim)}
                     >
                       <FaEye />
@@ -142,7 +133,7 @@ const InsuranceClaims = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="text-center py-16 text-gray-500">
+                <td colSpan="8" className="text-center py-8 sm:py-16 text-gray-500">
                   No claims found
                 </td>
               </tr>

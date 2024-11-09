@@ -43,7 +43,7 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
   if (loading) {
     return (
       <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 overflow-y-auto">
+        <div className="bg-white p-6 rounded-xl shadow-lg w-1/3 overflow-y-auto">
           <Skeleton height={30} width={200} className="mb-4" />
           <Skeleton height={150} className="mb-4" />
           <Skeleton count={5} height={20} className="mb-2" />
@@ -59,14 +59,14 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 overflow-y-auto" id="prescription-modal-content">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-1/3 overflow-y-auto" id="prescription-modal-content">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Prescription</h2>
           <button onClick={closeModal} className="bg-red-500 text-white rounded-full px-2 py-1 text-sm">X</button>
         </div>
 
         {/* Header */}
-        <div className="p-4 bg-gray-50 rounded-lg mb-4">
+        <div className="p-4 bg-gray-50 rounded-xl mb-4">
           <div className="flex justify-between items-center mb-4">
             <div className="py-2">
               <img src={logo} alt="Hospital Logo" className="w-48 mx-auto mb-4" />
@@ -120,8 +120,8 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
         </div>
 
         {/* Prescription Details */}
-        <div className="overflow-x-auto mb-4 rounded-lg">
-          <table className="w-full text-left rounded-lg">
+        <div className="overflow-x-auto mb-4 rounded-xl">
+          <table className="w-full text-left rounded-xl">
             <thead>
               <tr className="bg-gray-50">
                 <th className="py-2 px-4">Medicine Name</th>

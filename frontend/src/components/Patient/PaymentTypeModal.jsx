@@ -35,7 +35,7 @@ const PaymentTypeModal = ({ bill, onClose }) => {
         <h2 className="text-lg font-semibold mb-4">Select Payment Type</h2>
         <div className="space-y-2">
           <div
-            className="flex items-center p-4 rounded-lg bg-white border cursor-pointer"
+            className="flex items-center p-4 rounded-xl bg-white border cursor-pointer"
             onClick={() => setPaymentType("Online")}
           >
             <FaCreditCard className={`mr-3 ${paymentType === "Online" ? "text-customBlue" : "text-gray-500"}`} size={20} />
@@ -50,7 +50,7 @@ const PaymentTypeModal = ({ bill, onClose }) => {
           </div>
 
           <div
-            className="flex items-center p-4 rounded-lg bg-white border cursor-pointer"
+            className="flex items-center p-4 rounded-xl bg-white border cursor-pointer"
             onClick={() => setPaymentType("Cash")}
           >
             <FaMoneyBillAlt className={`mr-3 ${paymentType === "Cash" ? "text-customBlue" : "text-gray-500"}`} size={20} />
@@ -66,11 +66,11 @@ const PaymentTypeModal = ({ bill, onClose }) => {
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-4">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg border">
+          <button onClick={onClose} className="px-4 py-2 rounded-xl border">
             Cancel
           </button>
           {paymentType && (
-            <button onClick={() => handlePaymentTypeSelection(paymentType)} className="px-4 py-2 rounded-lg bg-customBlue text-white">
+            <button onClick={() => handlePaymentTypeSelection(paymentType)} className="px-4 py-2 rounded-xl bg-customBlue text-white">
               Pay Now
             </button>
           )}

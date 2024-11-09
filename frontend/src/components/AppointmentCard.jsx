@@ -2,7 +2,7 @@ import React from "react";
 
 const AppointmentCard = ({ patientName, doctorName, diseaseName, appointmentTime, appointmentType }) => {
   return (
-    <div className="bg-white border rounded-lg shadow-md p-4 min-w-[250px] max-w-[250px]">
+    <div className="bg-white border rounded-xl shadow-md p-4 min-w-[250px] max-w-[250px]">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-md font-semibold text-black">{patientName}</h3>
         <span

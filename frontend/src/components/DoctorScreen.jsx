@@ -31,7 +31,7 @@ const DoctorTable = ({ searchTerm }) => {
   );
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-6 rounded-xl shadow-md">
       {filteredDoctors.length > 0 ? (
         <table className="w-full text-left table-auto">
           <thead>

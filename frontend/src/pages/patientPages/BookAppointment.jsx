@@ -561,7 +561,7 @@ const BookAppointment = () => {
                 {selectedSlot.time}.
               </p>
               <button
-                className="mt-6 px-4 py-2 bg-green-500 text-white rounded-lg"
+                className="mt-6 px-4 py-2 bg-green-500 text-white rounded-xl"
                 onClick={closeModal}
               >
                 Okay
@@ -572,7 +572,7 @@ const BookAppointment = () => {
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Appointment
               </h2>
-              <div className="bg-[#f6f8fb] p-4 rounded-lg mb-4">
+              <div className="bg-[#f6f8fb] p-4 rounded-xl mb-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-600 text-sm">
                     Appointment Type
@@ -635,13 +635,13 @@ const BookAppointment = () => {
               <div className="flex justify-between mt-6">
                 <button
                   onClick={closeModal}
-                  className="px-4 py-2 hover:bg-gray-100 bg-white text-gray-600 border rounded-lg hover:bg-gray-200 transition"
+                  className="px-4 py-2 hover:bg-gray-100 bg-white text-gray-600 border rounded-xl hover:bg-gray-200 transition"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleBookAppointment}
-                  className="flex items-center px-4 py-2 bg-[#0eabeb] text-white rounded-lg hover:bg-[#0eabeb] transition"
+                  className="flex items-center px-4 py-2 bg-[#0eabeb] text-white rounded-xl hover:bg-[#0eabeb] transition"
                   disabled={loading}
                 >
                   <span>{loading ? "Booking..." : "Book Appointment"}</span>

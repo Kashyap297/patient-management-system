@@ -112,7 +112,7 @@ const PatientsStatistics = () => {
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-full">
+    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md w-full max-w-full">
       <div className="flex flex-col sm:flex-row justify-between items-center">
         <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-0">Patients Statistics</h2>
         <div className="flex gap-1 sm:gap-2">

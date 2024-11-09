@@ -197,7 +197,7 @@ const PatientDetail = () => {
                     <td className="py-3 px-6">
                       <button
                         onClick={() => console.log("View details")}
-                        className="text-blue-500 hover:bg-gray-100 p-2 rounded-lg"
+                        className="text-blue-500 hover:bg-gray-100 p-2 rounded-xl"
                       >
                         <FaEye />
                       </button>

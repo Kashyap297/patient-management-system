@@ -72,7 +72,7 @@ const PatientsSummary = () => {
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
       <h2 className="text-lg font-semibold mb-4">Patients Summary</h2>
       <div className="flex flex-col md:flex-row items-center">
         <div className="relative w-full md:w-1/2 flex items-center justify-center mb-6 md:mb-0">

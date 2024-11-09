@@ -29,7 +29,7 @@ const AddFieldModal = ({ open, handleClose, handleAddField }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
         <h2 className="text-xl font-bold mb-4">Add New Field</h2>
 
         <div className="mb-4">
@@ -65,7 +65,7 @@ const AddFieldModal = ({ open, handleClose, handleAddField }) => {
               <select
                 value={selectionType}
                 onChange={(e) => setSelectionType(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg mt-1"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl mt-1"
               >
                 <option value="Single">Single</option>
                 <option value="Multiple">Multiple</option>
@@ -78,7 +78,7 @@ const AddFieldModal = ({ open, handleClose, handleAddField }) => {
                   type="text"
                   value={option}
                   onChange={(e) => handleOptionChange(index, e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-xl"
                   placeholder={`Option ${index + 1}`}
                 />
               </div>
@@ -101,7 +101,7 @@ const AddFieldModal = ({ open, handleClose, handleAddField }) => {
               placeholder="Enter Text Field Label"
               value={textFieldLabel}
               onChange={(e) => setTextFieldLabel(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2 border border-gray-300 rounded-xl"
             />
             <label className="absolute left-3 -top-3 px-1 bg-white text-sm font-medium">
               Text Field Label
@@ -112,13 +112,13 @@ const AddFieldModal = ({ open, handleClose, handleAddField }) => {
         <div className="flex justify-end space-x-4 mt-4">
           <button
             onClick={handleClose}
-            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+            className="px-4 py-2 bg-gray-200 rounded-xl hover:bg-gray-300"
           >
             Cancel
           </button>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
           >
             Add
           </button>

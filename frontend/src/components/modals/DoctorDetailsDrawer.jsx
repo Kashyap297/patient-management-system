@@ -13,7 +13,7 @@ const DoctorDetailsDrawer = ({ open, onClose, doctor }) => {
           </IconButton>
         </div>
 
-        <div className="flex items-center mb-4 p-4 bg-blue-500 rounded-lg">
+        <div className="flex items-center mb-4 p-4 bg-blue-500 rounded-xl">
           <img
             src={
               doctor?.profileImage

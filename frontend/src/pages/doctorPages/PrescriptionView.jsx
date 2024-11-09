@@ -200,7 +200,7 @@ const PrescriptionView = () => {
                       </span>
                     </div>
                     <div className="px-4 py-4">
-                      <div className="border rounded-lg  overflow-hidden">
+                      <div className="border rounded-xl  overflow-hidden">
                         <img
                           src={`https://patient-management-system-vyv0.onrender.com/${file.url}`}
                           alt="Document"
@@ -257,7 +257,7 @@ const PrescriptionView = () => {
 
                       {/* Medicines Table */}
                       <div className="mt-4 shadow-sm">
-                        <table className="w-full text-left text-xs rounded-lg table-fixed">
+                        <table className="w-full text-left text-xs rounded-xl table-fixed">
                           <thead className="rounded-t-xl">
                             <tr className="bg-[#f6f8fb] rounded-t-xl">
                               <th className="font-semibold py-2 px-2">
@@ -339,7 +339,7 @@ const PrescriptionView = () => {
                       </span>
                     </div>
                     <div className="px-4 py-4">
-                      <div className="border rounded-lg overflow-hidden p-4 bg-white">
+                      <div className="border rounded-xl overflow-hidden p-4 bg-white">
                         <p className="text-gray-700">{file.description}</p>
                       </div>
                     </div>

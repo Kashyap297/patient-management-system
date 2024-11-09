@@ -139,7 +139,7 @@ const AppointmentBookingPage = () => {
       : "Any Date";
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg h-100">
+    <div className="bg-white p-6 rounded-xl shadow-lg h-100">
       <div className="flex space-x-4 border-b mb-4">
         {["Scheduled", "Previous", "Canceled", "Pending"].map((tab) => (
           <button
@@ -160,7 +160,7 @@ const AppointmentBookingPage = () => {
         <h2 className="text-2xl font-semibold">My Appointment</h2>
         <div className="flex items-center space-x-4">
           <div
-            className="flex items-center border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+            className="flex items-center border border-gray-300 rounded-xl px-4 py-2 cursor-pointer"
             onClick={() => setOpenCustomDateModal(true)} // Ensure the modal opens on click
           >
             <CalendarToday className="text-gray-600 mr-2" />
@@ -285,7 +285,7 @@ const AppointmentBookingPage = () => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        className="bg-white rounded-lg shadow-lg p-6 max-w-sm mx-auto my-20 border-t-4 border-red-500"
+        className="bg-white rounded-xl shadow-lg p-6 max-w-sm mx-auto my-20 border-t-4 border-red-500"
         overlayClassName="fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center"
       >
         <div className="text-center">

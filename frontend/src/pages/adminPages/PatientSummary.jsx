@@ -73,39 +73,48 @@ const PatientSummary = () => {
   }, [activeTab]);
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Patients Summary</h2>
-        <div className="flex space-x-2">
-          <button
-            className={classNames(
-              'px-4 py-2 rounded-lg',
-              activeTab === 'Week' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'
-            )}
-            onClick={() => handleTabChange('Week')}
-          >
-            Week
-          </button>
-          <button
-            className={classNames(
-              'px-4 py-2 rounded-lg',
-              activeTab === 'Day' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'
-            )}
-            onClick={() => handleTabChange('Day')}
-          >
-            Day
-          </button>
+    <div className="p-4 md:p-6 bg-white rounded-xl shadow-md h-full">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-700">Patients Summary</h2>
+        
+        {/* Toggle between Week and Day */}
+        <div className="flex space-x-2 mt-3 md:mt-0">
+          {['Week', 'Day'].map((tab) => (
+            <button
+              key={tab}
+              className={classNames(
+                'px-4 py-2 rounded-lg text-sm md:text-base transition-colors duration-300',
+                activeTab === tab
+                  ? 'bg-blue-500 text-white shadow-lg'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              )}
+              onClick={() => handleTabChange(tab)}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Line Chart */}
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={400} minWidth={320}>
         <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey={activeTab === 'Week' ? 'day' : 'date'} />
-          <YAxis />
-          <Tooltip />
-          <Legend />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+          <XAxis
+            dataKey={activeTab === 'Week' ? 'day' : 'date'}
+            stroke="#9CA3AF"
+            tick={{ fontSize: 12 }}
+          />
+          <YAxis stroke="#9CA3AF" tick={{ fontSize: 12 }} />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "#F9FAFB",
+              borderRadius: "8px",
+              fontSize: "14px",
+            }}
+            cursor={{ fill: 'rgba(156, 163, 175, 0.15)' }}
+          />
+          <Legend wrapperStyle={{ fontSize: '14px', marginBottom: '10px' }} />
           <Line
             type="monotone"
             dataKey="newPatient"

@@ -9,7 +9,7 @@ const CardData = () => {
   const [repeatPatients, setRepeatPatients] = useState(0);
   const [admittedPatients, setAdmittedPatients] = useState(0);
   const [totalClaims, setTotalClaims] = useState(0);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,24 +33,23 @@ const CardData = () => {
             admittedCount++;
           }
         });
-        
+
         setRepeatPatients(Object.values(patientAppointments).filter(count => count > 1).length);
         setAdmittedPatients(admittedCount);
 
         const invoiceResponse = await api.get('/invoice');
         setTotalClaims(invoiceResponse.data.data.filter(invoice => invoice.insuranceDetails?.claimAmount).length);
-
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false);
     };
 
     fetchData();
   }, []);
 
   return (
-    <div className="flex space-x-4">
+    <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
       <InfoCard
         icon={<People className="text-[#2C7A7B]" />}
         label="Total Patients"

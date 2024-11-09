@@ -56,7 +56,7 @@ const PrescriptionAccessPage = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg h-full">
+    <div className="bg-white p-6 rounded-xl shadow-lg h-full">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Prescription Access</h2>
         <button className="bg-customBlue text-white px-4 py-2 rounded flex items-center space-x-2">
@@ -69,7 +69,7 @@ const PrescriptionAccessPage = () => {
       <div className="grid grid-cols-4 gap-4 overflow-y-auto custom-scroll">
         {loading ? (
           Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="border rounded-lg shadow-md p-4">
+            <div key={index} className="border rounded-xl shadow-md p-4">
               <Skeleton height={24} width="60%" className="mb-2" />
               <div className="flex space-x-2">
                 <Skeleton height={32} width={32} />
@@ -86,7 +86,7 @@ const PrescriptionAccessPage = () => {
           prescriptions.map((prescription) => (
             <div
               key={prescription._id}
-              className="border rounded-lg shadow-md bg-white transition"
+              className="border rounded-xl shadow-md bg-white transition"
             >
               {/* Card Header */}
               <div className="flex justify-between items-center px-4 py-2 bg-gray-50 rounded-t-lg">
@@ -101,10 +101,10 @@ const PrescriptionAccessPage = () => {
                   )}
                 </h4>
                 <div className="flex">
-                  <div className="text-customBlue text-lg cursor-pointer rounded-lg bg-white p-2">
+                  <div className="text-customBlue text-lg cursor-pointer rounded-xl bg-white p-2">
                     <FaDownload onClick={() => openModal(prescription._id)} />
                   </div>
-                  <div className="text-customBlue text-lg cursor-pointer rounded-lg bg-white p-2 mr-2">
+                  <div className="text-customBlue text-lg cursor-pointer rounded-xl bg-white p-2 mr-2">
                     <FaEye onClick={() => openModal(prescription._id)} />
                   </div>
                 </div>
@@ -139,8 +139,8 @@ const PrescriptionAccessPage = () => {
               </div>
 
               {/* Prescription File */}
-              <div className="flex items-center border-2 m-4 rounded-lg p-2">
-                <div className="text-customBlue rounded-lg p-4 text-3xl bg-gray-50">
+              <div className="flex items-center border-2 m-4 rounded-xl p-2">
+                <div className="text-customBlue rounded-xl p-4 text-3xl bg-gray-50">
                   <FaImage />
                 </div>
                 <div className="ml-2">

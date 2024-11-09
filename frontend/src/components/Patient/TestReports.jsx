@@ -37,7 +37,7 @@ const TestReports = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
+    <div className="bg-white p-6 rounded-xl shadow-lg">
       {/* Heading and View All link */}
       <div className="flex justify-between items-center mb-4 border-b-2 pb-2">
         <h2 className="text-xl font-semibold">Test Reports</h2>
@@ -54,7 +54,7 @@ const TestReports = () => {
       <div className="overflow-y-auto h-[200px] custom-scroll pr-1">
         <div className="grid grid-cols-2 gap-4">
           {reports.map((report, index) => (
-            <div key={index} className="border rounded-lg p-4">
+            <div key={index} className="border rounded-xl p-4">
               {/* Doctor's Image */}
               <div className="flex justify-between align-middle items-center">
                 <div className="mr-4 flex mb-1">

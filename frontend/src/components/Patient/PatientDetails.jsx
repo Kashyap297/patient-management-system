@@ -28,7 +28,7 @@ const PatientDetails = () => {
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-lg">
+      <div className="bg-white p-6 rounded-xl shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <Skeleton width={150} height={30} />
           <Skeleton width={100} height={40} />
@@ -65,7 +65,7 @@ const PatientDetails = () => {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
+    <div className="bg-white p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Patient Details</h2>
         <Link

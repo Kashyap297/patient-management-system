@@ -168,7 +168,7 @@ const PatientEditProfile = () => {
         Profile Setting
       </h2>
 
-      <div className="relative z-10 bg-white shadow-lg rounded-lg p-8 flex mt-8">
+      <div className="relative z-10 bg-white shadow-lg rounded-xl p-8 flex mt-8">
         {/* Left Side: Profile Picture */}
         <div className="flex flex-col items-center w-1/5 border-r pr-8">
           <div className="relative w-48 h-48 mb-4">

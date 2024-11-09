@@ -15,7 +15,7 @@ const DoctorManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [doctorToDelete, setDoctorToDelete] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   // Fetch doctors from API
   useEffect(() => {
@@ -28,10 +28,10 @@ const DoctorManagement = () => {
           },
         });
         setDoctors(response.data);
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching doctors:", error);
-        setLoading(false); // Set loading to false in case of error
+        setLoading(false);
       }
     };
 
@@ -82,12 +82,12 @@ const DoctorManagement = () => {
   );
 
   return (
-    <div className="bg-gray-100 h-full">
-      <div className="bg-white p-4 rounded-lg h-full">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Doctor Management</h2>
+    <div className="bg-gray-100 min-h-screen">
+      <div className="bg-white p-4 md:p-6 rounded-xl h-full">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
+          <h2 className="text-2xl font-semibold text-center md:text-left">Doctor Management</h2>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 space-x-2">
+            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 space-x-2 w-full md:w-auto">
               <FaSearch className="text-gray-500" />
               <input
                 type="text"
@@ -107,97 +107,100 @@ const DoctorManagement = () => {
           </div>
         </div>
 
-        <table className="w-full bg-white rounded-lg overflow-hidden">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-6 py-3 text-left text-gray-600 font-semibold">Doctor Name</th>
-              <th className="px-6 py-3 text-left text-gray-600 font-semibold">Gender</th>
-              <th className="px-6 py-3 text-left text-gray-600 font-semibold">Qualification</th>
-              <th className="px-6 py-3 text-left text-gray-600 font-semibold">Specialty</th>
-              <th className="px-6 py-3 text-left text-gray-600 font-semibold">Working Time</th>
-              <th className="px-6 py-3 text-left text-gray-600 font-semibold">Patient Check-Up Time</th>
-              <th className="px-6 py-3 text-left text-gray-600 font-semibold">Break Time</th>
-              <th className="px-6 py-3 text-center text-gray-600 font-semibold">Action</th>
-            </tr>
-          </thead>
-          {loading ? (
-            // Skeleton loading effect
-            <tbody>
-              {[...Array(5)].map((_, index) => (
-                <tr key={index} className="border-b">
-                  <td className="px-6 py-4"><Skeleton height={40} /></td>
-                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={80} height={20} /></td>
-                  <td className="px-6 py-4"><Skeleton width={100} height={20} /></td>
-                  <td className="px-6 py-4 text-center"><Skeleton width={80} height={20} /></td>
-                  <td className="px-6 py-4 text-center"><Skeleton width={100} height={20} /></td>
-                  <td className="px-6 py-4 text-center"><Skeleton width={80} height={20} /></td>
-                  <td className="px-6 py-4 text-center"><Skeleton width={120} height={40} /></td>
-                </tr>
-              ))}
-            </tbody>
-          ) : filteredDoctors.length > 0 ? (
-            <tbody>
-              {filteredDoctors.map((doctor) => (
-                <tr key={doctor._id} className="border-b">
-                  <td className="px-6 py-4 flex items-center space-x-3">
-                    <img
-                      src={doctor.profileImage ? `https://patient-management-system-vyv0.onrender.com/${doctor.profileImage}` : userImage}
-                      alt="Doctor"
-                      className="w-10 h-10 rounded-full"
-                    />
-                    <span>{`${doctor.firstName} ${doctor.lastName}`}</span>
-                  </td>
-                  <td className="px-6 py-4"><span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">{doctor.gender}</span></td>
-                  <td className="px-6 py-4">{doctor.doctorDetails.qualification || "N/A"}</td>
-                  <td className="px-6 py-4">{doctor.doctorDetails.specialtyType || "N/A"}</td>
-                  <td className="px-6 py-4 text-center"><span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">{doctor.doctorDetails.workingHours?.workingTime || "N/A"}</span></td>
-                  <td className="px-6 py-4 text-center"><span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">{doctor.doctorDetails.workingHours?.checkupTime || "N/A"}</span></td>
-                  <td className="px-6 py-4 text-center"><span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">{doctor.doctorDetails.workingHours?.breakTime || "N/A"}</span></td>
-                  <td className="px-6 py-4 text-xl text-center">
-                    <div className="flex items-center justify-center space-x-4">
-                      <button
-                        onClick={() => handleViewClick(doctor)}
-                        className="text-customBlue bg-gray-100 p-2 rounded-lg"
-                        title="View"
-                      >
-                        <FaEye />
-                      </button>
-                      <Link
-                        to={`/admin/edit-doctor/${doctor._id}`}
-                        className="text-green-500 hover:text-green-600 mx-2 bg-gray-100 p-2 rounded-lg"
-                        title="Edit"
-                      >
-                        <FaEdit />
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteClick(doctor._id)}
-                        className="text-red-500 hover:text-red-600 bg-gray-100 p-2 rounded-lg"
-                        title="Delete"
-                      >
-                        <FaTrash />
-                      </button>
+        {/* Responsive Table Wrapper with Horizontal Scroll */}
+        <div className="overflow-x-auto custom-scroll">
+          <table className="w-full bg-white rounded-xl overflow-hidden">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Doctor Name</th>
+                <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Gender</th>
+                <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Qualification</th>
+                <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Specialty</th>
+                <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Working Time</th>
+                <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Check-Up Time</th>
+                <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Break Time</th>
+                <th className="px-3 md:px-6 py-3 text-center text-gray-600 font-semibold">Action</th>
+              </tr>
+            </thead>
+            {loading ? (
+              <tbody>
+                {[...Array(5)].map((_, index) => (
+                  <tr key={index} className="border-b">
+                    <td className="px-3 md:px-6 py-4"><Skeleton height={40} /></td>
+                    <td className="px-3 md:px-6 py-4"><Skeleton width={80} height={20} /></td>
+                    <td className="px-3 md:px-6 py-4"><Skeleton width={80} height={20} /></td>
+                    <td className="px-3 md:px-6 py-4"><Skeleton width={100} height={20} /></td>
+                    <td className="px-3 md:px-6 py-4 text-center"><Skeleton width={80} height={20} /></td>
+                    <td className="px-3 md:px-6 py-4 text-center"><Skeleton width={100} height={20} /></td>
+                    <td className="px-3 md:px-6 py-4 text-center"><Skeleton width={80} height={20} /></td>
+                    <td className="px-3 md:px-6 py-4 text-center"><Skeleton width={120} height={40} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            ) : filteredDoctors.length > 0 ? (
+              <tbody>
+                {filteredDoctors.map((doctor) => (
+                  <tr key={doctor._id} className="border-b">
+                    <td className="px-3 md:px-6 py-4 flex items-center space-x-3">
+                      <img
+                        src={doctor.profileImage ? `https://patient-management-system-vyv0.onrender.com/${doctor.profileImage}` : userImage}
+                        alt="Doctor"
+                        className="w-10 h-10 rounded-full"
+                      />
+                      <span>{`${doctor.firstName} ${doctor.lastName}`}</span>
+                    </td>
+                    <td className="px-3 md:px-6 py-4"><span className="bg-blue-100 text-blue-600 px-2 md:px-3 py-1 rounded-full text-sm">{doctor.gender}</span></td>
+                    <td className="px-3 md:px-6 py-4">{doctor.doctorDetails.qualification || "N/A"}</td>
+                    <td className="px-3 md:px-6 py-4">{doctor.doctorDetails.specialtyType || "N/A"}</td>
+                    <td className="px-3 md:px-6 py-4 text-center"><span className="bg-blue-100 text-blue-600 px-2 md:px-3 py-1 rounded-full text-sm">{doctor.doctorDetails.workingHours?.workingTime || "N/A"}</span></td>
+                    <td className="px-3 md:px-6 py-4 text-center"><span className="bg-blue-100 text-blue-600 px-2 md:px-3 py-1 rounded-full text-sm">{doctor.doctorDetails.workingHours?.checkupTime || "N/A"}</span></td>
+                    <td className="px-3 md:px-6 py-4 text-center"><span className="bg-blue-100 text-blue-600 px-2 md:px-3 py-1 rounded-full text-sm">{doctor.doctorDetails.workingHours?.breakTime || "N/A"}</span></td>
+                    <td className="px-3 md:px-6 py-4 text-xl text-center">
+                      <div className="flex items-center justify-center space-x-2 md:space-x-4">
+                        <button
+                          onClick={() => handleViewClick(doctor)}
+                          className="text-customBlue bg-gray-100 p-1 md:p-2 rounded-xl"
+                          title="View"
+                        >
+                          <FaEye />
+                        </button>
+                        <Link
+                          to={`/admin/edit-doctor/${doctor._id}`}
+                          className="text-green-500 hover:text-green-600 bg-gray-100 p-1 md:p-2 rounded-xl"
+                          title="Edit"
+                        >
+                          <FaEdit />
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteClick(doctor._id)}
+                          className="text-red-500 hover:text-red-600 bg-gray-100 p-1 md:p-2 rounded-xl"
+                          title="Delete"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            ) : (
+              <tbody>
+                <tr>
+                  <td colSpan="8" className="text-center py-8 md:py-16">
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={noRecordImage}
+                        alt="No Doctor Found"
+                        className="w-32 md:w-48 mb-4"
+                      />
+                      <p className="text-gray-500">No Doctors Found</p>
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          ) : (
-            <tbody>
-              <tr>
-                <td colSpan="8" className="text-center py-16">
-                  <div className="flex flex-col items-center">
-                    <img
-                      src={noRecordImage}
-                      alt="No Doctor Found"
-                      className="w-96 mb-4"
-                    />
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          )}
-        </table>
+              </tbody>
+            )}
+          </table>
+        </div>
       </div>
 
       {/* OffCanvas Component */}
@@ -210,9 +213,9 @@ const DoctorManagement = () => {
       {/* Delete Confirmation Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg w-80 p-6 relative shadow-lg border-t-8 border-[#e11d29]">
+          <div className="bg-white rounded-xl w-80 p-6 relative shadow-lg border-t-8 border-[#e11d29]">
             <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#e11d29] rounded-full w-16 h-16 flex items-center justify-center">
-              <i className="text-white text-3xl">🗑️</i> {/* Bin Icon */}
+              <i className="text-white text-3xl">🗑️</i>
             </div>
             <div className="text-center mt-8">
               <h2 className="text-lg font-bold text-[#030229] mb-2">

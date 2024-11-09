@@ -117,7 +117,7 @@ const SearchResults = ({ query, filterOption }) => {
 
 
     return (
-        <div className="p-6 bg-white shadow-lg rounded-lg mt-6 h-96 overflow-y-auto">
+        <div className="p-6 bg-white shadow-lg rounded-xl mt-6 h-96 overflow-y-auto">
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Search Results</h2>
 
             {/* Doctor Table */}
@@ -165,21 +165,21 @@ const SearchResults = ({ query, filterOption }) => {
                                     <td className="p-4 flex space-x-3 justify-center">
                                         <button
                                             onClick={() => handleViewClick(doctor)}
-                                            className="text-customBlue bg-gray-100 p-2 rounded-lg"
+                                            className="text-customBlue bg-gray-100 p-2 rounded-xl"
                                             title="View"
                                         >
                                             <FaEye />
                                         </button>
                                         {/* <Link
                                             to={`/admin/edit-doctor/${doctor._id}`}
-                                            className="text-green-500 bg-gray-100 p-2 rounded-lg"
+                                            className="text-green-500 bg-gray-100 p-2 rounded-xl"
                                             title="Edit"
                                         >
                                             <FaEdit />
                                         </Link> */}
                                         <button
                                             onClick={() => handleDeleteDoctor(doctor._id)}
-                                            className="text-red-500 bg-gray-100 p-2 rounded-lg"
+                                            className="text-red-500 bg-gray-100 p-2 rounded-xl"
                                             title="Delete"
                                         >
                                             <FaTrash />

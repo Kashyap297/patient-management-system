@@ -39,7 +39,7 @@ const ForgetPassword = () => {
   return (
     <div className="min-h-screen flex">
       <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
-        <div className="w-3/4 bg-white p-10 rounded-lg shadow-lg">
+        <div className="w-3/4 bg-white p-10 rounded-xl shadow-lg">
           <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">
             Forgot Password
           </h2>

@@ -2,10 +2,10 @@ import React from "react";
 // overflow-y-auto h-[500px] custom-scroll
 const TermsAndConditions = () => {
   return (
-    <div className="p-6">
-      <h3 className="text-2xl font-semibold mb-7">Terms & Condition</h3>
-      <div className="mx-auto overflow-y-auto h-[550px] custom-scroll border rounded-xl p-5 ">
-        <h2 className="text-xl font-semibold mb-4">1. Acceptance of Terms</h2>
+    <div className="p-4 sm:p-6">
+      <h3 className="text-xl sm:text-2xl font-semibold mb-7">Terms & Condition</h3>
+      <div className="mx-auto overflow-y-auto h-[500px] sm:h-[550px] custom-scroll border rounded-xl p-5">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">1. Acceptance of Terms</h2>
         <p className="text-gray-700 mb-6">
           By accessing the System as an admin, you acknowledge that you have
           read, understood, and agree to be bound by these Terms and Conditions.
@@ -13,7 +13,7 @@ const TermsAndConditions = () => {
           authorized to access or use the System in an administrative capacity.
         </p>
 
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
           2. Admin Responsibilities
         </h2>
         <p className="text-gray-700 mb-6">
@@ -42,7 +42,7 @@ const TermsAndConditions = () => {
           </li>
         </ul>
 
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
           3. Confidentiality and Data Privacy
         </h2>
         <p className="text-gray-700 mb-4">
@@ -63,7 +63,7 @@ const TermsAndConditions = () => {
           encryption, and secure access protocols, are adhered to at all times.
         </p>
 
-        <h2 className="text-xl font-semibold mb-4">4. Prohibited Activities</h2>
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">4. Prohibited Activities</h2>
         <p className="text-gray-700 mb-6">As an admin, you agree not to:</p>
         <ul className="list-disc pl-6 mb-6 text-gray-700">
           <li>
@@ -84,7 +84,7 @@ const TermsAndConditions = () => {
           </li>
         </ul>
 
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
           5. Compliance with Legal and Regulatory Requirements
         </h2>
         <p className="text-gray-700 mb-6">
@@ -95,7 +95,7 @@ const TermsAndConditions = () => {
           responsibilities within the System.
         </p>
 
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
           6. Data Accuracy and Integrity
         </h2>
         <p className="text-gray-700 mb-6">
@@ -105,7 +105,7 @@ const TermsAndConditions = () => {
           prohibited and may lead to legal and/or disciplinary action.
         </p>
 
-        <h2 className="text-xl font-semibold mb-4">7. Audit and Monitoring</h2>
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">7. Audit and Monitoring</h2>
         <p className="text-gray-700 mb-6">
           The System reserves the right to monitor and audit all admin activity.
           Your actions within the System may be recorded and reviewed to ensure
@@ -114,7 +114,7 @@ const TermsAndConditions = () => {
           consequences.
         </p>
 
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
           8. Termination of Admin Access
         </h2>
         <p className="text-gray-700 mb-6">
@@ -123,7 +123,7 @@ const TermsAndConditions = () => {
           in organizational policies or applicable law.
         </p>
 
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
           9. Limitation of Liability
         </h2>
         <p className="text-gray-700 mb-6">
@@ -135,7 +135,7 @@ const TermsAndConditions = () => {
           System.
         </p>
 
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
           10. Modifications to Terms
         </h2>
         <p className="text-gray-700 mb-6">

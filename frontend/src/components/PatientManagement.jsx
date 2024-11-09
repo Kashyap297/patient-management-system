@@ -13,7 +13,7 @@ const PatientManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -25,10 +25,10 @@ const PatientManagement = () => {
         });
         setAppointments(response.data.data);
         filterAppointments(response.data.data, activeTab);
-        setLoading(false); // Set loading to false after fetching data
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching appointments:", error);
-        setLoading(false); // Set loading to false in case of error
+        setLoading(false);
       }
     };
     fetchAppointments();
@@ -111,10 +111,10 @@ const PatientManagement = () => {
   };
 
   return (
-    <div className="bg-gray-100 h-full">
-      <div className="bg-white p-4 rounded-lg h-full shadow-md">
+    <div className="min-h-screen">
+      <div className="bg-white p-4 rounded-xl shadow-md">
         {/* Tabs */}
-        <div className="flex space-x-4 mb-4 border-b">
+        <div className="flex flex-wrap space-x-2 mb-4 border-b">
           {["Today Appointment", "Upcoming Appointment", "Previous Appointment", "Cancel Appointment"].map((tab) => (
             <button
               key={tab}
@@ -129,24 +129,24 @@ const PatientManagement = () => {
         </div>
 
         {/* Header and Search Bar */}
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold ms-3">{activeTab}</h2>
-          <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2 w-full max-w-md">
+        <div className="flex flex-col md:flex-row md:justify-between items-center mb-4 space-y-4 md:space-y-0">
+          <h2 className="text-xl font-semibold md:ml-3">{activeTab}</h2>
+          <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2 w-full md:max-w-md">
             <FaSearch className="text-gray-500 mr-2" />
             <input
               type="text"
               placeholder="Search Patient"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-gray-100 focus:outline-none w-full"
+              className="bg-transparent focus:outline-none w-full"
             />
           </div>
         </div>
 
         {/* Patient Table */}
-        <div className="max-h-[620px] overflow-y-auto custom-scroll rounded-t-2xl">
-          <table className="min-w-full bg-white table-auto rounded-t-2xl bg-[#F6F8FB]">
-            <thead className="sticky top-0 rounded-t-2xl bg-[#F6F8FB]">
+        <div className="overflow-x-auto max-h-[620px] custom-scroll">
+          <table className="min-w-full bg-white table-auto rounded-xl">
+            <thead className="sticky top-0 bg-[#F6F8FB]">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Patient Name</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Patient Issue</th>
@@ -159,7 +159,6 @@ const PatientManagement = () => {
             </thead>
             <tbody>
               {loading ? (
-                // Display skeleton loaders when data is loading
                 [...Array(5)].map((_, index) => (
                   <tr key={index}>
                     <td className="px-6 py-4"><Skeleton width="100%" height={20} /></td>
@@ -174,29 +173,22 @@ const PatientManagement = () => {
               ) : filteredAndSearchedAppointments.length > 0 ? (
                 filteredAndSearchedAppointments.map((appointment) => (
                   <tr key={appointment.id} className="border-b">
-                    <td className="px-6 py-4">{appointment.patientName}</td>
-                    <td className="px-6 py-4">{appointment.patientIssue}</td>
-                    <td className="px-6 py-4">{appointment.doctorName || "N/A"}</td>
-                    <td className="px-6 py-4">{appointment.diseaseName}</td>
-                    <td className="px-6 py-4 text-blue-600">
-                      <span className={"px-4 py-2 rounded-full bg-[#f6f8fb]"}>
-                        {appointment.appointmentTime}
-                      </span>
+                    <td className="px-6 py-4 whitespace-nowrap">{appointment.patientName}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{appointment.patientIssue}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{appointment.doctorName || "N/A"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{appointment.diseaseName}</td>
+                    <td className="px-6 py-4 text-blue-600 whitespace-nowrap">
+                      <span className="px-4 py-2 rounded-full bg-[#f6f8fb]">{appointment.appointmentTime}</span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`px-4 py-2 rounded-full ${
-                          appointmentTypeStyles[appointment.appointmentType]
-                        }`}
+                        className={`px-4 py-2 rounded-full ${appointmentTypeStyles[appointment.appointmentType]}`}
                       >
                         {appointment.appointmentType}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <button
-                        className="text-blue-600"
-                        onClick={() => handleViewPatient(appointment.id)}
-                      >
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                      <button className="text-blue-600" onClick={() => handleViewPatient(appointment.id)}>
                         <FaEye />
                       </button>
                     </td>
@@ -206,7 +198,7 @@ const PatientManagement = () => {
                 <tr>
                   <td colSpan="7" className="text-center py-16">
                     <div className="flex flex-col items-center">
-                      <img src={noRecordImage} alt="No Patient Found" className="w-96 mb-4" />
+                      <img src={noRecordImage} alt="No Patient Found" className="w-48 md:w-96 mb-4" />
                       <p className="text-gray-500">No records found</p>
                     </div>
                   </td>

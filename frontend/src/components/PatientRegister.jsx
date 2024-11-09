@@ -127,7 +127,7 @@ const PatientRegister = () => {
     <div className="min-h-screen flex">
       {/* Left Side - Form Section */}
       <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
-        <div className="w-full max-w-xl bg-white p-10 rounded-lg shadow-lg">
+        <div className="w-full max-w-xl bg-white p-10 rounded-xl shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Registration</h2>
           <form onSubmit={handleSubmit}>
             {/* First Name and Last Name */}

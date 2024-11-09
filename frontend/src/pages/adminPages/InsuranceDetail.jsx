@@ -36,7 +36,7 @@ const InsuranceDetail = () => {
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-6 bg-white rounded-xl shadow-md">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Invoice for Bill No: {invoiceData.billNumber}</h2>
       </div>

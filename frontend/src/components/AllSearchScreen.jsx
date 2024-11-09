@@ -4,7 +4,7 @@ import PatientTable from "./PatientTableScreen";
 
 const AllTable = ({ searchTerm }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-6 rounded-xl shadow-md">
       {/* Doctor Section */}
       <h2 className="text-xl font-semibold mb-4">Doctor</h2>
       <DoctorTable searchTerm={searchTerm} />

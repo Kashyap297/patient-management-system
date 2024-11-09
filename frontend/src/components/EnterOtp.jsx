@@ -67,7 +67,7 @@ const EnterOTP = () => {
   return (
     <div className="min-h-screen flex">
       <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
-        <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-lg">
+        <div className="w-full max-w-md bg-white p-10 rounded-xl shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Enter OTP</h2>
           <p className="mb-4 text-sm">
             Please enter the 6-digit code that was sent to your phone number.

@@ -75,7 +75,7 @@ const EditInvoice = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-8 bg-white rounded-lg shadow-lg">
+      <div className="p-8 bg-white rounded-xl shadow-lg">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold mb-6">Edit Invoice Design</h1>
           <Button

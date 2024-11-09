@@ -116,7 +116,7 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId }) => {
       </div>
 
       {/* Medicines Table */}
-      <div className="mb-6 rounded-lg overflow-hidden flex-grow">
+      <div className="mb-6 rounded-xl overflow-hidden flex-grow">
         <table className="w-full text-left">
           <thead className="bg-[#f6f8fb]">
             <tr>

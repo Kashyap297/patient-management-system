@@ -58,7 +58,7 @@ const PaymentMethodModal = ({ bill, onClose }) => {
         {/* Card Selection */}
         <div className="flex items-center justify-between mb-6">
           <button
-            className={`flex items-center p-4 rounded-lg border-2 w-full ${selectedCard === "MasterCard" ? "border-blue-500" : "border-gray-300"}`}
+            className={`flex items-center p-4 rounded-xl border-2 w-full ${selectedCard === "MasterCard" ? "border-blue-500" : "border-gray-300"}`}
             onClick={() => setSelectedCard("MasterCard")}
           >
             <FaCcMastercard className="mr-2 text-2xl text-blue-600" />
@@ -73,7 +73,7 @@ const PaymentMethodModal = ({ bill, onClose }) => {
           </button>
 
           <button
-            className={`flex items-center p-4 rounded-lg border-2 w-full ml-4 ${selectedCard === "Visa" ? "border-blue-500" : "border-gray-300"}`}
+            className={`flex items-center p-4 rounded-xl border-2 w-full ml-4 ${selectedCard === "Visa" ? "border-blue-500" : "border-gray-300"}`}
             onClick={() => setSelectedCard("Visa")}
           >
             <FaCcVisa className="mr-2 text-2xl text-blue-600" />
@@ -105,7 +105,7 @@ const PaymentMethodModal = ({ bill, onClose }) => {
                 }
                 value={cardDetails[field]}
                 onChange={(e) => handleChange(field, e.target.value)}
-                className={`w-full p-4 border rounded-lg ${errors[field] ? "border-red-500" : "border-gray-300"
+                className={`w-full p-4 border rounded-xl ${errors[field] ? "border-red-500" : "border-gray-300"
                   } focus:outline-none focus:border-blue-500 text-lg`}
               />
               {errors[field] && (

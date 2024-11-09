@@ -237,7 +237,7 @@ const TimeSlotTable = ({ doctorDetails, specialty, country, state, city, hospita
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
           contentLabel="Appointment Booking"
-          className="bg-white p-4 rounded-lg shadow-lg max-w-md mx-auto my-16"
+          className="bg-white p-4 rounded-xl shadow-lg max-w-md mx-auto my-16"
           overlayClassName="fixed inset-0 bg-gray-900 bg-opacity-50"
         >
           {appointmentSuccess ? (

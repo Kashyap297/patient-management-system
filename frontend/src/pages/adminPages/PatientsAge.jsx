@@ -49,11 +49,11 @@ const PatientsAge = () => {
   }, []);
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md w-fit">
+    <div className="p-4 md:p-6 bg-white rounded-xl shadow-md w-full md:w-fit">
       <h2 className="text-lg font-semibold mb-4">Patients Age</h2>
-      <div className="flex justify-center items-center">
+      <div className="flex flex-col md:flex-row justify-center items-center">
         {/* Donut Chart with 3D Effect */}
-        <div className="relative flex justify-center items-center">
+        <div className="relative flex justify-center items-center mb-4 md:mb-0">
           <PieChart width={220} height={220}>
             <defs>
               <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
@@ -83,15 +83,15 @@ const PatientsAge = () => {
           <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
             <div className="text-center">
               <p className="text-gray-500">Total Patients</p>
-              <p className="text-4xl font-bold text-blue-500">{totalPatients}</p>
+              <p className="text-3xl md:text-4xl font-bold text-blue-500">{totalPatients}</p>
             </div>
           </div>
         </div>
 
         {/* Legend */}
-        <div className="ml-6 mt-4">
+        <div className="flex flex-col items-center md:items-start ml-0 md:ml-6 mt-4 md:mt-0">
           {data.map((entry, index) => (
-            <div key={index} className="flex justify-between items-center my-1">
+            <div key={index} className="flex justify-between items-center my-1 text-sm md:text-base">
               <div className="flex items-center gap-2">
                 <span
                   className="inline-block w-3 h-3 rounded-full"
@@ -99,7 +99,7 @@ const PatientsAge = () => {
                 ></span>
                 <p>{entry.name}</p>
               </div>
-              <p style={{ color: entry.percentageColor }} className="font-semibold">
+              <p style={{ color: entry.percentageColor }} className="font-semibold ml-2">
                 {`${((entry.value / totalPatients) * 100).toFixed(1)}%`}
               </p>
             </div>

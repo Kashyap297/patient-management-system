@@ -46,7 +46,7 @@ const PrescriptionPage = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg h-full">
+    <div className="bg-white p-6 rounded-xl shadow-lg h-full">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Prescriptions</h2>
         {/* Search Bar */}
@@ -64,7 +64,7 @@ const PrescriptionPage = () => {
       <div className="grid grid-cols-4 gap-4 overflow-y-auto custom-scroll">
         {loading ? (
           Array.from({ length: 8 }).map((_, index) => (
-            <div key={index} className="border rounded-lg shadow-md p-4">
+            <div key={index} className="border rounded-xl shadow-md p-4">
               <Skeleton height={20} width={150} className="mb-4" />
               <Skeleton height={20} width={100} className="mb-2" />
               <Skeleton height={20} width={120} className="mb-2" />
@@ -75,7 +75,7 @@ const PrescriptionPage = () => {
           prescriptions.map((prescription, index) => (
             <div
               key={prescription._id || index}
-              className="border rounded-lg shadow-md transition"
+              className="border rounded-xl shadow-md transition"
             >
               <div className="flex justify-between items-center p-2 bg-gray-50 rounded-t-lg mb-4">
                 <h4 className="font-semibold">

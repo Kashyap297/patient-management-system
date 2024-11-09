@@ -7,26 +7,21 @@ import PatientSummary from "./PatientSummary";
 
 const ReportingAnalysis = () => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid gap-4">
+      {/* Full-width CardData */}
       <CardData />
-      <div className="flex gap-2 w-full">
-        <div className="w-full">
-          <AppointmentGraph />
-        </div>
-        <div className="w-full">
-          <PatientSummary />
-        </div>
+
+      {/* First grid row: AppointmentGraph and PatientSummary */}
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+        <AppointmentGraph />
+        <PatientSummary />
       </div>
-      <div className="flex gap-2 w-full">
-        <div className="w-full">
-          <PatientCountDepartment />
-        </div>
-        <div className="w-full">
-          <DoctorCountDepartment />
-        </div>
-        <div className="w-full">
-          <PatientsAge />
-        </div>
+
+      {/* Second grid row: PatientCountDepartment, DoctorCountDepartment, and PatientsAge */}
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+        <PatientCountDepartment />
+        <DoctorCountDepartment />
+        <PatientsAge />
       </div>
     </div>
   );

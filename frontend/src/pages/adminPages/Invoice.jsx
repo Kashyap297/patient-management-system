@@ -78,7 +78,7 @@ const Invoice = () => {
         </div>
 
         {/* Doctor and Patient Information */}
-        <div className="bg-gray-100 p-4 rounded-lg mb-6 px-5">
+        <div className="bg-gray-100 p-4 rounded-xl mb-6 px-5">
           <div className="grid grid-cols-2 gap-4">
             <p>
               <strong>Name :</strong> {loading ? <Skeleton width={120} /> : `${invoiceData?.patient?.firstName} ${invoiceData?.patient?.lastName}`}
@@ -111,7 +111,7 @@ const Invoice = () => {
         </div>
 
         {/* Invoice Table */}
-        <table className="w-full bg-white rounded-lg mb-6 overflow-hidden">
+        <table className="w-full bg-white rounded-xl mb-6 overflow-hidden">
           <thead className="bg-[#0EABEB] text-white text-left">
             <tr>
               <th className="px-4 py-2">Description</th>

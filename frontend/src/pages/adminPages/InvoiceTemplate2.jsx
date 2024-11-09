@@ -35,7 +35,7 @@ const InvoiceTemplate2 = () => {
 
       {/* Invoice Table */}
       <div className="px-4 mb-4 overflow-x-auto">
-        <table className="w-full bg-white rounded-lg border border-gray-200">
+        <table className="w-full bg-white rounded-xl border border-gray-200">
           <thead className="bg-[#0EABEB] text-white">
             <tr>
               <th className="px-4 py-2">Description</th>

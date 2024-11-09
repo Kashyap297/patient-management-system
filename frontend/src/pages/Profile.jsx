@@ -30,10 +30,10 @@ const Profile = () => {
     <div className="flex">
       <div className="flex-1">
         <div className="p-6 bg-gray-100 h-screen">
-          <div className="bg-white shadow-lg rounded-lg p-6">
+          <div className="bg-white shadow-lg rounded-xl p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-semibold">Profile</h2>
-              <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+              <button className="bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition">
                 Edit Profile
               </button>
             </div>
@@ -45,7 +45,7 @@ const Profile = () => {
                 <input
                   type="text"
                   value={profileData.firstName || ""}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none"
                   readOnly
                 />
               </div>
@@ -56,7 +56,7 @@ const Profile = () => {
                 <input
                   type="text"
                   value={profileData.lastName || ""}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none"
                   readOnly
                 />
               </div>
@@ -67,7 +67,7 @@ const Profile = () => {
                 <input
                   type="email"
                   value={profileData.email || ""}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none"
                   readOnly
                 />
               </div>
@@ -78,7 +78,7 @@ const Profile = () => {
                 <input
                   type="text"
                   value={profileData.phoneNumber || ""}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none"
                   readOnly
                 />
               </div>
@@ -89,7 +89,7 @@ const Profile = () => {
                 <input
                   type="text"
                   value={profileData?.doctorDetails?.hospital || "N/A"}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none"
                   readOnly
                 />
               </div>
@@ -100,7 +100,7 @@ const Profile = () => {
                 <input
                   type="text"
                   value={profileData.city || ""}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none"
                   readOnly
                 />
               </div>
@@ -111,7 +111,7 @@ const Profile = () => {
                 <input
                   type="text"
                   value={profileData.state || ""}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none"
                   readOnly
                 />
               </div>
@@ -122,7 +122,7 @@ const Profile = () => {
                 <input
                   type="text"
                   value={profileData.country || ""}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none"
                   readOnly
                 />
               </div>

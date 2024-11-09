@@ -172,7 +172,7 @@ const ChatPage = () => {
             <input
               type="text"
               placeholder={`Search ${role === "doctor" ? "Patient" : "Doctor"}`}
-              className="w-full px-4 py-2 rounded-lg bg-gray-100 focus:outline-none"
+              className="w-full px-4 py-2 rounded-xl bg-gray-100 focus:outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -221,10 +221,10 @@ const ChatPage = () => {
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 space-y-2 custom-scroll overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner">
+            <div className="flex-1 space-y-2 custom-scroll overflow-y-auto bg-gray-50 p-4 rounded-xl shadow-inner">
               {Array.isArray(messages) && messages.map((message, index) => (
                 <div key={index} className={`flex ${message.sender._id === loggedInUserId ? "justify-end" : "justify-start"}`}>
-                  <div className={`p-2 rounded-lg ${message.sender._id === loggedInUserId ? "bg-blue-100 text-right" : "bg-gray-200 text-left"}`}>
+                  <div className={`p-2 rounded-xl ${message.sender._id === loggedInUserId ? "bg-blue-100 text-right" : "bg-gray-200 text-left"}`}>
                     <p className="font-bold">{message.sender.firstName} {message.sender.lastName}</p> {/* Display sender's name */}
                     <p>{message.content}</p>
                     <span className="text-xs text-gray-500 block mt-1">{new Date(message.createdAt).toLocaleString()}</span>
@@ -240,12 +240,12 @@ const ChatPage = () => {
               <input
                 type="text"
                 placeholder="Type your message..."
-                className="w-full px-4 py-4 rounded-lg bg-gray-100 focus:outline-none"
+                className="w-full px-4 py-4 rounded-xl bg-gray-100 focus:outline-none"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress} // Handle 'Enter' key press
               />
-              <button onClick={sendMessage} className="bg-customBlue text-white px-6 font-semibold py-4 rounded-lg">
+              <button onClick={sendMessage} className="bg-customBlue text-white px-6 font-semibold py-4 rounded-xl">
                 Send
               </button>
             </div>

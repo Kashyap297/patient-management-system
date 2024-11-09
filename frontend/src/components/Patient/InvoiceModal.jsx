@@ -49,7 +49,7 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
         </div>
 
         {/* Patient Information */}
-        <div className="grid grid-cols-2 mb-4 bg-gray-50 rounded-lg p-4">
+        <div className="grid grid-cols-2 mb-4 bg-gray-50 rounded-xl p-4">
           {/* First Column */}
           <div>
             <p className="py-1">

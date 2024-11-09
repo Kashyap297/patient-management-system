@@ -38,7 +38,7 @@ const CreateDoctor = () => {
   };
 
   return (
-    <div className="flex flex-col w-full px-6 py-4 bg-white rounded-lg shadow-md border border-gray-300">
+    <div className="flex flex-col w-full px-6 py-4 bg-white rounded-xl shadow-md border border-gray-300">
       <h2 className="text-2xl font-bold mb-4">Add New Doctor</h2>
 
       {/* Flex container for Profile, Signature, and Doctor Fields */}

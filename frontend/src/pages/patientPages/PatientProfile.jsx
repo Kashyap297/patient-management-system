@@ -38,7 +38,7 @@ const PatientProfile = () => {
 
       {/* Profile Content */}
       <div
-        className="relative z-10 bg-white shadow-lg rounded-lg p-8 flex"
+        className="relative z-10 bg-white shadow-lg rounded-xl p-8 flex"
         style={{ marginTop: "6rem" }}
       >
         {/* Left Side: Profile Picture */}

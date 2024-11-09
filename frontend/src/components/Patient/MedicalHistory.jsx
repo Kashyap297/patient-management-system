@@ -38,7 +38,7 @@ const MedicalHistory = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
+    <div className="bg-white p-6 rounded-xl shadow-lg mt-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Medical History</h2>
         <a
@@ -57,7 +57,7 @@ const MedicalHistory = () => {
             Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={index}
-                className="min-w-[300px] max-w-[300px] bg-white rounded-lg shadow-md border mb-4"
+                className="min-w-[300px] max-w-[300px] bg-white rounded-xl shadow-md border mb-4"
               >
                 <div className="flex align-center justify-between bg-gray-100 px-4 py-2 rounded-t-lg">
                   <Skeleton width={100} height={20} />
@@ -73,7 +73,7 @@ const MedicalHistory = () => {
             history.map((record, index) => (
               <div
                 key={record.id || index}
-                className="min-w-[300px] max-w-[300px] bg-white rounded-lg shadow-md border mb-4"
+                className="min-w-[300px] max-w-[300px] bg-white rounded-xl shadow-md border mb-4"
               >
                 <div className="flex align-center justify-between bg-gray-100 px-4 py-2 rounded-t-lg">
                   <h4 className="font-semibold text-customBlue">

@@ -50,7 +50,7 @@ const MedicalHistoryPage = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg h-full">
+    <div className="bg-white p-6 rounded-xl shadow-lg h-full">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Medical History</h2>
       </div>
@@ -61,7 +61,7 @@ const MedicalHistoryPage = () => {
           ? Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}
-                className="border rounded-lg shadow-md p-4"
+                className="border rounded-xl shadow-md p-4"
               >
                 <Skeleton height={20} width={150} className="mb-2" />
                 <Skeleton height={20} width={120} className="mb-2" />
@@ -71,7 +71,7 @@ const MedicalHistoryPage = () => {
             ))
           : medicalHistory.length > 0
           ? medicalHistory.map((record, index) => (
-              <div key={record.id || index} className="border rounded-lg shadow-md transition">
+              <div key={record.id || index} className="border rounded-xl shadow-md transition">
                 <div className="flex justify-between items-center p-2 bg-gray-50 rounded-t-lg mb-2">
                   <h4 className="font-semibold">
                     {record.doctorName || "Doctor Name"}

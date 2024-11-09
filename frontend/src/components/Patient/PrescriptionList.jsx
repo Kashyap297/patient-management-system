@@ -43,7 +43,7 @@ const PrescriptionList = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
+    <div className="bg-white p-6 rounded-xl shadow-lg mt-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Prescriptions</h2>
         <a

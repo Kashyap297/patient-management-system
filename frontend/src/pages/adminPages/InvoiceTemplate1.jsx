@@ -38,7 +38,7 @@ const InvoiceTemplate1 = () => {
           </div>
 
           {/* Doctor and Patient Information */}
-          <div className="bg-gray-100 p-4 rounded-lg mb-6 px-3 md:px-5">
+          <div className="bg-gray-100 p-4 rounded-xl mb-6 px-3 md:px-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <p><strong>Name:</strong> Miracle Kenter</p>
               <p><strong>Disease Name:</strong> Stomach Ache</p>
@@ -52,7 +52,7 @@ const InvoiceTemplate1 = () => {
 
           {/* Invoice Table */}
           <div className="overflow-x-auto">
-            <table className="w-full bg-white rounded-lg mb-6">
+            <table className="w-full bg-white rounded-xl mb-6">
               <thead className="bg-[#0EABEB] text-white text-left">
                 <tr>
                   <th className="px-4 py-2">Description</th>

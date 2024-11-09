@@ -3,13 +3,13 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const InfoCard = ({ icon, label, value, iconBgColor, borderColor, loading }) => {
   return (
-    <div className={`flex items-center bg-white shadow-md p-4 rounded-xl border-l-4 ${borderColor} w-full min-w-[220px]`}>
-      <div className={`p-2 rounded-full ${iconBgColor} flex items-center justify-center`}>
+    <div className={`bg-white shadow-md p-4 rounded-xl border-l-4 ${borderColor} flex items-center space-x-4 min-w-[180px] w-full`}>
+      <div className={`p-3 rounded-full ${iconBgColor} flex items-center justify-center`}>
         {icon}
       </div>
-      <div className="ml-4 flex w-full justify-between items-center">
-        <p className="text-sm text-[#1A202C] font-medium">{label}</p>
-        <p className="text-2xl font-semibold text-[#2D3748]">
+      <div className="flex justify-between items-center w-full">
+        <p className="text-sm md:text-base text-[#1A202C] font-medium">{label}</p>
+        <p className="text-lg md:text-2xl font-semibold text-[#2D3748]">
           {loading ? <Skeleton width={50} /> : value}
         </p>
       </div>

@@ -21,14 +21,14 @@ const PrescriptionModal = ({ open, handleClose, prescriptionData }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl overflow-y-auto">
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-semibold">Prescription</h2>
           <button onClick={handleClose} className="bg-red-500 text-white rounded-full px-2 py-1 text-sm">X</button>
         </div>
         <div className="p-6" id="prescription-modal-content">
           {/* Header Section */}
-          <div className="p-6 bg-[#f6f8fb] rounded-lg mb-6 shadow-sm">
+          <div className="p-6 bg-[#f6f8fb] rounded-xl mb-6 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div className="py-2">
                 <img src={logo} alt="Hospital Logo" className="w-32 mx-auto mb-2" />
@@ -60,8 +60,8 @@ const PrescriptionModal = ({ open, handleClose, prescriptionData }) => {
           </div>
 
           {/* Prescription Table */}
-          <div className="overflow-x-auto mb-6 rounded-lg">
-            <table className="w-full text-left rounded-lg shadow-sm">
+          <div className="overflow-x-auto mb-6 rounded-xl">
+            <table className="w-full text-left rounded-xl shadow-sm">
               <thead>
                 <tr className="bg-[#f6f8fb]">
                   <th className="font-semibold py-2 px-4">Medicine Name</th>

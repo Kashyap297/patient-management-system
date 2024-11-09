@@ -24,7 +24,7 @@ const DoctorDetailsSidebar = ({ doctor, isVisible, onClose }) => {
       {/* Sidebar Body */}
       <div className="relative p-6 bg-white">
         {/* Doctor Details */}
-        <div className="relative z-10 p-4 bg-gradient-to-br from-[#4C49ED] to-[#020067] rounded-lg shadow-lg mb-6">
+        <div className="relative z-10 p-4 bg-gradient-to-br from-[#4C49ED] to-[#020067] rounded-xl shadow-lg mb-6">
           <div className="flex items-center mb-4">
             <img
               src={user}

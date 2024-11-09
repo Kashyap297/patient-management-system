@@ -181,7 +181,7 @@ const PatientRecordAccess = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <button onClick={() => navigate(`/doctor/patient-detail/${appointment.patientId}`)} className="text-blue-500 hover:bg-gray-100 p-2 rounded-lg">
+                    <button onClick={() => navigate(`/doctor/patient-detail/${appointment.patientId}`)} className="text-blue-500 hover:bg-gray-100 p-2 rounded-xl">
                       <FaEye />
                     </button>
                   </td>

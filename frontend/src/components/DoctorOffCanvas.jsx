@@ -187,7 +187,7 @@ const renderOnlineDetails = () => (
         </div>
 
         {/* Doctor Details Card */}
-        <div className="relative p-4 bg-gradient-to-br from-[#4C49ED] to-[#020067] rounded-lg shadow-lg mb-6">
+        <div className="relative p-4 bg-gradient-to-br from-[#4C49ED] to-[#020067] rounded-xl shadow-lg mb-6">
           <div className="flex items-center mb-4">
             <img
               src={doctor.profileImage ? `https://patient-management-system-vyv0.onrender.com/${doctor.profileImage}` : userImage}

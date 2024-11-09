@@ -63,34 +63,31 @@ const AppointmentGraph = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-4 md:p-6 bg-white rounded-xl shadow-md h-full">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Appointment</h2>
+        <h2 className="text-lg md:text-xl font-semibold text-gray-700">Appointment Summary</h2>
+        
         {/* Toggle between Year and Month */}
         <div className="flex space-x-2">
-          <button
-            className={classNames(
-              'px-4 py-2 rounded-lg',
-              activeTab === 'Year' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'
-            )}
-            onClick={() => handleTabChange('Year')}
-          >
-            Year
-          </button>
-          <button
-            className={classNames(
-              'px-4 py-2 rounded-lg',
-              activeTab === 'Month' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'
-            )}
-            onClick={() => handleTabChange('Month')}
-          >
-            Month
-          </button>
+          {['Year', 'Month'].map((tab) => (
+            <button
+              key={tab}
+              className={classNames(
+                'px-4 py-2 rounded-xl text-sm md:text-base transition-colors duration-300',
+                activeTab === tab
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              )}
+              onClick={() => handleTabChange(tab)}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Chart Section */}
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={400} minWidth={320}>
         <BarChart data={activeTab === 'Year' ? yearlyData : monthlyData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey={activeTab === 'Year' ? 'year' : 'month'} />
@@ -98,7 +95,7 @@ const AppointmentGraph = () => {
           <Tooltip />
           <Legend />
           <Bar dataKey="onlineConsultation" fill="#1E90FF" name="Online Consultation" radius={[10, 10, 0, 0]} />
-          <Bar dataKey="onsiteAppointment" fill="#00BFFF" name="Other Appointment" radius={[10, 10, 0, 0]} />
+          <Bar dataKey="onsiteAppointment" fill="#00BFFF" name="Onsite Appointment" radius={[10, 10, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -58,7 +58,7 @@ const ResetPassword = () => {
     <div className="min-h-screen flex">
       {/* Left Side - Form Section */}
       <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
-        <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-lg">
+        <div className="w-full max-w-md bg-white p-10 rounded-xl shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Reset Password</h2>
           <form onSubmit={handleSubmit}>
             {/* New Password Input */}

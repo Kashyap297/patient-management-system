@@ -35,7 +35,7 @@ const AppointmentsList = () => {
   }, []);
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full">
+    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md w-full">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg sm:text-xl font-semibold">Today's Appointments</h2>
       </div>
@@ -45,7 +45,7 @@ const AppointmentsList = () => {
           {/* Skeleton loading placeholders for Appointment Cards */}
           {Array(3).fill().map((_, index) => (
             <div key={index} className="min-w-[200px] sm:min-w-[250px]">
-              <Skeleton height={80} className="mb-2 rounded-lg" />
+              <Skeleton height={80} className="mb-2 rounded-xl" />
               <Skeleton height={15} width="80%" className="mb-1" />
               <Skeleton height={15} width="60%" className="mb-1" />
               <Skeleton height={15} width="40%" />

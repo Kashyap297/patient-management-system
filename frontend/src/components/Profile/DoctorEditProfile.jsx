@@ -126,7 +126,7 @@ const DoctorEditProfile = ({ onCancel }) => {
   return (
     <div className="relative bg-gray-100 py-16 px-36 pb-48 h-full">
       <ProfileHeader title="Profile Setting" />
-      <div className="flex flex-col md:flex-row w-full mt-8 mx-auto bg-white shadow-lg rounded-lg overflow-hidden z-10 relative h-full">
+      <div className="flex flex-col md:flex-row w-full mt-8 mx-auto bg-white shadow-lg rounded-xl overflow-hidden z-10 relative h-full">
         <div className="w-1/4 p-12 text-center border-r">
           <img
             src={

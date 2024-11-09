@@ -18,7 +18,7 @@ const CustomDateModal = ({ open, onClose }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-[320px]">
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-xl shadow-lg w-[320px]">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Custom Date</h2>
           <IconButton onClick={onClose}>

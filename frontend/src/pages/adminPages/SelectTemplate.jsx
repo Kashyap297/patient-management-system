@@ -39,7 +39,7 @@ const SelectTemplate = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-white rounded-lg shadow-lg min-h-screen">
+    <div className="p-4 md:p-8 bg-white rounded-xl shadow-lg min-h-screen">
       <h1 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-start">
         Select Invoice Theme
       </h1>
@@ -49,7 +49,7 @@ const SelectTemplate = () => {
         {templateData.map((template) => (
           <div
             key={template.id}
-            className={`p-2 md:p-4 border-2 cursor-pointer rounded-lg ${
+            className={`p-2 md:p-4 border-2 cursor-pointer rounded-xl ${
               selectedTemplate && selectedTemplate.id === template.id
                 ? "border-blue-500"
                 : "border-gray-200"
@@ -72,7 +72,7 @@ const SelectTemplate = () => {
       {selectedTemplate && (
         <div className="flex justify-center mt-6 md:mt-8">
           <button
-            className="bg-blue-500 text-white py-2 px-4 md:px-6 rounded-lg text-sm md:text-lg"
+            className="bg-blue-500 text-white py-2 px-4 md:px-6 rounded-xl text-sm md:text-lg"
             onClick={handleConfirmSelection}
           >
             Select {selectedTemplate.name}
@@ -86,7 +86,7 @@ const SelectTemplate = () => {
           <h2 className="text-lg md:text-xl font-semibold text-center mb-4">
             Preview of {selectedTemplate.name}
           </h2>
-          <div className="rounded-lg">
+          <div className="rounded-xl">
             {selectedTemplate.component}
           </div>
         </div>

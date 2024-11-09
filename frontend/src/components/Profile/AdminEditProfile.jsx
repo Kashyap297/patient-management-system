@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { FiCamera } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/api"; // Ensure to import your Axios instance
+import api from "../../api/api";
 import userImage from "../../assets/images/user.png";
 import Swal from "sweetalert2";
 import ProfileHeader from "./ProfileHeader";
 
-const AdminEditProfile = ({ onCancel }) => {
+const AdminEditProfile = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
-    adminhospital: "", // Updated to use the adminhospital field
-    gender: "Male", // Default selection
+    adminhospital: "",
+    gender: "Male",
     city: "",
     state: "",
     country: "",
@@ -33,8 +33,8 @@ const AdminEditProfile = ({ onCancel }) => {
           lastName: response.data.lastName,
           email: response.data.email,
           phoneNumber: response.data.phoneNumber,
-          adminhospital: response.data.adminhospital?._id || "", // Set the hospital ID
-          gender: response.data.gender || "Male", // Default gender to Male if undefined
+          adminhospital: response.data.adminhospital?._id || "",
+          gender: response.data.gender || "Male",
           city: response.data.city,
           state: response.data.state,
           country: response.data.country,
@@ -86,25 +86,18 @@ const AdminEditProfile = ({ onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataObj = new FormData();
-
-    // Add main fields to FormData
     Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "profileImage") {
-        formDataObj.append(key, value);
-      }
+      if (key !== "profileImage") formDataObj.append(key, value);
     });
-
-    // Add profile image if it's a File instance
     if (formData.profileImage instanceof File) {
       formDataObj.append("profileImage", formData.profileImage);
     }
 
     try {
-      // Add the Authorization header with the token
       await api.patch("/users/profile", formDataObj, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming token is stored in localStorage
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       Swal.fire({
@@ -124,10 +117,10 @@ const AdminEditProfile = ({ onCancel }) => {
   };
 
   return (
-    <div className="relative bg-gray-100 py-16 px-36 pb-48 h-full">
+    <div className="relative bg-gray-100 py-8 sm:py-10 lg:py-16 px-6 sm:px-12 lg:px-36">
       <ProfileHeader title="Profile Setting" />
-      <div className="flex flex-col md:flex-row w-full mt-8 mx-auto bg-white shadow-lg rounded-lg overflow-hidden z-10 relative h-full">
-        <div className="w-1/4 p-12 text-center border-r">
+      <div className="flex flex-col md:flex-row w-full mt-6 md:mt-8 mx-auto bg-white shadow-lg rounded-xl overflow-hidden z-10 relative h-full ">
+        <div className="w-full md:w-1/4 p-6 md:p-8 text-center border-b md:border-r">
           <img
             src={
               formData.profileImage && !(formData.profileImage instanceof File)
@@ -135,7 +128,7 @@ const AdminEditProfile = ({ onCancel }) => {
                 : userImage
             }
             alt="Profile"
-            className="w-48 h-48 mx-auto rounded-full mb-4"
+            className="w-24 h-24 md:w-48 md:h-48 mx-auto rounded-full mb-4"
           />
           <div className="flex justify-center">
             <button
@@ -154,76 +147,72 @@ const AdminEditProfile = ({ onCancel }) => {
             />
           </div>
         </div>
-        <div className="w-3/4 p-6">
-          <h3 className="text-2xl font-semibold mb-6">Edit Profile</h3>
-          <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-4">
+        <div className="w-full md:w-3/4 p-6 md:p-8">
+          <h3 className="text-xl sm:text-2xl font-semibold mb-4">Edit Profile</h3>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* First Name */}
-            <div className="relative mb-4">
+            <div className="relative">
               <input
                 type="text"
                 name="firstName"
                 value={formData.firstName || ""}
                 onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
                 placeholder="First Name"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
                 First Name <span className="text-red-500">*</span>
               </label>
             </div>
-
             {/* Last Name */}
-            <div className="relative mb-4">
+            <div className="relative">
               <input
                 type="text"
                 name="lastName"
                 value={formData.lastName || ""}
                 onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
                 placeholder="Last Name"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
                 Last Name <span className="text-red-500">*</span>
               </label>
             </div>
-
             {/* Email */}
-            <div className="relative mb-4">
+            <div className="relative">
               <input
                 type="email"
                 name="email"
                 value={formData.email || ""}
                 onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
                 placeholder="Email Address"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
                 Email Address <span className="text-red-500">*</span>
               </label>
             </div>
-
             {/* Phone Number */}
-            <div className="relative mb-4">
+            <div className="relative">
               <input
                 type="text"
                 name="phoneNumber"
                 value={formData.phoneNumber || ""}
                 onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
                 placeholder="Phone Number"
               />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
                 Phone Number <span className="text-red-500">*</span>
               </label>
             </div>
-
             {/* Hospital Name */}
-            <div className="relative mb-4">
+            <div className="relative">
               <select
                 name="adminhospital"
                 value={formData.adminhospital}
                 onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
               >
                 <option value="">Select Hospital</option>
                 {hospitals.map((hospital) => (
@@ -232,86 +221,55 @@ const AdminEditProfile = ({ onCancel }) => {
                   </option>
                 ))}
               </select>
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
                 Hospital Name <span className="text-red-500">*</span>
               </label>
             </div>
-
             {/* Gender */}
-            <div className="relative mb-4">
+            <div className="relative">
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
               >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
                 Gender <span className="text-red-500">*</span>
               </label>
             </div>
-
-            {/* City */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
-                placeholder="City"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
-                City <span className="text-red-500">*</span>
-              </label>
-            </div>
-
-            {/* State */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
-                placeholder="State"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
-                State <span className="text-red-500">*</span>
-              </label>
-            </div>
-
-            {/* Country */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                className="w-full px-4 border border-gray-300 p-2 rounded-xl"
-                placeholder="Country"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] transition-all duration-200">
-                Country <span className="text-red-500">*</span>
-              </label>
-            </div>
+            {/* City, State, Country */}
+            {["city", "state", "country"].map((field) => (
+              <div key={field} className="relative">
+                <input
+                  type="text"
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-xl"
+                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                />
+                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
+                  {field.charAt(0).toUpperCase() + field.slice(1)} <span className="text-red-500">*</span>
+                </label>
+              </div>
+            ))}
           </form>
           <div className="flex justify-end mt-4">
             <div className="grid grid-cols-2 gap-4 mt-4">
               <button
                 type="button"
-                onClick={() => navigate("/admin")} // Adjust this path as needed
-                className="text-gray-700 px-4 py-2 rounded-xl w-full hover:bg-[#f6f8fb] border"
+                onClick={() => navigate("/admin")}
+                className="text-gray-700 px-4 py-2 rounded-xl hover:bg-[#f6f8fb] border"
               >
                 Cancel
               </button>
-
               <button
                 onClick={handleSubmit}
                 type="submit"
-                className="px-4 py-2 rounded-xl text-white bg-[#0EABEB] w-full"
+                className="px-4 py-2 rounded-xl text-white bg-[#0EABEB]"
               >
                 Save
               </button>
