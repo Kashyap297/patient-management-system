@@ -64,7 +64,7 @@ const CreateDoctor = () => {
           </div>
 
           {/* Upload Signature */}
-          <div className="relative mb-4 flex items-center justify-center border border-dashed border-gray-300 rounded-md h-28">
+          <div className="relative mb-4 flex items-center justify-center border border-dashed border-gray-300 rounded-xl h-28">
             <FiUpload className="text-gray-500" />
             <label className="absolute text-gray-500 cursor-pointer">
               <input
@@ -88,7 +88,7 @@ const CreateDoctor = () => {
               type="text"
               id="doctorName"
               name="doctorName"
-              className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+              className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
               placeholder="Enter Doctor Name"
               value={formData.doctorName}
               onChange={handleChange}
@@ -107,7 +107,7 @@ const CreateDoctor = () => {
               type="text"
               id="doctorQualification"
               name="doctorQualification"
-              className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+              className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
               placeholder="Enter Doctor Qualification"
               value={formData.doctorQualification}
               onChange={handleChange}
@@ -126,7 +126,7 @@ const CreateDoctor = () => {
               type="text"
               id="specialtyType"
               name="specialtyType"
-              className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+              className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
               placeholder="Enter Specialty Type"
               value={formData.specialtyType}
               onChange={handleChange}
@@ -144,7 +144,7 @@ const CreateDoctor = () => {
             <select
               id="workOn"
               name="workOn"
-              className="peer w-full px-4 py-2 border border-gray-300 rounded-md text-gray-500 focus:outline-none"
+              className="peer w-full px-4 py-2 border border-gray-300 rounded-xl text-gray-500 focus:outline-none"
               value={formData.workOn}
               onChange={handleChange}
             >
@@ -167,7 +167,7 @@ const CreateDoctor = () => {
               type="text"
               id="checkUpTime"
               name="checkUpTime"
-              className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+              className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
               placeholder="Enter Checkup Time"
               value={formData.checkUpTime}
               onChange={handleChange}
@@ -194,7 +194,7 @@ const CreateDoctor = () => {
             type="text"
             id="hospitalName"
             name="hospitalName"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
             placeholder="Enter Hospital Name"
             value={formData.hospitalName}
             onChange={handleChange}
@@ -213,7 +213,7 @@ const CreateDoctor = () => {
             type="text"
             id="hospitalAddress"
             name="hospitalAddress"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
             placeholder="Enter Hospital Address"
             value={formData.hospitalAddress}
             onChange={handleChange}
@@ -232,7 +232,7 @@ const CreateDoctor = () => {
             type="text"
             id="emergencyContact"
             name="emergencyContact"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
             placeholder="Enter Emergency Contact Number"
             value={formData.emergencyContact}
             onChange={handleChange}
@@ -251,7 +251,7 @@ const CreateDoctor = () => {
             type="text"
             id="hospitalWebsite"
             name="hospitalWebsite"
-            className="peer w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
+            className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
             placeholder="Enter Hospital Website Link"
             value={formData.hospitalWebsite}
             onChange={handleChange}
@@ -265,7 +265,7 @@ const CreateDoctor = () => {
         </div>
       </div>
 
-      <button className="mt-4 py-2 px-6 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+      <button className="mt-4 py-2 px-6 bg-blue-500 text-white rounded-xl hover:bg-blue-600">
         Add Doctor
       </button>
     </div>

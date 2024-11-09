@@ -52,7 +52,7 @@ const PaymentMethodModal = ({ bill, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-md shadow-md w-1/3">
+      <div className="bg-white p-6 rounded-xl shadow-md w-1/3">
         <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">Payment Method</h2>
 
         {/* Card Selection */}

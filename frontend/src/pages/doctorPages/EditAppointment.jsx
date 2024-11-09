@@ -222,7 +222,7 @@ const EditAppointment = () => {
                     key={index}
                     className={`border px-4 py-2 text-center ${
                       dayAppointments.length > 0
-                        ? "bg-[#0eabeb] text-white rounded-md"
+                        ? "bg-[#0eabeb] text-white rounded-xl"
                         : "bg-gray-50 text-gray-400"
                     }`}
                   >
@@ -230,7 +230,7 @@ const EditAppointment = () => {
                       dayAppointments.map((appointment) => (
                         <div
                           key={appointment.id}
-                          className="mb-2 cursor-pointer p-2 rounded-md bg-[#0eabeb] text-white transition"
+                          className="mb-2 cursor-pointer p-2 rounded-xl bg-[#0eabeb] text-white transition"
                           onClick={() => handleOpenRescheduleModal(appointment)}
                         >
                           <div className="font-semibold">
@@ -266,7 +266,7 @@ const EditAppointment = () => {
       {/* Navigation buttons for previous/next week */}
       <div className="flex justify-between items-center mb-6">
         <button
-          className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition"
+          className="px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200 transition"
           onClick={() =>
             setCurrentWeekStart(currentWeekStart.clone().subtract(7, "days"))
           }
@@ -278,7 +278,7 @@ const EditAppointment = () => {
           {moment(currentWeekStart).add(6, "days").format("DD MMMM, YYYY")}
         </h3>
         <button
-          className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition"
+          className="px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200 transition"
           onClick={() =>
             setCurrentWeekStart(currentWeekStart.clone().add(7, "days"))
           }

@@ -14,7 +14,7 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="bg-white p-6 rounded-md shadow-lg w-2/5 relative z-10">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-2/5 relative z-10">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -87,7 +87,7 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
         {/* Itemized List of Services */}
         {/* For demonstration, I assume that the `bill.description` contains the service description.
             Adjust the data here according to your object structure. */}
-        <div className="rounded-md mb-4">
+        <div className="rounded-xl mb-4">
           <table className="w-full text-left rounded-t-lg">
             <thead>
               <tr className="border-b-2 border-gray-200 bg-customBlue">

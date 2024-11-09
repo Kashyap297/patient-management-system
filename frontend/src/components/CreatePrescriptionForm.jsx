@@ -297,7 +297,7 @@ const CreatePrescriptionForm = ({ onFormUpdate }) => {
       {/* Submit Button */}
       {/* <button
         type="submit"
-        className="bg-blue-600 text-white rounded-md px-6 py-2"
+        className="bg-blue-600 text-white rounded-xl px-6 py-2"
       >
         Submit
       </button> */}

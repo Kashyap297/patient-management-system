@@ -116,7 +116,7 @@ const PatientSidebar = ({ onMenuClick }) => {
             You have to fill up the form to be admitted to the Hospital.
           </p>
           <NavLink to={'/patient/appointment-booking'}>
-            <button className="w-full bg-customBlue text-white py-2 rounded-md">
+            <button className="w-full bg-customBlue text-white py-2 rounded-xl">
               Appointment
             </button>
           </NavLink>

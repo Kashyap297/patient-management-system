@@ -441,7 +441,7 @@ const BookAppointment = () => {
                             <span className="text-gray-400">Booked</span>
                           ) : slot.status === "Available" ? (
                             <span
-                              className="bg-[#0eabeb] text-white px-3 py-3 rounded-md cursor-pointer hover:bg-[#0eabee] hover:shadow-md transition"
+                              className="bg-[#0eabeb] text-white px-3 py-3 rounded-xl cursor-pointer hover:bg-[#0eabee] hover:shadow-md transition"
                               onClick={() => handleSlotClick(slot.time, day)}
                             >
                               Available

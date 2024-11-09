@@ -70,7 +70,7 @@ const PatientDetails = () => {
         <h2 className="text-2xl font-semibold">Patient Details</h2>
         <Link
           to={`/patient/edit-patient-profile/${patient._id}`}
-          className="flex items-center px-4 py-2 bg-customBlue text-white rounded-md shadow-md"
+          className="flex items-center px-4 py-2 bg-customBlue text-white rounded-xl shadow-md"
         >
           <FaEdit className="mr-2" />
           Edit Profile

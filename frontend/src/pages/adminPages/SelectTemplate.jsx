@@ -10,13 +10,13 @@ const templateData = [
     id: 1,
     name: "Template 1",
     image: template1Image,
-    component: <InvoiceTemplate2 />, // Assigning the component to render
+    component: <InvoiceTemplate2 />,
   },
   {
     id: 2,
     name: "Template 2",
     image: template2Image,
-    component: <InvoiceTemplate1 />, // Assigning the component to render
+    component: <InvoiceTemplate1 />,
   },
 ];
 
@@ -39,17 +39,17 @@ const SelectTemplate = () => {
   };
 
   return (
-    <div className="p-8 bg-white rounded-lg shadow-lg min-h-screen">
-      <h1 className="text-2xl font-semibold mb-6 text-center">
+    <div className="p-4 md:p-8 bg-white rounded-lg shadow-lg min-h-screen">
+      <h1 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-start">
         Select Invoice Theme
       </h1>
 
       {/* Template Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center">
         {templateData.map((template) => (
           <div
             key={template.id}
-            className={`p-4 border-2 cursor-pointer rounded-lg ${
+            className={`p-2 md:p-4 border-2 cursor-pointer rounded-lg ${
               selectedTemplate && selectedTemplate.id === template.id
                 ? "border-blue-500"
                 : "border-gray-200"
@@ -59,9 +59,9 @@ const SelectTemplate = () => {
             <img
               src={template.image}
               alt={template.name}
-              className="w-auto h-[450px] object-cover"
+              className="w-full h-64 md:h-80 lg:h-96 object-cover rounded"
             />
-            <h2 className="text-lg font-semibold text-center mt-4">
+            <h2 className="text-center text-base md:text-lg font-semibold mt-2 md:mt-4">
               {template.name}
             </h2>
           </div>
@@ -70,9 +70,9 @@ const SelectTemplate = () => {
 
       {/* Show "Select Template" button if a template is selected */}
       {selectedTemplate && (
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-6 md:mt-8">
           <button
-            className="bg-blue-500 text-white py-2 px-6 rounded-lg text-lg"
+            className="bg-blue-500 text-white py-2 px-4 md:px-6 rounded-lg text-sm md:text-lg"
             onClick={handleConfirmSelection}
           >
             Select {selectedTemplate.name}
@@ -82,8 +82,8 @@ const SelectTemplate = () => {
 
       {/* Render the selected invoice template component */}
       {selectedTemplate && (
-        <div className="mt-12">
-          <h2 className="text-xl font-semibold text-center mb-4">
+        <div className="mt-8 md:mt-12">
+          <h2 className="text-lg md:text-xl font-semibold text-center mb-4">
             Preview of {selectedTemplate.name}
           </h2>
           <div className="rounded-lg">

@@ -101,7 +101,7 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
               <AiOutlineDown className="text-gray-500" />
             </div>
             {dropdownOpen && (
-              <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-md shadow-lg py-1 w-32 z-10">
+              <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-xl shadow-lg py-1 w-32 z-10">
                 {["All", "Doctor", "Patient"].map((option) => (
                   <div
                     key={option}

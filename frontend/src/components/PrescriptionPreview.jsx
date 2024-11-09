@@ -74,7 +74,7 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId }) => {
         </div>
 
         {/* Patient and Prescription Details */}
-        <div className="p-4 rounded-md bg-gray-50">
+        <div className="p-4 rounded-xl bg-gray-50">
           <div className="grid grid-cols-2 gap-y-2 text-sm text-gray-700">
             <div>
               <div className="flex">

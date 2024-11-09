@@ -69,7 +69,7 @@ const TestReports = () => {
                     <span className="text-gray-400">{report.date}</span>
                   </div>
                 </div>
-                <div className="text-customBlue bg-gray-100 p-1 rounded-md">
+                <div className="text-customBlue bg-gray-100 p-1 rounded-xl">
                   <FaEye />
                 </div>
               </div>

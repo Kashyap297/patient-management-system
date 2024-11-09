@@ -57,7 +57,7 @@ const ProfileForm = ({ role }) => {
         <h2 className="text-2xl font-semibold text-gray-800">Profile</h2>
         <button
           onClick={handleEdit}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
+          className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition duration-200"
         >
           {isEditing ? "Cancel" : "Edit Profile"}
         </button>
@@ -76,7 +76,7 @@ const ProfileForm = ({ role }) => {
             onChange={handleChange}
             readOnly={!isEditing}
             className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -92,7 +92,7 @@ const ProfileForm = ({ role }) => {
             onChange={handleChange}
             readOnly={!isEditing}
             className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -108,7 +108,7 @@ const ProfileForm = ({ role }) => {
             onChange={handleChange}
             readOnly={!isEditing}
             className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -124,7 +124,7 @@ const ProfileForm = ({ role }) => {
             onChange={handleChange}
             readOnly={!isEditing}
             className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -141,7 +141,7 @@ const ProfileForm = ({ role }) => {
               onChange={handleChange}
               readOnly={!isEditing}
               className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-                } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
+                } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
                 }`}
             />
           </div>
@@ -158,7 +158,7 @@ const ProfileForm = ({ role }) => {
             onChange={handleChange}
             disabled={!isEditing}
             className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           >
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -178,7 +178,7 @@ const ProfileForm = ({ role }) => {
             onChange={handleChange}
             readOnly={!isEditing}
             className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -194,7 +194,7 @@ const ProfileForm = ({ role }) => {
             onChange={handleChange}
             readOnly={!isEditing}
             className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -210,7 +210,7 @@ const ProfileForm = ({ role }) => {
             onChange={handleChange}
             readOnly={!isEditing}
             className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
           />
         </div>
 
@@ -228,7 +228,7 @@ const ProfileForm = ({ role }) => {
                 onChange={handleChange}
                 readOnly={!isEditing}
                 className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-                  } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
+                  } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
                   }`}
               />
             </div>
@@ -243,7 +243,7 @@ const ProfileForm = ({ role }) => {
                 onChange={handleChange}
                 disabled={!isEditing}
                 className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-                  } rounded-md bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
+                  } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
                   }`}
               >
                 <option value="A+">A+</option>
@@ -263,7 +263,7 @@ const ProfileForm = ({ role }) => {
       {isEditing && (
         <button
           onClick={handleSaveChanges}
-          className="mt-6 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200"
+          className="mt-6 bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition duration-200"
         >
           Save Changes
         </button>

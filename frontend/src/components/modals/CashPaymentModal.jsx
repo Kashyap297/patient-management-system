@@ -27,7 +27,7 @@ const CashPaymentModal = ({ open, handleClose, handlePayment, totalAmount, paidA
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box className="p-6 bg-white rounded-md shadow-lg w-80 mx-auto my-20">
+      <Box className="p-6 bg-white rounded-xl shadow-lg w-80 mx-auto my-20">
         <Typography variant="h6" className="mb-4">
           Cash Payment
         </Typography>

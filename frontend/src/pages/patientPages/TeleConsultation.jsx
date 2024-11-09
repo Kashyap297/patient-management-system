@@ -205,13 +205,13 @@ const TeleConsultation = () => {
           <p className="text-gray-600 mb-6">Are you sure you want to cancel this appointment?</p>
           <div className="flex justify-center space-x-4">
             <button
-              className="px-6 py-2 text-gray-700 border border-gray-300 rounded-md font-semibold hover:bg-gray-100"
+              className="px-6 py-2 text-gray-700 border border-gray-300 rounded-xl font-semibold hover:bg-gray-100"
               onClick={closeModal}
             >
               No
             </button>
             <button
-              className="px-6 py-2 bg-blue-500 text-white rounded-md font-semibold hover:bg-blue-600"
+              className="px-6 py-2 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600"
               onClick={handleCancelAppointment}
             >
               {cancelLoading ? 'Canceling...' : 'Yes'}

@@ -5,13 +5,11 @@ const InvoiceTemplate2 = () => {
   return (
     <div className="bg-white rounded-2xl max-w-3xl mx-auto shadow-md border border-gray-200">
       {/* Header with Background Color */}
-      <div className="relative bg-[#0EABEB] text-white rounded-t-2xl p-6 mb-6">
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col">
-              <img src={logo} alt="Hospital Logo" className="w-64" />
-            </div>
-          <div className="text-right">
-            <h2 className="text-3xl font-semibold">Invoice</h2>
+      <div className="relative bg-[#0EABEB] text-white rounded-t-2xl p-4 md:p-6 mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <img src={logo} alt="Hospital Logo" className="w-40 md:w-64 mb-4 md:mb-0" />
+          <div className="text-center md:text-right">
+            <h2 className="text-2xl md:text-3xl font-semibold">Invoice</h2>
             <p className="text-sm">Invoice No : 1234</p>
           </div>
         </div>
@@ -19,15 +17,15 @@ const InvoiceTemplate2 = () => {
 
       {/* Invoice Details */}
       <div className="px-4 mb-4">
-        <div className="flex justify-between">
-          <div>
+        <div className="flex flex-col md:flex-row justify-between">
+          <div className="mb-4 md:mb-0">
             <p className="text-gray-500">Invoice To :</p>
             <h3 className="font-semibold text-lg text-gray-800">PLK Madhuvan Bank</h3>
             <p className="text-sm text-gray-600">+123-456-7890</p>
             <p className="text-sm text-gray-600">www.gallery.com</p>
             <p className="text-sm text-gray-600">123 Anywhere Street, Any City</p>
           </div>
-          <div className="text-right">
+          <div className="text-left md:text-right">
             <p className="text-gray-500">Invoice Date : 30 May, 2020</p>
             <p className="text-gray-500">Total Due :</p>
             <p className="text-2xl text-[#0EABEB] font-semibold">$ 1,251</p>
@@ -36,8 +34,8 @@ const InvoiceTemplate2 = () => {
       </div>
 
       {/* Invoice Table */}
-      <div className="px-4 mb-4">
-        <table className="w-full bg-white rounded-lg overflow-hidden border border-gray-200">
+      <div className="px-4 mb-4 overflow-x-auto">
+        <table className="w-full bg-white rounded-lg border border-gray-200">
           <thead className="bg-[#0EABEB] text-white">
             <tr>
               <th className="px-4 py-2">Description</th>
@@ -60,8 +58,8 @@ const InvoiceTemplate2 = () => {
       </div>
 
       {/* Totals Section */}
-      <div className="px-4 mb-4 flex justify-end">
-        <div className="w-full md:w-1/2">
+      <div className="px-4 mb-4 flex flex-col md:flex-row justify-end">
+        <div className="w-full md:w-1/2 space-y-2">
           <div className="flex justify-between text-gray-600">
             <p>Sub Total :</p>
             <p>$ 2110.00</p>
@@ -78,25 +76,24 @@ const InvoiceTemplate2 = () => {
       </div>
 
       {/* Terms and Conditions & Signature */}
-      <div className="flex items-center" >
-
-      <div className="px-4 mb-4">
-        <p className="font-semibold">Terms and Conditions</p>
-        <p className="text-sm text-gray-600">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin mattis turpis nulla, finibus sodales erat porta eu.
-        </p>
-      </div>
-      
-      <div className="px-4 flex justify-end">
-        <div className="text-center">
-          <p>Signature</p>
-          <div className="border-t-2 border-gray-400 w-32 mx-auto mt-2"></div>
+      <div className="flex flex-col md:flex-row items-start md:items-center px-4 mb-4 space-y-4 md:space-y-0 md:space-x-4">
+        <div className="w-full md:w-1/2">
+          <p className="font-semibold">Terms and Conditions</p>
+          <p className="text-sm text-gray-600">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
+            mattis turpis nulla, finibus sodales erat porta eu.
+          </p>
         </div>
-      </div>
+        <div className="w-full md:w-1/2 flex justify-end">
+          <div className="text-center">
+            <p>Signature</p>
+            <div className="border-t-2 border-gray-400 w-32 mx-auto mt-2"></div>
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
-      <div className="text-center text-sm bg-[#0EABEB] p-2 rounded-b-2xl text-white flex justify-between px-4 mt-4">
+      <div className="text-center text-sm bg-[#0EABEB] p-2 rounded-b-2xl text-white flex flex-col md:flex-row justify-between px-4">
         <p>Call: +123-456-7890</p>
         <p>Email: hello@gmail.com</p>
       </div>

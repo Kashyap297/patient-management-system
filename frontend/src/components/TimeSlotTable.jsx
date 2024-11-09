@@ -245,7 +245,7 @@ const TimeSlotTable = ({ doctorDetails, specialty, country, state, city, hospita
               <h2 className="text-2xl font-bold mb-4">Appointment Booked Successfully!</h2>
               <p>Your appointment has been booked for {moment(selectedSlot.day).format('MMMM D, YYYY')} at {selectedSlot.time}.</p>
               <button
-                className="mt-6 px-4 py-2 bg-green-500 text-white rounded-md"
+                className="mt-6 px-4 py-2 bg-green-500 text-white rounded-xl"
                 onClick={closeModal}
               >
                 Okay
@@ -261,7 +261,7 @@ const TimeSlotTable = ({ doctorDetails, specialty, country, state, city, hospita
                 <input
                   type="text"
                   placeholder="Enter Patient Issue"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-xl"
                   value={patientIssue}
                   onChange={(e) => setPatientIssue(e.target.value)}
                 />
@@ -271,7 +271,7 @@ const TimeSlotTable = ({ doctorDetails, specialty, country, state, city, hospita
                 <input
                   type="text"
                   placeholder="Enter Disease Name"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-xl"
                   value={diseaseName}
                   onChange={(e) => setDiseaseName(e.target.value)}
                 />
@@ -281,19 +281,19 @@ const TimeSlotTable = ({ doctorDetails, specialty, country, state, city, hospita
                 <select
                   value={appointmentType}
                   onChange={(e) => setAppointmentType(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-xl"
                 >
                   <option value="Online">Online</option>
                   <option value="Onsite">Onsite</option>
                 </select>
               </div>
               <div className="mt-6 flex justify-end">
-                <button onClick={closeModal} className="px-4 py-2 mr-2 bg-gray-500 text-white rounded-md">
+                <button onClick={closeModal} className="px-4 py-2 mr-2 bg-gray-500 text-white rounded-xl">
                   Cancel
                 </button>
                 <button
                   onClick={handleBookAppointment}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-xl"
                   disabled={loading}
                 >
                   {loading ? "Booking..." : "Book Appointment"}
