@@ -82,7 +82,7 @@ const DoctorManagement = () => {
   );
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="min-h-100">
       <div className="bg-white p-4 md:p-6 rounded-xl h-full">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
           <h2 className="text-2xl font-semibold text-center md:text-left">Doctor Management</h2>
@@ -107,11 +107,11 @@ const DoctorManagement = () => {
           </div>
         </div>
 
-        {/* Responsive Table Wrapper with Horizontal Scroll */}
-        <div className="overflow-x-auto custom-scroll">
+        {/* Responsive Table Wrapper with Vertical and Horizontal Scrollbar */}
+        <div className="overflow-x-auto max-h-[580px] custom-scroll">
           <table className="w-full bg-white rounded-xl overflow-hidden">
             <thead>
-              <tr className="bg-gray-100">
+              <tr className="bg-gray-100 sticky top-0 z-10">
                 <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Doctor Name</th>
                 <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Gender</th>
                 <th className="px-3 md:px-6 py-3 text-left text-gray-600 font-semibold">Qualification</th>

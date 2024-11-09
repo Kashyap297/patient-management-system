@@ -37,7 +37,7 @@ const BillingTable = () => {
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md w-full">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-lg sm:text-xl font-semibold">Billing & Payments</h2>
