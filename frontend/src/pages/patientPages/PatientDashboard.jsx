@@ -12,14 +12,14 @@ const PatientDashboard = () => {
       <PatientDetails />
 
       {/* Grid Layout for Medical History, Prescriptions, Test Reports, and Patient Status */}
-      <div className="grid grid-cols-1 md:grid-cols-8 gap-4 md:gap-6 flex-1 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-8 gap-4 md:gap-6 flex-1">
         {/* Left Column: Medical History */}
         <div className="col-span-1 md:col-span-5 flex flex-col">
           <MedicalHistory className="flex-1 h-full" />
         </div>
 
         {/* Right Column: Prescriptions */}
-        <div className="col-span-1 md:col-span-3 flex flex-col mt-4 md:mt-0">
+        <div className="col-span-1 md:col-span-3 flex flex-col">
           <PrescriptionList className="flex-1 h-full" />
         </div>
       </div>
