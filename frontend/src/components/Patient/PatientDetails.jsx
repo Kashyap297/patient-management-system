@@ -28,8 +28,8 @@ const PatientDetails = () => {
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-xl shadow-lg">
-        <div className="flex justify-between items-center mb-6">
+      <div className="bg-white p-4 md:p-6 lg:p-8 rounded-xl shadow-lg">
+        <div className="flex justify-between items-center mb-4 md:mb-6">
           <Skeleton width={150} height={30} />
           <Skeleton width={100} height={40} />
         </div>
@@ -65,29 +65,29 @@ const PatientDetails = () => {
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Patient Details</h2>
+    <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg">
+      <div className="flex justify-between items-center mb-4 md:mb-6">
+        <h2 className="text-xl md:text-2xl font-semibold">Patient Details</h2>
         <Link
           to={`/patient/edit-patient-profile/${patient._id}`}
-          className="flex items-center px-4 py-2 bg-customBlue text-white rounded-xl shadow-md"
+          className="flex items-center px-3 py-2 md:px-4 md:py-2 bg-customBlue text-white rounded-xl shadow-md hover:bg-blue-600 transition-all"
         >
-          <FaEdit className="mr-2" />
+          <FaEdit className="mr-1 md:mr-2" />
           Edit Profile
         </Link>
       </div>
 
-      <div className="flex justify-between items-start">
-        <div className="flex-shrink-0">
+      <div className="flex flex-col md:flex-row items-start">
+        <div className="flex-shrink-0 mb-4 md:mb-0">
           <img
             src={`https://patient-management-system-vyv0.onrender.com/${patient.profileImage}`}
             alt="Patient"
-            className="w-32 h-32 rounded-full object-cover"
+            className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover"
           />
         </div>
 
-        <div className="flex-grow ml-6">
-          <div className="grid grid-cols-7 gap-x-12 gap-y-4">
+        <div className="flex-grow md:ml-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-y-4 gap-x-12">
             <div className="font-semibold leading-5">
               <p className="text-gray-400">Name</p>
               {patient.firstName} {patient.lastName}
@@ -136,7 +136,7 @@ const PatientDetails = () => {
               <p className="text-gray-400">City</p>
               {patient.city}
             </div>
-            <div className="col-span-2 font-semibold leading-5">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-2 font-semibold leading-5">
               <p className="text-gray-400">Address</p>
               {patient.address}
             </div>
