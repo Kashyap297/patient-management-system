@@ -56,9 +56,9 @@ const PrescriptionAccessPage = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg h-full">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Prescription Access</h2>
+    <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg h-full">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 space-y-3 md:space-y-0">
+        <h2 className="text-xl md:text-2xl font-semibold">Prescription Access</h2>
         <button className="bg-customBlue text-white px-4 py-2 rounded flex items-center space-x-2">
           <FaCalendarAlt />
           <span>Date Range</span>
@@ -66,7 +66,9 @@ const PrescriptionAccessPage = () => {
       </div>
 
       {/* Prescription Cards */}
-      <div className="grid grid-cols-4 gap-4 overflow-y-auto custom-scroll">
+      <div className="overflow-y-auto h-[680px] custom-scroll">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
         {loading ? (
           Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="border rounded-xl shadow-md p-4">
@@ -86,11 +88,11 @@ const PrescriptionAccessPage = () => {
           prescriptions.map((prescription) => (
             <div
               key={prescription._id}
-              className="border rounded-xl shadow-md bg-white transition"
+              className="border rounded-xl shadow-md bg-white transition p-4 md:p-6"
             >
               {/* Card Header */}
-              <div className="flex justify-between items-center px-4 py-2 bg-gray-50 rounded-t-lg">
-                <h4 className="font-semibold ">
+              <div className="flex justify-between items-center pb-2 border-b mb-4">
+                <h4 className="font-semibold text-gray-800">
                   {prescription.doctor ? (
                     <>
                       Dr. {prescription.doctor.firstName}{" "}
@@ -100,18 +102,18 @@ const PrescriptionAccessPage = () => {
                     <span className="text-red-500">Doctor info not available</span>
                   )}
                 </h4>
-                <div className="flex">
-                  <div className="text-customBlue text-lg cursor-pointer rounded-xl bg-white p-2">
+                <div className="flex space-x-2">
+                  <div className="text-customBlue text-lg cursor-pointer rounded-full bg-gray-100 p-2">
                     <FaDownload onClick={() => openModal(prescription._id)} />
                   </div>
-                  <div className="text-customBlue text-lg cursor-pointer rounded-xl bg-white p-2 mr-2">
+                  <div className="text-customBlue text-lg cursor-pointer rounded-full bg-gray-100 p-2">
                     <FaEye onClick={() => openModal(prescription._id)} />
                   </div>
                 </div>
               </div>
 
               {/* Card Body */}
-              <div className="p-4 text-sm text-gray-700 space-y-1">
+              <div className="text-sm text-gray-700 space-y-2">
                 <p className="flex justify-between font-semibold">
                   <span className="text-gray-500">Hospital Name</span>{" "}
                   {prescription.appointmentId
@@ -119,13 +121,13 @@ const PrescriptionAccessPage = () => {
                     : "N/A"}
                 </p>
                 <p className="flex justify-between font-semibold">
-                  <span className="text-gray-500">Disease Name</span>{" "}
+                  <span className="text-gray-500">Disease Name</span>
                   {prescription.medicines && prescription.medicines.length > 0
                     ? prescription.medicines[0].name
                     : "N/A"}
                 </p>
                 <p className="flex justify-between font-semibold">
-                  <span className="text-gray-500">Date</span>{" "}
+                  <span className="text-gray-500">Date</span>
                   {prescription.prescriptionDate
                     ? new Date(prescription.prescriptionDate).toLocaleDateString()
                     : "N/A"}
@@ -140,7 +142,7 @@ const PrescriptionAccessPage = () => {
 
               {/* Prescription File */}
               <div className="flex items-center border-2 m-4 rounded-xl p-2">
-                <div className="text-customBlue rounded-xl p-4 text-3xl bg-gray-50">
+                <div className="text-customBlue rounded-full p-4 text-3xl bg-gray-50">
                   <FaImage />
                 </div>
                 <div className="ml-2">
@@ -153,6 +155,8 @@ const PrescriptionAccessPage = () => {
         ) : (
           <div className="text-center text-gray-600">No prescriptions found.</div>
         )}
+      </div>
+
       </div>
 
       {/* Prescription Modal */}
