@@ -156,31 +156,31 @@ const PatientEditProfile = () => {
     return <p>Loading...</p>;
   }
   return (
-    <div className="relative py-16 px-24">
+    <div className="relative py-8 px-4 sm:px-8 md:px-12 lg:px-24 md:py-16">
       {/* Gradient Background Header */}
       <div
-        className="absolute top-0 left-0 right-0 h-64"
+        className="absolute top-0 left-0 right-0 h-48 md:h-64"
         style={{
           background: "linear-gradient(107.38deg, #4C49ED 2.61%, #020067 101.2%)",
         }}
       />
-      <h2 className="absolute top-12 left-18 text-3xl font-semibold text-white z-20">
+      <h2 className="absolute top-8 sm:top-10 left-4 sm:left-8 md:left-18 lg:top-12 lg-left-18 text-2xl md:text-3xl font-semibold text-white z-20">
         Profile Setting
       </h2>
-
-      <div className="relative z-10 bg-white shadow-lg rounded-xl p-8 flex mt-8">
+  
+      <div className="relative z-10 bg-white shadow-lg rounded-xl p-6 md:p-8 flex flex-col md:flex-row mt-8">
         {/* Left Side: Profile Picture */}
-        <div className="flex flex-col items-center w-1/5 border-r pr-8">
-          <div className="relative w-48 h-48 mb-4">
+        <div className="flex flex-col items-center w-full md:w-1/3 lg:w-1/5 border-b md:border-b-0 md:border-r pb-6 md:pb-0 md:pr-8">
+          <div className="relative w-24 h-24 md:w-40 md:h-40 mb-4">
             <img
               src={profileImagePreview ? profileImagePreview : "https://via.placeholder.com/150"}
               alt="Profile"
               className="w-full h-full rounded-full object-cover"
             />
           </div>
-          <label className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-3 rounded-xl mt-2 hover:bg-gray-200 cursor-pointer">
+          <label className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-xl mt-2 hover:bg-gray-200 cursor-pointer">
             <AiOutlineCamera className="text-gray-500 text-lg" />
-            <span className="text-lg">Change Profile</span>
+            <span className="text-sm md:text-lg">Change Profile</span>
             <input
               type="file"
               name="profileImage"
@@ -190,11 +190,11 @@ const PatientEditProfile = () => {
             />
           </label>
         </div>
-
+  
         {/* Right Side: Editable Profile Form */}
-        <form className="w-4/5 pl-8" onSubmit={handleSubmit}>
-          <h3 className="text-xl font-semibold mb-6">Edit Profile</h3>
-          <div className="grid grid-cols-3 gap-4">
+        <form className="w-full md:w-2/3 lg:w-4/5 pt-6 md:pt-0 md:pl-8" onSubmit={handleSubmit}>
+          <h3 className="text-lg md:text-xl font-semibold mb-6">Edit Profile</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="relative mb-4">
               <input
                 type="text"
@@ -212,7 +212,7 @@ const PatientEditProfile = () => {
                 First Name
               </label>
             </div>
-
+  
             <div className="relative mb-4">
               <input
                 type="text"
@@ -230,8 +230,7 @@ const PatientEditProfile = () => {
                 Last Name
               </label>
             </div>
-
-
+  
             {/* Phone Number */}
             <div className="relative mb-4">
               <input
@@ -251,7 +250,7 @@ const PatientEditProfile = () => {
               </label>
               {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
             </div>
-
+  
             {/* Email */}
             <div className="relative mb-4">
               <input
@@ -460,9 +459,9 @@ const PatientEditProfile = () => {
               </label>
               {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
             </div>
-
+  
             {/* Address */}
-            <div className="relative mb-4 col-span-3">
+            <div className="relative mb-4 col-span-1 sm:col-span-2 lg:col-span-3">
               <input
                 type="text"
                 id="address"
@@ -481,19 +480,19 @@ const PatientEditProfile = () => {
               {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
             </div>
           </div>
-
+  
           {/* Action Buttons */}
           <div className="flex justify-end gap-4 mt-6 col-span-3">
             <button
               type="button"
-              className="px-6 py-2 rounded-xl hover:bg-gray-100 text-gray-700 border bg-white"  
+              className="px-4 py-2 rounded-xl text-sm md:text-base hover:bg-gray-100 text-gray-700 border bg-white"
               onClick={() => navigate("/patient")}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 rounded-xl bg-[#0eabeb] text-white"
+              className="px-4 py-2 rounded-xl text-sm md:text-base bg-[#0eabeb] text-white"
             >
               Save
             </button>
@@ -502,6 +501,7 @@ const PatientEditProfile = () => {
       </div>
     </div>
   );
+  
 };
 
 export default PatientEditProfile;

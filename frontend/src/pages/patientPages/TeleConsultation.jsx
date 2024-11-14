@@ -21,7 +21,7 @@ const TeleConsultation = () => {
   const [appointments, setAppointments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state for data fetching
+  const [loading, setLoading] = useState(true);
   const [cancelLoading, setCancelLoading] = useState(false);
 
   useEffect(() => {
@@ -131,12 +131,13 @@ const TeleConsultation = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg min-h-screen">
-      <div className="flex space-x-4 border-b mb-4">
+    <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg h-full">
+      {/* Tabs for Appointment Types */}
+      <div className="flex flex-wrap md:space-x-4 border-b mb-4">
         {['Today Appointment', 'Upcoming Appointment', 'Previous Appointment', 'Cancel Appointment'].map((tab) => (
           <button
             key={tab}
-            className={`py-2 px-4 focus:outline-none font-medium ${
+            className={`py-2 px-3 md:px-4 focus:outline-none font-medium ${
               activeTab === tab ? 'border-b-4 border-customBlue text-customBlue' : 'text-gray-500'
             }`}
             onClick={() => setActiveTab(tab)}
@@ -146,42 +147,49 @@ const TeleConsultation = () => {
         ))}
       </div>
 
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Teleconsultation Module</h2>
-        {loading ? (
-          <Skeleton height={40} width={180} />
-        ) : (
-          <Button
-            variant="outlined"
-            startIcon={<DateRange />}
-            color="secondary"
-            onClick={() => setOpenCustomDateModal(true)}
-          >
-            {dateRange}
-          </Button>
-        )}
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 space-y-3 md:space-y-0">
+        <h2 className="text-xl md:text-2xl font-semibold">Teleconsultation Module</h2>
+        <div>
+          {loading ? (
+            <Skeleton height={40} width={180} />
+          ) : (
+            <Button
+              variant="outlined"
+              startIcon={<DateRange />}
+              color="secondary"
+              onClick={() => setOpenCustomDateModal(true)}
+            >
+              {dateRange}
+            </Button>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {loading
-          ? Array.from({ length: 8 }).map((_, index) => (
-              <div key={index} className="bg-white p-4 rounded-xl shadow-md">
-                <Skeleton height={20} width="60%" className="mb-2" />
-                <Skeleton height={15} width="80%" className="mb-1" />
-                <Skeleton height={15} width="70%" className="mb-1" />
-                <Skeleton height={15} width="50%" />
-              </div>
-            ))
-          : currentAppointments.map((patient, index) => (
-              <TeleConsultationCardPatient
-                key={index}
-                patient={patient}
-                activeTab={activeTab}
-                openCancelModal={openCancelModal}
-              />
-            ))}
+      {/* Appointments Grid */}
+      <div className="custom-scroll overflow-y-auto h-[620px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {loading
+            ? Array.from({ length: 8 }).map((_, index) => (
+                <div key={index} className="bg-white p-4 rounded-xl shadow-md">
+                  <Skeleton height={20} width="60%" className="mb-2" />
+                  <Skeleton height={15} width="80%" className="mb-1" />
+                  <Skeleton height={15} width="70%" className="mb-1" />
+                  <Skeleton height={15} width="50%" />
+                </div>
+              ))
+            : currentAppointments.map((patient, index) => (
+                <TeleConsultationCardPatient
+                  key={index}
+                  patient={patient}
+                  activeTab={activeTab}
+                  openCancelModal={openCancelModal}
+                />
+              ))}
+        </div>
       </div>
 
+      {/* Date Filter Modal */}
       <CustomDateFilter
         open={openCustomDateModal}
         onClose={() => setOpenCustomDateModal(false)}
@@ -189,6 +197,7 @@ const TeleConsultation = () => {
         onReset={handleResetDateFilter}
       />
 
+      {/* Cancel Appointment Modal */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}

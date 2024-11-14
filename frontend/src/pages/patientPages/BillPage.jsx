@@ -14,7 +14,7 @@ const BillPage = () => {
   const [showInvoice, setShowInvoice] = useState(false);
   const [activeTab, setActiveTab] = useState("unpaid");
   const { updateBreadcrumb } = useBreadcrumb();
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     updateBreadcrumb([{ label: "Bills", path: "/patient/bills" }]);
@@ -23,7 +23,7 @@ const BillPage = () => {
   useEffect(() => {
     const fetchUserBills = async () => {
       try {
-        setLoading(true); // Start loading state
+        setLoading(true);
         const token = localStorage.getItem("token");
         const response = await api.get("/invoice/user/invoice", {
           headers: {
@@ -35,7 +35,7 @@ const BillPage = () => {
       } catch (error) {
         console.error("Error fetching bills:", error);
       } finally {
-        setLoading(false); // Stop loading state
+        setLoading(false);
       }
     };
 
@@ -57,27 +57,33 @@ const BillPage = () => {
   );
 
   return (
-    <div className="p-6 bg-white rounded-xl h-full">
-      <div className="mb-4 flex space-x-6">
+    <div className="p-4 md:p-6 bg-white rounded-xl h-full">
+      {/* Tabs for Unpaid and Paid Bills */}
+      <div className="mb-4 flex flex-wrap space-x-4 md:space-x-6 border-b">
         <button
           onClick={() => setActiveTab("unpaid")}
-          className={`text-lg font-semibold px-3 ${
-            activeTab === "unpaid" ? "text-customBlue border-b-4 border-customBlue" : "text-gray-500"
+          className={`text-lg font-semibold py-2 px-3 md:px-4 ${
+            activeTab === "unpaid"
+              ? "text-customBlue border-b-4 border-customBlue"
+              : "text-gray-500"
           }`}
         >
           Unpaid Bills
         </button>
         <button
           onClick={() => setActiveTab("paid")}
-          className={`text-lg font-semibold px-3 ${
-            activeTab === "paid" ? "text-customBlue border-b-4 border-customBlue" : "text-gray-500"
+          className={`text-lg font-semibold py-2 px-3 md:px-4 ${
+            activeTab === "paid"
+              ? "text-customBlue border-b-4 border-customBlue"
+              : "text-gray-500"
           }`}
         >
           Paid Bills
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      {/* Bills Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {loading
           ? Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="p-4 border rounded-xl bg-white shadow-sm">
@@ -89,7 +95,10 @@ const BillPage = () => {
               </div>
             ))
           : filteredBills.map((bill) => (
-              <div key={bill._id} className="p-4 border rounded-xl bg-white shadow-sm flex flex-col">
+              <div
+                key={bill._id}
+                className="p-4 border rounded-xl bg-white shadow-sm flex flex-col"
+              >
                 <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
                   {bill.doctor ? (
                     <p className="font-semibold">
@@ -98,7 +107,10 @@ const BillPage = () => {
                   ) : (
                     <p className="font-semibold">Doctor Information Unavailable</p>
                   )}
-                  <button onClick={() => handleViewInvoice(bill)} className="text-lg p-1 bg-white text-customBlue">
+                  <button
+                    onClick={() => handleViewInvoice(bill)}
+                    className="text-lg p-1 bg-white text-customBlue"
+                  >
                     <FaEye />
                   </button>
                 </div>
@@ -107,19 +119,23 @@ const BillPage = () => {
                     <strong>Hospital Name</strong> {bill.hospital.name}
                   </p>
                   <p className="text-gray-500 flex justify-between">
-                    <strong>Bill Created Date</strong> {new Date(bill.billDate).toLocaleDateString()}
+                    <strong>Bill Created Date</strong>{" "}
+                    {new Date(bill.billDate).toLocaleDateString()}
                   </p>
                   <p className="text-gray-500 flex justify-between">
                     <strong>Bill Created Time</strong> {bill.billTime}
                   </p>
                   <p className="text-red-500 font-semibold flex justify-between">
-                    <strong className="font-medium text-gray-500">Total Bill Amount</strong> ₹{bill.totalAmount.toLocaleString()}
+                    <strong className="font-medium text-gray-500">
+                      Total Bill Amount
+                    </strong>{" "}
+                    ₹{bill.totalAmount.toLocaleString()}
                   </p>
                 </div>
                 <div className="flex justify-end mt-2">
                   {bill.status === "Unpaid" && (
                     <button
-                      className="bg-customBlue text-white py-2 px-4 rounded-xl font-semibold w-full"
+                      className="bg-customBlue text-white py-2 px-4 rounded-xl font-semibold w-full md:w-auto"
                       onClick={() => handlePayNow(bill)}
                     >
                       Pay Now
@@ -130,6 +146,7 @@ const BillPage = () => {
             ))}
       </div>
 
+      {/* Modals for Invoice and Payment Type */}
       {showInvoice && selectedBill && (
         <InvoiceModal
           bill={selectedBill}
