@@ -119,7 +119,7 @@ const AdminEditProfile = () => {
   return (
     <div className="relative bg-gray-100 py-8 sm:py-10 lg:py-16 px-6 sm:px-12 lg:px-36">
       <ProfileHeader title="Profile Setting" />
-      <div className="flex flex-col md:flex-row w-full mt-6 md:mt-8 mx-auto bg-white shadow-lg rounded-xl overflow-hidden z-10 relative h-full ">
+      <div className="flex flex-col md:flex-row w-full mt-6 md:mt-8 mx-auto bg-white shadow-lg rounded-xl overflow-hidden z-10 relative h-[620px] ">
         <div className="w-full md:w-1/4 p-6 md:p-8 text-center border-b md:border-r">
           <img
             src={
@@ -149,7 +149,7 @@ const AdminEditProfile = () => {
         </div>
         <div className="w-full md:w-3/4 p-6 md:p-8">
           <h3 className="text-xl sm:text-2xl font-semibold mb-4">Edit Profile</h3>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* First Name */}
             <div className="relative">
               <input

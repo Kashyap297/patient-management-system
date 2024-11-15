@@ -38,11 +38,11 @@ const App = () => {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/signup" element={!isAuthenticated ? <PatientRegister /> : <Navigate to="/admin/dashboard" replace />} />
+        <Route path="/patient-registration" element={!isAuthenticated ? <PatientRegister /> : <Navigate to="/admin/dashboard" replace />} />
         <Route path="/forgot-password" element={!isAuthenticated ? <ForgetPassword /> : <Navigate to="/admin/dashboard" replace />} />
         <Route path="/enter-otp" element={!isAuthenticated ? <EnterOTP /> : <Navigate to="/admin/dashboard" replace />} />
         <Route path="/reset-password" element={!isAuthenticated ? <ResetPassword /> : <Navigate to="/admin/dashboard" replace />} />
-        <Route path="/admin-register" element={!isAuthenticated ? <AdminRegister /> : <Navigate to="/admin/dashboard" replace />} />
+        <Route path="/admin-registration" element={!isAuthenticated ? <AdminRegister /> : <Navigate to="/admin/dashboard" replace />} />
 
         {/* Dashboard Routes with Role-based Protection */}
         <Route

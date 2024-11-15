@@ -123,16 +123,24 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
 
         {/* Profile Image */}
         <Link to={`/${userRole}`} className="flex items-center space-x-2">
-          {loading ? (
-            <Skeleton circle={true} width={40} height={40} />
-          ) : (
-            <img
-              src={profileImage || "https://patient-management-system-vyv0.onrender.com/default-profile.png"}
-              alt="user"
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full"
-            />
-          )}
-        </Link>
+            {loading ? (
+              <Skeleton circle={true} width={40} height={40} />
+            ) : (
+              <img
+                src={profileImage || "https://patient-management-system-vyv0.onrender.com/default-profile.png"}
+                alt="user"
+                className="w-10 h-10 rounded-full"
+              />
+            )}
+            <div>
+              <span className="font-semibold text-sm">
+                {loading ? <Skeleton width={80} /> : userName}
+              </span>
+              <span className="block text-gray-500 text-xs">
+                {loading ? <Skeleton width={40} /> : userRole}
+              </span>
+            </div>
+          </Link>
       </div>
     </div>
   );

@@ -565,9 +565,15 @@ const PatientRegister = () => {
             </button>
           </form>
           <p className="text-center mt-4 text-sm">
-            Already have an account?{" "}
+            Already have an account? {" "}
             <a href="/" className="text-blue-500 hover:underline">
               Login
+            </a>
+          </p>
+          <p className="text-center mt-4 text-sm">
+            Admin Registration? {" "}
+            <a href="/admin-registration" className="text-blue-500 hover:underline">
+              Admin-Registration
             </a>
           </p>
         </div>

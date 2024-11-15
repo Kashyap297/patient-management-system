@@ -138,7 +138,7 @@ const Login = ({ setIsAuthenticated }) => {
           </form>
           <p className="text-center mt-4 text-sm">
             Don’t have an account?{" "}
-            <Link to={"/signup"} className="text-blue-500 hover:underline">
+            <Link to={"/patient-registration"} className="text-blue-500 hover:underline">
               Registration
             </Link>
           </p>
