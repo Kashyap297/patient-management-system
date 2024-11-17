@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineDown, AiOutlineMenu } from "react-icons/ai";
+import { AiOutlineDown, AiOutlineMenu, AiOutlineRight } from "react-icons/ai";
 import { FaBell, FaSearch } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import Home from "../assets/images/home-2.png";
 
 const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
   const [userName, setUserName] = useState("");
@@ -65,27 +66,56 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
 
   // Only show greeting on specific routes (Dashboard pages for each role)
   const showGreeting =
-  (userRole === "admin" &&
-    (location.pathname === "/admin/dashboard" ||
-      location.pathname === "/admin" ||
-      location.pathname === "/admin/edit-profile" ||
-      location.pathname === "/admin/change-password" ||
-      location.pathname === "/admin/terms-and-conditions" ||
-      location.pathname === "/admin/privacy-policy")) ||
-  (userRole === "doctor" && 
-    ( location.pathname === "/doctor" ||
-    location.pathname === "/doctor/edit-profile" ||
-    location.pathname === "/doctor/change-password" ||
-    location.pathname === "/doctor/terms-and-conditions" ||
-    location.pathname === "/doctor/privacy-policy")) ||
-  (userRole === "patient" && location.pathname === "/patient");
+    (userRole === "admin" &&
+      (location.pathname === "/admin/dashboard" ||
+        location.pathname === "/admin" ||
+        location.pathname === "/admin/edit-profile" ||
+        location.pathname === "/admin/change-password" ||
+        location.pathname === "/admin/terms-and-conditions" ||
+        location.pathname === "/admin/privacy-policy")) ||
+    (userRole === "doctor" &&
+      (location.pathname === "/doctor" ||
+        location.pathname === "/doctor/edit-profile" ||
+        location.pathname === "/doctor/change-password" ||
+        location.pathname === "/doctor/terms-and-conditions" ||
+        location.pathname === "/doctor/privacy-policy")) ||
+    (userRole === "patient" && location.pathname === "/patient");
 
+  // Show breadcrumb only on allowed routes
+  const showBreadcrumb =
+    !(userRole === "admin" &&
+      (location.pathname === "/admin/dashboard" ||
+        location.pathname === "/admin" ||
+        location.pathname === "/admin/edit-profile" ||
+        location.pathname === "/admin/change-password" ||
+        location.pathname === "/admin/terms-and-conditions" ||
+        location.pathname === "/admin/privacy-policy")) &&
+    !(userRole === "doctor" &&
+      (location.pathname === "/doctor" ||
+        location.pathname === "/doctor/edit-profile" ||
+        location.pathname === "/doctor/change-password" ||
+        location.pathname === "/doctor/terms-and-conditions" ||
+        location.pathname === "/doctor/privacy-policy")) &&
+    !(userRole === "patient" && location.pathname === "/patient");
+
+  // Breadcrumb path functionality
+  const pathSegments = location.pathname.split("/").filter(Boolean); // Remove empty strings
+  const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : "Home";
   return (
     <div className="w-full px-4 py-4 bg-white shadow-md flex items-center justify-between">
       {/* Left Section - Hamburger Menu */}
       <div className="flex items-center space-x-4">
         {/* Sidebar Toggle Button */}
         <AiOutlineMenu className="text-gray-700 text-2xl md:hidden cursor-pointer" onClick={toggleSidebar} />
+
+        {/* Breadcrumb Path - Conditionally Rendered */}
+        {showBreadcrumb && (
+  <div className="hidden md:flex items-center space-x-2 bg-[#f8fcfe] px-4 py-2 rounded-full border border-gray-200">
+    <img src={Home} alt="home" className="w-6 h-6" />
+    <AiOutlineRight className="text-[#0eabeb]" />
+    <span className="text-[#0eabeb] font-medium">{lastSegment}</span>
+  </div>
+)}
 
         {/* Greeting Section - Conditionally Rendered */}
         <div className="hidden md:block">
