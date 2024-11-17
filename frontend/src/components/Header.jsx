@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineDown, AiOutlineMenu } from "react-icons/ai";
 import { FaBell, FaSearch } from "react-icons/fa";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -16,6 +16,8 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const location = useLocation(); // Access the current location (route)
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -61,6 +63,23 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
     onSearch(query, filterOption);
   };
 
+  // Only show greeting on specific routes (Dashboard pages for each role)
+  const showGreeting =
+  (userRole === "admin" &&
+    (location.pathname === "/admin/dashboard" ||
+      location.pathname === "/admin" ||
+      location.pathname === "/admin/edit-profile" ||
+      location.pathname === "/admin/change-password" ||
+      location.pathname === "/admin/terms-and-conditions" ||
+      location.pathname === "/admin/privacy-policy")) ||
+  (userRole === "doctor" && 
+    ( location.pathname === "/doctor" ||
+    location.pathname === "/doctor/edit-profile" ||
+    location.pathname === "/doctor/change-password" ||
+    location.pathname === "/doctor/terms-and-conditions" ||
+    location.pathname === "/doctor/privacy-policy")) ||
+  (userRole === "patient" && location.pathname === "/patient");
+
   return (
     <div className="w-full px-4 py-4 bg-white shadow-md flex items-center justify-between">
       {/* Left Section - Hamburger Menu */}
@@ -68,14 +87,18 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
         {/* Sidebar Toggle Button */}
         <AiOutlineMenu className="text-gray-700 text-2xl md:hidden cursor-pointer" onClick={toggleSidebar} />
 
-        {/* Greeting Section - Visible only on medium and above screens */}
+        {/* Greeting Section - Conditionally Rendered */}
         <div className="hidden md:block">
-          <h1 className="text-lg font-bold text-gray-900">
-            {loading ? <Skeleton width={150} /> : `${greeting}! ${userName.split(" ")[0]}`}
-          </h1>
-          <p className="text-gray-500 text-sm">
-            {loading ? <Skeleton width={100} /> : "Hope you have a good day"}
-          </p>
+          {showGreeting && (
+            <>
+              <h1 className="text-lg font-bold text-gray-900">
+                {loading ? <Skeleton width={150} /> : `${greeting}! ${userName.split(" ")[0]}`}
+              </h1>
+              <p className="text-gray-500 text-sm">
+                {loading ? <Skeleton width={100} /> : "Hope you have a good day"}
+              </p>
+            </>
+          )}
         </div>
       </div>
 
@@ -123,24 +146,24 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
 
         {/* Profile Image */}
         <Link to={`/${userRole}`} className="flex items-center space-x-2">
-            {loading ? (
-              <Skeleton circle={true} width={40} height={40} />
-            ) : (
-              <img
-                src={profileImage || "https://patient-management-system-vyv0.onrender.com/default-profile.png"}
-                alt="user"
-                className="w-10 h-10 rounded-full"
-              />
-            )}
-            <div>
-              <span className="font-semibold text-sm">
-                {loading ? <Skeleton width={80} /> : userName}
-              </span>
-              <span className="block text-gray-500 text-xs">
-                {loading ? <Skeleton width={40} /> : userRole}
-              </span>
-            </div>
-          </Link>
+          {loading ? (
+            <Skeleton circle={true} width={40} height={40} />
+          ) : (
+            <img
+              src={profileImage || "https://patient-management-system-vyv0.onrender.com/default-profile.png"}
+              alt="user"
+              className="w-10 h-10 rounded-full"
+            />
+          )}
+          <div>
+            <span className="font-semibold text-sm">
+              {loading ? <Skeleton width={80} /> : userName}
+            </span>
+            <span className="block text-gray-500 text-xs">
+              {loading ? <Skeleton width={40} /> : userRole}
+            </span>
+          </div>
+        </Link>
       </div>
     </div>
   );
