@@ -3,7 +3,7 @@ import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import api from "../../api/api";
 
-const AdminProfileView = ({ onEdit }) => {
+const   AdminProfileView = ({ onEdit }) => {
   const [profileData, setProfileData] = useState({
     firstName: "",
     lastName: "",
@@ -128,7 +128,7 @@ const AdminProfileView = ({ onEdit }) => {
             id="hospitalName"
             name="hospitalName"
             className="peer w-full px-4 py-2 border border-gray-300 rounded-xl text-gray-400 bg-white focus:outline-none"
-            value={profileData.hospital?.name || ""}
+            value={profileData.adminhospital?.name || ""}
           />
           <label
             htmlFor="hospitalName"
@@ -146,7 +146,7 @@ const AdminProfileView = ({ onEdit }) => {
             id="hospitalAddress"
             name="hospitalAddress"
             className="peer w-full px-4 py-2 border border-gray-300 rounded-xl text-gray-400 bg-white focus:outline-none"
-            value={profileData.hospital?.address || ""}
+            value={profileData.adminhospital?.address || ""} 
           />
           <label
             htmlFor="hospitalAddress"

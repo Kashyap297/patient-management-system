@@ -4,146 +4,86 @@ const TermsAndConditions = () => {
   return (
     <div className="p-4 sm:p-6">
       <h3 className="text-xl sm:text-2xl font-semibold mb-7">Terms & Condition</h3>
-      <div className="mx-auto overflow-y-auto h-[500px] sm:h-[550px] custom-scroll border rounded-xl p-5">
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">1. Acceptance of Terms</h2>
-        <p className="text-gray-700 mb-6">
-          By accessing the System as an admin, you acknowledge that you have
-          read, understood, and agree to be bound by these Terms and Conditions.
-          If you do not agree with any part of these terms, you are not
-          authorized to access or use the System in an administrative capacity.
-        </p>
+      <div className="mx-auto overflow-y-auto h-[500px] sm:h-[550px] custom-scroll border rounded-xl p-5">      
+      <p className="mb-4 text-gray-700">
+        Welcome to the Patient Management System (Admin Panel). By accessing
+        or using this platform, you agree to comply with and be bound by the
+        following terms and conditions of use. Please read them carefully.
+      </p>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          2. Admin Responsibilities
-        </h2>
-        <p className="text-gray-700 mb-6">
-          As an admin, you are responsible for:
-        </p>
-        <ul className="list-disc pl-6 mb-6 text-gray-700">
-          <li>
-            Maintaining the accuracy and confidentiality of patient records.
-          </li>
-          <li>
-            Monitoring user activities within the System to ensure compliance
-            with all relevant laws and regulations.
-          </li>
-          <li>
-            Facilitating patient management tasks, such as adding or updating
-            patient profiles, managing appointments, and overseeing health
-            records.
-          </li>
-          <li>
-            Reporting any suspicious or unauthorized activity immediately to the
-            relevant authorities within the organization.
-          </li>
-          <li>
-            Ensuring that all information shared within the System is truthful,
-            accurate, and not misleading.
-          </li>
-        </ul>
+      <h2 className="text-xl font-semibold mb-3">1. Usage of the System</h2>
+      <p className="mb-4 text-gray-700">
+        As an admin, you are granted access to manage patients, doctors, and
+        other associated data within the system. You are expected to use this
+        system responsibly and solely for the purposes it is intended for.
+        Unauthorized use or sharing of access credentials is strictly
+        prohibited.
+      </p>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          3. Confidentiality and Data Privacy
-        </h2>
-        <p className="text-gray-700 mb-4">
-          <strong>Patient Data Confidentiality:</strong> You must maintain the
-          confidentiality of all patient data in compliance with data protection
-          laws, such as HIPAA (for the US) or GDPR (for the EU), if applicable.
-          Any unauthorized disclosure of patient data is strictly prohibited.
-        </p>
-        <p className="text-gray-700 mb-4">
-          <strong>Data Access:</strong> Only authorized personnel may access,
-          view, or modify patient information. Unauthorized access or misuse of
-          patient data is strictly prohibited and may result in disciplinary
-          action or legal consequences.
-        </p>
-        <p className="text-gray-700 mb-6">
-          <strong>Data Security:</strong> You are responsible for ensuring that
-          the System's data security measures, including password protection,
-          encryption, and secure access protocols, are adhered to at all times.
-        </p>
+      <h2 className="text-xl font-semibold mb-3">2. Confidentiality</h2>
+      <p className="mb-4 text-gray-700">
+        The system contains sensitive patient and doctor information. You must
+        maintain confidentiality and ensure that no data is disclosed,
+        shared, or misused. Failure to comply with this condition may lead to
+        immediate termination of your access and legal action.
+      </p>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">4. Prohibited Activities</h2>
-        <p className="text-gray-700 mb-6">As an admin, you agree not to:</p>
-        <ul className="list-disc pl-6 mb-6 text-gray-700">
-          <li>
-            Use the System to conduct or promote any illegal or unauthorized
-            activity.
-          </li>
-          <li>
-            Misuse patient information or share data with unauthorized third
-            parties.
-          </li>
-          <li>
-            Access or attempt to access data beyond your authorized level of
-            permission.
-          </li>
-          <li>
-            Engage in any activity that could harm the System, including
-            introducing viruses, Trojans, or malicious code.
-          </li>
-        </ul>
+      <h2 className="text-xl font-semibold mb-3">3. Data Accuracy</h2>
+      <p className="mb-4 text-gray-700">
+        It is your responsibility to ensure the accuracy of the data entered
+        into the system. Inaccurate or fraudulent data entry may result in
+        disciplinary action.
+      </p>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          5. Compliance with Legal and Regulatory Requirements
-        </h2>
-        <p className="text-gray-700 mb-6">
-          As an admin, you agree to comply with all applicable local, state,
-          national, and international laws and regulations concerning the
-          handling of patient data. You are responsible for staying informed of
-          any changes to laws or regulations that affect your role and
-          responsibilities within the System.
-        </p>
+      <h2 className="text-xl font-semibold mb-3">4. System Monitoring</h2>
+      <p className="mb-4 text-gray-700">
+        All actions performed on the Admin Panel are monitored and logged for
+        security purposes. Any misuse or violation of terms may result in the
+        revocation of your access and further investigation.
+      </p>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          6. Data Accuracy and Integrity
-        </h2>
-        <p className="text-gray-700 mb-6">
-          You agree to ensure that all data entered, updated, or maintained
-          within the System is accurate, complete, and current. Deliberate
-          falsification or misrepresentation of patient information is strictly
-          prohibited and may lead to legal and/or disciplinary action.
-        </p>
+      <h2 className="text-xl font-semibold mb-3">5. Prohibited Activities</h2>
+      <ul className="list-disc pl-5 mb-4 text-gray-700">
+        <li>Sharing login credentials with unauthorized users.</li>
+        <li>Exporting or sharing sensitive patient or doctor data without proper authorization.</li>
+        <li>Using the system for any illegal or unauthorized purpose.</li>
+        <li>Attempting to hack, modify, or disrupt the platform's functionality.</li>
+      </ul>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">7. Audit and Monitoring</h2>
-        <p className="text-gray-700 mb-6">
-          The System reserves the right to monitor and audit all admin activity.
-          Your actions within the System may be recorded and reviewed to ensure
-          compliance with these Terms and Conditions. Violations may result in
-          the suspension or termination of access privileges and potential legal
-          consequences.
-        </p>
+      <h2 className="text-xl font-semibold mb-3">6. Limitation of Liability</h2>
+      <p className="mb-4 text-gray-700">
+        The Patient Management System is provided "as is" without any
+        guarantees or warranties. The organization is not responsible for any
+        damages arising from the use or inability to use the system.
+      </p>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          8. Termination of Admin Access
-        </h2>
-        <p className="text-gray-700 mb-6">
-          The System reserves the right to revoke admin access at any time for
-          any violation of these Terms and Conditions or if required by changes
-          in organizational policies or applicable law.
-        </p>
+      <h2 className="text-xl font-semibold mb-3">7. Termination of Access</h2>
+      <p className="mb-4 text-gray-700">
+        The organization reserves the right to revoke your access to the
+        system at any time, without prior notice, for any violation of these
+        terms and conditions.
+      </p>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          9. Limitation of Liability
-        </h2>
-        <p className="text-gray-700 mb-6">
-          The System and its operators are not liable for any damages, losses,
-          or liabilities arising from your misuse of the System or any
-          unauthorized disclosure of patient data caused by your actions. You
-          agree to indemnify and hold harmless the System and its affiliates,
-          officers, and employees from any claims arising from your use of the
-          System.
-        </p>
+      <h2 className="text-xl font-semibold mb-3">8. Amendments to the Terms</h2>
+      <p className="mb-4 text-gray-700">
+        These terms and conditions may be updated or amended from time to time
+        without prior notice. It is your responsibility to regularly review
+        the terms and stay informed of any changes.
+      </p>
 
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          10. Modifications to Terms
-        </h2>
-        <p className="text-gray-700 mb-6">
-          The System reserves the right to modify these Terms and Conditions at
-          any time. You will be notified of any significant changes, and
-          continued use of the System as an admin following such changes
-          constitutes your acceptance of the updated terms.
+      <h2 className="text-xl font-semibold mb-3">9. Contact Information</h2>
+      <p className="mb-4 text-gray-700">
+        For any questions or concerns regarding these terms, please contact
+        the system administrator at <span className="text-blue-500">admin@patientmanagement.com</span>.
+      </p>
+
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold mb-2">Agreement</h3>
+        <p className="text-gray-700">
+          By using this Admin Panel, you acknowledge that you have read,
+          understood, and agreed to these terms and conditions.
         </p>
+      </div>
       </div>
     </div>
   );
