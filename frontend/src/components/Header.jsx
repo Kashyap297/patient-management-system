@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineDown, AiOutlineMenu, AiOutlineRight } from "react-icons/ai";
 import { FaBell, FaSearch } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
@@ -19,6 +19,26 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
   const [loading, setLoading] = useState(true);
 
   const location = useLocation(); // Access the current location (route)
+  const notificationRef = useRef(null); // Ref for the notification dropdown
+
+  const [notifications, setNotifications] = useState([
+    { message: "Change Invoice Theme", time: "5 min ago" },
+    { message: "Created Bill by dr.bharat.", time: "5 min ago" },
+    { message: "Payment Received", time: "1:52 PM" },
+    { message: "Payment Cancelled", time: "1:52 PM" },
+    { message: "Dr.Bharat Patel has been appointed.", time: "1:34 PM" },
+    { message: "Doctor Removed Rakesh Patel", time: "9:00 AM" }
+  ]);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notificationRef.current && !notificationRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -169,10 +189,33 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
           </div>
         )}
 
-        {/* Notification Icon */}
-        <div className="relative rounded-full bg-gray-100 p-3">
-          {loading ? <Skeleton circle={true} width={30} height={30} /> : <FaBell className="text-gray-700" />}
+        
+<div className="relative">
+          <div className="rounded-full bg-gray-100 p-3 cursor-pointer" onClick={toggleDropdown}>
+            {loading ? <Skeleton circle={true} width={30} height={30} /> : <FaBell className="text-gray-700" />}
+          </div>
+
+          {/* Notification Dropdown */}
+          {dropdownOpen && (
+            <div
+              ref={notificationRef}
+              className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-20"
+            >
+              <div className="p-4 text-lg font-medium text-gray-700 border-b">Notification</div>
+              <div className="max-h-60 overflow-y-auto custom-scroll">
+                {notifications.map((notification, index) => (
+                  <div key={index} className="flex items-center px-4 py-3 border-b last:border-b-0">
+                    <div className="flex flex-col">
+                      <span className="font-semibold">{notification.message}</span>
+                      <span className="text-sm text-gray-500">{notification.time}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+
 
         {/* Profile Image */}
         <Link to={`/${userRole}`} className="flex items-center space-x-2">
