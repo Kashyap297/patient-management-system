@@ -12,6 +12,7 @@ import CustomDateFilter from "../../components/modals/CustomDateFilter";
 import moment from "moment";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import toast from "react-hot-toast";
 
 Modal.setAppElement("#root");
 
@@ -111,7 +112,7 @@ const AppointmentBookingPage = () => {
       closeModal();
     } catch (error) {
       console.error("Error canceling appointment:", error);
-      alert("Failed to cancel appointment. Please try again.");
+      toast.error("Failed to cancel appointment. Please try again.");
     } finally {
       setLoading(false);
     }

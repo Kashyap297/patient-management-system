@@ -3,8 +3,8 @@ import { FiCamera } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api"; // Ensure to import your Axios instance
 import userImage from "../../assets/images/user.png";
-import Swal from "sweetalert2";
 import ProfileHeader from "./ProfileHeader";
+import toast from "react-hot-toast";
 
 const DoctorEditProfile = ({ onCancel }) => {
   const [formData, setFormData] = useState({
@@ -107,19 +107,10 @@ const DoctorEditProfile = ({ onCancel }) => {
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming token is stored in localStorage
         },
       });
-      Swal.fire({
-        icon: "success",
-        title: "Profile Updated successfully!!",
-        confirmButtonText: "OK",
-      });
+      toast.success("Profile updated successfully!");
       navigate("/doctor");
     } catch (error) {
-      console.error("Error updating profile", error);
-      Swal.fire({
-        icon: "error",
-        title: "Update failed",
-        confirmButtonText: "Try Again",
-      });
+      toast.error("Error updating profile!");
     }
   };
 

@@ -3,6 +3,7 @@ import { FaCcMastercard, FaCcVisa } from "react-icons/fa";
 import master from "../../assets/images/mastercard.png";
 import visa from "../../assets/images/visa.png";
 import api from "../../api/api";
+import toast from "react-hot-toast";
 
 const PaymentMethodModal = ({ bill, onClose }) => {
   const [selectedCard, setSelectedCard] = useState("MasterCard");
@@ -33,18 +34,17 @@ const PaymentMethodModal = ({ bill, onClose }) => {
     } else {
       try {
         // Make an API call to create a PayPal payment
-        console.log(bill.totalAmount)
         const response = await api.post("/payment/create", { totalAmount: bill.totalAmount });
   
         if (response.data.forwardLink) {
           // Redirect the user to the PayPal approval page
           window.location.href = response.data.forwardLink;
         } else {
-          alert("Payment creation failed. No approval link found.");
+          toast.error("Payment creation failed. No approval link found.");
         }
       } catch (error) {
         console.error("Error processing payment:", error);
-        alert("Payment initiation failed.");
+        toast.error("Payment initiation failed.");
       }
     }
   };

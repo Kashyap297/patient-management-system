@@ -4,6 +4,7 @@ import api from "../../api/api"; // Axios instance for API calls
 import Modal from "react-modal"; // Modal package, install via npm: npm install react-modal
 import countryData from "../../countryjson/countries+states+cities.json"; // Assuming this is the correct path to your JSON file
 import noappointmentrecord from "../../assets/images/noappointmentrecord.png"; // Placeholder image
+import toast from "react-hot-toast";
 
 // Initialize the Modal
 Modal.setAppElement("#root");
@@ -299,9 +300,10 @@ const BookAppointment = () => {
       const response = await api.post("/appointment", appointmentData);
       setAppointmentSuccess(true); // Success message
       console.log("Appointment booked successfully:", response.data);
+      toast.success("Appointment booked successfully!");
     } catch (error) {
       console.error("Error booking appointment", error); // Log the error for debugging
-      alert("Failed to book appointment");
+      toast.error("Failed to book appointment");
     } finally {
       setLoading(false);
     }

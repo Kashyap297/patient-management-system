@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import Swal from "sweetalert2";
 import countryData from "../../countryjson/countries+states+cities.json";
+import toast from "react-hot-toast";
 
 const EditDoctor = () => {
   const { id } = useParams();
@@ -168,21 +169,11 @@ const EditDoctor = () => {
       const response = await api.patch(`/users/doctors/${id}`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      Swal.fire({
-        icon: "success",
-        title: "Doctor Edited successfully!",
-        confirmButtonText: "OK",
-      });
-
+      toast.success("Doctor Updated successfully!");
       navigate("/admin/doctor-management");
     } catch (error) {
       console.error("Error updating doctor:", error.response?.data || error);
-      Swal.fire({
-        icon: "error",
-        title: "Error in editing doctor",
-        confirmButtonText: "Try Again",
-      });
+      toast.error("Failed to update Doctor profile.");
     }
   };
 

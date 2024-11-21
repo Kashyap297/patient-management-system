@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import { FaTrashAlt } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import toast from "react-hot-toast";
 
 Modal.setAppElement("#root");
 
@@ -132,9 +133,10 @@ const TeleConsultation = () => {
         )
       );
       closeModal();
+      toast.success("Appointment Cancelled!");
     } catch (error) {
       console.error("Error canceling appointment:", error);
-      alert("Failed to cancel appointment. Please try again.");
+      toast.error("Failed to cancel appointment. Please try again.");
     } finally {
       setCancelLoading(false);
     }

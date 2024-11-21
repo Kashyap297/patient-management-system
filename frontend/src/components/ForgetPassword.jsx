@@ -6,6 +6,7 @@ import forgetPassword from "../assets/images/forgetpassword.png";
 import logo from "../assets/images/logo.png";
 import vector1 from "../assets/images/Vector1.png";
 import vector2 from "../assets/images/Vector2.png";
+import toast from "react-hot-toast";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ const ForgetPassword = () => {
       try {
         localStorage.setItem("email", email);
         await requestOtp({ email });
-        alert("OTP sent to your email/phone");
+        toast.success("OTP sent to your email/phone");
         navigate("/enter-otp");
       } catch {
         setErrors({ email: authError });

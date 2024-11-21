@@ -4,6 +4,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import api from "../../api/api"; // Import your centralized API instance
+import toast from "react-hot-toast";
 
 // Updated validation schema with only required validation
 const validationSchema = Yup.object().shape({
@@ -28,14 +29,14 @@ const ChangePasswordForm = () => {
       });
 
       if (response.status === 200) {
-        alert("Password changed successfully");
+        toast.success("Password changed successfully!");
         resetForm(); // Reset the form on successful password change
       } else {
-        alert("Failed to change password");
+        toast.error("Failed to change password");
       }
     } catch (error) {
       console.error("Error changing password:", error);
-      alert("Error changing password. Please try again.");
+      toast.error("Error changing password. Please try again.");
     } finally {
       setSubmitting(false);
     }

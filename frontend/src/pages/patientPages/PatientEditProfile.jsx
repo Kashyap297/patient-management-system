@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { FiCamera } from "react-icons/fi";
 import api from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Assuming you have the right import now
 import { AiOutlineCamera } from "react-icons/ai";
-import Swal from "sweetalert2";
+import { toast} from "react-hot-toast";
 
 const PatientEditProfile = () => {
   const [profileImagePreview, setProfileImagePreview] = useState(null);
@@ -139,16 +138,11 @@ const PatientEditProfile = () => {
           },
         });
 
-        Swal.fire({
-          icon: "success",
-          title: "Profile updated successfully!",
-          confirmButtonText: "OK",
-        });
-
+        toast.success("Profile updated successfully!");
         navigate("/patient"); // Redirect after success
       }
     } catch (err) {
-      console.error("Error updating patient profile:", err);
+      toast.error("Failed to update profile. Please try again.");
     }
   };
 

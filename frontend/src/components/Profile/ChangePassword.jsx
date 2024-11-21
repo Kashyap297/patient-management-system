@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import Swal from "sweetalert2";
 import api from "../../api/api";
+import toast from "react-hot-toast";
 
 const validationSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Current password is required"),
@@ -35,29 +35,13 @@ const ChangePassword = () => {
       });
 
       if (response.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "Password Changed Successfully!",
-          text: "Your password has been updated.",
-          confirmButtonText: "OK",
-        });
+        toast.success("Password Changed Successfully!");
         resetForm();
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Failed to Change Password",
-          text: "Please check your details and try again.",
-          confirmButtonText: "Try Again",
-        });
+        toast.error("Failed to Change Password, Try again");
       }
     } catch (error) {
-      console.error("Error changing password:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error Changing Password",
-        text: "An error occurred. Please try again.",
-        confirmButtonText: "OK",
-      });
+      toast.error("Error Changing Password, Please try again.");
     } finally {
       setSubmitting(false);
     }

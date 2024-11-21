@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/api";
+import toast from "react-hot-toast";
 
 const EditBill = () => {
   const { id } = useParams();
@@ -103,11 +104,11 @@ const EditBill = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Bill updated successfully");
+      toast.success("Bill updated successfully!");
       navigate("/admin/payment-process");
     } catch (error) {
       console.error("Error updating bill:", error);
-      alert("Failed to update the bill. Please try again.");
+      toast.error("Failed to update the bill. Please try again.");
     }
   };
 

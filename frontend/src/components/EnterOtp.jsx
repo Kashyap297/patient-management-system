@@ -5,6 +5,7 @@ import vector2 from "../assets/images/Vector2.png";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import forgetPassword from "../assets/images/forgetpassword.png";
+import toast from "react-hot-toast";
 
 const EnterOTP = () => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -49,7 +50,7 @@ const EnterOTP = () => {
     const email = localStorage.getItem("email");
     try {
       await requestOtp({ email });
-      alert("OTP resent to your email/phone");
+      toast.success("OTP resent to your email or phone");
     } catch (error) {
       setErrors("Failed to resend OTP. Please try again.");
     }

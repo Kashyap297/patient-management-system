@@ -5,6 +5,7 @@ import api from "../api/api";
 // Import country JSON data
 import countryData from "../countryjson/countries+states+cities.json";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const PatientRegister = () => {
   const [formData, setFormData] = useState({
@@ -106,11 +107,12 @@ const PatientRegister = () => {
           "/users/register-patient",
           dataToSubmit
         );
-        console.log("Registration successful:", response.data);
+        toast.success("Registration successful!");
         navigate('/')
         setErrors({});
       } catch (error) {
-        console.error("Registration failed:", error.response);
+        
+        toast.error("Registration failed. Please try again.");
         if (error.response && error.response.data.message) {
           setErrors({ apiError: error.response.data.message });
         } else {

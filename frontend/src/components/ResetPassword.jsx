@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Import icons
 import AuthContext from "../context/AuthContext";
 import forgetPassword from "../assets/images/forgetpassword.png";
+import toast from "react-hot-toast";
 
 
 const ResetPassword = () => {
@@ -45,7 +46,7 @@ const ResetPassword = () => {
       try {
         const email = localStorage.getItem("email");
         await resetPassword({ password: newPassword, email });
-        alert("Password reset successful");
+        toast.success("Password Reset successfully!");
         localStorage.removeItem("email");
         navigate("/");
       } catch {

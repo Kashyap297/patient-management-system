@@ -18,6 +18,7 @@ import { ReactComponent as TelePatientIcon } from "../assets/images/TelePatient.
 import { ReactComponent as appPatientIcon } from "../assets/images/appPatient.svg";
 import { ReactComponent as healthIcon } from "../assets/images/health.svg";
 import appointment from "../assets/images/appointment.png";
+import toast from "react-hot-toast";
 
 const Sidebar = ({ role, onLogout, isSidebarOpen, setIsSidebarOpen }) => {
   const navigate = useNavigate();
@@ -108,6 +109,7 @@ const Sidebar = ({ role, onLogout, isSidebarOpen, setIsSidebarOpen }) => {
     localStorage.clear();
     onLogout();
     navigate("/");
+    toast.success("Logout successfully!");
   };
 
   const handleMenuClick = (path, label) => {

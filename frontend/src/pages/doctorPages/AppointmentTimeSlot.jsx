@@ -3,6 +3,7 @@ import moment from "moment";
 import { jwtDecode } from "jwt-decode"; // Ensure you're importing jwt-decode correctly
 import api from "../../api/api"; // Assuming you have an API setup
 import { FaClock, FaTrash } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 // Modal Component for writing a note and disabling the appointment
 const WriteNoteModal = ({ show, onClose, appointment, onSaveNote }) => {
@@ -314,10 +315,11 @@ const AppointmentTimeSlot = () => {
 
         setAppointments(updatedAppointments);
         setShowEditModal(false);
-        alert("Appointment rescheduled successfully");
+        toast.success("Appointment rescheduled successfully!");
       }
     } catch (error) {
       console.error("Error rescheduling appointment:", error);
+      toast.error("Error rescheduling appointment");
     }
   };
 

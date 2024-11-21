@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import SidePanel from "./SidePanel";
 import AuthContext from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Login = ({ setIsAuthenticated }) => {
   const { loginUser, authError } = useContext(AuthContext);
@@ -37,7 +38,7 @@ const Login = ({ setIsAuthenticated }) => {
 
         localStorage.setItem("token", token);
         setIsAuthenticated(true); // Set authenticated state to true
-
+        toast.success("Login successfully!");
         if (role === "admin") {
           navigate("/admin/dashboard");
         } else if (role === "doctor") {
@@ -48,6 +49,7 @@ const Login = ({ setIsAuthenticated }) => {
           navigate("/home");
         }
       } catch (error) {
+        toast.error("Login failed. Please try again.");
         setErrors({ password: authError || "Login failed, try again" });
       }
     }

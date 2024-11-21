@@ -9,6 +9,7 @@ import SidePanel from "./SidePanel";
 import AuthContext from "../context/AuthContext";
 import axios from "axios";
 import countryData from "../countryjson/countries+states+cities.json"; // Assuming it's in the `countryjson` folder
+import toast from "react-hot-toast";
 
 const AdminRegister = () => {
   const { registerAdmin, authError } = useContext(AuthContext);
@@ -92,11 +93,12 @@ const AdminRegister = () => {
         hospitalPayload
       );
       if (response.status === 201) {
-        alert("Hospital created successfully!");
+        toast.success("Hospital created successfully!");
         setHospitals([...hospitals, response.data.hospital]);
         closeModal();
       }
     } catch (error) {
+      toast.error("Failed to create hospital. Please try again.");
       setHospitalError("Failed to create hospital. Please try again.");
       console.error(
         "Error details:",
@@ -167,10 +169,10 @@ const AdminRegister = () => {
       };
       try {
         await registerAdmin(adminData);
-        alert("Admin registered successfully!");
+        toast.success("Admin registered successfully!");
         navigate("/");
       } catch (error) {
-        console.error("Registration failed:", authError);
+        toast.error("Registration failed. Please try again.");
       }
     }
   };

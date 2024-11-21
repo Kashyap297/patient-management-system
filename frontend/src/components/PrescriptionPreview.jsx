@@ -4,6 +4,7 @@ import signature from "../assets/images/signature.svg";
 import logo from "../assets/images/logo.png";
 import api from "../api/api";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const PrescriptionPreview = ({ prescriptionData, appointmentId }) => {
   const [doctorDetails, setDoctorDetails] = useState(null);
@@ -46,10 +47,10 @@ const PrescriptionPreview = ({ prescriptionData, appointmentId }) => {
 
       await api.post("/prescription", payload);
       await api.patch(`/appointments/${appointmentId}`, { status: "Completed" });
-      alert("Prescription created successfully and appointment marked as Completed");
+      toast.success("Prescription created successfully and appointment marked as Completed");
       navigate(`/doctor/prescription-tools/manage`);
     } catch (error) {
-      console.error("Error creating prescription or updating appointment status:", error);
+      toast.error("Error creating prescription or updating appointment status");
     }
   };
 

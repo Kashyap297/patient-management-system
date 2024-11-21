@@ -14,6 +14,7 @@ import selectImage from "../../assets/images/select-image.png"; // Placeholder i
 import AddFieldModal from "../../components/modals/AddFieldModal";
 import { Delete } from "@mui/icons-material";
 import { AiOutlineDelete } from "react-icons/ai";
+import toast from "react-hot-toast";
 
 const CreateBill = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -199,7 +200,7 @@ const CreateBill = () => {
       });
 
       console.log("Invoice created successfully:", response.data);
-      alert("Invoice created successfully!");
+      toast.success("Invoice created successfully!");
 
       // Reset form values after submission
       setFormValues({
@@ -238,7 +239,7 @@ const CreateBill = () => {
       setSelectedFile(null);
     } catch (error) {
       console.error("Error creating invoice:", error);
-      alert("Error creating invoice. Please try again.");
+      toast.error("Error creating invoice. Please try again.");
     }
   };
 

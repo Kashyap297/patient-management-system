@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import api from "../api/api"; // Axios instance for API calls
 import Modal from 'react-modal'; // Modal package, install via npm: npm install react-modal
+import toast from 'react-hot-toast';
 
 // Initialize the Modal
 Modal.setAppElement('#root');
@@ -153,10 +154,11 @@ const TimeSlotTable = ({ doctorDetails, specialty, country, state, city, hospita
       console.log("Booking Appointment Data:", appointmentData);
       const response = await api.post("/appointment", appointmentData);
       setAppointmentSuccess(true); // Show success message
+      toast.success("Appointment booked successfully!");
       console.log("Appointment booked successfully", response.data);
     } catch (error) {
       console.error("Error booking appointment", error);
-      alert("Failed to book appointment");
+      toast.error("Failed to book appointment!");
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaCreditCard, FaMoneyBillAlt } from "react-icons/fa";
 import PaymentMethodModal from "./PaymentMethodModal";
 import api from "../../api/api"; // Assuming you have an API setup
+import toast from "react-hot-toast";
 
 const PaymentTypeModal = ({ bill, onClose }) => {
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
@@ -20,11 +21,11 @@ const PaymentTypeModal = ({ bill, onClose }) => {
           patient: bill.patient._id, // Include patient ID
           doctor: bill.doctor._id, // Include doctor ID
         });
-        alert("Cash payment processed! Invoice status updated to 'Paid'.");
+        toast.success("Cash payment processed! Invoice status updated to 'Paid'.");
         onClose(); // Close the modal after processing payment
       } catch (error) {
         console.error("Error processing cash payment:", error);
-        alert("Failed to process cash payment. Please try again.");
+        toast.error("Failed to process cash payment. Please try again.");
       }
     }
   };

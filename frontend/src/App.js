@@ -12,6 +12,7 @@ import DoctorRoutes from "./components/DoctorRoutes";
 import PatientRoutes from "./components/PatientRoutes";
 import { BreadcrumbProvider } from "./context/BreadcrumbContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import GlobalToaster from "./pages/Toaster";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
@@ -35,6 +36,7 @@ const App = () => {
 
   return (
     <Router>
+       <GlobalToaster />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} />

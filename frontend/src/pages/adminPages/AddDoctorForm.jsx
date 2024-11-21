@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import api from "../../api/api";
 import countryData from "../../countryjson/countries+states+cities.json"; // Assuming the file path
+import toast from "react-hot-toast";
 
 const AddDoctorForm = () => {
   const [formData, setFormData] = useState({
@@ -101,19 +102,10 @@ const AddDoctorForm = () => {
         alert(`Error: ${error.message}`);
         return;
       }
-
-      Swal.fire({
-        icon: "success",
-        title: "Doctor added successfully!",
-        confirmButtonText: "OK",
-      });
+      toast.success("Doctor added successfully!");
       navigate("/admin/doctor-management");
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error in adding doctor",
-        confirmButtonText: "Try Again",
-      });
+      toast.error("Error in adding doctor!");
     }
   };
 

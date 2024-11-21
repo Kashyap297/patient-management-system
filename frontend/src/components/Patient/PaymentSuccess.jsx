@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import api from "../../api/api";
+import toast from "react-hot-toast";
 
 const PaymentSuccess = () => {
   const location = useLocation();
@@ -14,7 +15,7 @@ const PaymentSuccess = () => {
 
       try {
         await api.get("/payment/success", { params: { PayerID: payerId, paymentId } });
-        alert("Payment successful!");
+        toast.success("Payment successful!");
         history.push("/patient/bills");  // Redirect after successful payment
       } catch (error) {
         console.error("Payment execution failed", error);
