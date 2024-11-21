@@ -6,6 +6,8 @@ import SkeletonCard from '../../components/SkeletonCard'; // Skeleton component
 import api from '../../api/api';
 import moment from 'moment';
 import {jwtDecode} from 'jwt-decode';
+import NoDataFound from "../../assets/images/NoDataFound.png";
+
 
 const TeleConsultationScreen = () => {
   const [activeTab, setActiveTab] = useState("Today Appointment");
@@ -95,9 +97,10 @@ const TeleConsultationScreen = () => {
 
   const handleResetDateFilter = () => {
     setFilterDates({ fromDate: null, toDate: null });
-    setDateRange('2 Jan, 2022 - 13 Jan, 2022');
+    setDateRange("Any Date"); // Reset to "Any Date"
     setOpenCustomDateModal(false);
   };
+  
 
   return (
     <div className="bg-white h-full p-6 rounded-xl shadow-md">
@@ -119,13 +122,31 @@ const TeleConsultationScreen = () => {
       {/* Date Range and Filter Button */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">{activeTab}</h2>
-        <button
-          onClick={() => setOpenCustomDateModal(true)}
-          className="border border-gray-300 px-4 py-2 rounded-xl text-gray-600 flex items-center space-x-1 hover:bg-gray-100 transition"
-        >
-          <FaCalendarAlt className="text-[#1E1E1E]" />
-          <span>{dateRange}</span>
-        </button>
+        <div
+  className="flex items-center border border-gray-300 rounded-xl px-4 py-2 cursor-pointer"
+  onClick={() => setOpenCustomDateModal(true)}
+>
+  <FaCalendarAlt className="text-gray-600 mr-2" />
+  <span className="text-gray-800 truncate">
+    {filterDates.fromDate && filterDates.toDate
+      ? `${moment(filterDates.fromDate).format("D MMM, YYYY")} - ${moment(
+          filterDates.toDate
+        ).format("D MMM, YYYY")}`
+      : "Any Date"}
+  </span>
+  {filterDates.fromDate && filterDates.toDate && (
+    <button
+      className="ml-2 text-red-500"
+      onClick={(e) => {
+        e.stopPropagation(); // Prevent modal from opening
+        handleResetDateFilter();
+      }}
+    >
+      ✕
+    </button>
+  )}
+</div>
+
       </div>
 
       {/* Appointment Cards Grid */}
@@ -140,7 +161,13 @@ const TeleConsultationScreen = () => {
           ))
         ) : (
           <div className="col-span-full text-center py-16">
-            <p className="text-gray-500">No appointments found for the selected date range or criteria.</p>
+            <div className="flex flex-col items-center">
+                          <img
+                            src={NoDataFound}
+                            alt="No Prescription Found"
+                            className="w-80 mb-4"
+                          />
+                        </div>
           </div>
         )}
       </div>

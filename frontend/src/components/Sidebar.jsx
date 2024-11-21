@@ -17,6 +17,7 @@ import { ReactComponent as PatientBillIcon } from "../assets/images/PatientBill.
 import { ReactComponent as TelePatientIcon } from "../assets/images/TelePatient.svg";
 import { ReactComponent as appPatientIcon } from "../assets/images/appPatient.svg";
 import { ReactComponent as healthIcon } from "../assets/images/health.svg";
+import appointment from "../assets/images/appointment.png";
 
 const Sidebar = ({ role, onLogout, isSidebarOpen, setIsSidebarOpen }) => {
   const navigate = useNavigate();
@@ -238,6 +239,32 @@ const Sidebar = ({ role, onLogout, isSidebarOpen, setIsSidebarOpen }) => {
             </li>
           ))}
         </ul>
+
+        {/* Add the Hospital Appointment section for patient role */}
+        {role === "patient" && (
+          <div className="relative px-5 m-5 bg-gray-100 rounded-2xl">
+            <div className="flex justify-center mb-2 relative z-10">
+              <img
+                src={appointment}
+                alt="appointment"
+                className="w-30 h-30 -mt-32"
+              />
+            </div>
+            <div className="pb-5 text-center relative z-0">
+              <h4 className="mb-2 font-semibold text-lg">
+                Hospital appointment
+              </h4>
+              <p className="text-sm text-gray-500 mb-4">
+                You have to fill up the form to be admitted to the Hospital.
+              </p>
+              <NavLink to={"/patient/appointment-booking"}>
+                <button className="w-full bg-customBlue text-white py-2 rounded-md">
+                  Appointment
+                </button>
+              </NavLink>
+            </div>
+          </div>
+        )}
 
         {/* Logout Button */}
         <div className="mb-5">

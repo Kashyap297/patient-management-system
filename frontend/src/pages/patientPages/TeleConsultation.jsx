@@ -1,21 +1,20 @@
-import { useEffect, useState } from 'react';
-import { Button } from '@mui/material';
-import { DateRange } from '@mui/icons-material';
-import TeleConsultationCardPatient from '../../components/TeleConsultationCardPatient.jsx';
-import CustomDateFilter from '../../components/modals/CustomDateFilter.jsx';
-import Modal from 'react-modal';
-import api from '../../api/api';
-import moment from 'moment';
-import { jwtDecode } from 'jwt-decode';
-import { FaTrashAlt } from 'react-icons/fa';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import { useEffect, useState } from "react";
+import { DateRange } from "@mui/icons-material";
+import TeleConsultationCardPatient from "../../components/TeleConsultationCardPatient.jsx";
+import CustomDateFilter from "../../components/modals/CustomDateFilter.jsx";
+import Modal from "react-modal";
+import api from "../../api/api";
+import moment from "moment";
+import { jwtDecode } from "jwt-decode";
+import { FaTrashAlt } from "react-icons/fa";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-Modal.setAppElement('#root');
+Modal.setAppElement("#root");
 
 const TeleConsultation = () => {
-  const [activeTab, setActiveTab] = useState('Today Appointment');
-  const [dateRange, setDateRange] = useState('Any Date');
+  const [activeTab, setActiveTab] = useState("Today Appointment");
+  const [dateRange, setDateRange] = useState("Any Date");
   const [openCustomDateModal, setOpenCustomDateModal] = useState(false);
   const [filterDates, setFilterDates] = useState({ fromDate: null, toDate: null });
   const [appointments, setAppointments] = useState([]);
@@ -28,22 +27,22 @@ const TeleConsultation = () => {
     const fetchAppointments = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         const decodedToken = jwtDecode(token);
         const loggedInDoctorId = decodedToken.id;
 
-        const response = await api.get('/appointments', {
+        const response = await api.get("/appointments", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         const fetchedAppointments = response.data.data.filter(
-          appointment => appointment.patientId === loggedInDoctorId
+          (appointment) => appointment.patientId === loggedInDoctorId
         );
 
         setAppointments(fetchedAppointments);
       } catch (error) {
-        console.error('Error fetching appointments:', error);
+        console.error("Error fetching appointments:", error);
       } finally {
         setLoading(false);
       }
@@ -53,33 +52,38 @@ const TeleConsultation = () => {
   }, []);
 
   const getCurrentAppointments = () => {
-    const today = moment().startOf('day');
+    const today = moment().startOf("day");
     let filteredAppointments;
 
     switch (activeTab) {
-      case 'Today Appointment':
+      case "Today Appointment":
         filteredAppointments = appointments.filter(
-          app => moment(app.appointmentDate).isSame(today, 'day') && app.status !== 'Cancelled'
+          (app) =>
+            moment(app.appointmentDate).isSame(today, "day") && app.status !== "Cancelled"
         );
         break;
-      case 'Upcoming Appointment':
-        filteredAppointments = appointments.filter(app => moment(app.appointmentDate).isAfter(today));
+      case "Upcoming Appointment":
+        filteredAppointments = appointments.filter((app) =>
+          moment(app.appointmentDate).isAfter(today)
+        );
         break;
-      case 'Previous Appointment':
-        filteredAppointments = appointments.filter(app => moment(app.appointmentDate).isBefore(today));
+      case "Previous Appointment":
+        filteredAppointments = appointments.filter((app) =>
+          moment(app.appointmentDate).isBefore(today)
+        );
         break;
-      case 'Cancel Appointment':
-        filteredAppointments = appointments.filter(app => app.status === 'Cancelled');
+      case "Cancel Appointment":
+        filteredAppointments = appointments.filter((app) => app.status === "Cancelled");
         break;
       default:
         filteredAppointments = appointments;
     }
 
     if (filterDates.fromDate && filterDates.toDate) {
-      const fromDate = moment(filterDates.fromDate).startOf('day');
-      const toDate = moment(filterDates.toDate).endOf('day');
-      return filteredAppointments.filter(appointment =>
-        moment(appointment.appointmentDate).isBetween(fromDate, toDate, null, '[]')
+      const fromDate = moment(filterDates.fromDate).startOf("day");
+      const toDate = moment(filterDates.toDate).endOf("day");
+      return filteredAppointments.filter((appointment) =>
+        moment(appointment.appointmentDate).isBetween(fromDate, toDate, null, "[]")
       );
     }
 
@@ -90,7 +94,11 @@ const TeleConsultation = () => {
 
   const handleApplyDateFilter = (fromDate, toDate) => {
     if (fromDate && toDate) {
-      setDateRange(`${moment(fromDate).format('D MMM, YYYY')} - ${moment(toDate).format('D MMM, YYYY')}`);
+      setDateRange(
+        `${moment(fromDate).format("D MMM, YYYY")} - ${moment(toDate).format(
+          "D MMM, YYYY"
+        )}`
+      );
       setFilterDates({ fromDate, toDate });
     }
     setOpenCustomDateModal(false);
@@ -98,7 +106,7 @@ const TeleConsultation = () => {
 
   const handleResetDateFilter = () => {
     setFilterDates({ fromDate: null, toDate: null });
-    setDateRange('Any Date');
+    setDateRange("Any Date");
     setOpenCustomDateModal(false);
   };
 
@@ -116,15 +124,17 @@ const TeleConsultation = () => {
     setCancelLoading(true);
     try {
       await api.patch(`/appointments/cancel/${appointmentToCancel.id}`);
-      setAppointments(prevAppointments =>
-        prevAppointments.map(appointment =>
-          appointment.id === appointmentToCancel.id ? { ...appointment, status: 'Cancelled' } : appointment
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment.id === appointmentToCancel.id
+            ? { ...appointment, status: "Cancelled" }
+            : appointment
         )
       );
       closeModal();
     } catch (error) {
-      console.error('Error canceling appointment:', error);
-      alert('Failed to cancel appointment. Please try again.');
+      console.error("Error canceling appointment:", error);
+      alert("Failed to cancel appointment. Please try again.");
     } finally {
       setCancelLoading(false);
     }
@@ -134,11 +144,18 @@ const TeleConsultation = () => {
     <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg h-full">
       {/* Tabs for Appointment Types */}
       <div className="flex flex-wrap md:space-x-4 border-b mb-4">
-        {['Today Appointment', 'Upcoming Appointment', 'Previous Appointment', 'Cancel Appointment'].map((tab) => (
+        {[
+          "Today Appointment",
+          "Upcoming Appointment",
+          "Previous Appointment",
+          "Cancel Appointment",
+        ].map((tab) => (
           <button
             key={tab}
             className={`py-2 px-3 md:px-4 focus:outline-none font-medium ${
-              activeTab === tab ? 'border-b-4 border-customBlue text-customBlue' : 'text-gray-500'
+              activeTab === tab
+                ? "border-b-4 border-customBlue text-customBlue"
+                : "text-gray-500"
             }`}
             onClick={() => setActiveTab(tab)}
           >
@@ -150,18 +167,22 @@ const TeleConsultation = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 space-y-3 md:space-y-0">
         <h2 className="text-xl md:text-2xl font-semibold">Teleconsultation Module</h2>
-        <div>
-          {loading ? (
-            <Skeleton height={40} width={180} />
-          ) : (
-            <Button
-              variant="outlined"
-              startIcon={<DateRange />}
-              color="secondary"
-              onClick={() => setOpenCustomDateModal(true)}
+        <div
+          className="flex items-center border border-gray-300 rounded-xl px-4 py-2 cursor-pointer"
+          onClick={() => setOpenCustomDateModal(true)}
+        >
+          <DateRange className="text-gray-600 mr-2" />
+          <span className="text-gray-800">{dateRange}</span>
+          {filterDates.fromDate && filterDates.toDate && (
+            <button
+              className="ml-2 text-red-500"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleResetDateFilter();
+              }}
             >
-              {dateRange}
-            </Button>
+              ✕
+            </button>
           )}
         </div>
       </div>
@@ -223,7 +244,7 @@ const TeleConsultation = () => {
               className="px-6 py-2 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600"
               onClick={handleCancelAppointment}
             >
-              {cancelLoading ? 'Canceling...' : 'Yes'}
+              {cancelLoading ? "Canceling..." : "Yes"}
             </button>
           </div>
         </div>

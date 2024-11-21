@@ -32,22 +32,22 @@ const TestReports = () => {
     },
   ];
 
-  const handleViewAll = () => {
-    navigate("/patient/test-report");
-  };
+  // const handleViewAll = () => {
+  //   navigate("/patient/test-report");
+  // };
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg">
       {/* Heading and View All link */}
       <div className="flex justify-between items-center mb-4 border-b-2 pb-2">
         <h2 className="text-xl font-semibold">Test Reports</h2>
-        <a
+        {/* <a
           href="#"
           className="text-blue-600 hover:underline"
           onClick={handleViewAll}
         >
           View All Test
-        </a>
+        </a> */}
       </div>
 
       {/* Scrollable container for reports */}

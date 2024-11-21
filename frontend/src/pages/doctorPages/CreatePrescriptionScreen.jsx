@@ -3,6 +3,7 @@ import api from "../../api/api"; // Adjust the path according to your project st
 import { jwtDecode } from "jwt-decode";
 import CreatePrescription from "../../components/CreatePrescription";
 import SkeletonCard from "../../components/SkeletonCard"; // Import the skeleton component
+import NoDataFound from "../../assets/images/NoDataFound.png";
 
 const CreatePrescriptionScreen = () => {
   const [appointments, setAppointments] = useState([]);
@@ -57,7 +58,7 @@ const CreatePrescriptionScreen = () => {
           {loading ? (
             // Render 4 skeleton cards as placeholders
             Array.from({ length: 4 }).map((_, index) => <SkeletonCard key={index} />)
-          ) : (
+          ) : appointments.length > 0 ? (
             appointments.slice(0, 12).map((appointment) => (
               <CreatePrescription
                 key={appointment.id}
@@ -71,6 +72,17 @@ const CreatePrescriptionScreen = () => {
                 status={appointment.status}
               />
             ))
+          ) : (
+            // Render no data image when no appointments are available
+            <div className="col-span-full text-center py-16">
+              <div className="flex flex-col items-center">
+                <img
+                  src={NoDataFound}
+                  alt="No Appointments Found"
+                  className="w-80 mb-4"
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>

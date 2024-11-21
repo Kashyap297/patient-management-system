@@ -18,7 +18,6 @@ const PaymentReturnModal = ({ open, onClose, onConfirm }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-xl border-t-8 border-[#E11D29] shadow-lg w-100 text-center relative">
-        
         {/* Icon at the top */}
         <div className="flex justify-center mb-4">
           <div className="bg-red-500 text-white rounded-full p-4">
@@ -57,7 +56,6 @@ const PaymentReturnModal = ({ open, onClose, onConfirm }) => {
     </div>
   );
 };
-
 
 const CancelAppointmentModal = ({ open, onClose, onProceed }) => {
   if (!open) return null;
@@ -365,64 +363,82 @@ const AppointmentManagement = () => {
   return (
     <div className="bg-white h-full p-6 rounded-xl shadow-md">
       <div className="">
-        {/* Tabs */}
-        <div className="flex space-x-4 mb-4 border-b">
-          {[
-            "Today Appointment",
-            "Upcoming Appointment",
-            "Previous Appointment",
-            "Cancel Appointment",
-          ].map((tab) => (
-            <button
-              key={tab}
-              className={`py-2 px-4 ${
-                activeTab === tab
-                  ? "border-b-2 border-[#0eabeb] text-[#0eabeb]"
-                  : "text-[#667080]"
-              }`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+  {/* Tabs */}
+  <div className="flex space-x-4 mb-4 border-b">
+    {[
+      "Today Appointment",
+      "Upcoming Appointment",
+      "Previous Appointment",
+      "Cancel Appointment",
+    ].map((tab) => (
+      <button
+        key={tab}
+        className={`py-2 px-4 ${
+          activeTab === tab
+            ? "border-b-2 border-[#0eabeb] text-[#0eabeb]"
+            : "text-[#667080]"
+        }`}
+        onClick={() => setActiveTab(tab)}
+      >
+        {tab}
+      </button>
+    ))}
+  </div>
 
-        {/* Search and Controls */}
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">{activeTab}</h2>
-          <div className="flex items-center space-x-4">
-            {/* Search Bar */}
-            <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2 w-full max-w-md">
-              <FaSearch className="text-gray-500 mr-2" />
-              <input
-                type="text"
-                placeholder="Search Patient"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-[#f6f8fb] focus:outline-none w-full text-gray-600"
-              />
-            </div>
-
-            {/* "Any Date" Button */}
-            <button
-              className="border border-gray-300 px-4 py-2 rounded-xl w-1/2 text-gray-600 flex items-center space-x-1 hover:bg-gray-100 transition"
-              onClick={() => setOpenCustomDateModal(true)}
-            >
-              <FaCalendar className="text-[#1E1E1E]" />
-              <span>Any Date</span>
-            </button>
-
-            {/* "Appointment Time Slot" Button */}
-            <button
-              className="bg-[#0eabeb] text-white px-4 py-2 rounded-xl w-full flex items-center space-x-1  transition"
-              onClick={() => navigate("/doctor/appointment-time-slot")}
-            >
-              <FaCalendar className="text-white" />
-              <span>Appointment Time Slot</span>
-            </button>
-          </div>
-        </div>
+  {/* Search and Controls */}
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-2xl font-semibold w-full">{activeTab}</h2>
+    <div className="flex items-center space-x-4 w-full justify-end">
+      {/* Search Bar */}
+      <div className="flex items-center bg-[#f6f8fb] rounded-full px-4 py-2 max-w-md">
+        <FaSearch className="text-gray-500 mr-2" />
+        <input
+          type="text"
+          placeholder="Search Patient"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="bg-[#f6f8fb] focus:outline-none w-full text-gray-600"
+        />
       </div>
+
+      {/* "Any Date" Button with Date Range Display */}
+      <div
+        className="flex items-center border border-gray-300 rounded-xl px-4 py-2 cursor-pointer"
+        onClick={() => setOpenCustomDateModal(true)}
+      >
+        <CalendarToday className="text-gray-600 mr-2" />
+        <span className="text-gray-800 truncate">
+          {filterDates.fromDate && filterDates.toDate
+            ? `${moment(filterDates.fromDate).format("D MMM, YYYY")} - ${moment(
+                filterDates.toDate
+              ).format("D MMM, YYYY")}`
+            : "Any Date"}
+        </span>
+        {filterDates.fromDate && filterDates.toDate && (
+          <button
+            className="ml-2 text-red-500"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent modal from opening
+              handleResetDateFilter();
+            }}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* "Appointment Time Slot" Button */}
+      <button
+        className="bg-[#0eabeb] text-white px-4 py-2 rounded-xl flex items-center space-x-1 transition min-w-[200px]"
+        onClick={() => navigate("/doctor/appointment-time-slot")}
+      >
+        <FaCalendar className="text-white" />
+        <span>Appointment Time Slot</span>
+      </button>
+    </div>
+  </div>
+</div>
+
       <div className="max-h-[600px] overflow-y-auto custom-scroll rounded-t-xl">
         <table className="min-w-full table-auto rounded-t-xl">
           <thead className="sticky top-0 bg-[#f6f8fb] z-10">
