@@ -15,8 +15,8 @@ exports.createPayment = (req, res) => {
     intent: "sale",
     payer: { payment_method: "paypal" },
     redirect_urls: {
-      return_url: "http://localhost:3000/payment/success",
-      cancel_url: "http://localhost:3000/payment/cancel",
+      return_url: "https://patient-management-system-gules-eight.vercel.app/payment/success",
+      cancel_url: "https://patient-management-system-gules-eight.vercel.app/payment/cancel",
     },
     transactions: [
       {

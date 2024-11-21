@@ -100,8 +100,8 @@ const PatientMeetingConference = () => {
   return (
     <div className="d-flex">
       <div className="w-85 w-md-100">
-        <div className="container-fluid meeting-conference-page py-4">
-          <h4 className="meeting-conference-title">
+        <div className="container-fluid meeting-conference-page py-4 bg-white rounded-xl p-5">
+          <h4 className="meeting-conference-title text-[#030229] mb-3">
             Doctor Meeting Conference
           </h4>
 
