@@ -132,9 +132,8 @@ const EditSlotModal = ({ show, appointment, timeSlots, onClose, onSave }) => {
             id="select-time"
             value={selectedTimeSlot}
             onChange={(e) => setSelectedTimeSlot(e.target.value)}
-            className={`peer custom-scroll w-full px-4 py-2 border rounded-xl text-gray-700 bg-gray-50 focus:outline-none focus:ring-0 ${
-              selectedTimeSlot ? "border-gray-300" : "border-red-500"
-            }`}
+            className={`peer custom-scroll w-full px-4 py-2 border rounded-xl text-gray-700 bg-gray-50 focus:outline-none focus:ring-0 ${selectedTimeSlot ? "border-gray-300" : "border-red-500"
+              }`}
           >
             <option value="">Select Time</option>
             {timeSlots.map((time, index) => (
@@ -177,7 +176,7 @@ const DeleteConfirmationModal = ({ show, onConfirmDelete, onCancel }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-xl p-6 shadow-lg w-1/5 text-center relative border-t-8 border-[#E11D29] ">
-        
+
         {/* Icon at the Top */}
         <div className="flex justify-center mb-4">
           <div className="bg-red-500 text-white rounded-full p-4">
@@ -217,9 +216,7 @@ const DeleteConfirmationModal = ({ show, onConfirmDelete, onCancel }) => {
 
 // Main Appointment Time Slot Component
 const AppointmentTimeSlot = () => {
-  const [currentWeekStart, setCurrentWeekStart] = useState(
-    moment().startOf("week")
-  );
+  const [currentWeekStart, setCurrentWeekStart] = useState(moment().startOf("day"));
   const [appointments, setAppointments] = useState([]);
   const [timeSlots, setTimeSlots] = useState([]);
   const [showNoteModal, setShowNoteModal] = useState(false);
@@ -227,10 +224,9 @@ const AppointmentTimeSlot = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
-  const [disabledSlots, setDisabledSlots] = useState([]);
   const [noteContent, setNoteContent] = useState("");
 
-  // Fetch appointments for the logged-in doctor
+  // Fetch doctor's appointments
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -245,9 +241,8 @@ const AppointmentTimeSlot = () => {
         });
 
         const appointmentsData = response.data.data || [];
-
         const doctorAppointments = appointmentsData.filter(
-          (appointment) => appointment.doctorId === doctorId
+          (appointment) => appointment.doctorId === doctorId && appointment.status === "Pending"
         );
 
         setAppointments(doctorAppointments);
@@ -259,52 +254,43 @@ const AppointmentTimeSlot = () => {
     fetchAppointments();
   }, [currentWeekStart]);
 
-  // Helper function to generate time slots dynamically (e.g., 8 AM to 8 PM)
-  const generateTimeSlots = () => {
+  // Generate 24-hour format time slots dynamically
+  useEffect(() => {
     const slots = [];
     for (let hour = 8; hour <= 20; hour++) {
-      const timeString = `${hour < 12 ? hour : hour - 12}:00 ${
-        hour < 12 ? "AM" : "PM"
-      }`;
-      slots.push(timeString);
+      slots.push(`${hour.toString().padStart(2, "0")}:00`);
     }
     setTimeSlots(slots);
-  };
-
-  useEffect(() => {
-    generateTimeSlots();
   }, []);
 
-  // Helper function to get appointments for a specific time slot and day
   const getAppointmentsForSlot = (day, timeSlot) => {
     return appointments.filter(
       (appointment) =>
         moment(appointment.appointmentDate).format("YYYY-MM-DD") === day &&
-        appointment.appointmentTime === timeSlot &&
+        appointment.appointmentTime.slice(0, 5) === timeSlot &&
         appointment.status !== "Cancelled"
     );
   };
 
+  // Handle note save
   const handleSaveNote = (note) => {
     setNoteContent(note);
-    setDisabledSlots([...disabledSlots, selectedAppointment.id]);
     setShowNoteModal(false);
     setShowNotAvailableModal(true);
   };
 
+  // Handle appointment edit
   const handleEdit = () => {
     setShowNotAvailableModal(false);
     setShowEditModal(true);
   };
 
+  // Handle time slot rescheduling
   const handleSaveTimeSlot = async (newTimeSlot) => {
     try {
-      const response = await api.patch(
-        `/appointments/reschedule/${selectedAppointment.id}`,
-        {
-          appointmentTime: newTimeSlot,
-        }
-      );
+      const response = await api.patch(`/appointments/reschedule/${selectedAppointment.id}`, {
+        appointmentTime: newTimeSlot,
+      });
 
       if (response.status === 200) {
         const updatedAppointments = appointments.map((appt) =>
@@ -323,107 +309,101 @@ const AppointmentTimeSlot = () => {
     }
   };
 
+  // Handle appointment deletion
   const confirmDelete = async () => {
     try {
       await api.patch(`/appointments/cancel/${selectedAppointment.id}`, {
         status: "Cancelled",
       });
 
-      setAppointments(
-        appointments.filter((appt) => appt.id !== selectedAppointment.id)
-      );
+      setAppointments(appointments.filter((appt) => appt.id !== selectedAppointment.id));
       setShowDeleteModal(false);
       setSelectedAppointment(null);
+      toast.success("Appointment cancelled successfully!");
     } catch (error) {
       console.error("Error cancelling the appointment:", error);
+      toast.error("Error cancelling appointment");
     }
   };
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-md">
+    <div className="bg-white p-6 rounded-xl shadow-lg">
+      <h2 className="text-2xl font-semibold mb-6 text-[#030229]">Doctor's Appointment Slots</h2>
+
       {/* Week Navigation */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-6">
         <button
-          className="px-4 py-2 bg-gray-300 rounded"
-          onClick={() =>
-            setCurrentWeekStart(moment(currentWeekStart).subtract(7, "days"))
-          }
+          className="bg-gray-300 text-black px-4 py-2 rounded-xl hover:bg-gray-400 transition"
+          onClick={() => setCurrentWeekStart(moment(currentWeekStart).subtract(7, "days"))}
+          disabled={moment(currentWeekStart).isSame(moment().startOf("day"), "day")}
         >
           &lt;
         </button>
-        <h1 className="text-xl font-bold">
-          {moment(currentWeekStart).format("DD MMMM, YYYY")} -{" "}
-          {moment(currentWeekStart).add(6, "days").format("DD MMMM, YYYY")}
-        </h1>
+        <h3 className="text-xl font-bold text-[#0eabeb]">
+          {moment(currentWeekStart).format("DD MMMM, YYYY")} - {moment(currentWeekStart).add(6, "days").format("DD MMMM, YYYY")}
+        </h3>
         <button
-          className="px-4 py-2 bg-gray-300 rounded"
-          onClick={() =>
-            setCurrentWeekStart(moment(currentWeekStart).add(7, "days"))
-          }
+          className="bg-gray-300 text-black px-4 py-2 rounded-xl hover:bg-gray-400 transition"
+          onClick={() => setCurrentWeekStart(moment(currentWeekStart).add(7, "days"))}
         >
           &gt;
         </button>
       </div>
 
       {/* Time Slot Table */}
-      <table className="min-w-full table-auto">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">Time</th>
-            {Array.from({ length: 7 }, (_, i) =>
-              moment(currentWeekStart).add(i, "days").format("ddd D")
-            ).map((day) => (
-              <th key={day} className="border px-4 py-2">
-                {day}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {timeSlots.map((time) => (
-            <tr key={time}>
-              <td className="border px-4 py-2">{time}</td>
-              {Array.from({ length: 7 }, (_, i) =>
-                moment(currentWeekStart).add(i, "days").format("YYYY-MM-DD")
-              ).map((day) => {
-                const appointmentsForSlot = getAppointmentsForSlot(day, time);
-
-                return (
-                  <td key={day} className={`border px-4 py-2 text-center`}>
-                    {appointmentsForSlot.length > 0 ? (
-                      appointmentsForSlot.map((appointment) => (
-                        <div
-                          key={appointment.id}
-                          className="text-green-500 mb-2 cursor-pointer"
-                          onClick={() => {
-                            setSelectedAppointment(appointment);
-                            setShowNoteModal(true);
-                          }}
-                        >
-                          <div>{appointment.patientName}</div>
-                          <div>{appointment.diseaseName}</div>
-                          <div>{appointment.appointmentTime}</div>
-                        </div>
-                      ))
-                    ) : (
-                      <span className="text-gray-400">No Schedule</span>
-                    )}
-                  </td>
-                );
-              })}
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto border-collapse bg-white rounded-xl shadow-lg overflow-hidden">
+          <thead className="bg-[#f6f8fb]">
+            <tr>
+              <th className="px-6 py-3 text-sm font-semibold text-gray-600 border-b border-gray-300">Time</th>
+              {Array.from({ length: 7 }, (_, i) => moment(currentWeekStart).add(i, "days").format("ddd D")).map((day) => (
+                <th key={day} className="px-6 py-3 text-sm font-semibold text-[#0eabeb] border-b border-gray-300">
+                  {day}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {timeSlots.map((time) => (
+              <tr key={time} className="hover:bg-gray-50">
+                <td className="px-6 py-4 text-[#0eabeb] font-semibold text-sm border-b border-gray-200">{time}</td>
+                {Array.from({ length: 7 }, (_, i) => moment(currentWeekStart).add(i, "days").format("YYYY-MM-DD")).map((day) => {
+                  const appointmentsForSlot = getAppointmentsForSlot(day, time);
+                  return (
+                    <td key={day} className="px-4 py-2 text-center border-b border-gray-200">
+                      {appointmentsForSlot.length > 0 ? (
+                        appointmentsForSlot.map((appointment) => (
+                          <div
+                            key={appointment.id}
+                            className="p-1 rounded-xl bg-[#0eabeb] text-white cursor-pointer hover:bg-[#0eabee] hover:shadow-md transition"
+                            onClick={() => {
+                              setSelectedAppointment(appointment);
+                              setShowNoteModal(true);
+                            }}
+                          >
+                            <div className="font-semibold">{appointment.patientName}</div>
+                            <div className="text-md">{appointment.diseaseName}</div>
+                          </div>
+                        ))
+                      ) : (
+                        <span className="text-gray-400">No Schedule</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      {/* Write Note Modal */}
+      {/* Modals */}
       <WriteNoteModal
         show={showNoteModal}
         onClose={() => setShowNoteModal(false)}
         appointment={selectedAppointment}
-        onSaveNote={handleSaveNote}
+        onSaveNote={handleSaveNote} // ✅ Now correctly passing the function
       />
-
       {/* Not Available Modal */}
       <NotAvailableModal
         show={showNotAvailableModal}

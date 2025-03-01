@@ -40,7 +40,7 @@ const MedicalHistory = () => {
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg mt-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Medical History</h2>
+        <h2 className="text-xl font-semibold">Appointment History</h2>
         <a
           href=""
           className="text-blue-600 hover:underline"

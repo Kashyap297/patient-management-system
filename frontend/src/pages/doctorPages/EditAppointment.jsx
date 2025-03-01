@@ -107,10 +107,7 @@ const EditAppointment = () => {
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [openRescheduleModal, setOpenRescheduleModal] = useState(false);
-  const [activeTab, setActiveTab] = useState("Today");
-  const [currentWeekStart, setCurrentWeekStart] = useState(
-    moment().startOf("week")
-  ); // Ensure currentWeekStart is initialized
+  const [currentWeekStart, setCurrentWeekStart] = useState(moment().startOf("day")); // Start from today
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -139,10 +136,7 @@ const EditAppointment = () => {
     const generateTimeSlots = () => {
       const slots = [];
       for (let hour = 8; hour <= 20; hour++) {
-        const timeString = `${hour < 12 ? hour : hour - 12}:00 ${
-          hour < 12 ? "AM" : "PM"
-        }`;
-        slots.push(timeString);
+        slots.push(`${hour.toString().padStart(2, "0")}:00`);
       }
       setTimeSlots(slots);
     };
@@ -181,7 +175,7 @@ const EditAppointment = () => {
     }
   };
 
-  // Create a week grid based on the current week
+  // Create a week grid based on today’s date
   const weekDays = Array.from({ length: 7 }, (_, i) =>
     currentWeekStart.clone().add(i, "days").format("YYYY-MM-DD")
   );
@@ -214,33 +208,25 @@ const EditAppointment = () => {
                 const dayAppointments = appointments.filter(
                   (appointment) =>
                     moment(appointment.appointmentDate).format("YYYY-MM-DD") ===
-                      day && appointment.appointmentTime === time
+                      day && appointment.appointmentTime.slice(0, 5) === time
                 );
 
                 return (
                   <td
                     key={index}
-                    className={`border px-4 py-2 text-center ${
-                      dayAppointments.length > 0
-                        ? "bg-[#0eabeb] text-white rounded-xl"
-                        : "bg-gray-50 text-gray-400"
-                    }`}
-                  >
+                    className="px-4 py-2 text-center border-b border-gray-200">
                     {dayAppointments.length > 0 ? (
                       dayAppointments.map((appointment) => (
                         <div
                           key={appointment.id}
-                          className="mb-2 cursor-pointer p-2 rounded-xl bg-[#0eabeb] text-white transition"
+                          className="p-1 rounded-xl bg-[#0eabeb] text-white cursor-pointer hover:bg-[#0eabee] hover:shadow-md transition"
                           onClick={() => handleOpenRescheduleModal(appointment)}
                         >
                           <div className="font-semibold">
                             {appointment.patientName}
                           </div>
-                          <div className="text-sm">
+                          <div className="text-md">
                             {appointment.diseaseName}
-                          </div>
-                          <div className="text-xs text-white">
-                            {appointment.appointmentTime}
                           </div>
                         </div>
                       ))
@@ -270,10 +256,11 @@ const EditAppointment = () => {
           onClick={() =>
             setCurrentWeekStart(currentWeekStart.clone().subtract(7, "days"))
           }
+          disabled={moment(currentWeekStart).isSame(moment().startOf("day"), "day")}
         >
           &lt; Previous Week
         </button>
-        <h3 className="text-xl font-medium text-[#0eabeb] font-semibold">
+        <h3 className="text-xl text-[#0eabeb] font-semibold">
           {moment(currentWeekStart).format("DD MMMM, YYYY")} -{" "}
           {moment(currentWeekStart).add(6, "days").format("DD MMMM, YYYY")}
         </h3>

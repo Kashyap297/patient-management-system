@@ -57,7 +57,7 @@ const PatientEditProfile = () => {
             address: patient.address,
           });
 
-          setProfileImagePreview(`https://patient-management-system-vyv0.onrender.com/${patient.profileImage}`);
+          setProfileImagePreview(`http://localhost:8000/${patient.profileImage}`);
           setLoading(false);
         }
       } catch (err) {

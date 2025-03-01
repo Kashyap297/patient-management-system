@@ -94,10 +94,7 @@ const RescheduleAppointment = () => {
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [openRescheduleModal, setOpenRescheduleModal] = useState(false);
-  const [activeTab, setActiveTab] = useState("Today");
-  const [currentWeekStart, setCurrentWeekStart] = useState(
-    moment().startOf("week")
-  );
+  const [currentWeekStart, setCurrentWeekStart] = useState(moment().startOf("week"));
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -105,7 +102,7 @@ const RescheduleAppointment = () => {
         const token = localStorage.getItem("token");
         const decodedToken = jwtDecode(token);
         const patientId = decodedToken.id;
-
+        
         const response = await api.get("/appointments", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -114,9 +111,9 @@ const RescheduleAppointment = () => {
 
         const filteredAppointments = response.data.data.filter(
           (appointment) =>
-            appointment.patientId === patientId &&
-            appointment.status !== "Cancelled"
+            appointment.patientId === patientId && appointment.status == "Pending"
         );
+        console.log(filteredAppointments);
         setAppointments(filteredAppointments);
       } catch (error) {
         console.error("Error fetching appointments:", error);
@@ -126,14 +123,12 @@ const RescheduleAppointment = () => {
     const generateTimeSlots = () => {
       const slots = [];
       for (let hour = 8; hour <= 20; hour++) {
-        const timeString = `${hour < 12 ? hour : hour - 12}:00 ${
-          hour < 12 ? "AM" : "PM"
-        }`;
+        const timeString = `${hour.toString().padStart(2, "0")}:00`;
         slots.push(timeString);
       }
       setTimeSlots(slots);
     };
-
+    
     fetchAppointments();
     generateTimeSlots();
   }, []);
@@ -143,6 +138,9 @@ const RescheduleAppointment = () => {
     setOpenRescheduleModal(true);
   };
 
+  const weekDays = Array.from({ length: 7 }, (_, i) =>
+    currentWeekStart.clone().add(i, "days").format("YYYY-MM-DD")
+  );
   const handleSaveReschedule = async (newDate, newTimeSlot) => {
     try {
       await api.patch(`/appointments/reschedule/${selectedAppointment.id}`, {
@@ -168,118 +166,80 @@ const RescheduleAppointment = () => {
     }
   };
 
-  // Create a week grid based on the current week
-  const weekDays = Array.from({ length: 7 }, (_, i) =>
-    currentWeekStart.clone().add(i, "days").format("YYYY-MM-DD")
-  );
-
-  const renderAppointmentGrid = () => {
-    return (
-      <table className="min-w-full table-auto border-collapse bg-white rounded-xl shadow overflow-hidden">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2 bg-gray-100 text-sm font-semibold text-gray-600">
-              Time
-            </th>
-            {weekDays.map((day, index) => (
-              <th
-                key={index}
-                className="border px-4 py-2 bg-gray-100 text-sm font-semibold text-[#0eabeb]"
-              >
-                {moment(day).format("ddd, DD MMM")}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {timeSlots.map((time) => (
-            <tr key={time} className="hover:bg-gray-50">
-              <td className="border px-4 py-2 text-[#0eabeb] text-sm font-semibold">
-                {time}
-              </td>
-              {weekDays.map((day, index) => {
-                const dayAppointments = appointments.filter(
-                  (appointment) =>
-                    moment(appointment.appointmentDate).format("YYYY-MM-DD") ===
-                      day && appointment.appointmentTime === time
-                );
-
-                return (
-                  <td
-                    key={index}
-                    className={`border px-4 py-2 text-center ${
-                      dayAppointments.length > 0
-                        ? "bg-[#0eabeb] text-white rounded-xl"
-                        : "bg-gray-50 text-gray-400"
-                    }`}
-                  >
-                    {dayAppointments.length > 0 ? (
-                      dayAppointments.map((appointment) => (
-                        <div
-                          key={appointment.id}
-                          className="mb-2 cursor-pointer p-2 rounded-xl bg-[#0eabeb] text-white transition"
-                          onClick={() => handleOpenRescheduleModal(appointment)}
-                        >
-                          <div className="font-semibold">
-                            {appointment.doctorName}
-                          </div>
-                          <div className="text-sm">
-                            {appointment.diseaseName}
-                          </div>
-                          <div className="text-xs text-white">
-                            {appointment.appointmentTime}
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <span className="text-gray-400">No Schedule</span>
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  };
-
   return (
-    <div className="p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-[#030229]">
-        Appointment Time Slot
-      </h2>
+    <div className="bg-white p-6 rounded-xl shadow-lg">
+      <h2 className="text-2xl font-semibold mb-6 text-[#030229]">Reschedule Appointment</h2>
 
-      {/* Navigation buttons for previous/next week */}
       <div className="flex justify-between items-center mb-6">
         <button
-          className="px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200 transition"
-          onClick={() =>
-            setCurrentWeekStart(currentWeekStart.clone().subtract(7, "days"))
-          }
+          className="px-4 py-2 bg-gray-300 rounded-xl hover:bg-gray-400 transition disabled:opacity-50"
+          onClick={() => setCurrentWeekStart(currentWeekStart.clone().subtract(7, "days"))}
+          disabled={moment(currentWeekStart).isSame(moment().startOf("week"), "day")}
         >
-          &lt; Previous Week
+          &lt;
         </button>
-        <h3 className="text-xl font-medium text-[#0eabeb] font-semibold">
-          {moment(currentWeekStart).format("DD MMMM, YYYY")} -{" "}
-          {moment(currentWeekStart).add(6, "days").format("DD MMMM, YYYY")}
+        <h3 className="text-xl font-bold text-[#0eabeb]">
+          {moment(currentWeekStart).format("DD MMMM, YYYY")} - {moment(currentWeekStart).add(6, "days").format("DD MMMM, YYYY")}
         </h3>
         <button
-          className="px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200 transition"
-          onClick={() =>
-            setCurrentWeekStart(currentWeekStart.clone().add(7, "days"))
-          }
+          className="px-4 py-2 bg-gray-300 rounded-xl hover:bg-gray-400 transition"
+          onClick={() => setCurrentWeekStart(currentWeekStart.clone().add(7, "days"))}
         >
-          Next Week &gt;
+          &gt;
         </button>
       </div>
 
-      {/* Render the Appointment Grid */}
-      <div className="overflow-x-auto custom-scroll">
-        {renderAppointmentGrid()}
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto border-collapse bg-white rounded-xl shadow-lg overflow-hidden">
+          <thead className="bg-[#f6f8fb]">
+            <tr>
+              <th className="px-6 py-3 text-sm font-semibold text-gray-600 border-b border-gray-300">Time</th>
+              {weekDays.map((day) => (
+                <th key={day} className="px-6 py-3 text-sm font-semibold text-[#0eabeb] border-b border-gray-300">
+                  {moment(day).format("ddd D")}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {timeSlots.map((time) => (
+              <tr key={time} className="hover:bg-gray-50">
+                <td className="px-6 py-4 text-[#0eabeb] font-semibold text-sm border-b border-gray-200">
+                  {time}
+                </td>
+                {weekDays.map((day) => {
+                 const dayAppointments = appointments.filter(
+                  (appointment) =>
+                    moment(appointment.appointmentDate).format("YYYY-MM-DD") === day &&
+                    appointment.appointmentTime.slice(0, 5) === time
+                );
+                
+
+                  return (
+                    <td key={day} className="px-4 py-2 text-center border-b border-gray-200">
+                      {dayAppointments.length > 0 ? (
+                        dayAppointments.map((appointment) => (
+                          <div
+                            key={appointment.id}
+                            className="p-1 rounded-xl bg-[#0eabeb] text-white cursor-pointer hover:bg-[#0eabee] hover:shadow-md transition"
+                            onClick={() => handleOpenRescheduleModal(appointment)}
+                          >
+                            <div className="font-semibold">{appointment.doctorName}</div>
+                            <div className="text-md">{appointment.diseaseName}</div>
+                          </div>
+                        ))
+                      ) : (
+                        <span className="text-gray-400">No Schedule</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Reschedule Modal */}
       <RescheduleAppointmentModal
         open={openRescheduleModal}
         onClose={() => setOpenRescheduleModal(false)}
@@ -292,3 +252,6 @@ const RescheduleAppointment = () => {
 };
 
 export default RescheduleAppointment;
+
+
+

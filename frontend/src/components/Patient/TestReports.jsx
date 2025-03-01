@@ -1,92 +1,144 @@
-import React from "react";
-import { FaEye } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { Eye, X } from "lucide-react";
+import axios from "axios";
+import {jwtDecode} from "jwt-decode"; // To decode token and extract patient ID
 import { useNavigate } from "react-router-dom";
 
 const TestReports = () => {
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [patientId, setPatientId] = useState(null);
   const navigate = useNavigate();
 
-  const reports = [
-    {
-      doctor: "Dr. Marcus Philips",
-      date: "2 Jan, 2022",
-      disease: "Viral Infection",
-      test: "Pathology Test",
-    },
-    {
-      doctor: "Dr. Ryan Carder",
-      date: "2 Jan, 2022",
-      disease: "Allergies",
-      test: "Pathology Test",
-    },
-    {
-      doctor: "Dr. Zaire Saris",
-      date: "2 Jan, 2022",
-      disease: "Viral Infection",
-      test: "Pathology Test",
-    },
-    {
-      doctor: "Dr. Jaxson Herwitz",
-      date: "2 Jan, 2022",
-      disease: "Allergies",
-      test: "Pathology Test",
-    },
-  ];
+  useEffect(() => {
+    // Decode the token to get patient ID
+    const getPatientIdFromToken = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setPatientId(decoded.id); // Assuming `id` in token is the patient ID
+        } catch (error) {
+          console.error("Error decoding token:", error);
+        }
+      } else {
+        console.error("No token found in localStorage.");
+      }
+    };
 
-  // const handleViewAll = () => {
-  //   navigate("/patient/test-report");
-  // };
+    getPatientIdFromToken();
+  }, []);
+
+  useEffect(() => {
+    if (!patientId) return;
+
+    const fetchTestReports = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8000/api/patients/patient/test-reports/${patientId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setReports(response.data.data);
+      } catch (error) {
+        console.error("Error fetching test reports:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestReports();
+  }, [patientId]);
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg">
-      {/* Heading and View All link */}
-      <div className="flex justify-between items-center mb-4 border-b-2 pb-2">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Test Reports</h2>
-        {/* <a
-          href="#"
+        <button
+          onClick={() => navigate("/patient/test-report")}
           className="text-blue-600 hover:underline"
-          onClick={handleViewAll}
         >
-          View All Test
-        </a> */}
+          View All Reports
+        </button>
       </div>
+      <div className="max-w-6xl mx-auto">
 
-      {/* Scrollable container for reports */}
-      <div className="overflow-y-auto h-[200px] custom-scroll pr-1">
-        <div className="grid grid-cols-2 gap-4">
-          {reports.map((report, index) => (
-            <div key={index} className="border rounded-xl p-4">
-              {/* Doctor's Image */}
-              <div className="flex justify-between align-middle items-center">
-                <div className="mr-4 flex mb-1">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        ) : reports.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
+            No test reports available
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reports.map((report, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
+                <div
+                  className="h-48 w-full overflow-hidden cursor-pointer"
+                  onClick={() => setSelectedImage(report.fileUrl)}
+                >
                   <img
-                    src={`https://randomuser.me/api/portraits/men/${index + 30
-                      }.jpg`}
-                    alt={report.doctor}
-                    className="w-12 h-12 rounded-full mr-2"
+                    src={report.fileUrl}
+                    alt="Medical Report"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
-                  <div>
-                    <h4 className="font-semibold">{report.doctor}</h4>
-                    <span className="text-gray-400">{report.date}</span>
+                </div>
+
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{report.doctor}</h3>
+                      <p className="text-sm text-gray-500">
+                        {new Date(report.date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedImage(report.fileUrl)}
+                      className="p-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                    >
+                      <Eye className="w-5 h-5" />
+                    </button>
                   </div>
-                </div>
-                <div className="text-customBlue bg-gray-100 p-1 rounded-xl">
-                  <FaEye />
+
+                  <p className="text-gray-600 text-sm line-clamp-2">{report.description}</p>
                 </div>
               </div>
-              <div className="flex  justify-between items-center">
-                <p className="mt-1 text-sm text-gray-500">
-                  <span className="font-bold">Disease : </span>
-                  {report.disease}
-                </p>
-                <p className="mt-2 text-green-600 text-sm">
-                  <ul className="list-disc ml-4">
-                    <li>{report.test}</li>
-                  </ul>
-                </p>
-              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Image Modal */}
+        {selectedImage && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div className="relative max-w-4xl w-full">
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors duration-200"
+              >
+                <X className="w-8 h-8" />
+              </button>
+              <img
+                src={selectedImage}
+                alt="Full size medical report"
+                className="w-full h-auto rounded-lg"
+              />
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -37,7 +37,7 @@ const DoctorMeetingConference = () => {
   // Fetch roomID from the backend using the appointment ID
   const fetchAppointmentDetails = async () => {
     try {
-      const response = await axios.get(`https://patient-management-system-vyv0.onrender.com/api/appointments/${appointmentId}`); // Assuming you have a backend route to get appointment details
+      const response = await axios.get(`http://localhost:8000/api/appointments/${appointmentId}`); // Assuming you have a backend route to get appointment details
       const appointmentData = response.data.data;
       console.log(appointmentData)
       setRoomID(appointmentData.roomID); // Set the room ID from backend

@@ -51,7 +51,7 @@ const AdminRegister = () => {
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        const response = await axios.get("https://patient-management-system-vyv0.onrender.com/api/hospitals");
+        const response = await axios.get("http://localhost:8000/api/hospitals");
         if (response.data && Array.isArray(response.data.data)) {
           setHospitals(response.data.data);
         } else {
@@ -89,7 +89,7 @@ const AdminRegister = () => {
 
     try {
       const response = await axios.post(
-        "https://patient-management-system-vyv0.onrender.com/api/hospitals",
+        "http://localhost:8000/api/hospitals",
         hospitalPayload
       );
       if (response.status === 201) {

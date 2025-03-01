@@ -22,6 +22,7 @@ const {
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 const upload = require("../utils/multerConfig");
+const multer = require("multer");
 
 // Multer error handler
 const multerErrorHandler = (err, req, res, next) => {

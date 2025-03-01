@@ -57,7 +57,7 @@ exports.getPrescriptionById = async (req, res) => {
 
   try {
     const prescription = await Prescription.findById(id)
-      .populate("doctor", "firstName lastName specialty")
+      .populate("doctor", "firstName lastName specialty profileImage signatureImage")
       .populate("patient", "firstName lastName age gender address phoneNumber")
       .populate("appointmentId", "appointmentDate appointmentTime appointmentType hospital");
 
@@ -85,7 +85,7 @@ exports.getAllPrescriptionsByUser = async (req, res) => {
     // If the logged-in user is a doctor, find prescriptions created by them
     if (req.user.role === "doctor") {
       prescriptions = await Prescription.find({ doctor: req.user._id })
-        .populate("doctor", "firstName lastName specialty")
+        .populate("doctor", "firstName lastName specialty profileImage signatureImage")
         .populate("patient", "firstName lastName age gender address phoneNumber")
         .populate("appointmentId", "appointmentDate appointmentTime appointmentType hospital");
     }

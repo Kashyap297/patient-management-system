@@ -84,10 +84,10 @@ const EditDoctor = () => {
 
         // Set preview images
         setProfileImagePreview(
-          `https://patient-management-system-vyv0.onrender.com/${doctor.profileImage}`
+          `${doctor.profileImage}`
         );
         setSignatureImagePreview(
-          `https://patient-management-system-vyv0.onrender.com/${doctor.signatureImage}`
+          `${doctor.signatureImage}`
         );
 
         // Conditionally show hospital fields
@@ -143,10 +143,16 @@ const EditDoctor = () => {
 
   const handleImageChange = (e) => {
     const { name, files } = e.target;
+  
     if (files.length > 0) {
       const file = files[0];
-      setFormData((prevData) => ({ ...prevData, [name]: file }));
-
+  
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: file, // ✅ Store File object instead of URL
+      }));
+  
+      // ✅ Set preview for UI updates
       if (name === "profileImage") {
         setProfileImagePreview(URL.createObjectURL(file));
       } else if (name === "signatureImage") {
@@ -154,29 +160,46 @@ const EditDoctor = () => {
       }
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const formDataToSend = new FormData();
+    
+    // Append all form fields (excluding files)
     Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null && formData[key] !== undefined) {
-        formDataToSend.append(key, String(formData[key]));
+      if (
+        formData[key] !== null &&
+        formData[key] !== undefined &&
+        key !== "profileImage" &&
+        key !== "signatureImage" // Exclude files for separate handling
+      ) {
+        formDataToSend.append(key, formData[key]);
       }
     });
-
+  
+    // ✅ Append Images Properly
+    if (formData.profileImage instanceof File) {
+      formDataToSend.append("profileImage", formData.profileImage);
+    }
+    if (formData.signatureImage instanceof File) {
+      formDataToSend.append("signatureImage", formData.signatureImage);
+    }
+  
     try {
       const response = await api.patch(`/users/doctors/${id}`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success("Doctor Updated successfully!");
+  
+      toast.success("Doctor updated successfully!");
       navigate("/admin/doctor-management");
     } catch (error) {
       console.error("Error updating doctor:", error.response?.data || error);
       toast.error("Failed to update Doctor profile.");
     }
   };
-
+  
   return (
     <div className="min-h-screen">
       <div className="flex flex-col w-full bg-white rounded-lg shadow-lg">

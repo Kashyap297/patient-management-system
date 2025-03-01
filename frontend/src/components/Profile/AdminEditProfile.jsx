@@ -115,7 +115,7 @@ const AdminEditProfile = () => {
           <img
             src={
               formData.profileImage && !(formData.profileImage instanceof File)
-                ? `https://patient-management-system-vyv0.onrender.com/${formData.profileImage}`
+                ? `http://localhost:8000/${formData.profileImage}`
                 : userImage
             }
             alt="Profile"

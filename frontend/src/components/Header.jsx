@@ -49,12 +49,12 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
         setUserRole(decoded.role);
 
         axios
-          .get("https://patient-management-system-vyv0.onrender.com/api/users/profile", {
+          .get("http://localhost:8000/api/users/profile", {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then((response) => {
             const userData = response.data;
-            setProfileImage(`https://patient-management-system-vyv0.onrender.com/${userData.profileImage}`);
+            setProfileImage(`${userData.profileImage}`);
           })
           .catch((error) => console.error("Error fetching user profile:", error))
           .finally(() => setLoading(false));
@@ -223,7 +223,7 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
             <Skeleton circle={true} width={40} height={40} />
           ) : (
             <img
-              src={profileImage || "https://patient-management-system-vyv0.onrender.com/default-profile.png"}
+              src={profileImage || "http://localhost:8000/default-profile.png"}
               alt="user"
               className="w-10 h-10 rounded-full"
             />

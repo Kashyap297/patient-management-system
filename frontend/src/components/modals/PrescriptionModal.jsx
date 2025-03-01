@@ -7,7 +7,7 @@ import logo from "../../assets/images/logo.png";
 
 const PrescriptionModal = ({ open, handleClose, prescriptionData }) => {
   if (!open) return null;
-
+  console.log(prescriptionData);
   const handleDownload = async () => {
     const input = document.getElementById('prescription-modal-content');
     const canvas = await html2canvas(input);
@@ -102,7 +102,7 @@ const PrescriptionModal = ({ open, handleClose, prescriptionData }) => {
           {/* Doctor Signature and Download Button */}
           <div className="flex justify-between items-center mt-8 pt-4 border-t">
             <div className="text-center">
-              <img src={signature} alt="Doctor Signature" className="w-24 mx-auto" />
+              <img src={prescriptionData.doctor.signatureImage} alt="Doctor Signature" className="w-24 mx-auto" />
               <p className="text-gray-500 text-sm">Doctor Signature</p>
             </div>
             <button

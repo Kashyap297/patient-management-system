@@ -4,6 +4,7 @@ import bg from "../../assets/images/Maskgroup.png";
 import logo from "../../assets/images/logo.png";
 
 const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
+  console.log(bill);
   return (
     <div
       className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
@@ -26,7 +27,7 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
         {/* Hospital and Patient Details */}
         <div className="mb-4">
           <div className="flex justify-between items-center">
-            <img src={logo} alt="logo" />
+            <img src={bill.logoUrl} alt="logo" className="w-32 h-32"/>
             <h2 className="text-6xl font-semibold text-customBlue">Invoice</h2>
           </div>
           <div className="flex justify-between items-center">
@@ -150,7 +151,7 @@ const InvoiceModal = ({ bill, onClose, onPay, showPayButton }) => {
 
         {/* Contact Info */}
         <div className="text-center mt-6">
-          <p>Call: +1111111111 | Email: hello@gmail.com</p>
+          <p>Call: {bill.phoneNumber} | Email: {bill.email}</p>
         </div>
       </div>
     </div>

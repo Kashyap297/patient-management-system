@@ -134,7 +134,7 @@ const DoctorOffCanvas = ({ doctor, isOpen, onClose }) => {
       <div className="mt-4">
         <strong className="text-gray-500 font-semibold pb-2">Signature:</strong>
         <img
-          src={doctor.signatureImage ? `https://patient-management-system-vyv0.onrender.com/${doctor.signatureImage}` : ""}
+          src={doctor.signatureImage ? `${doctor.signatureImage}` : ""}
           alt="Doctor Signature"
           className="w-full h-24 object-contain bg-white rounded border-gray-200"
         />
@@ -192,7 +192,7 @@ const DoctorOffCanvas = ({ doctor, isOpen, onClose }) => {
       <div className="relative p-4 bg-gradient-to-br from-[#4C49ED] to-[#020067] rounded-xl shadow-lg mb-6">
         <div className="flex flex-col sm:flex-row items-center mb-4">
           <img
-            src={doctor.profileImage ? `https://patient-management-system-vyv0.onrender.com/${doctor.profileImage}` : userImage}
+            src={doctor.profileImage ? `${doctor.profileImage}` : userImage}
             alt="Doctor Profile"
             className="w-16 h-16 rounded-full mb-2 sm:mb-0 sm:mr-4"
           />

@@ -5,6 +5,7 @@ const {
   getPatientDetails,
   addPatientRecord,
   getPatientRecords,
+  getPatientTestReports,
 } = require("../controllers/patientRecordController");
 const { protect } = require("../middlewares/authMiddleware");
 const upload = require("../utils/multerConfig");
@@ -20,5 +21,9 @@ router.post('/patient/records', upload.single('file'),addPatientRecord)
 
 // Route to get all patient records for a doctor
 router.get("/patient/records/:patientId/:doctorId", protect, getPatientRecords);
+
+// Route to get all test reports for a patient
+router.get("/patient/test-reports/:patientId", protect, getPatientTestReports);
+
 
 module.exports = router;

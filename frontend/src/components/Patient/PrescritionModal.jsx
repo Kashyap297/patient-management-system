@@ -54,6 +54,7 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
   }
 
   if (!prescriptionData) return null;
+  console.log(prescriptionData);
 
   const { doctor, patient, appointmentId, medicines, additionalNote, prescriptionDate } = prescriptionData;
 
@@ -163,7 +164,7 @@ const PrescriptionModal = ({ prescriptionId, closeModal }) => {
         <div className="flex justify-between items-center">
           <div className="text-center">
             <p className="text-gray-500 text-sm italic">Doctor Signature</p>
-            <img src={signature} alt="Doctor Signature" className="mt-2" />
+            <img src={doctor.signatureImage} alt="Doctor Signature" className="mt-2 w-20 h-20" />
           </div>
           <button
             onClick={handleDownload}

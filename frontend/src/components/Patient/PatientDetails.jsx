@@ -80,7 +80,7 @@ const PatientDetails = () => {
       <div className="flex flex-col md:flex-row items-start">
         <div className="flex-shrink-0 mb-4 md:mb-0">
           <img
-            src={`https://patient-management-system-vyv0.onrender.com/${patient.profileImage}`}
+            src={`${patient.profileImage}`}
             alt="Patient"
             className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover"
           />

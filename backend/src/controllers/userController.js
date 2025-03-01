@@ -1,3 +1,4 @@
+const cloudinary = require("cloudinary").v2;
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -133,49 +134,69 @@ exports.registerPatient = async (req, res) => {
 };
 
 exports.addDoctorByAdmin = async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    password,
-    qualification,
-    specialtyType,
-    workType,  // New field for work type (Online, Onsite, Both)
-    workingTime,  // Selected working hours
-    checkupTime,  // Selected check-up time
-    breakTime,  // Selected break time
-    experience,
-    zipCode,
-    onlineConsultationRate,
-    country,
-    state,
-    city,
-    hospitalName,
-    hospitalAddress,
-    websiteLink,
-    emergencyContactNumber,
-    gender,
-    age,
-    description,
-  } = req.body;
-
   try {
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      password,
+      qualification,
+      specialtyType,
+      workType,  // New field for work type (Online, Onsite, Both)
+      workingTime,  // Selected working hours
+      checkupTime,  // Selected check-up time
+      breakTime,  // Selected break time
+      experience,
+      zipCode,
+      onlineConsultationRate,
+      country,
+      state,
+      city,
+      hospitalName,
+      hospitalAddress,
+      websiteLink,
+      emergencyContactNumber,
+      gender,
+      age,
+      description,
+    } = req.body;
+
     // Check if the doctor already exists
     const doctorExists = await User.findOne({ email });
     if (doctorExists) {
       return res.status(400).json({ message: "Doctor already exists" });
     }
 
-    // Handle image uploads for profile and signature (if available)
-    const profileImage = req.files && req.files.profileImage
-      ? `uploads/${req.files.profileImage[0].filename}`
-      : null;
-    const signatureImage = req.files && req.files.signatureImage
-      ? `uploads/${req.files.signatureImage[0].filename}`
-      : null;
+    // ✅ Upload Profile & Signature Images to Cloudinary
+    let profileImage = null;
+    let signatureImage = null;
 
-    // Create a new doctor
+    if (req.files?.profileImage) {
+      try {
+        const profileUpload = await cloudinary.uploader.upload(req.files.profileImage[0].path, {
+          folder: "hospital-management/doctors/profileImages",
+        });
+        profileImage = profileUpload.secure_url;
+      } catch (uploadError) {
+        console.error("❌ Cloudinary Profile Image Upload Error:", uploadError);
+        return res.status(500).json({ message: "Error uploading profile image" });
+      }
+    }
+
+    if (req.files?.signatureImage) {
+      try {
+        const signatureUpload = await cloudinary.uploader.upload(req.files.signatureImage[0].path, {
+          folder: "hospital-management/doctors/signatureImages",
+        });
+        signatureImage = signatureUpload.secure_url;
+      } catch (uploadError) {
+        console.error("❌ Cloudinary Signature Image Upload Error:", uploadError);
+        return res.status(500).json({ message: "Error uploading signature image" });
+      }
+    }
+
+    // ✅ Create a new doctor
     const doctor = await User.create({
       firstName,
       lastName,
@@ -212,7 +233,7 @@ exports.addDoctorByAdmin = async (req, res) => {
       city,
     });
 
-    // Send a response with the created doctor
+    // ✅ Send a response with the created doctor
     res.status(201).json({
       _id: doctor._id,
       firstName: doctor.firstName,
@@ -224,10 +245,11 @@ exports.addDoctorByAdmin = async (req, res) => {
       signatureImage: doctor.signatureImage,
     });
   } catch (error) {
-    console.error("Error adding doctor:", error);
-    res.status(500).json({ message: "Server error", error });
+    console.error("❌ Error adding doctor:", error);
+    res.status(500).json({ message: "❌ Server error", error: error.message });
   }
 };
+
 
 
 // @desc    Login for Admin, Doctor, Patient
@@ -459,33 +481,33 @@ exports.getUserProfile = async (req, res) => {
 // @route   PATCH /api/users/profile
 // @access  Private (Logged in users)
 exports.updateUserProfile = async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    country,
-    state,
-    city,
-    age,
-    height,
-    weight,
-    gender,
-    bloodGroup,
-    dateOfBirth,
-    address,
-    doctorDetails,
-    adminhospital,
-  } = req.body;
-
   try {
-    const user = await User.findById(req.user._id);
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      country,
+      state,
+      city,
+      age,
+      height,
+      weight,
+      gender,
+      bloodGroup,
+      dateOfBirth,
+      address,
+      doctorDetails,
+      adminhospital,
+    } = req.body;
 
+    // Find the user by ID
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update only the fields provided in the request body
+    // ✅ Update only provided fields
     if (firstName !== undefined) user.firstName = firstName;
     if (lastName !== undefined) user.lastName = lastName;
     if (email !== undefined) user.email = email;
@@ -494,20 +516,34 @@ exports.updateUserProfile = async (req, res) => {
     if (state !== undefined) user.state = state;
     if (city !== undefined) user.city = city;
 
-
-    // Handle image uploads
+    // ✅ Handle Profile & Signature Image Uploads to Cloudinary
     if (req.files) {
       if (req.files.profileImage) {
-        // Store only the relative path
-        user.profileImage = `uploads/${req.files.profileImage[0].filename}`;
+        try {
+          const profileUpload = await cloudinary.uploader.upload(req.files.profileImage[0].path, {
+            folder: "hospital-management/users/profileImages",
+          });
+          user.profileImage = profileUpload.secure_url;
+        } catch (uploadError) {
+          console.error("❌ Cloudinary Profile Image Upload Error:", uploadError);
+          return res.status(500).json({ message: "Error uploading profile image" });
+        }
       }
+
       if (req.files.signatureImage) {
-        // Store only the relative path
-        user.signatureImage = `uploads/${req.files.signatureImage[0].filename}`;
+        try {
+          const signatureUpload = await cloudinary.uploader.upload(req.files.signatureImage[0].path, {
+            folder: "hospital-management/users/signatureImages",
+          });
+          user.signatureImage = signatureUpload.secure_url;
+        } catch (uploadError) {
+          console.error("❌ Cloudinary Signature Image Upload Error:", uploadError);
+          return res.status(500).json({ message: "Error uploading signature image" });
+        }
       }
     }
 
-    // Patient-specific fields
+    // ✅ Update Patient-Specific Fields
     if (age !== undefined) user.age = age;
     if (height !== undefined) user.height = height;
     if (weight !== undefined) user.weight = weight;
@@ -516,7 +552,7 @@ exports.updateUserProfile = async (req, res) => {
     if (dateOfBirth !== undefined) user.dateOfBirth = dateOfBirth;
     if (address !== undefined) user.address = address;
 
-    // Doctor-specific fields (updating nested doctorDetails object)
+    // ✅ Update Doctor-Specific Fields (Nested Object Updates)
     if (doctorDetails !== undefined) {
       if (doctorDetails.qualification !== undefined)
         user.doctorDetails.qualification = doctorDetails.qualification;
@@ -524,79 +560,74 @@ exports.updateUserProfile = async (req, res) => {
         user.doctorDetails.specialtyType = doctorDetails.specialtyType;
       if (doctorDetails.workingHours !== undefined) {
         if (doctorDetails.workingHours.checkupTime !== undefined)
-          user.doctorDetails.workingHours.checkupTime =
-            doctorDetails.workingHours.checkupTime;
+          user.doctorDetails.workingHours.checkupTime = doctorDetails.workingHours.checkupTime;
         if (doctorDetails.workingHours.breakTime !== undefined)
-          user.doctorDetails.workingHours.breakTime =
-            doctorDetails.workingHours.breakTime;
+          user.doctorDetails.workingHours.breakTime = doctorDetails.workingHours.breakTime;
       }
       if (doctorDetails.experience !== undefined)
         user.doctorDetails.experience = doctorDetails.experience;
       if (doctorDetails.zipCode !== undefined)
         user.doctorDetails.zipCode = doctorDetails.zipCode;
       if (doctorDetails.onlineConsultationRate !== undefined)
-        user.doctorDetails.onlineConsultationRate =
-          doctorDetails.onlineConsultationRate;
+        user.doctorDetails.onlineConsultationRate = doctorDetails.onlineConsultationRate;
       if (doctorDetails.hospital !== undefined) {
         if (doctorDetails.hospital.currentHospital !== undefined)
-          user.doctorDetails.hospital.currentHospital =
-            doctorDetails.hospital.currentHospital;
+          user.doctorDetails.hospital.currentHospital = doctorDetails.hospital.currentHospital;
         if (doctorDetails.hospital.hospitalName !== undefined)
-          user.doctorDetails.hospital.hospitalName =
-            doctorDetails.hospital.hospitalName;
+          user.doctorDetails.hospital.hospitalName = doctorDetails.hospital.hospitalName;
         if (doctorDetails.hospital.hospitalAddress !== undefined)
-          user.doctorDetails.hospital.hospitalAddress =
-            doctorDetails.hospital.hospitalAddress;
+          user.doctorDetails.hospital.hospitalAddress = doctorDetails.hospital.hospitalAddress;
         if (doctorDetails.hospital.websiteLink !== undefined)
-          user.doctorDetails.hospital.websiteLink =
-            doctorDetails.hospital.websiteLink;
+          user.doctorDetails.hospital.websiteLink = doctorDetails.hospital.websiteLink;
         if (doctorDetails.hospital.emergencyContactNumber !== undefined)
-          user.doctorDetails.hospital.emergencyContactNumber =
-            doctorDetails.hospital.emergencyContactNumber;
+          user.doctorDetails.hospital.emergencyContactNumber = doctorDetails.hospital.emergencyContactNumber;
       }
     }
 
-    // Admin-specific fields (updating the hospital reference for admin)
+    // ✅ Update Admin-Specific Fields (Hospital Reference for Admins)
     if (user.role === "admin" && adminhospital !== undefined) {
       const hospitalData = await hospitalModel.findById(adminhospital);
-
       if (!hospitalData) {
         return res.status(404).json({ message: "Hospital not found" });
       }
-
-      // Update the admin's hospital reference
       user.adminhospital = hospitalData._id;
     }
 
-    // Save the updated user data
+    // ✅ Save the updated user profile
     const updatedUser = await user.save();
-    // Return updated profile data
+
+    // ✅ Return updated profile data
     res.status(200).json({
-      _id: updatedUser._id,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
-      email: updatedUser.email,
-      phoneNumber: updatedUser.phoneNumber,
-      profileImage: updatedUser.profileImage,
-      signatureImage: updatedUser.signatureImage,
-      role: updatedUser.role,
-      country: updatedUser.country,
-      state: updatedUser.state,
-      city: updatedUser.city,
-      age: updatedUser.age,
-      height: updatedUser.height,
-      weight: updatedUser.weight,
-      gender: updatedUser.gender,
-      bloodGroup: updatedUser.bloodGroup,
-      dateOfBirth: updatedUser.dateOfBirth,
-      address: updatedUser.address,
-      doctorDetails: updatedUser.doctorDetails,
-      adminhospital: updatedUser.adminhospital,
+      message: "✅ User profile updated successfully",
+      user: {
+        _id: updatedUser._id,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        phoneNumber: updatedUser.phoneNumber,
+        profileImage: updatedUser.profileImage,
+        signatureImage: updatedUser.signatureImage,
+        role: updatedUser.role,
+        country: updatedUser.country,
+        state: updatedUser.state,
+        city: updatedUser.city,
+        age: updatedUser.age,
+        height: updatedUser.height,
+        weight: updatedUser.weight,
+        gender: updatedUser.gender,
+        bloodGroup: updatedUser.bloodGroup,
+        dateOfBirth: updatedUser.dateOfBirth,
+        address: updatedUser.address,
+        doctorDetails: updatedUser.doctorDetails,
+        adminhospital: updatedUser.adminhospital,
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    console.error("❌ Server error:", error);
+    res.status(500).json({ message: "❌ Server error", error: error.message });
   }
 };
+
 // @desc    Get All Doctors
 // @route   GET /api/users/doctors
 // @access  Private (Admin only)
@@ -671,7 +702,7 @@ exports.editDoctorById = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    // Update doctor fields conditionally
+    // ✅ Update doctor fields conditionally
     doctor.firstName = req.body.firstName || doctor.firstName;
     doctor.lastName = req.body.lastName || doctor.lastName;
     doctor.email = req.body.email || doctor.email;
@@ -681,7 +712,7 @@ exports.editDoctorById = async (req, res) => {
     doctor.state = req.body.state || doctor.state;
     doctor.city = req.body.city || doctor.city;
 
-    // Update doctor details if present
+    // ✅ Update doctor details if present
     if (req.body.qualification || req.body.specialtyType) {
       doctor.doctorDetails.qualification = req.body.qualification || doctor.doctorDetails.qualification;
       doctor.doctorDetails.specialtyType = req.body.specialtyType || doctor.doctorDetails.specialtyType;
@@ -690,13 +721,13 @@ exports.editDoctorById = async (req, res) => {
       doctor.doctorDetails.onlineConsultationRate = req.body.onlineConsultationRate || doctor.doctorDetails.onlineConsultationRate;
     }
 
-    // Update working hours
+    // ✅ Update working hours
     if (req.body.checkupTime || req.body.breakTime) {
       doctor.doctorDetails.workingHours.checkupTime = req.body.checkupTime || doctor.doctorDetails.workingHours.checkupTime;
       doctor.doctorDetails.workingHours.breakTime = req.body.breakTime || doctor.doctorDetails.workingHours.breakTime;
     }
 
-    // Update hospital details
+    // ✅ Update hospital details
     if (req.body.hospitalName || req.body.hospitalAddress) {
       doctor.doctorDetails.hospital.hospitalName = req.body.hospitalName || doctor.doctorDetails.hospital.hospitalName;
       doctor.doctorDetails.hospital.hospitalAddress = req.body.hospitalAddress || doctor.doctorDetails.hospital.hospitalAddress;
@@ -704,22 +735,45 @@ exports.editDoctorById = async (req, res) => {
       doctor.doctorDetails.hospital.websiteLink = req.body.hospitalWebsite || doctor.doctorDetails.hospital.websiteLink;
     }
 
-    // Handle image uploads
+    // ✅ Handle Image Uploads to Cloudinary
     if (req.files) {
       if (req.files.profileImage) {
-        doctor.profileImage = req.files.profileImage[0].path; // Save profile image path
+        try {
+          const profileUpload = await cloudinary.uploader.upload(req.files.profileImage[0].path, {
+            folder: "hospital-management/doctors/profileImages",
+          });
+          doctor.profileImage = profileUpload.secure_url;
+        } catch (uploadError) {
+          console.error("❌ Cloudinary Profile Image Upload Error:", uploadError);
+          return res.status(500).json({ message: "Error uploading profile image" });
+        }
       }
+
       if (req.files.signatureImage) {
-        doctor.signatureImage = req.files.signatureImage[0].path; // Save signature image path
+        try {
+          const signatureUpload = await cloudinary.uploader.upload(req.files.signatureImage[0].path, {
+            folder: "hospital-management/doctors/signatureImages",
+          });
+          doctor.signatureImage = signatureUpload.secure_url;
+        } catch (uploadError) {
+          console.error("❌ Cloudinary Signature Image Upload Error:", uploadError);
+          return res.status(500).json({ message: "Error uploading signature image" });
+        }
       }
     }
 
+    // ✅ Save updated doctor
     const updatedDoctor = await doctor.save();
-    res.status(200).json(updatedDoctor);
+    res.status(200).json({
+      message: "✅ Doctor updated successfully",
+      doctor: updatedDoctor,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    console.error("❌ Server error:", error);
+    res.status(500).json({ message: "❌ Server error", error: error.message });
   }
 };
+
 
 // @desc    Get Patient by ID
 // @route   GET /api/users/patients/:id
@@ -742,11 +796,10 @@ exports.getPatientById = async (req, res) => {
 // @access  Private (Admin only)
 exports.editPatientById = async (req, res) => {
   try {
-    const patient = await User.findById(req.params.id).where({
-      role: 'patient',
-    });
+    const patient = await User.findById(req.params.id).where({ role: "patient" });
+
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found' });
+      return res.status(404).json({ message: "Patient not found" });
     }
 
     const {
@@ -766,7 +819,7 @@ exports.editPatientById = async (req, res) => {
       address,
     } = req.body;
 
-    // Update patient fields
+    // Update patient details
     patient.firstName = firstName || patient.firstName;
     patient.lastName = lastName || patient.lastName;
     patient.email = email || patient.email;
@@ -782,18 +835,30 @@ exports.editPatientById = async (req, res) => {
     patient.city = city || patient.city;
     patient.address = address || patient.address;
 
-    // Check if a file has been uploaded
+    // Handle Profile Image Upload to Cloudinary
     if (req.file) {
-      // Store only the relative path to the file
-      patient.profileImage = `uploads/${req.file.filename}`;
+      try {
+        const cloudinaryUpload = await cloudinary.uploader.upload(req.file.path, {
+          folder: "hospital-management/patients",
+        });
+        patient.profileImage = cloudinaryUpload.secure_url; // Save Cloudinary URL
+      } catch (uploadError) {
+        console.error("Cloudinary Upload Error:", uploadError);
+        return res.status(500).json({ message: "Error uploading profile image" });
+      }
     }
 
     const updatedPatient = await patient.save();
-    res.status(200).json(updatedPatient);
+    res.status(200).json({ message: "Patient updated successfully", patient: updatedPatient });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    console.error("Server error:", error);
+    res.status(500).json({ message: "Server error while updating patient", error: error.message });
   }
 };
+
+
+
+
 
 // @desc    Delete Patient by ID
 // @route   DELETE /api/users/patients/:id

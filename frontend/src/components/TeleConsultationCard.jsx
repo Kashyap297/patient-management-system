@@ -46,7 +46,7 @@ const TeleConsultationCard = ({ patient }) => {
           <span>Join Call</span>
         </button>
         <button
-          onClick={() => console.log("Reschedule Clicked")} // Placeholder for reschedule action
+          onClick={() => navigate(`/doctor/edit-appointment`)} // Placeholder for reschedule action
           className="bg-[#0eabeb] text-white flex items-center justify-center gap-2 px-4 py-2 rounded-xl w-full transition hover:bg-[#0c9ed1]"
         >
           <FaCalendarAlt className="text-white" />

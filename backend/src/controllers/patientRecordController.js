@@ -1,3 +1,5 @@
+const cloudinary = require("cloudinary").v2;
+
 const {
   ComplianceRegistrationInquiriesListInstance,
 } = require("twilio/lib/rest/trusthub/v1/complianceRegistrationInquiries");
@@ -77,48 +79,58 @@ const upload = multer({
 }).single("file"); // Single file upload
 
 exports.addPatientRecord = async (req, res) => {
-  const { patientId, doctorId, description } = req.body;
-
-  // Validate required fields
-  if (!patientId || !doctorId || !description || !req.file) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
   try {
+    const { patientId, doctorId, description } = req.body;
+
+    // Validate required fields
+    if (!patientId || !doctorId || !description || !req.file) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
     // Find if the record already exists for this patient and doctor
     let patientRecord = await PatientRecord.findOne({
       patient: patientId,
       doctor: doctorId,
     });
 
-    // Store the relative path to the file, not the full local path
-    const relativeFilePath = `uploads/${req.file.filename}`;
+    // ✅ Upload File to Cloudinary
+    let fileUrl = null;
+    try {
+      const cloudinaryUpload = await cloudinary.uploader.upload(req.file.path, {
+        folder: "hospital-management/patient-records",
+      });
+      fileUrl = cloudinaryUpload.secure_url; // ✅ Save Cloudinary URL
+    } catch (uploadError) {
+      console.error("❌ Cloudinary Upload Error:", uploadError);
+      return res.status(500).json({ message: "Error uploading patient record file" });
+    }
 
     if (!patientRecord) {
       // Create new patient record if it doesn't exist
       patientRecord = new PatientRecord({
         patient: patientId,
         doctor: doctorId,
-        files: [{ url: relativeFilePath, description }],
+        files: [{ url: fileUrl, description }],
       });
     } else {
       // Add new file to existing patient record
-      patientRecord.files.push({ url: relativeFilePath, description });
+      patientRecord.files.push({ url: fileUrl, description });
     }
 
-    // Save the patient record
+    // ✅ Save the patient record
     await patientRecord.save();
 
-    // Respond with success
+    // ✅ Respond with success
     res.status(201).json({
       message: "Record added successfully",
       data: patientRecord,
     });
   } catch (error) {
-    // Handle any errors that occur during database operations
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("❌ Server error:", error);
+    res.status(500).json({ message: "❌ Server error", error: error.message });
   }
 };
+
 
 
 
@@ -155,3 +167,46 @@ exports.getPatientRecords = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+
+// Fetch All Test Reports for a Patient 
+exports.getPatientTestReports = async (req, res) => {
+  const { patientId } = req.params;
+
+  try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(patientId)) {
+      return res.status(400).json({ message: "Invalid patient ID" });
+    }
+
+    // Find all patient records for this patient
+    const patientRecords = await PatientRecord.find({ patient: patientId })
+      .populate("doctor", "firstName lastName specialty")
+      .select("doctor files createdAt");
+
+    if (!patientRecords || patientRecords.length === 0) {
+      return res.status(404).json({ message: "No test reports found" });
+    }
+
+    // Format the response
+    const testReports = patientRecords.flatMap((record) =>
+      record.files.map((file) => ({
+        doctor: `${record.doctor.firstName} ${record.doctor.lastName}`,
+        specialty: record.doctor.specialty,
+        date: record.createdAt.toISOString().split("T")[0], // Format date
+        fileUrl: file.url,
+        description: file.description,
+      }))
+    );
+
+    res.status(200).json({
+      success: true,
+      count: testReports.length,
+      data: testReports,
+    });
+  } catch (error) {
+    console.error("Error fetching test reports:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+

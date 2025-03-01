@@ -19,6 +19,7 @@ const Invoice = () => {
           },
         });
         setInvoiceData(response.data.invoice);
+        console.log(response.data.invoice);
       } catch (error) {
         console.error("Error fetching invoice:", error);
       } finally {
@@ -44,7 +45,7 @@ const Invoice = () => {
             {loading ? (
               <Skeleton height={50} width={200} />
             ) : (
-              <img src={logo} alt="Hospital Logo" className="w-64" />
+              <img src={invoiceData?.logoUrl} alt="Hospital Logo" className="w-64" />
             )}
           </div>
           <h1 className="absolute right-[25px] top-[20px] text-6xl font-semibold text-[#0eabeb] z-10">
@@ -97,7 +98,7 @@ const Invoice = () => {
           </div>
           <div className="grid grid-cols-2 gap-4 mt-2">
             <p>
-              <strong>Age :</strong> {loading ? <Skeleton width={80} /> : `${invoiceData?.patient?.age} Years`}
+              <strong>Age :</strong> {loading ? <Skeleton width={80} /> : `${invoiceData?.age} Years`}
             </p>
             <p>
               <strong>Payment Type :</strong> <span className="text-blue-500">{loading ? <Skeleton width={100} /> : invoiceData?.paymentType}</span>
@@ -159,8 +160,8 @@ const Invoice = () => {
 
       {/* Footer */}
       <div className="text-center text-sm bg-[#0EABEB] p-2 rounded-b-lg text-white flex justify-between px-8 mt-4">
-        <p>Call: +90854 22354</p>
-        <p>Email: Hello@Gmail.com</p>
+        <p>Call: {invoiceData?.phoneNumber}</p>
+        <p>Email: {invoiceData?.email}</p>
       </div>
     </div>
   );

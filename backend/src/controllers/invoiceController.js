@@ -1,61 +1,62 @@
 const Invoice = require("../models/invoiceModel");
 const User = require("../models/userModel"); // Assuming patients and doctors are users
 const Hospital = require("../models/hospitalModel"); // Assuming you have a hospital model
+const cloudinary = require("cloudinary").v2;
+
 
 // Create Invoice by Admin
 exports.createInvoice = async (req, res) => {
-  const {
-    hospital,
-    patient,
-    doctor,
-    doctorName,
-    diseaseName,
-    billDate,
-    billTime,
-    billNumber,
-    phoneNumber,
-    email,
-    address,
-    otherText,
-    description,
-    amount,
-    tax,
-    discount,
-    totalAmount,
-    paymentType,
-    gender,
-    age,
-    insuranceCompany,
-    insurancePlan,
-    claimAmount,
-    claimedAmount,
-    status,
-  } = req.body;
-
   try {
+    const {
+      hospital,
+      patient,
+      doctor,
+      doctorName,
+      diseaseName,
+      billDate,
+      billTime,
+      billNumber,
+      phoneNumber,
+      email,
+      address,
+      otherText,
+      description,
+      amount,
+      tax,
+      discount,
+      totalAmount,
+      paymentType,
+      gender,
+      age,
+      insuranceCompany,
+      insurancePlan,
+      claimAmount,
+      claimedAmount,
+      status,
+    } = req.body;
+
     // Validate if hospital, patient, and doctor exist
     const patientExists = await User.findById(patient);
     const doctorExists = await User.findById(doctor);
     const hospitalExists = await Hospital.findById(hospital);
 
-    if (!patientExists) {
-      console.log("Patient not found:", patient);
-    }
-    if (!doctorExists) {
-      console.log("Doctor not found:", doctor);
-    }
-    if (!hospitalExists) {
-      console.log("Hospital not found:", hospital);
-    }
-
     if (!patientExists || !doctorExists || !hospitalExists) {
-      return res
-        .status(404)
-        .json({ message: "Hospital, Doctor, or Patient not found" });
+      return res.status(404).json({ message: "Hospital, Doctor, or Patient not found" });
     }
 
-    // Handle the uploaded logo file
-    const logoUrl = req.file ? `./src/uploads/${req.file.filename}` : null;
+    // Handle Logo Image Upload to Cloudinary
+    let logoUrl = null;
+    if (req.file) {
+      try {
+        const cloudinaryUpload = await cloudinary.uploader.upload(req.file.path, {
+          folder: "hospital-management/invoices",
+        });
+        logoUrl = cloudinaryUpload.secure_url; // Save Cloudinary URL
+      } catch (uploadError) {
+        console.error("Cloudinary Upload Error:", uploadError);
+        return res.status(500).json({ message: "Error uploading invoice logo" });
+      }
+    }
 
     // Create Invoice
     const newInvoice = new Invoice({
@@ -99,10 +100,11 @@ exports.createInvoice = async (req, res) => {
     console.error("Server error:", error);
     res.status(500).json({
       message: "Server error while creating invoice",
-      error,
+      error: error.message,
     });
   }
 };
+
 
 // Get Invoice (Example for populating doctor and patient)
 exports.getInvoice = async (req, res) => {
@@ -130,42 +132,41 @@ exports.getInvoice = async (req, res) => {
 
 // Update Invoice by Admin
 exports.updateInvoice = async (req, res) => {
-  const invoiceId = req.params.id;
-  const {
-    patient,
-    doctor,
-    doctorName,
-    diseaseName,
-    billDate,
-    billTime,
-    billNumber,
-    phoneNumber,
-    email,
-    address,
-    otherText,
-    description,
-    amount,
-    tax,
-    discount,
-    totalAmount,
-    paymentType,
-    gender,
-    age,
-    insuranceCompany,
-    insurancePlan,
-    claimAmount,
-    claimedAmount,
-    status, // New field for updating status
-  } = req.body;
-
-  console.log("Received patient ID:", patient);
-  console.log("Received doctor ID:", doctor);
-
   try {
+    const invoiceId = req.params.id;
+    const {
+      patient,
+      doctor,
+      doctorName,
+      diseaseName,
+      billDate,
+      billTime,
+      billNumber,
+      phoneNumber,
+      email,
+      address,
+      otherText,
+      description,
+      amount,
+      tax,
+      discount,
+      totalAmount,
+      paymentType,
+      gender,
+      age,
+      insuranceCompany,
+      insurancePlan,
+      claimAmount,
+      claimedAmount,
+      status, // New field for updating status
+    } = req.body;
+
+    console.log("🔹 Received patient ID:", patient);
+    console.log("🔹 Received doctor ID:", doctor);
+
     // Validate if patient and doctor exist
     const patientExists = await User.findById(patient);
     const doctorExists = await User.findById(doctor);
-
     if (!patientExists || !doctorExists) {
       return res.status(404).json({ message: "Doctor or Patient not found" });
     }
@@ -176,12 +177,21 @@ exports.updateInvoice = async (req, res) => {
       return res.status(404).json({ message: "Invoice not found" });
     }
 
-    // If a new logo is uploaded, update the logo URL
-    const logoUrl = req.file
-      ? `./src/uploads/${req.file.filename}`
-      : invoice.logoUrl;
+    // ✅ Handle Logo Image Upload to Cloudinary
+    let logoUrl = invoice.logoUrl; // Keep existing logo if no new file is uploaded
+    if (req.file) {
+      try {
+        const cloudinaryUpload = await cloudinary.uploader.upload(req.file.path, {
+          folder: "hospital-management/invoices",
+        });
+        logoUrl = cloudinaryUpload.secure_url; // Save Cloudinary URL
+      } catch (uploadError) {
+        console.error("❌ Cloudinary Upload Error:", uploadError);
+        return res.status(500).json({ message: "Error uploading invoice logo" });
+      }
+    }
 
-    // Update the invoice details
+    // ✅ Update Invoice Details
     invoice.patient = patient;
     invoice.doctor = doctor;
     invoice.doctorName = doctorName || invoice.doctorName;
@@ -202,30 +212,30 @@ exports.updateInvoice = async (req, res) => {
     invoice.gender = gender || invoice.gender;
     invoice.age = age || invoice.age;
     invoice.insuranceDetails = {
-      insuranceCompany:
-        insuranceCompany || invoice.insuranceDetails.insuranceCompany,
+      insuranceCompany: insuranceCompany || invoice.insuranceDetails.insuranceCompany,
       insurancePlan: insurancePlan || invoice.insuranceDetails.insurancePlan,
       claimAmount: claimAmount || invoice.insuranceDetails.claimAmount,
       claimedAmount: claimedAmount || invoice.insuranceDetails.claimedAmount,
     };
-    invoice.logoUrl = logoUrl;
-    invoice.status = status || invoice.status; // Update status if provided
+    invoice.logoUrl = logoUrl; // ✅ Updated Cloudinary logo URL
+    invoice.status = status || invoice.status; // ✅ Update status if provided
 
-    // Save the updated invoice
+    // ✅ Save the updated invoice
     await invoice.save();
 
     res.status(200).json({
-      message: "Invoice updated successfully",
+      message: "✅ Invoice updated successfully",
       invoice,
     });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Server error:", error);
     res.status(500).json({
-      message: "Error updating invoice",
-      error,
+      message: "❌ Error updating invoice",
+      error: error.message,
     });
   }
 };
+
 
 exports.getAllInvoices = async (req, res) => {
   try {
@@ -254,7 +264,7 @@ exports.getUserInvoices = async (req, res) => {
     const invoices = await Invoice.find({ patient: userId })
       .populate("doctor", "firstName lastName email description")
       .populate("patient", "firstName lastName email")
-      .populate("hospital", "name address");
+      .populate("hospital", "name address"); 
 
 
     if (!invoices || invoices.length === 0) {

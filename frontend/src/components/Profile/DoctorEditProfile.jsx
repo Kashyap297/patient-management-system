@@ -122,7 +122,7 @@ const DoctorEditProfile = ({ onCancel }) => {
           <img
             src={
               formData.profileImage && !(formData.profileImage instanceof File)
-                ? `https://patient-management-system-vyv0.onrender.com/${formData.profileImage}`
+                ? `${formData.profileImage}`
                 : userImage
             }
             alt="Profile"

@@ -90,7 +90,7 @@ const PatientDetail = () => {
         <div className="flex justify-between items-start">
           <div className="flex-shrink-0 border border-4 border-[#DFE0EB] rounded-full">
             <img
-              src={`https://patient-management-system-vyv0.onrender.com/${patientData.profileImage}`}
+              src={`http://localhost:8000/${patientData.profileImage}`}
               alt="Patient"
               className="w-32 h-32 rounded-full object-cover"
             />

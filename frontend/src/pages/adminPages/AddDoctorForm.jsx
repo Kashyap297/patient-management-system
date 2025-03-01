@@ -284,25 +284,37 @@ const SelectField = ({ id, label, options, value, onChange }) => (
 );
 
 // InputFieldWithIcon component
-const InputFieldWithIcon = ({ id, label, icon, value, onChange }) => (
-  <div className="relative mb-4">
-    <input
-      type="text"
-      id={id}
-      name={id}
-      className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-      placeholder={`Enter ${label}`}
-      value={value}
-      onChange={onChange}
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
-    >
-      {label}
-    </label>
-    {icon}
-  </div>
-);
+const InputFieldWithIcon = ({ id, label, icon, value, onChange }) => {
+  const defaultPlaceholder =
+    label === "Working Time"
+      ? "EX: 09:00 AM - 06:00 PM"
+      : label === "Check-Up Time"
+      ? "EX: 10:00 AM - 12:00 PM"
+      : label === "Break Time"
+      ? "EX: 12:00 PM - 01:00 PM"
+      : `Enter ${label}`;
+
+  return (
+    <div className="relative mb-4">
+      <input
+        type="text"
+        id={id}
+        name={id}
+        className="peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
+        placeholder={defaultPlaceholder}
+        value={value}
+        onChange={onChange}
+      />
+      <label
+        htmlFor={id}
+        className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229] peer-focus:-top-2.5 peer-focus:left-3 transition-all duration-200"
+      >
+        {label}
+      </label>
+      {icon}
+    </div>
+  );
+};
+
 
 export default AddDoctorForm;
