@@ -44,7 +44,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Root route to check if API is live
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "API is live!" });
+  res.status(200).json({ message: "API is live!..." });
 });
 
 
