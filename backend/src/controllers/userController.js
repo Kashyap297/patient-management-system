@@ -38,9 +38,9 @@ exports.registerAdmin = async (req, res) => {
     }
 
     // Check if admin already exists
-    const adminExists = await User.findOne({ email });
+    const adminExists = await User.findOne({ $or: [{ email }, { phoneNumber }] });
     if (adminExists) {
-      return res.status(400).json({ message: "Admin already exists" });
+      return res.status(400).json({ message: "Admin with this email or phone number already exists" });
     }
 
     // Create new admin with the hospital reference
@@ -95,9 +95,9 @@ exports.registerPatient = async (req, res) => {
 
   try {
     // Check if patient already exists
-    const patientExists = await User.findOne({ email });
+    const patientExists = await User.findOne({ $or: [{ email }, { phoneNumber }] });
     if (patientExists) {
-      return res.status(400).json({ message: "Patient already exists" });
+      return res.status(400).json({ message: "Patient with this email or phone number already exists" });
     }
 
     // Create new patient
@@ -163,9 +163,9 @@ exports.addDoctorByAdmin = async (req, res) => {
     } = req.body;
 
     // Check if the doctor already exists
-    const doctorExists = await User.findOne({ email });
+    const doctorExists = await User.findOne({ $or: [{ email }, { phoneNumber }] });
     if (doctorExists) {
-      return res.status(400).json({ message: "Doctor already exists" });
+      return res.status(400).json({ message: "Doctor with this email or phone number already exists" });
     }
 
     // ✅ Upload Profile & Signature Images to Cloudinary

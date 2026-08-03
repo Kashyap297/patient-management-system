@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: "https://patient-management-system-vyv0.onrender.com/api", // Replace with your actual backend URL
+  baseURL: "http://localhost:8000/api", // Replace with your actual backend URL
 });
 
 // Add a request interceptor to include token in requests (if necessary)
