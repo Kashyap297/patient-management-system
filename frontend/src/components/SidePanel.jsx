@@ -8,41 +8,38 @@ import vector from "../assets/images/Vector.png";
 
 const SidePanel = () => {
   return (
-    <div className="w-full bg-gray-100 relative flex justify-center items-center">
-      {/* Vectors */}
-      <img
-        src={vector1}
-        alt="Vector Top Left"
-        className="absolute top-0 left-0 w-50 h-60"
-      />
-      <img
-        src={vector2}
-        alt="Vector Bottom Right"
-        className="absolute bottom-0 right-0 w-50 h-60"
-      />
-      <img
-        src={vector}
-        alt="Vector Bottom Right"
-        className="absolute top-0 right-0 w-40 h-30"
-      />
+    <div className="w-full h-full relative flex flex-col justify-center items-center overflow-hidden bg-gradient-to-br from-[#0EABEB] via-blue-500 to-[#1C1F2E]">
+      
+      {/* Animated Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full bg-black/10 backdrop-blur-sm z-0"></div>
+      
+      {/* Abstract Vectors */}
+      <img src={vector1} alt="Vector Top Left" className="absolute top-[-5%] left-[-5%] w-64 h-64 opacity-60 animate-pulse-slow z-10" />
+      <img src={vector2} alt="Vector Bottom Right" className="absolute bottom-[-10%] right-[-5%] w-72 h-72 opacity-60 animate-pulse-slow z-10" style={{animationDelay: '1.5s'}} />
+      <img src={vector} alt="Vector Top Right" className="absolute top-[10%] right-[10%] w-32 h-32 opacity-40 z-10 hover:scale-110 transition-transform duration-500" />
+      <img src={vector3} alt="Vector Floating" className="absolute top-[30%] right-[20%] w-24 h-24 opacity-80 animate-[bounce_4s_infinite] z-10" />
 
-      {/* Banner Content */}
-      <div className="text-center relative">
-        <img
-          src={vector3}
-          alt="Vector Bottom Right"
-          className="absolute top-20 right-0 w-30 h-30"
-        />
-        <img src={logo} alt="Logo" className="mb-4 mx-auto w-60 h-30" />
-        <img
-          src={logoBanner}
-          alt="Banner"
-          className="w-full max-w-lg mx-auto"
-        />
-        <h2 className="text-4xl font-bold mt-4">Hospital</h2>
-        <p className="text-gray-600 mt-2 font-semibold">
-          You Can stay your Hospital and Contact
-          <br /> With Your Facility.
+      {/* Main Content inside a dark glass card */}
+      <div className="glass-dark p-12 rounded-[3rem] text-center relative z-20 max-w-lg mx-auto shadow-2xl animate-fade-in border-t border-l border-white/20">
+        
+        <div className="bg-white/95 p-4 rounded-2xl inline-block mb-8 shadow-xl">
+          <img src={logo} alt="Logo" className="w-48 h-auto object-contain" />
+        </div>
+        
+        <div className="relative group cursor-pointer mb-8">
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-cyan-300 rounded-3xl blur opacity-25 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+          <img
+            src={logoBanner}
+            alt="Banner"
+            className="relative w-full max-w-sm mx-auto rounded-2xl transform transition-transform duration-500 group-hover:scale-[1.02]"
+          />
+        </div>
+
+        <h2 className="text-4xl font-extrabold mt-6 text-white tracking-tight">
+          Modern Hospital
+        </h2>
+        <p className="text-gray-300 mt-4 font-medium text-lg leading-relaxed">
+          Streamline your workflow and <br className="hidden md:block"/> connect with your facility instantly.
         </p>
       </div>
     </div>

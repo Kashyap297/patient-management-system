@@ -108,25 +108,40 @@ const AdminEditProfile = () => {
   };
 
   return (
-    <div className="relative bg-gray-100 py-8 sm:py-10 lg:py-16 px-6 sm:px-12 lg:px-36">
-      <ProfileHeader title="Profile Setting" />
-      <div className="flex flex-col md:flex-row w-full mt-6 md:mt-8 mx-auto bg-white shadow-lg rounded-xl overflow-hidden z-10 relative h-[620px] ">
-        <div className="w-full md:w-1/4 p-6 md:p-8 text-center border-b md:border-r">
-          <img
-            src={
-              formData.profileImage && !(formData.profileImage instanceof File)
-                ? `http://localhost:8000/${formData.profileImage}`
-                : userImage
-            }
-            alt="Profile"
-            className="w-24 h-24 md:w-48 md:h-48 mx-auto rounded-full mb-4"
-          />
-          <div className="flex justify-center">
+    <div className="relative min-h-[calc(100vh-80px)] p-6 md:p-8 space-y-8 bg-background overflow-hidden flex flex-col items-center">
+      {/* Decorative Blur Backgrounds */}
+      <div className="absolute top-[-5%] right-[-5%] w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
+      <div className="absolute bottom-[-5%] left-[-5%] w-96 h-96 bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow delay-1000"></div>
+
+      <div className="w-full max-w-7xl mx-auto z-10 animate-slide-up">
+        {/* Header */}
+        <div className="mb-6">
+          <ProfileHeader title="Profile Settings" />
+        </div>
+
+        {/* Main Container */}
+        <div className="flex flex-col md:flex-row w-full bg-white/80 backdrop-blur-xl shadow-xl rounded-3xl overflow-hidden border border-white/50 z-10 relative">
+          
+          {/* Profile Image Section */}
+          <div className="w-full md:w-[320px] bg-gradient-to-b from-primary/5 to-transparent p-8 border-b md:border-b-0 md:border-r border-gray-100/80 flex flex-col items-center justify-center shrink-0">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-500 rounded-full opacity-30 group-hover:opacity-100 transition duration-300 blur"></div>
+              <img
+                src={
+                  formData.profileImage && !(formData.profileImage instanceof File)
+                    ? `http://localhost:8000/${formData.profileImage}`
+                    : userImage
+                }
+                alt="Profile"
+                className="relative w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-4 border-white shadow-lg z-10"
+              />
+            </div>
+            
             <button
               onClick={() => fileInputRef.current.click()}
-              className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-xl mt-2 hover:bg-gray-200"
+              className="mt-6 flex items-center space-x-2 bg-white text-gray-700 px-6 py-3 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-primary/30 transition-all duration-300 group font-bold"
             >
-              <FiCamera className="text-[#030229]" />
+              <FiCamera className="text-primary group-hover:scale-110 transition-transform" />
               <span>Change Profile</span>
             </button>
             <input
@@ -137,132 +152,147 @@ const AdminEditProfile = () => {
               ref={fileInputRef}
             />
           </div>
-        </div>
-        <div className="w-full md:w-3/4 p-6 md:p-8">
-          <h3 className="text-xl sm:text-2xl font-semibold mb-4">Edit Profile</h3>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* First Name */}
-            <div className="relative">
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName || ""}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-                placeholder="First Name"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
-                First Name <span className="text-red-500">*</span>
-              </label>
-            </div>
-            {/* Last Name */}
-            <div className="relative">
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName || ""}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-                placeholder="Last Name"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
-                Last Name <span className="text-red-500">*</span>
-              </label>
-            </div>
-            {/* Email */}
-            <div className="relative">
-              <input
-                type="email"
-                name="email"
-                value={formData.email || ""}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-                placeholder="Email Address"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
-                Email Address <span className="text-red-500">*</span>
-              </label>
-            </div>
-            {/* Phone Number */}
-            <div className="relative">
-              <input
-                type="text"
-                name="phoneNumber"
-                value={formData.phoneNumber || ""}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-                placeholder="Phone Number"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
-                Phone Number <span className="text-red-500">*</span>
-              </label>
-            </div>
-            {/* Hospital Name */}
-            <div className="relative">
-              <select
-                name="adminhospital"
-                value={formData.adminhospital}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-              >
-                <option value="">Select Hospital</option>
-                {hospitals.map((hospital) => (
-                  <option key={hospital._id} value={hospital._id}>
-                    {hospital.name}
-                  </option>
-                ))}
-              </select>
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
-                Hospital Name <span className="text-red-500">*</span>
-              </label>
-            </div>
-            {/* Gender */}
-            <div className="relative">
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
-                Gender <span className="text-red-500">*</span>
-              </label>
-            </div>
-            {/* City, State, Country */}
-            {["city", "state", "country"].map((field) => (
-              <div key={field} className="relative">
+
+          {/* Edit Form Area */}
+          <div className="w-full flex-1 p-6 md:p-10 relative">
+            <h3 className="text-2xl font-extrabold text-secondary tracking-tight mb-8">Edit Profile</h3>
+            
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* First Name */}
+              <div className="relative group">
                 <input
                   type="text"
-                  name={field}
-                  value={formData[field]}
+                  name="firstName"
+                  value={formData.firstName || ""}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                  placeholder="First Name"
                 />
-                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-[#030229]">
-                  {field.charAt(0).toUpperCase() + field.slice(1)} <span className="text-red-500">*</span>
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                  First Name <span className="text-red-500">*</span>
                 </label>
               </div>
-            ))}
-          </form>
-          <div className="flex justify-end mt-4">
-            <div className="grid grid-cols-2 gap-4 mt-4">
+
+              {/* Last Name */}
+              <div className="relative group">
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName || ""}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                  placeholder="Last Name"
+                />
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                  Last Name <span className="text-red-500">*</span>
+                </label>
+              </div>
+
+              {/* Email */}
+              <div className="relative group">
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email || ""}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                  placeholder="Email Address"
+                />
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+              </div>
+
+              {/* Phone Number */}
+              <div className="relative group">
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={formData.phoneNumber || ""}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                  placeholder="Phone Number"
+                />
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                  Phone Number <span className="text-red-500">*</span>
+                </label>
+              </div>
+
+              {/* Hospital Name */}
+              <div className="relative group">
+                <select
+                  name="adminhospital"
+                  value={formData.adminhospital}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 appearance-none"
+                >
+                  <option value="">Select Hospital</option>
+                  {hospitals.map((hospital) => (
+                    <option key={hospital._id} value={hospital._id}>
+                      {hospital.name}
+                    </option>
+                  ))}
+                </select>
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-primary">
+                  Hospital Name <span className="text-red-500">*</span>
+                </label>
+                {/* Custom dropdown arrow */}
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+              </div>
+
+              {/* Gender */}
+              <div className="relative group">
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 appearance-none"
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-primary">
+                  Gender <span className="text-red-500">*</span>
+                </label>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+              </div>
+
+              {/* City, State, Country */}
+              {["city", "state", "country"].map((field) => (
+                <div key={field} className="relative group">
+                  <input
+                    type="text"
+                    name={field}
+                    value={formData[field]}
+                    onChange={handleChange}
+                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  />
+                  <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                    {field.charAt(0).toUpperCase() + field.slice(1)} <span className="text-red-500">*</span>
+                  </label>
+                </div>
+              ))}
+            </form>
+
+            <div className="mt-10 pt-6 border-t border-gray-100 flex justify-end gap-4">
               <button
                 type="button"
                 onClick={() => navigate("/admin")}
-                className="text-gray-700 px-4 py-2 rounded-xl hover:bg-[#f6f8fb] border"
+                className="px-8 py-3.5 rounded-2xl font-bold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 type="submit"
-                className="px-4 py-2 rounded-xl text-white bg-[#0EABEB]"
+                className="px-8 py-3.5 rounded-2xl font-bold bg-gradient-to-r from-primary to-blue-500 text-white shadow-lg shadow-blue-500/30 hover:-translate-y-0.5 transition-all duration-300"
               >
-                Save
+                Save Changes
               </button>
             </div>
           </div>

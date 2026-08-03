@@ -112,15 +112,15 @@ const PatientsStatistics = () => {
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md w-full max-w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-center">
-        <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-0">Patients Statistics</h2>
-        <div className="flex gap-1 sm:gap-2">
+    <div className="glass shadow-sm hover:shadow-lg p-6 sm:p-8 rounded-3xl w-full max-w-full transition-all duration-300 relative z-10">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+        <h2 className="text-xl sm:text-2xl font-extrabold text-secondary tracking-tight">Patients Statistics</h2>
+        <div className="flex gap-2 p-1 bg-gray-100/80 rounded-xl mt-4 sm:mt-0">
           {['Year', 'Month', 'Week'].map((time) => (
             <button
               key={time}
-              className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded ${
-                timeframe === time ? 'bg-[#0eabeb] text-white' : 'bg-gray-200 text-gray-700'
+              className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all duration-300 ${
+                timeframe === time ? 'bg-white text-primary shadow-sm scale-105' : 'text-gray-500 hover:text-primary hover:bg-white/50'
               }`}
               onClick={() => setTimeframe(time)}
             >
@@ -132,11 +132,11 @@ const PatientsStatistics = () => {
 
       {/* Skeleton Loader or Chart */}
       {loading ? (
-        <div className="mt-6">
-          <Skeleton height={300} />
+        <div className="mt-8">
+          <Skeleton height={300} borderRadius={16} />
         </div>
       ) : (
-        <div className="mt-6">
+        <div className="mt-8 relative z-10">
           <Line data={data} options={options} />
         </div>
       )}

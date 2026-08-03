@@ -23,64 +23,75 @@ const ProfileSidebar = () => {
   }, []);
 
   return (
-    <div className="p-4 sm:p-6 text-center">
-      <img
-        src={profileImage ? `${profileImage}` : user}
-        alt="Profile"
-        className="w-24 h-24 sm:w-48 sm:h-48 mx-auto rounded-full mb-2 sm:mb-4"
-      />
-      <h3 className="text-lg sm:text-xl font-semibold">{fullName}</h3> {/* Display the dynamic full name */}
+    <div className="flex flex-col items-center h-full pt-4">
+      <div className="relative group mb-4">
+        <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-500 rounded-full opacity-0 group-hover:opacity-30 transition duration-300 blur"></div>
+        <img
+          src={profileImage ? `${profileImage}` : user}
+          alt="Profile"
+          className="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-md z-10"
+        />
+      </div>
+      <h3 className="text-xl font-extrabold text-gray-800 tracking-tight text-center">{fullName}</h3>
 
       {/* Navigation Links */}
-      <div className="mt-6 sm:mt-8 space-y-2 sm:space-y-3">
-        <h6 className="text-md font-semibold text-start">Menu</h6>
+      <div className="mt-10 w-full space-y-2 flex-1">
+        <h6 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Menu</h6>
 
         <NavLink
           to=""
           end
           className={({ isActive }) =>
-            `flex items-center px-3 sm:px-4 py-2 sm:py-4 bg-[#f6f8fb] rounded-xl ${
-              isActive ? "text-customBlue font-semibold" : "text-gray-700"
+            `flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 font-bold ${
+              isActive 
+                ? "bg-gradient-to-r from-primary/10 to-blue-500/10 text-primary shadow-sm border border-primary/20" 
+                : "text-gray-500 hover:bg-white hover:text-gray-800 hover:shadow-sm border border-transparent"
             }`
           }
         >
-          <FaUser className="inline-block w-5 h-5 mr-2" />
+          <FaUser className="inline-block w-5 h-5 mr-3" />
           Profile
         </NavLink>
 
         <NavLink
           to="change-password"
           className={({ isActive }) =>
-            `flex items-center px-3 sm:px-4 py-2 sm:py-4 bg-[#f6f8fb] rounded-xl ${
-              isActive ? "text-customBlue font-semibold" : "text-gray-700"
+            `flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 font-bold ${
+              isActive 
+                ? "bg-gradient-to-r from-primary/10 to-blue-500/10 text-primary shadow-sm border border-primary/20" 
+                : "text-gray-500 hover:bg-white hover:text-gray-800 hover:shadow-sm border border-transparent"
             }`
           }
         >
-          <FaLock className="inline-block w-5 h-5 mr-2" />
+          <FaLock className="inline-block w-5 h-5 mr-3" />
           Change Password
         </NavLink>
 
         <NavLink
           to="terms-and-conditions"
           className={({ isActive }) =>
-            `flex items-center px-3 sm:px-4 py-2 sm:py-4 bg-[#f6f8fb] rounded-xl ${
-              isActive ? "text-customBlue font-semibold" : "text-gray-700"
+            `flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 font-bold ${
+              isActive 
+                ? "bg-gradient-to-r from-primary/10 to-blue-500/10 text-primary shadow-sm border border-primary/20" 
+                : "text-gray-500 hover:bg-white hover:text-gray-800 hover:shadow-sm border border-transparent"
             }`
           }
         >
-          <FaFileContract className="inline-block w-5 h-5 mr-2" />
-          Terms & Condition
+          <FaFileContract className="inline-block w-5 h-5 mr-3" />
+          Terms & Conditions
         </NavLink>
 
         <NavLink
           to="privacy-policy"
           className={({ isActive }) =>
-            `flex items-center px-3 sm:px-4 py-2 sm:py-4 bg-[#f6f8fb] rounded-xl ${
-              isActive ? "text-customBlue font-semibold" : "text-gray-700"
+            `flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 font-bold ${
+              isActive 
+                ? "bg-gradient-to-r from-primary/10 to-blue-500/10 text-primary shadow-sm border border-primary/20" 
+                : "text-gray-500 hover:bg-white hover:text-gray-800 hover:shadow-sm border border-transparent"
             }`
           }
         >
-          <FaShieldAlt className="inline-block w-5 h-5 mr-2" />
+          <FaShieldAlt className="inline-block w-5 h-5 mr-3" />
           Privacy Policy
         </NavLink>
       </div>

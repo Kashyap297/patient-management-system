@@ -37,11 +37,11 @@ const AdminRoutes = ({ onLogout }) => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f6f8fb]">
+    <div className="flex h-screen overflow-hidden bg-[#fafbfc]">
       <Sidebar role={"admin"} onLogout={onLogout} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
-      <div className="flex-1 flex flex-col bg-[#f6f8fb]">
+      <div className="flex-1 flex flex-col bg-[#fafbfc]">
         <Header onSearch={handleSearch} toggleSidebar={toggleSidebar}/>
-        <div className="flex-1 overflow-y-auto bg-[#f6f8fb] p-5">
+        <div className="flex-1 overflow-y-auto bg-[#fafbfc] p-5">
           {searchQuery ? (
             <SearchResults query={searchQuery} filterOption={filterOption} />
           ) : (

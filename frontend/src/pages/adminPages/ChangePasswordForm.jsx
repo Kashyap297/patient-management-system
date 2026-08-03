@@ -43,10 +43,10 @@ const ChangePasswordForm = () => {
   };
 
   return (
-    <div className="flex-1 bg-white h-full p-8 rounded-r-3xl">
-      <h2 className="text-2xl font-semibold mb-6">Change Password</h2>
-      <p className="mb-4 text-sm text-gray-500">
-        To change your password, please fill in the fields below.
+    <div className="flex-1 bg-transparent h-full p-8 md:p-12">
+      <h2 className="text-3xl font-extrabold text-secondary tracking-tight mb-4">Change Password</h2>
+      <p className="mb-8 text-sm md:text-base text-gray-500 max-w-xl">
+        To change your password, please fill in the fields below. Make sure to use a strong and secure new password.
       </p>
 
       <Formik
@@ -59,86 +59,118 @@ const ChangePasswordForm = () => {
         onSubmit={handleSubmit}
       >
         {({ errors, touched, isSubmitting }) => (
-          <Form className="grid grid-cols-1 gap-4">
+          <Form className="grid grid-cols-1 gap-6 max-w-2xl">
             {/* Current Password */}
-            <Field
-              as={TextField}
-              label="Current Password"
-              variant="outlined"
-              fullWidth
-              name="currentPassword"
-              type={showCurrentPassword ? "text" : "password"}
-              error={touched.currentPassword && Boolean(errors.currentPassword)}
-              helperText={touched.currentPassword && errors.currentPassword}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() =>
-                        setShowCurrentPassword(!showCurrentPassword)
-                      }
-                    >
-                      {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <div className="relative group">
+              <Field
+                as={TextField}
+                label="Current Password"
+                variant="outlined"
+                fullWidth
+                name="currentPassword"
+                type={showCurrentPassword ? "text" : "password"}
+                error={touched.currentPassword && Boolean(errors.currentPassword)}
+                helperText={touched.currentPassword && errors.currentPassword}
+                InputProps={{
+                  className: "bg-white/50 backdrop-blur-md rounded-2xl transition-all duration-300 group-hover:bg-white focus-within:bg-white border-white/20",
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
+                      >
+                        {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "1rem",
+                    "& fieldset": { borderColor: "rgba(0,0,0,0.1)" },
+                    "&:hover fieldset": { borderColor: "var(--primary)" },
+                    "&.Mui-focused fieldset": { borderColor: "var(--primary)" },
+                  },
+                }}
+              />
+            </div>
 
             {/* New Password */}
-            <Field
-              as={TextField}
-              label="New Password"
-              variant="outlined"
-              fullWidth
-              name="newPassword"
-              type={showNewPassword ? "text" : "password"}
-              error={touched.newPassword && Boolean(errors.newPassword)}
-              helperText={touched.newPassword && errors.newPassword}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                    >
-                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <div className="relative group">
+              <Field
+                as={TextField}
+                label="New Password"
+                variant="outlined"
+                fullWidth
+                name="newPassword"
+                type={showNewPassword ? "text" : "password"}
+                error={touched.newPassword && Boolean(errors.newPassword)}
+                helperText={touched.newPassword && errors.newPassword}
+                InputProps={{
+                  className: "bg-white/50 backdrop-blur-md rounded-2xl transition-all duration-300 group-hover:bg-white focus-within:bg-white border-white/20",
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                      >
+                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "1rem",
+                    "& fieldset": { borderColor: "rgba(0,0,0,0.1)" },
+                    "&:hover fieldset": { borderColor: "var(--primary)" },
+                    "&.Mui-focused fieldset": { borderColor: "var(--primary)" },
+                  },
+                }}
+              />
+            </div>
 
             {/* Confirm Password */}
-            <Field
-              as={TextField}
-              label="Confirm Password"
-              variant="outlined"
-              fullWidth
-              name="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-              helperText={touched.confirmPassword && errors.confirmPassword}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                    >
-                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <div className="relative group">
+              <Field
+                as={TextField}
+                label="Confirm Password"
+                variant="outlined"
+                fullWidth
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                helperText={touched.confirmPassword && errors.confirmPassword}
+                InputProps={{
+                  className: "bg-white/50 backdrop-blur-md rounded-2xl transition-all duration-300 group-hover:bg-white focus-within:bg-white border-white/20",
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "1rem",
+                    "& fieldset": { borderColor: "rgba(0,0,0,0.1)" },
+                    "&:hover fieldset": { borderColor: "var(--primary)" },
+                    "&.Mui-focused fieldset": { borderColor: "var(--primary)" },
+                  },
+                }}
+              />
+            </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
               variant="contained"
-              color="primary"
-              className="!mt-6"
+              className="!mt-4 !bg-primary hover:!bg-primary/90 !text-white !font-bold !py-3 !rounded-2xl !shadow-lg !shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Changing..." : "Change Password"}

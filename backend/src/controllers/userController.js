@@ -516,30 +516,13 @@ exports.updateUserProfile = async (req, res) => {
     if (state !== undefined) user.state = state;
     if (city !== undefined) user.city = city;
 
-    // ✅ Handle Profile & Signature Image Uploads to Cloudinary
+    // ✅ Handle Profile & Signature Image Uploads Locally
     if (req.files) {
       if (req.files.profileImage) {
-        try {
-          const profileUpload = await cloudinary.uploader.upload(req.files.profileImage[0].path, {
-            folder: "hospital-management/users/profileImages",
-          });
-          user.profileImage = profileUpload.secure_url;
-        } catch (uploadError) {
-          console.error("❌ Cloudinary Profile Image Upload Error:", uploadError);
-          return res.status(500).json({ message: "Error uploading profile image" });
-        }
+        user.profileImage = "uploads/" + req.files.profileImage[0].filename;
       }
-
       if (req.files.signatureImage) {
-        try {
-          const signatureUpload = await cloudinary.uploader.upload(req.files.signatureImage[0].path, {
-            folder: "hospital-management/users/signatureImages",
-          });
-          user.signatureImage = signatureUpload.secure_url;
-        } catch (uploadError) {
-          console.error("❌ Cloudinary Signature Image Upload Error:", uploadError);
-          return res.status(500).json({ message: "Error uploading signature image" });
-        }
+        user.signatureImage = "uploads/" + req.files.signatureImage[0].filename;
       }
     }
 
@@ -586,11 +569,15 @@ exports.updateUserProfile = async (req, res) => {
 
     // ✅ Update Admin-Specific Fields (Hospital Reference for Admins)
     if (user.role === "admin" && adminhospital !== undefined) {
-      const hospitalData = await hospitalModel.findById(adminhospital);
-      if (!hospitalData) {
-        return res.status(404).json({ message: "Hospital not found" });
+      if (adminhospital === "") {
+        user.adminhospital = null;
+      } else {
+        const hospitalData = await hospitalModel.findById(adminhospital);
+        if (!hospitalData) {
+          return res.status(404).json({ message: "Hospital not found" });
+        }
+        user.adminhospital = hospitalData._id;
       }
-      user.adminhospital = hospitalData._id;
     }
 
     // ✅ Save the updated user profile

@@ -38,18 +38,31 @@ const ProfileScreen = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-100">
-      <div className="bg-gradient-to-b from-[#4C49ED] to-[#020067] p-16 text-white">
-        <Typography variant="h4" className="font-semibold">
-          Profile Setting
+    <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
+      {/* Decorative Blur Backgrounds */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow delay-1000"></div>
+
+      {/* Header section with modern gradient */}
+      <div className="relative z-10 w-full h-[250px] bg-gradient-to-r from-primary to-blue-600 rounded-b-[40px] shadow-lg flex items-center px-16">
+        <Typography variant="h3" className="font-extrabold text-white tracking-tight drop-shadow-md">
+          Profile Settings
         </Typography>
       </div>
-      <div className="flex mt-[-3rem] mx-8">
-        <ProfileSidebar
-          activeSection={activeSection}
-          setActiveSection={setActiveSection}
-        />
-        <div className="flex-1">{renderContent()}</div>
+
+      {/* Content Section overlapping the header */}
+      <div className="relative z-20 flex flex-col md:flex-row mt-[-80px] mx-6 md:mx-12 lg:mx-20 pb-12 gap-8">
+        <div className="w-full md:w-1/4 animate-fade-in">
+          <ProfileSidebar
+            activeSection={activeSection}
+            setActiveSection={setActiveSection}
+          />
+        </div>
+        <div className="w-full md:w-3/4 animate-slide-up">
+          <div className="glass h-full rounded-3xl shadow-sm border border-white/50 overflow-hidden">
+            {renderContent()}
+          </div>
+        </div>
       </div>
     </div>
   );

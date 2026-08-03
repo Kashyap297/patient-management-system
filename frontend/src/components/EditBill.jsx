@@ -113,66 +113,84 @@ const EditBill = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Edit Bill</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 border rounded-xl p-4 md:p-6">
-        
-        {[
-          { label: "Patient Name", name: "patientName", type: "text", disabled: true },
-          { label: "Phone Number", name: "phoneNumber", type: "text" },
-          { label: "Gender", name: "gender", type: "select", options: ["Male", "Female", "Other"] },
-          { label: "Age", name: "age", type: "number" },
-          { label: "Doctor Name", name: "doctorName", type: "text", disabled: true },
-          { label: "Disease Name", name: "diseaseName", type: "text" },
-          { label: "Description", name: "description", type: "text" },
-          { label: "Payment Type", name: "paymentType", type: "select", options: ["Online", "Cash", "Card", "Insurance"] },
-          { label: "Bill Date", name: "billDate", type: "date" },
-          { label: "Bill Time", name: "billTime", type: "time" },
-          { label: "Bill Number", name: "billNumber", type: "text", disabled: true },
-          { label: "Amount", name: "amount", type: "number" },
-          { label: "Tax (%)", name: "tax", type: "number" },
-          { label: "Discount", name: "discount", type: "number" },
-          { label: "Total Amount", name: "totalAmount", type: "text", disabled: true },
-          { label: "Address", name: "address", type: "text" },
-        ].map((field, index) => (
-          <div className="relative mb-4" key={index}>
-            {field.type === "select" ? (
-              <select
-                name={field.name}
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-                value={formData[field.name]}
-                onChange={handleInputChange}
-              >
-                <option value="">{`Select ${field.label}`}</option>
-                {field.options.map((option) => (
-                  <option value={option} key={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                type={field.type}
-                name={field.name}
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-                placeholder={field.label}
-                value={formData[field.name]}
-                onChange={handleInputChange}
-                disabled={field.disabled}
-              />
-            )}
-            <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500">
-              {field.label}
-            </label>
-          </div>
-        ))}
+    <div className="min-h-screen bg-background p-6 md:p-8 space-y-8 relative overflow-hidden">
+      {/* Decorative Blur Backgrounds */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow delay-1000"></div>
 
-        <div className="col-span-1 md:col-span-2 lg:col-span-4 flex justify-end">
-          <button type="submit" className="px-4 py-2 bg-[#0eabeb] text-white rounded-xl ">
-            Save
-          </button>
+      <div className="relative z-10 animate-slide-up max-w-6xl mx-auto">
+        <div className="glass p-8 md:p-10 rounded-3xl shadow-sm border border-white/50">
+          <h2 className="text-3xl font-extrabold text-secondary tracking-tight mb-8 border-b border-gray-200/50 pb-6">Edit Bill Details</h2>
+          
+          <form onSubmit={handleSubmit} className="bg-white/40 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/60 shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { label: "Patient Name", name: "patientName", type: "text", disabled: true },
+                { label: "Phone Number", name: "phoneNumber", type: "text" },
+                { label: "Gender", name: "gender", type: "select", options: ["Male", "Female", "Other"] },
+                { label: "Age", name: "age", type: "number" },
+                { label: "Doctor Name", name: "doctorName", type: "text", disabled: true },
+                { label: "Disease Name", name: "diseaseName", type: "text" },
+                { label: "Description", name: "description", type: "text" },
+                { label: "Payment Type", name: "paymentType", type: "select", options: ["Online", "Cash", "Card", "Insurance"] },
+                { label: "Bill Date", name: "billDate", type: "date" },
+                { label: "Bill Time", name: "billTime", type: "time" },
+                { label: "Bill Number", name: "billNumber", type: "text", disabled: true },
+                { label: "Amount", name: "amount", type: "number" },
+                { label: "Tax (%)", name: "tax", type: "number" },
+                { label: "Discount", name: "discount", type: "number" },
+                { label: "Total Amount", name: "totalAmount", type: "text", disabled: true },
+                { label: "Address", name: "address", type: "text", fullWidth: true },
+              ].map((field, index) => (
+                <div className={`relative group ${field.fullWidth ? 'lg:col-span-4' : ''}`} key={index}>
+                  {field.type === "select" ? (
+                    <>
+                      <select
+                        name={field.name}
+                        className="peer w-full px-4 py-3.5 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white transition-all duration-300 appearance-none text-gray-700"
+                        value={formData[field.name]}
+                        onChange={handleInputChange}
+                        disabled={field.disabled}
+                      >
+                        <option value="">{`Select ${field.label}`}</option>
+                        {field.options.map((option) => (
+                          <option value={option} key={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400 group-hover:text-primary transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      </div>
+                    </>
+                  ) : (
+                    <input
+                      type={field.type}
+                      name={field.name}
+                      className={`peer w-full px-4 py-3.5 bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white transition-all duration-300 placeholder-transparent ${field.disabled ? 'opacity-70 cursor-not-allowed bg-gray-50/50' : ''}`}
+                      placeholder={field.label}
+                      value={formData[field.name]}
+                      onChange={handleInputChange}
+                      disabled={field.disabled}
+                    />
+                  )}
+                  <label className={`absolute left-4 top-3.5 text-sm transition-all duration-300 pointer-events-none
+                    ${field.type === 'select' ? '-top-2.5 text-xs text-primary bg-white/80 backdrop-blur-sm px-1 rounded' : 'text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white/80 peer-focus:backdrop-blur-sm peer-focus:px-1 peer-focus:rounded peer-[&:not(:placeholder-shown)]:-top-2.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-gray-500 peer-[&:not(:placeholder-shown)]:bg-white/80 peer-[&:not(:placeholder-shown)]:backdrop-blur-sm peer-[&:not(:placeholder-shown)]:px-1 peer-[&:not(:placeholder-shown)]:rounded'}
+                  `}>
+                    {field.label}
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex justify-end">
+              <button type="submit" className="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 text-lg">
+                Save Changes
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

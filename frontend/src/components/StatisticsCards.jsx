@@ -44,24 +44,27 @@ const StatisticsCards = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 rounded-2xl">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 rounded-2xl relative z-10">
       <InfoCard
-        icon={<Group className="text-blue-600" />}
+        icon={<Group className="text-primary text-3xl" />}
         label="Total Patients"
         value={loading ? <Skeleton width={40} height={25} /> : counts.patients}
-        iconBgColor="bg-blue-100"
+        iconBgColor="bg-primary/10 text-primary"
+        loading={loading}
       />
       <InfoCard
-        icon={<LocalHospital className="text-purple-600" />}
+        icon={<LocalHospital className="text-purple-600 text-3xl" />}
         label="Total Doctors"
         value={loading ? <Skeleton width={40} height={25} /> : counts.doctors}
-        iconBgColor="bg-purple-100"
+        iconBgColor="bg-purple-500/10 text-purple-600"
+        loading={loading}
       />
       <InfoCard
-        icon={<EventAvailable className="text-green-600" />}
+        icon={<EventAvailable className="text-green-600 text-3xl" />}
         label="Today's Appointments"
         value={loading ? <Skeleton width={40} height={25} /> : counts.appointments}
-        iconBgColor="bg-green-100"
+        iconBgColor="bg-green-500/10 text-green-600"
+        loading={loading}
       />
     </div>
   );

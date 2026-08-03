@@ -126,462 +126,190 @@ const PatientRegister = () => {
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex bg-background font-sans overflow-hidden">
       {/* Left Side - Form Section */}
-      <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-10">
-        <div className="w-full max-w-xl bg-white p-10 rounded-xl shadow-lg">
-          <h2 className="text-3xl font-bold mb-6">Registration</h2>
-          <form onSubmit={handleSubmit}>
+      <div className="w-full lg:w-1/2 flex justify-center items-center p-8 relative animate-fade-in z-10 custom-scroll overflow-y-auto">
+        
+        {/* Decorative blur backgrounds */}
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
+
+        <div className="w-full max-w-xl glass p-10 rounded-3xl relative z-10 animate-slide-up mt-10 mb-10">
+          <div className="mb-8">
+            <h2 className="text-4xl font-extrabold mb-2 text-secondary">Patient Registration</h2>
+            <p className="text-gray-500 font-medium">Join us to manage your health seamlessly.</p>
+          </div>
+          {errors.apiError && <p className="text-red-500 text-sm font-semibold mb-4 p-3 bg-red-50 rounded-lg">{errors.apiError}</p>}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* First Name and Last Name */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="relative mb-4">
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                  placeholder="Enter First Name"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="firstName"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200  peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  First Name<span className="text-red-500">*</span>
-                </label>
-                {errors.firstName && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.firstName}
-                  </p>
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="relative group">
+                <input type="text" id="firstName" name="firstName" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.firstName ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="First Name" value={formData.firstName} onChange={handleChange} />
+                <label htmlFor="firstName" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.firstName ? "text-red-500" : "text-gray-500"}`}>First Name<span className="text-red-500">*</span></label>
+                {errors.firstName && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.firstName}</p>}
               </div>
-              <div className="relative mb-4">
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                  placeholder="Enter Last Name"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="lastName"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200  peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Last Name<span className="text-red-500">*</span>
-                </label>
-                {errors.lastName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
-                )}
+              <div className="relative group">
+                <input type="text" id="lastName" name="lastName" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.lastName ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Last Name" value={formData.lastName} onChange={handleChange} />
+                <label htmlFor="lastName" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.lastName ? "text-red-500" : "text-gray-500"}`}>Last Name<span className="text-red-500">*</span></label>
+                {errors.lastName && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.lastName}</p>}
               </div>
             </div>
 
             {/* Email and Phone Number */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="relative mb-4">
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                  placeholder="Enter Email Address"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="email"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200  peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Email Address<span className="text-red-500">*</span>
-                </label>
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="relative group">
+                <input type="email" id="email" name="email" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.email ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Email Address" value={formData.email} onChange={handleChange} />
+                <label htmlFor="email" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.email ? "text-red-500" : "text-gray-500"}`}>Email Address<span className="text-red-500">*</span></label>
+                {errors.email && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.email}</p>}
               </div>
-              <div className="relative mb-4">
-                <input
-                  type="text"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                  placeholder="Enter Phone Number"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="phoneNumber"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200  peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Phone Number<span className="text-red-500">*</span>
-                </label>
-                {errors.phoneNumber && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.phoneNumber}
-                  </p>
-                )}
+              <div className="relative group">
+                <input type="text" id="phoneNumber" name="phoneNumber" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.phoneNumber ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Phone Number" value={formData.phoneNumber} onChange={handleChange} />
+                <label htmlFor="phoneNumber" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.phoneNumber ? "text-red-500" : "text-gray-500"}`}>Phone Number<span className="text-red-500">*</span></label>
+                {errors.phoneNumber && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.phoneNumber}</p>}
               </div>
             </div>
 
             {/* Age, Height, Weight */}
-            <div className="grid grid-cols-3 gap-4 ">
-              <div className="relative mb-4">
-                <input
-                  type="number"
-                  id="age"
-                  name="age"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                  placeholder="Enter Age"
-                  value={formData.age}
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="age"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Age<span className="text-red-500">*</span>
-                </label>
-                {errors.age && (
-                  <p className="text-red-500 text-sm mt-1">{errors.age}</p>
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="relative group">
+                <input type="number" id="age" name="age" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.age ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Age" value={formData.age} onChange={handleChange} />
+                <label htmlFor="age" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.age ? "text-red-500" : "text-gray-500"}`}>Age<span className="text-red-500">*</span></label>
+                {errors.age && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.age}</p>}
               </div>
-              <div className="relative mb-4">
-                <input
-                  type="number"
-                  id="height"
-                  name="height"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                  placeholder="Enter Height"
-                  value={formData.height}
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="height"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Height (cm)<span className="text-red-500">*</span>
-                </label>
-                {errors.height && (
-                  <p className="text-red-500 text-sm mt-1">{errors.height}</p>
-                )}
+              <div className="relative group">
+                <input type="number" id="height" name="height" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.height ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Height (cm)" value={formData.height} onChange={handleChange} />
+                <label htmlFor="height" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.height ? "text-red-500" : "text-gray-500"}`}>Height (cm)<span className="text-red-500">*</span></label>
+                {errors.height && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.height}</p>}
               </div>
-              <div className="relative mb-4">
-                <input
-                  type="number"
-                  id="weight"
-                  name="weight"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                  placeholder="Enter Weight"
-                  value={formData.weight}
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="weight"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Weight (kg)<span className="text-red-500">*</span>
-                </label>
-                {errors.weight && (
-                  <p className="text-red-500 text-sm mt-1">{errors.weight}</p>
-                )}
+              <div className="relative group">
+                <input type="number" id="weight" name="weight" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.weight ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Weight (kg)" value={formData.weight} onChange={handleChange} />
+                <label htmlFor="weight" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.weight ? "text-red-500" : "text-gray-500"}`}>Weight (kg)<span className="text-red-500">*</span></label>
+                {errors.weight && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.weight}</p>}
               </div>
             </div>
 
             {/* Gender, Blood Group, and Date of Birth */}
-            <div className="grid grid-cols-3 gap-4 ">
-              <div className="relative mb-4">
-                <select
-                  id="gender"
-                  name="gender"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
-                  value={formData.gender}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Gender</option>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="relative group">
+                <select id="gender" name="gender" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg appearance-none ${errors.gender ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} value={formData.gender} onChange={handleChange}>
+                  <option value="" disabled hidden>Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
-                <label
-                  htmlFor="gender"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Gender<span className="text-red-500">*</span>
-                </label>
-                {errors.gender && (
-                  <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
-                )}
+                <label htmlFor="gender" className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary">Gender<span className="text-red-500">*</span></label>
+                {errors.gender && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.gender}</p>}
               </div>
-              <div className="relative mb-4">
-                <select
-                  id="bloodGroup"
-                  name="bloodGroup"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
-                  value={formData.bloodGroup}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Group</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
+              <div className="relative group">
+                <select id="bloodGroup" name="bloodGroup" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg appearance-none ${errors.bloodGroup ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} value={formData.bloodGroup} onChange={handleChange}>
+                  <option value="" disabled hidden>Select Group</option>
+                  <option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option>
+                  <option value="AB+">AB+</option><option value="AB-">AB-</option><option value="O+">O+</option><option value="O-">O-</option>
                 </select>
-                <label
-                  htmlFor="bloodGroup"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Blood Group<span className="text-red-500">*</span>
-                </label>
-                {errors.bloodGroup && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.bloodGroup}
-                  </p>
-                )}
+                <label htmlFor="bloodGroup" className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary">Blood Group<span className="text-red-500">*</span></label>
+                {errors.bloodGroup && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.bloodGroup}</p>}
               </div>
-              <div className="relative mb-4">
-                <input
-                  type="date"
-                  id="dateOfBirth"
-                  name="dateOfBirth"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-0`}
-                  placeholder="Select Date"
-                  value={formData.dateOfBirth}
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="dateOfBirth"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Date of Birth<span className="text-red-500">*</span>
-                </label>
-                {errors.dateOfBirth && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.dateOfBirth}
-                  </p>
-                )}
+              <div className="relative group">
+                <input type="date" id="dateOfBirth" name="dateOfBirth" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg ${errors.dateOfBirth ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} value={formData.dateOfBirth} onChange={handleChange} />
+                <label htmlFor="dateOfBirth" className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary">Date of Birth<span className="text-red-500">*</span></label>
+                {errors.dateOfBirth && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.dateOfBirth}</p>}
               </div>
             </div>
 
-            {/* Address Section */}
-            <div className="grid relative gap-4 mb-4">
-              <div>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                  placeholder="Enter Address"
-                  value={formData.address}
-                  onChange={handleChange}
-                />
-                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3">
-                  Address
-                </label>
-                {errors.address && (
-                  <p className="text-red-500 text-sm mt-1">{errors.address}</p>
-                )}
-              </div>
+            {/* Address */}
+            <div className="relative group">
+              <input type="text" id="address" name="address" className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.address ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Address" value={formData.address} onChange={handleChange} />
+              <label htmlFor="address" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.address ? "text-red-500" : "text-gray-500"}`}>Address<span className="text-red-500">*</span></label>
+              {errors.address && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.address}</p>}
             </div>
 
             {/* Country, State, City */}
-            <div className="grid grid-cols-3 gap-4 ">
-              {/* Country */}
-              <div className="relative mb-4">
-                <select
-                  id="country"
-                  name="country"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
-                  value={formData.country}
-                  onChange={handleCountryChange}
-                >
-                  <option value="">Select Country</option>
-                  {countryData.map((country) => (
-                    <option key={country.id} value={country.name}>
-                      {country.name}
-                    </option>
-                  ))}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="relative group">
+                <select id="country" name="country" className={`peer custom-scroll w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg appearance-none ${errors.country ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} value={formData.country} onChange={handleCountryChange}>
+                  <option value="" disabled hidden>Select Country</option>
+                  {countryData.map((country) => ( <option key={country.id} value={country.name}>{country.name}</option> ))}
                 </select>
-                <label
-                  htmlFor="country"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  Country<span className="text-red-500">*</span>
-                </label>
-                {errors.country && (
-                  <p className="text-red-500 text-sm mt-1">{errors.country}</p>
-                )}
+                <label htmlFor="country" className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary">Country<span className="text-red-500">*</span></label>
+                {errors.country && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.country}</p>}
               </div>
-
-              {/* State */}
-              <div className="relative mb-4">
-                <select
-                  id="state"
-                  name="state"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
-                  value={formData.state}
-                  onChange={handleStateChange}
-                >
-                  <option value="">Select State</option>
-                  {filteredStates.map((state) => (
-                    <option key={state.id} value={state.name}>
-                      {state.name}
-                    </option>
-                  ))}
+              <div className="relative group">
+                <select id="state" name="state" className={`peer custom-scroll w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg appearance-none ${errors.state ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} value={formData.state} onChange={handleStateChange}>
+                  <option value="" disabled hidden>Select State</option>
+                  {filteredStates.map((state) => ( <option key={state.id} value={state.name}>{state.name}</option> ))}
                 </select>
-                <label
-                  htmlFor="state"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  State<span className="text-red-500">*</span>
-                </label>
-                {errors.state && (
-                  <p className="text-red-500 text-sm mt-1">{errors.state}</p>
-                )}
+                <label htmlFor="state" className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary">State<span className="text-red-500">*</span></label>
+                {errors.state && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.state}</p>}
               </div>
-
-              {/* City */}
-              <div className="relative mb-4">
-                <select
-                  id="city"
-                  name="city"
-                  className={`peer w-full px-4 py-2 border border-gray-300 text-sm font-normal text-gray-500 rounded-xl focus:outline-none focus:ring-0`}
-                  value={formData.city}
-                  onChange={handleChange}
-                >
-                  <option value="">Select City</option>
-                  {filteredCities.map((city) => (
-                    <option key={city.id} value={city.name}>
-                      {city.name}
-                    </option>
-                  ))}
+              <div className="relative group">
+                <select id="city" name="city" className={`peer custom-scroll w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg appearance-none ${errors.city ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} value={formData.city} onChange={handleChange}>
+                  <option value="" disabled hidden>Select City</option>
+                  {filteredCities.map((city) => ( <option key={city.id} value={city.name}>{city.name}</option> ))}
                 </select>
-                <label
-                  htmlFor="city"
-                  className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-                >
-                  City<span className="text-red-500">*</span>
-                </label>
-                {errors.city && (
-                  <p className="text-red-500 text-sm mt-1">{errors.city}</p>
-                )}
+                <label htmlFor="city" className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary">City<span className="text-red-500">*</span></label>
+                {errors.city && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.city}</p>}
               </div>
             </div>
 
             {/* Password and Confirm Password */}
-            <div className="relative mb-4">
-              <input
-                type={showPassword ? "password" : "text"}
-                id="password"
-                name="password"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                placeholder="Enter Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <label
-                htmlFor="password"
-                className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-              >
-                Password<span className="text-red-500">*</span>
-              </label>
-              <div
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? (
-                  <AiOutlineEyeInvisible className="text-gray-500" />
-                ) : (
-                  <AiOutlineEye className="text-gray-500" />
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="relative group">
+                <input type={showPassword ? "text" : "password"} id="password" name="password" className={`peer w-full pl-4 pr-12 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.password ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Password" value={formData.password} onChange={handleChange} />
+                <label htmlFor="password" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.password ? "text-red-500" : "text-gray-500"}`}>Password<span className="text-red-500">*</span></label>
+                <div className="absolute inset-y-0 right-4 flex items-center cursor-pointer text-gray-400 hover:text-primary transition-colors" onClick={togglePasswordVisibility}>
+                  {showPassword ? <AiOutlineEyeInvisible size={22} /> : <AiOutlineEye size={22} />}
+                </div>
+                {errors.password && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.password}</p>}
               </div>
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-            </div>
 
-            <div className="relative mb-4">
-              <input
-                type={showConfirmPassword ? "password" : "text"}
-                id="confirmPassword"
-                name="confirmPassword"
-                className={`peer w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-0`}
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-              <label
-                htmlFor="confirmPassword"
-                className="absolute left-3 -top-2.5 px-1 bg-white text-sm font-medium text-gray-500 transition-all duration-200 peer-focus:-top-2.5 peer-focus:left-3"
-              >
-                Confirm Password<span className="text-red-500">*</span>
-              </label>
-              <div
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-                onClick={toggleConfirmPasswordVisibility}
-              >
-                {showConfirmPassword ? (
-                  <AiOutlineEyeInvisible className="text-gray-500" />
-                ) : (
-                  <AiOutlineEye className="text-gray-500" />
-                )}
+              <div className="relative group">
+                <input type={showConfirmPassword ? "text" : "password"} id="confirmPassword" name="confirmPassword" className={`peer w-full pl-4 pr-12 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 placeholder-transparent focus:bg-white focus:shadow-lg ${errors.confirmPassword ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"}`} placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} />
+                <label htmlFor="confirmPassword" className={`absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:bg-white peer-focus:text-primary ${errors.confirmPassword ? "text-red-500" : "text-gray-500"}`}>Confirm Password<span className="text-red-500">*</span></label>
+                <div className="absolute inset-y-0 right-4 flex items-center cursor-pointer text-gray-400 hover:text-primary transition-colors" onClick={toggleConfirmPasswordVisibility}>
+                  {showConfirmPassword ? <AiOutlineEyeInvisible size={22} /> : <AiOutlineEye size={22} />}
+                </div>
+                {errors.confirmPassword && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.confirmPassword}</p>}
               </div>
-              {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
             </div>
 
             {/* Agree to Terms */}
-            <div className="flex items-center mb-4">
-              <input
-                type="checkbox"
-                name="agreeToTerms"
-                className="mr-2"
-                checked={formData.agreeToTerms}
-                onChange={handleChange}
-              />
-              <label className="text-sm">
-                I agree to the{" "}
-                <a href="#" className="text-blue-500 hover:underline">
-                  T&C
-                </a>{" "}
-                and{" "}
-                <a href="#" className="text-blue-500 hover:underline">
-                  Privacy Policies
-                </a>
+            <div className="flex items-center pt-2">
+              <label className="flex items-center space-x-3 cursor-pointer group">
+                <input type="checkbox" name="agreeToTerms" className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer transition-colors" checked={formData.agreeToTerms} onChange={handleChange} />
+                <span className="text-sm font-medium text-gray-600">
+                  I agree to all the{" "}
+                  <a href="#" className="text-primary hover:underline font-semibold">T&C</a>{" "}
+                  and{" "}
+                  <a href="#" className="text-primary hover:underline font-semibold">Privacy Policies</a>.
+                </span>
               </label>
-              {errors.agreeToTerms && (
-                <p className="text-red-500 text-sm mb-4">
-                  {errors.agreeToTerms}
-                </p>
-              )}
             </div>
-            {errors.apiError && (
-              <p className="text-red-500 text-sm mt-4">{errors.apiError}</p>
-            )}
-            <button
-              type="submit"
-              className="w-full py-2  bg-[#f6f8fb] text-[#4f4f4f] rounded-xl hover:bg-[#0eabeb] hover:text-white transition duration-200"
-            >
-              Register
+            {errors.agreeToTerms && <p className="text-red-500 text-xs font-semibold ml-8">{errors.agreeToTerms}</p>}
+
+            <button type="submit" className="w-full mt-4 py-4 bg-gradient-to-r from-primary to-blue-600 text-white font-bold text-lg rounded-2xl hover:shadow-[0_8px_20px_rgba(14,171,235,0.4)] hover:-translate-y-1 transition-all duration-300">
+              Register Patient
             </button>
           </form>
-          <p className="text-center mt-4 text-sm">
-            Already have an account? {" "}
-            <a href="/" className="text-blue-500 hover:underline">
-              Login
-            </a>
-          </p>
-          <p className="text-center mt-4 text-sm">
-            Admin Registration? {" "}
-            <a href="/admin-registration" className="text-blue-500 hover:underline">
-              Admin-Registration
-            </a>
-          </p>
+
+          <div className="flex justify-between mt-8 text-sm font-medium text-gray-500 px-2">
+            <p>
+              Already have an account? {" "}
+              <a href="/" className="text-primary font-bold hover:underline hover:text-blue-600 transition-colors">
+                Login
+              </a>
+            </p>
+            <p>
+              Are you an Admin? {" "}
+              <a href="/admin-registration" className="text-primary font-bold hover:underline hover:text-blue-600 transition-colors">
+                Admin Register
+              </a>
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="hidden md:flex md:w-1/2">
+      {/* Right Side Panel */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-secondary overflow-hidden">
         <SidePanel />
       </div>
     </div>

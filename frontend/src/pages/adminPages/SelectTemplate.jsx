@@ -39,58 +39,77 @@ const SelectTemplate = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-white rounded-xl shadow-lg min-h-screen">
-      <h1 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-start">
-        Select Invoice Theme
-      </h1>
+    <div className="min-h-screen bg-background p-6 md:p-8 space-y-8 relative overflow-hidden">
+      {/* Decorative Blur Backgrounds */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow delay-1000"></div>
 
-      {/* Template Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center">
-        {templateData.map((template) => (
-          <div
-            key={template.id}
-            className={`p-2 md:p-4 border-2 cursor-pointer rounded-xl ${
-              selectedTemplate && selectedTemplate.id === template.id
-                ? "border-blue-500"
-                : "border-gray-200"
-            } shadow-md transition-all duration-300`}
-            onClick={() => handleSelectTemplate(template)}
-          >
-            <img
-              src={template.image}
-              alt={template.name}
-              className="w-full h-64 md:h-80 lg:h-96 object-cover rounded"
-            />
-            <h2 className="text-center text-base md:text-lg font-semibold mt-2 md:mt-4">
-              {template.name}
-            </h2>
+      <div className="relative z-10 animate-slide-up">
+        <div className="glass p-8 md:p-10 rounded-3xl shadow-sm border border-white/50">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 border-b border-gray-200/50 pb-6">
+            <h1 className="text-3xl font-extrabold text-secondary tracking-tight">
+              Select Invoice Theme
+            </h1>
+            {selectedTemplate && (
+              <button
+                className="px-6 py-2.5 bg-primary text-white font-semibold rounded-xl shadow-md hover:bg-primary/90 transition-colors duration-300 animate-fade-in"
+                onClick={handleConfirmSelection}
+              >
+                Select {selectedTemplate.name}
+              </button>
+            )}
           </div>
-        ))}
+
+          {/* Template Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center mb-12">
+            {templateData.map((template) => (
+              <div
+                key={template.id}
+                className={`w-full group cursor-pointer transition-all duration-300 transform hover:-translate-y-2 ${
+                  selectedTemplate && selectedTemplate.id === template.id
+                    ? "ring-4 ring-primary ring-opacity-50 scale-[1.02]"
+                    : "hover:shadow-xl"
+                }`}
+                onClick={() => handleSelectTemplate(template)}
+              >
+                <div className="bg-white/40 backdrop-blur-md p-4 rounded-2xl border border-white/60 shadow-sm h-full flex flex-col">
+                  <div className="overflow-hidden rounded-xl border border-gray-100 mb-4 bg-white/50 flex-grow">
+                    <img
+                      src={template.image}
+                      alt={template.name}
+                      className="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <h2 className="text-center text-lg font-bold text-secondary">
+                    {template.name}
+                  </h2>
+                  <div className="flex justify-center mt-3">
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                       selectedTemplate && selectedTemplate.id === template.id ? 'bg-primary border-primary' : 'border-gray-300'
+                    }`}>
+                      {selectedTemplate && selectedTemplate.id === template.id && (
+                        <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Render the selected invoice template component */}
+          {selectedTemplate && (
+            <div className="mt-8 animate-fade-in border-t border-gray-200/50 pt-10">
+              <h2 className="text-2xl font-bold text-center text-secondary mb-8">
+                Preview: {selectedTemplate.name}
+              </h2>
+              <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-200/50">
+                {selectedTemplate.component}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Show "Select Template" button if a template is selected */}
-      {selectedTemplate && (
-        <div className="flex justify-center mt-6 md:mt-8">
-          <button
-            className="bg-blue-500 text-white py-2 px-4 md:px-6 rounded-xl text-sm md:text-lg"
-            onClick={handleConfirmSelection}
-          >
-            Select {selectedTemplate.name}
-          </button>
-        </div>
-      )}
-
-      {/* Render the selected invoice template component */}
-      {selectedTemplate && (
-        <div className="mt-8 md:mt-12">
-          <h2 className="text-lg md:text-xl font-semibold text-center mb-4">
-            Preview of {selectedTemplate.name}
-          </h2>
-          <div className="rounded-xl">
-            {selectedTemplate.component}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
