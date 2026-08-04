@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import { Group } from "@mui/icons-material";
 import Skeleton from "react-loading-skeleton";
 import api from "../../api/api";
+import DepartmentDetailsModal from "../../components/modals/DepartmentDetailsModal";
 
 const PatientCountDepartment = () => {
   const [departmentPatientCounts, setDepartmentPatientCounts] = useState([]);
   const [loading, setLoading] = useState(true); 
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchDoctorAndAppointmentData = async () => {
@@ -15,6 +18,9 @@ const PatientCountDepartment = () => {
 
         const appointmentResponse = await api.get("/appointments");
         const appointments = appointmentResponse.data.data;
+
+        const patientResponse = await api.get("/users/patients");
+        const patients = patientResponse.data;
 
         const departmentPatientMap = {};
 
@@ -35,10 +41,15 @@ const PatientCountDepartment = () => {
           }
         });
 
-        const departmentCounts = Object.keys(departmentPatientMap).map((specialty) => ({
-          name: specialty,
-          count: departmentPatientMap[specialty].size,
-        }));
+        const departmentCounts = Object.keys(departmentPatientMap).map((specialty) => {
+          const patientIds = Array.from(departmentPatientMap[specialty]);
+          const specialtyPatients = patients.filter((p) => patientIds.includes(p._id));
+          return {
+            name: specialty,
+            count: patientIds.length,
+            patients: specialtyPatients,
+          };
+        });
 
         setDepartmentPatientCounts(departmentCounts);
       } catch (error) {
@@ -49,6 +60,18 @@ const PatientCountDepartment = () => {
 
     fetchDoctorAndAppointmentData();
   }, []);
+
+  const handleRowClick = (dept) => {
+    setSelectedDepartment(dept);
+    setIsModalOpen(true);
+  };
+
+  const patientColumns = [
+    { header: "Name", render: (p) => `${p.firstName} ${p.lastName}` },
+    { header: "Age", key: "age" },
+    { header: "Gender", key: "gender" },
+    { header: "Phone", key: "phoneNumber" }
+  ];
 
   return (
     <div className="glass p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group h-[400px] flex flex-col">
@@ -78,7 +101,11 @@ const PatientCountDepartment = () => {
                   </tr>
                 ))
               : departmentPatientCounts.map((dept, index) => (
-                  <tr key={index} className="bg-gray-50/50 hover:bg-white transition-colors duration-200 rounded-xl shadow-sm border border-transparent hover:border-gray-100">
+                  <tr 
+                    key={index} 
+                    className="bg-gray-50/50 hover:bg-white transition-colors duration-200 rounded-xl shadow-sm border border-transparent hover:border-gray-100 cursor-pointer"
+                    onClick={() => handleRowClick(dept)}
+                  >
                     <td className="p-4 text-left font-semibold text-gray-700 rounded-l-xl">{dept.name}</td>
                     <td className="p-4 text-right flex justify-end items-center gap-3 rounded-r-xl">
                       <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
@@ -91,6 +118,16 @@ const PatientCountDepartment = () => {
           </tbody>
         </table>
       </div>
+
+      {selectedDepartment && (
+        <DepartmentDetailsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title={`Patients in ${selectedDepartment.name}`}
+          data={selectedDepartment.patients}
+          columns={patientColumns}
+        />
+      )}
     </div>
   );
 };

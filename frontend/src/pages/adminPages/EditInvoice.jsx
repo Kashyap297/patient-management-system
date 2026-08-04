@@ -8,6 +8,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import { FaChevronLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import selectImage from "../../assets/images/select-image.png"; // Placeholder image path
 import AddFieldModal from "../../components/modals/AddFieldModal";
@@ -82,7 +83,16 @@ const EditInvoice = () => {
       <div className="relative z-10 animate-slide-up">
         <div className="glass p-8 md:p-10 rounded-3xl shadow-sm border border-white/50">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-            <h1 className="text-3xl font-extrabold text-secondary tracking-tight">Edit Invoice Design</h1>
+            <div className="flex items-center gap-4">
+              <button 
+                type="button"
+                onClick={() => navigate(-1)}
+                className="p-2.5 rounded-full bg-white shadow-sm hover:bg-gray-50 text-gray-600 transition-colors border border-gray-100 flex items-center justify-center"
+              >
+                <FaChevronLeft size={16} />
+              </button>
+              <h1 className="text-3xl font-extrabold text-secondary tracking-tight">Edit Invoice Design</h1>
+            </div>
             <button
               type="button"
               onClick={() => navigate("/select-template")}

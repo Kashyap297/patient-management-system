@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { Group } from '@mui/icons-material';
 import Skeleton from 'react-loading-skeleton';
 import api from '../../api/api';
+import DepartmentDetailsModal from '../../components/modals/DepartmentDetailsModal';
 
 const DoctorCountDepartment = () => {
   const [doctorSpecialtyCount, setDoctorSpecialtyCount] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -16,15 +19,16 @@ const DoctorCountDepartment = () => {
         const specialtyCountMap = doctors.reduce((acc, doctor) => {
           const specialty = doctor.doctorDetails?.specialtyType || 'General';
           if (!acc[specialty]) {
-            acc[specialty] = 0;
+            acc[specialty] = [];
           }
-          acc[specialty] += 1;
+          acc[specialty].push(doctor);
           return acc;
         }, {});
 
         const specialtyCountArray = Object.keys(specialtyCountMap).map((specialty) => ({
           name: specialty,
-          count: specialtyCountMap[specialty],
+          count: specialtyCountMap[specialty].length,
+          doctors: specialtyCountMap[specialty]
         }));
 
         setDoctorSpecialtyCount(specialtyCountArray);
@@ -36,6 +40,18 @@ const DoctorCountDepartment = () => {
 
     fetchDoctors();
   }, []);
+
+  const handleRowClick = (dept) => {
+    setSelectedDepartment(dept);
+    setIsModalOpen(true);
+  };
+
+  const doctorColumns = [
+    { header: "Name", render: (d) => `${d.firstName} ${d.lastName}` },
+    { header: "Qualification", render: (d) => d.doctorDetails?.qualification || "-" },
+    { header: "Gender", key: "gender" },
+    { header: "Phone", key: "phoneNumber" }
+  ];
 
   return (
     <div className="glass p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group h-[400px] flex flex-col">
@@ -65,7 +81,11 @@ const DoctorCountDepartment = () => {
                   </tr>
                 ))
               : doctorSpecialtyCount.map((item, index) => (
-                  <tr key={index} className="bg-gray-50/50 hover:bg-white transition-colors duration-200 rounded-xl shadow-sm border border-transparent hover:border-gray-100">
+                  <tr 
+                    key={index} 
+                    className="bg-gray-50/50 hover:bg-white transition-colors duration-200 rounded-xl shadow-sm border border-transparent hover:border-gray-100 cursor-pointer"
+                    onClick={() => handleRowClick(item)}
+                  >
                     <td className="p-4 text-left font-semibold text-gray-700 rounded-l-xl">{item.name}</td>
                     <td className="p-4 text-right flex justify-end items-center gap-3 rounded-r-xl">
                       <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
@@ -78,6 +98,16 @@ const DoctorCountDepartment = () => {
           </tbody>
         </table>
       </div>
+
+      {selectedDepartment && (
+        <DepartmentDetailsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title={`Doctors in ${selectedDepartment.name}`}
+          data={selectedDepartment.doctors}
+          columns={doctorColumns}
+        />
+      )}
     </div>
   );
 };

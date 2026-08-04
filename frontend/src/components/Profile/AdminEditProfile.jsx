@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FiCamera } from "react-icons/fi";
+import { FaChevronLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import userImage from "../../assets/images/user.png";
@@ -108,22 +109,26 @@ const AdminEditProfile = () => {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-80px)] p-6 md:p-8 space-y-8 bg-background overflow-hidden flex flex-col items-center">
-      {/* Decorative Blur Backgrounds */}
-      <div className="absolute top-[-5%] right-[-5%] w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
-      <div className="absolute bottom-[-5%] left-[-5%] w-96 h-96 bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow delay-1000"></div>
+    <div className="relative min-h-[calc(100vh-80px)] p-6 md:p-8 space-y-8 bg-[#fafbfc] overflow-hidden flex flex-col items-center">
 
       <div className="w-full max-w-7xl mx-auto z-10 animate-slide-up">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6 flex items-center gap-4">
+          <button 
+            type="button"
+            onClick={() => navigate(-1)}
+            className="p-2.5 rounded-full bg-white shadow-sm hover:bg-gray-50 text-gray-600 transition-colors border border-gray-100 flex items-center justify-center"
+          >
+            <FaChevronLeft size={16} />
+          </button>
           <ProfileHeader title="Profile Settings" />
         </div>
 
         {/* Main Container */}
-        <div className="flex flex-col md:flex-row w-full bg-white/80 backdrop-blur-xl shadow-xl rounded-3xl overflow-hidden border border-white/50 z-10 relative">
+        <div className="flex flex-col md:flex-row w-full bg-white shadow-sm rounded-3xl overflow-hidden border border-gray-100 z-10 relative">
           
           {/* Profile Image Section */}
-          <div className="w-full md:w-[320px] bg-gradient-to-b from-primary/5 to-transparent p-8 border-b md:border-b-0 md:border-r border-gray-100/80 flex flex-col items-center justify-center shrink-0">
+          <div className="w-full md:w-[320px] bg-white p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col items-center justify-center shrink-0">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-500 rounded-full opacity-30 group-hover:opacity-100 transition duration-300 blur"></div>
               <img
@@ -141,7 +146,7 @@ const AdminEditProfile = () => {
               onClick={() => fileInputRef.current.click()}
               className="mt-6 flex items-center space-x-2 bg-white text-gray-700 px-6 py-3 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-primary/30 transition-all duration-300 group font-bold"
             >
-              <FiCamera className="text-primary group-hover:scale-110 transition-transform" />
+              <FiCamera className="text-[#10b981] group-hover:scale-110 transition-transform" />
               <span>Change Profile</span>
             </button>
             <input
@@ -155,7 +160,7 @@ const AdminEditProfile = () => {
 
           {/* Edit Form Area */}
           <div className="w-full flex-1 p-6 md:p-10 relative">
-            <h3 className="text-2xl font-extrabold text-secondary tracking-tight mb-8">Edit Profile</h3>
+            <h3 className="text-2xl font-extrabold text-gray-800 tracking-tight mb-8">Edit Profile</h3>
             
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* First Name */}
@@ -165,10 +170,10 @@ const AdminEditProfile = () => {
                   name="firstName"
                   value={formData.firstName || ""}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
                   placeholder="First Name"
                 />
-                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-[#10b981] peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
                   First Name <span className="text-red-500">*</span>
                 </label>
               </div>
@@ -180,10 +185,10 @@ const AdminEditProfile = () => {
                   name="lastName"
                   value={formData.lastName || ""}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
                   placeholder="Last Name"
                 />
-                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-[#10b981] peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
                   Last Name <span className="text-red-500">*</span>
                 </label>
               </div>
@@ -195,10 +200,10 @@ const AdminEditProfile = () => {
                   name="email"
                   value={formData.email || ""}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
                   placeholder="Email Address"
                 />
-                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-[#10b981] peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
                   Email Address <span className="text-red-500">*</span>
                 </label>
               </div>
@@ -210,10 +215,10 @@ const AdminEditProfile = () => {
                   name="phoneNumber"
                   value={formData.phoneNumber || ""}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
                   placeholder="Phone Number"
                 />
-                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-[#10b981] peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
                   Phone Number <span className="text-red-500">*</span>
                 </label>
               </div>
@@ -224,7 +229,7 @@ const AdminEditProfile = () => {
                   name="adminhospital"
                   value={formData.adminhospital}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 appearance-none"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] outline-none transition-all duration-300 font-medium text-gray-700 appearance-none"
                 >
                   <option value="">Select Hospital</option>
                   {hospitals.map((hospital) => (
@@ -248,7 +253,7 @@ const AdminEditProfile = () => {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 appearance-none"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] outline-none transition-all duration-300 font-medium text-gray-700 appearance-none"
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -269,10 +274,10 @@ const AdminEditProfile = () => {
                     name={field}
                     value={formData[field]}
                     onChange={handleChange}
-                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
+                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] outline-none transition-all duration-300 font-medium text-gray-700 placeholder-transparent peer"
                     placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                   />
-                  <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-primary peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
+                  <label className="absolute left-4 -top-2.5 px-1 bg-white text-xs font-bold text-gray-500 transition-all peer-focus:text-[#10b981] peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:bg-white peer-focus:text-xs">
                     {field.charAt(0).toUpperCase() + field.slice(1)} <span className="text-red-500">*</span>
                   </label>
                 </div>
@@ -290,7 +295,7 @@ const AdminEditProfile = () => {
               <button
                 onClick={handleSubmit}
                 type="submit"
-                className="px-8 py-3.5 rounded-2xl font-bold bg-gradient-to-r from-primary to-blue-500 text-white shadow-lg shadow-blue-500/30 hover:-translate-y-0.5 transition-all duration-300"
+                className="px-8 py-3.5 rounded-2xl font-bold bg-[#10b981] text-white shadow-sm hover:bg-green-600 hover:-translate-y-0.5 transition-all duration-300"
               >
                 Save Changes
               </button>

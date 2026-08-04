@@ -367,3 +367,58 @@ exports.updateAppointmentStatus = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+// @desc    Update Appointment (Multiple Fields)
+// @route   PATCH /api/appointments/update/:id
+// @access  Private
+exports.updateAppointment = async (req, res) => {
+  const { id } = req.params;
+  const { appointmentDate, appointmentTime, status } = req.body;
+
+  try {
+    const appointment = await Appointment.findById(id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    if (appointmentDate) appointment.appointmentDate = appointmentDate;
+    if (appointmentTime) appointment.appointmentTime = appointmentTime;
+    if (status) appointment.status = status;
+
+    await appointment.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment updated successfully",
+      data: appointment,
+    });
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// @desc    Delete Appointment
+// @route   DELETE /api/appointments/:id
+// @access  Private
+exports.deleteAppointment = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const appointment = await Appointment.findByIdAndDelete(id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting appointment:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+

@@ -5,6 +5,7 @@ import Header from "./Header";
 import AdminDashboard from "../pages/adminPages/AdminDashboard";
 import DoctorManagement from "../pages/adminPages/DoctorManagement";
 import PatientManagement from "./PatientManagement";
+import PatientList from "./PatientList";
 import SearchResults from "./SearchResults";
 import AddDoctorForm from "../pages/adminPages/AddDoctorForm";
 import EditDoctor from "../pages/adminPages/EditDoctor";
@@ -39,7 +40,7 @@ const AdminRoutes = ({ onLogout }) => {
   return (
     <div className="flex h-screen overflow-hidden bg-[#fafbfc]">
       <Sidebar role={"admin"} onLogout={onLogout} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
-      <div className="flex-1 flex flex-col bg-[#fafbfc]">
+      <div className="flex-1 flex flex-col bg-[#fafbfc] min-w-0">
         <Header onSearch={handleSearch} toggleSidebar={toggleSidebar}/>
         <div className="flex-1 overflow-y-auto bg-[#fafbfc] p-5">
           {searchQuery ? (
@@ -48,7 +49,8 @@ const AdminRoutes = ({ onLogout }) => {
             <Routes>
               <Route path="/dashboard" element={<AdminDashboard />} />
               <Route path="/doctor-management" element={<DoctorManagement />} />
-              <Route path="/patient-management" element={<PatientManagement />} />
+              <Route path="/patient-management" element={<PatientList />} />
+              <Route path="/appointments" element={<PatientManagement />} />
               <Route path="/add-new-doctor" element={<AddDoctorForm />} />
               <Route path="/edit-doctor/:id" element={<EditDoctor />} />
               <Route path="/view-doctor/:id" element={<EditDoctor isViewOnly />} />

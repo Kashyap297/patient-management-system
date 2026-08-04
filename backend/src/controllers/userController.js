@@ -204,6 +204,7 @@ exports.addDoctorByAdmin = async (req, res) => {
       phoneNumber,
       password,
       role: "doctor",
+      adminhospital: req.user.adminhospital,
       profileImage,
       signatureImage,
       doctorDetails: {
@@ -620,7 +621,11 @@ exports.updateUserProfile = async (req, res) => {
 // @access  Private (Admin only)
 exports.getAllDoctors = async (req, res) => {
   try {
-    const doctors = await User.find({ role: "doctor" }).select("-password"); // Exclude password from the response
+    const query = { role: "doctor" };
+    if (req.user && req.user.role === 'admin' && req.user.adminhospital) {
+      query.adminhospital = req.user.adminhospital;
+    }
+    const doctors = await User.find(query).select("-password"); // Exclude password from the response
     res.status(200).json(doctors);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -632,7 +637,11 @@ exports.getAllDoctors = async (req, res) => {
 // @access  Private (Admin only)
 exports.getAllPatients = async (req, res) => {
   try {
-    const patients = await User.find({ role: "patient" }).select("-password"); // Exclude password from the response
+    const query = { role: "patient" };
+    if (req.user && req.user.role === 'admin' && req.user.adminhospital) {
+      query.adminhospital = req.user.adminhospital;
+    }
+    const patients = await User.find(query).select("-password"); // Exclude password from the response
     res.status(200).json(patients);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

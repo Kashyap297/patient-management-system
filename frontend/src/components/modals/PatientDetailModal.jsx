@@ -1,4 +1,5 @@
 import React from "react";
+import { FaTimes } from "react-icons/fa";
 
 const PatientDetailsModal = ({ open, handleClose, patient }) => {
   if (!patient) return null;
@@ -21,8 +22,11 @@ const PatientDetailsModal = ({ open, handleClose, patient }) => {
       <div className="bg-white rounded-2xl shadow-lg max-w-sm  w-full p-6 relative">
         <div className="flex justify-between items-center border-b pb-4">
           <h2 className="text-lg font-semibold text-[#030229]">Patient Details</h2>
-          <button onClick={handleClose} className="text-red-500 hover:text-red-600">
-            X
+          <button 
+            onClick={handleClose} 
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+          >
+            <FaTimes size={14} />
           </button>
         </div>
         <div className="mt-4 space-y-4">

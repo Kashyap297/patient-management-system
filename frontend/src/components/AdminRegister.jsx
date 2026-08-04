@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   AiOutlineDown,
   AiOutlineEye,
@@ -10,10 +10,12 @@ import AuthContext from "../context/AuthContext";
 import axios from "axios";
 import countryData from "../countryjson/countries+states+cities.json"; // Assuming it's in the `countryjson` folder
 import toast from "react-hot-toast";
+import CustomDropdown from "./CustomDropdown";
 
 const AdminRegister = () => {
   const { registerAdmin, authError } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const hospitalDropdownRef = useRef(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -66,6 +68,18 @@ const AdminRegister = () => {
     fetchHospitals();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (hospitalDropdownRef.current && !hospitalDropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -84,7 +98,6 @@ const AdminRegister = () => {
     e.preventDefault();
     const hospitalPayload = {
       ...hospitalData,
-      country: formData.country, // Set from selected country
     };
 
     try {
@@ -199,6 +212,11 @@ const AdminRegister = () => {
       setFilteredCities(state.cities || []);
     }
   };
+
+  const currentHospitalCountry = countryData.find((item) => item.name === hospitalData.country);
+  const hospitalFilteredStates = currentHospitalCountry ? (currentHospitalCountry.states || []) : [];
+  const currentHospitalState = hospitalFilteredStates.find((item) => item.name === hospitalData.state);
+  const hospitalFilteredCities = currentHospitalState ? (currentHospitalState.cities || []) : [];
 
   return (
     <div className="min-h-screen flex bg-background font-sans overflow-hidden">
@@ -326,86 +344,44 @@ const AdminRegister = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {/* Country */}
-              <div className="relative group">
-                <select
-                  id="country"
-                  name="country"
-                  className={`peer custom-scroll w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg appearance-none ${
-                    errors.country ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"
-                  }`}
-                  value={formData.country}
-                  onChange={handleCountryChange}
-                >
-                  <option value="" disabled hidden>Select Country</option>
-                  {countryData.map((country) => (
-                    <option key={country.id} value={country.name}>{country.name}</option>
-                  ))}
-                </select>
-                <AiOutlineDown className="absolute right-4 top-5 text-gray-500 pointer-events-none" />
-                <label
-                  htmlFor="country"
-                  className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary"
-                >
-                  Country<span className="text-red-500">*</span>
-                </label>
-                {errors.country && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.country}</p>}
-              </div>
+              <CustomDropdown
+                name="country"
+                label="Country"
+                placeholder="Select Country"
+                value={formData.country}
+                options={countryData.map(c => ({ label: c.name, value: c.name }))}
+                onChange={handleCountryChange}
+                error={errors.country}
+                styleVariant="main"
+              />
 
               {/* State */}
-              <div className="relative group">
-                <select
-                  id="state"
-                  name="state"
-                  className={`peer custom-scroll w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg appearance-none ${
-                    errors.state ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"
-                  }`}
-                  value={formData.state}
-                  onChange={handleStateChange}
-                >
-                  <option value="" disabled hidden>Select State</option>
-                  {filteredStates.map((state) => (
-                    <option key={state.id} value={state.name}>{state.name}</option>
-                  ))}
-                </select>
-                <AiOutlineDown className="absolute right-4 top-5 text-gray-500 pointer-events-none" />
-                <label
-                  htmlFor="state"
-                  className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary"
-                >
-                  State<span className="text-red-500">*</span>
-                </label>
-                {errors.state && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.state}</p>}
-              </div>
+              <CustomDropdown
+                name="state"
+                label="State"
+                placeholder="Select State"
+                value={formData.state}
+                options={filteredStates.map(s => ({ label: s.name, value: s.name }))}
+                onChange={handleStateChange}
+                error={errors.state}
+                styleVariant="main"
+              />
 
               {/* City */}
-              <div className="relative group">
-                <select
-                  id="city"
-                  name="city"
-                  className={`peer custom-scroll w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 focus:bg-white focus:shadow-lg appearance-none ${
-                    errors.city ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"
-                  }`}
-                  value={formData.city}
-                  onChange={handleChange}
-                >
-                  <option value="" disabled hidden>Select City</option>
-                  {filteredCities.map((city) => (
-                    <option key={city.id} value={city.name}>{city.name}</option>
-                  ))}
-                </select>
-                <AiOutlineDown className="absolute right-4 top-5 text-gray-500 pointer-events-none" />
-                <label
-                  htmlFor="city"
-                  className="absolute left-4 -top-2.5 px-2 bg-white rounded-md text-sm font-semibold transition-all duration-300 pointer-events-none text-primary"
-                >
-                  City<span className="text-red-500">*</span>
-                </label>
-                {errors.city && <p className="text-red-500 text-xs font-semibold mt-1 ml-2">{errors.city}</p>}
-              </div>
+              <CustomDropdown
+                name="city"
+                label="City"
+                placeholder="Select City"
+                value={formData.city}
+                options={filteredCities.map(c => ({ label: c.name, value: c.name }))}
+                onChange={handleChange}
+                error={errors.city}
+                styleVariant="main"
+              />
             </div>
 
             {/* Hospital Dropdown */}
-            <div className="relative group z-20">
+            <div className="relative group z-20" ref={hospitalDropdownRef}>
               <div
                 className={`peer w-full px-4 py-4 bg-white/50 border-2 rounded-2xl outline-none transition-all duration-300 text-gray-700 cursor-pointer flex justify-between items-center hover:bg-white ${
                   errors.hospital ? "border-red-500/50 focus:border-red-500" : "border-transparent focus:border-primary"
@@ -474,29 +450,36 @@ const AdminRegister = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="relative">
-                        <input type="text" name="country" className="w-full px-4 py-3 bg-gray-100 text-gray-500 border-2 border-transparent rounded-xl outline-none cursor-not-allowed font-medium" value={formData.country} disabled />
-                        <label className="absolute left-4 -top-2.5 px-2 bg-white text-sm font-semibold text-primary">Country</label>
-                      </div>
-                      <div className="relative">
-                        <select name="state" className="w-full px-4 py-3 bg-gray-50 border-2 border-transparent focus:border-primary focus:bg-white rounded-xl outline-none transition-all font-medium text-gray-700 appearance-none" value={hospitalData.state} onChange={(e) => { handleHospitalChange(e); setHospitalData({...hospitalData, city: "", state: e.target.value}); }} required>
-                          <option value="" disabled hidden>Select State</option>
-                          {filteredStates.map((state) => ( <option key={state.id} value={state.name}>{state.name}</option> ))}
-                        </select>
-                        <AiOutlineDown className="absolute right-4 top-4 text-gray-500 pointer-events-none" />
-                        <label className="absolute left-4 -top-2.5 px-2 bg-white text-sm font-semibold text-primary">State<span className="text-red-500">*</span></label>
-                      </div>
+                      <CustomDropdown
+                        name="country"
+                        label="Country"
+                        placeholder="Select Country"
+                        value={hospitalData.country}
+                        options={countryData.map(c => ({ label: c.name, value: c.name }))}
+                        onChange={(e) => { handleHospitalChange(e); setHospitalData({...hospitalData, state: "", city: "", country: e.target.value}); }}
+                        styleVariant="modal"
+                      />
+                      <CustomDropdown
+                        name="state"
+                        label="State"
+                        placeholder="Select State"
+                        value={hospitalData.state}
+                        options={hospitalFilteredStates.map(s => ({ label: s.name, value: s.name }))}
+                        onChange={(e) => { handleHospitalChange(e); setHospitalData({...hospitalData, city: "", state: e.target.value}); }}
+                        styleVariant="modal"
+                      />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mb-8">
-                      <div className="relative">
-                        <select name="city" className="w-full px-4 py-3 bg-gray-50 border-2 border-transparent focus:border-primary focus:bg-white rounded-xl outline-none transition-all font-medium text-gray-700 appearance-none" value={hospitalData.city} onChange={handleHospitalChange} required>
-                          <option value="" disabled hidden>Select City</option>
-                          {filteredCities.map((city) => ( <option key={city.id} value={city.name}>{city.name}</option> ))}
-                        </select>
-                        <AiOutlineDown className="absolute right-4 top-4 text-gray-500 pointer-events-none" />
-                        <label className="absolute left-4 -top-2.5 px-2 bg-white text-sm font-semibold text-primary">City<span className="text-red-500">*</span></label>
-                      </div>
+                      <CustomDropdown
+                        name="city"
+                        label="City"
+                        placeholder="Select City"
+                        value={hospitalData.city}
+                        options={hospitalFilteredCities.map(c => ({ label: c.name, value: c.name }))}
+                        onChange={handleHospitalChange}
+                        styleVariant="modal"
+                      />
                       <div className="relative">
                         <input type="text" name="zipCode" className="peer w-full px-4 py-3 bg-gray-50 border-2 border-transparent focus:border-primary focus:bg-white rounded-xl outline-none transition-all placeholder-transparent" placeholder="Zip" value={hospitalData.zipCode} onChange={handleHospitalChange} required />
                         <label className="absolute left-4 -top-2.5 px-2 bg-white text-sm font-semibold text-gray-500 peer-focus:text-primary peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent pointer-events-none transition-all">Zip Code<span className="text-red-500">*</span></label>

@@ -58,33 +58,30 @@ const InsuranceClaims = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-8 space-y-8 relative overflow-hidden">
-      {/* Decorative Blur Backgrounds */}
-      <div className="absolute top-[-5%] left-[-5%] w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
-      
-      <div className="glass shadow-sm p-6 md:p-8 rounded-3xl relative z-10 animate-slide-up">
+    <div className="min-h-screen bg-[#fafbfc] p-6 md:p-8 space-y-6 font-sans text-gray-800">
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 relative">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
-          <h2 className="text-xl sm:text-2xl font-extrabold text-secondary tracking-tight">Insurance Claims</h2>
-          <div className="relative flex items-center bg-white/60 backdrop-blur-md rounded-2xl px-4 py-3 w-full md:max-w-md border border-white/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus-within:shadow-md focus-within:bg-white transition-all duration-300">
-            <FaSearch className="text-gray-400 text-lg mr-3" />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h2 className="text-xl font-bold text-gray-800 tracking-tight">Insurance Claims</h2>
+          <div className="relative flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 w-full md:max-w-md focus-within:border-[#10b981] focus-within:ring-1 focus-within:ring-[#10b981] transition-all">
+            <FaSearch className="text-gray-400 text-sm mr-2" />
             <input
               type="text"
-              placeholder="Search Patient"
+              placeholder="Search by Patient, Doctor, Disease, Insurance..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-transparent focus:outline-none w-full text-gray-700 font-medium placeholder-gray-400"
+              className="bg-transparent focus:outline-none w-full text-sm text-gray-700 placeholder-gray-400"
             />
           </div>
         </div>
 
         {/* Insurance Claims Table */}
         <div className="overflow-x-auto max-h-[580px] custom-scroll">
-          <table className="w-full text-left table-auto border-separate border-spacing-y-3">
-            <thead className="sticky top-0 bg-white/90 backdrop-blur-sm z-20 shadow-sm">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-gray-400 font-semibold border-b border-gray-100 bg-white sticky top-0 z-10">
               <tr>
-                {["Bill No", "Doctor Name", "Patient Name", "Disease Name", "Insurance Company", "Insurance Plan", "Bill Date", "Action"].map((header, idx) => (
-                  <th key={header} className={`p-4 text-xs font-bold text-gray-400 uppercase tracking-wider ${idx === 0 ? 'rounded-l-2xl' : ''} ${idx === 7 ? 'rounded-r-2xl' : ''}`}>
+                {["Bill No", "Doctor Name", "Patient Name", "Disease Name", "Insurance Company", "Insurance Plan", "Bill Date", "Action"].map((header) => (
+                  <th key={header} className="px-4 py-3 uppercase tracking-wider">
                     {header}
                   </th>
                 ))}
@@ -93,9 +90,9 @@ const InsuranceClaims = () => {
             <tbody>
               {loading ? (
                 [...Array(5)].map((_, index) => (
-                  <tr key={index} className="bg-white/50">
-                    {["80", "120", "120", "120", "150", "100", "80", "30"].map((width, i) => (
-                      <td key={i} className={`p-4 ${i === 0 ? 'rounded-l-2xl' : ''} ${i === 7 ? 'rounded-r-2xl' : ''}`}>
+                  <tr key={index} className="border-b border-gray-50">
+                    {[80, 120, 120, 120, 150, 100, 80, 30].map((width, i) => (
+                      <td key={i} className="px-4 py-4">
                         <Skeleton width={width} height={20} />
                       </td>
                     ))}
@@ -103,31 +100,31 @@ const InsuranceClaims = () => {
                 ))
               ) : filteredData.length > 0 ? (
                 filteredData.map((claim, index) => (
-                  <tr key={index} className="bg-white/50 hover:bg-white shadow-sm hover:shadow transition-all duration-300">
-                    <td className="p-4 rounded-l-2xl">
-                      <span className="px-4 py-1.5 bg-blue-50/80 text-primary rounded-lg font-bold text-sm border border-blue-100">
+                  <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                    <td className="px-4 py-4">
+                      <span className="px-2.5 py-1 bg-gray-50 text-gray-600 rounded-lg font-semibold text-xs border border-gray-200">
                         {claim.billNumber}
                       </span>
                     </td>
-                    <td className="p-4 font-bold text-gray-800">
-                      {`${claim.doctor.firstName} ${claim.doctor.lastName}`}
+                    <td className="px-4 py-4 font-bold text-gray-800">
+                      {`Dr. ${claim.doctor.firstName} ${claim.doctor.lastName}`}
                     </td>
-                    <td className="p-4 font-medium text-gray-800">
+                    <td className="px-4 py-4 text-gray-800">
                       {`${claim.patient.firstName} ${claim.patient.lastName}`}
                     </td>
-                    <td className="p-4 font-medium text-gray-600">{claim.diseaseName}</td>
-                    <td className="p-4 font-medium text-gray-600">
+                    <td className="px-4 py-4 text-gray-600">{claim.diseaseName}</td>
+                    <td className="px-4 py-4 text-gray-600">
                       {claim.insuranceDetails.insuranceCompany}
                     </td>
-                    <td className="p-4 font-medium text-primary">
+                    <td className="px-4 py-4 font-semibold text-[#10b981]">
                       {claim.insuranceDetails.insurancePlan}
                     </td>
-                    <td className="p-4 font-medium text-gray-600">
+                    <td className="px-4 py-4 text-gray-600">
                       {new Date(claim.billDate).toLocaleDateString()}
                     </td>
-                    <td className="p-4 rounded-r-2xl text-center">
+                    <td className="px-4 py-4">
                       <button
-                        className="text-primary bg-primary/10 hover:bg-primary hover:text-white p-2.5 rounded-xl transition-colors"
+                        className="text-gray-400 bg-gray-50 hover:bg-[#ecfdf5] hover:text-[#10b981] p-2 rounded-lg transition-colors border border-gray-100 hover:border-[#10b981]/30"
                         onClick={() => handleViewDetails(claim)}
                         title="View Details"
                       >

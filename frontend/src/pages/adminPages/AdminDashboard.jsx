@@ -7,6 +7,8 @@ import api from "../../api/api";
 import moment from "moment";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import userImage from "../../assets/images/user.png";
+import PatientDetailsModal from "../../components/modals/PatientDetailModal";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -36,11 +38,17 @@ const AdminDashboard = () => {
   const [chartDataCounts, setChartDataCounts] = useState([]);
 
   // Doctor Filter States
-  const [doctorFilter, setDoctorFilter] = useState("All");
-  const [isDoctorFilterOpen, setIsDoctorFilterOpen] = useState(false);
-  
+  const [filters, setFilters] = useState({
+    specialty: "All",
+    qualification: "All",
+    workType: "All"
+  });
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   // Doctor Modal State
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  
+  // Booking Modal State
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -174,9 +182,15 @@ const AdminDashboard = () => {
     }
   };
 
-  const uniqueSpecialties = ["All", ...new Set(doctorsList.map(d => d.specialty || "General"))];
-  const filteredDoctors = doctorFilter === "All" ? doctorsList : doctorsList.filter(d => (d.specialty || "General") === doctorFilter);
-
+  const uniqueSpecialties = ["All", ...new Set(doctorsList.map(d => d.doctorDetails?.specialtyType).filter(Boolean))];
+  const uniqueQualifications = ["All", ...new Set(doctorsList.map(d => d.doctorDetails?.qualification).filter(Boolean))];
+  
+  const filteredDoctors = doctorsList.filter(d => {
+    const matchSpecialty = filters.specialty === "All" || d.doctorDetails?.specialtyType === filters.specialty;
+    const matchQualification = filters.qualification === "All" || d.doctorDetails?.qualification === filters.qualification;
+    const matchWorkType = filters.workType === "All" || d.doctorDetails?.workType === filters.workType;
+    return matchSpecialty && matchQualification && matchWorkType;
+  });
   return (
     <div className="min-h-screen bg-[#fafbfc] p-8 space-y-6 font-sans text-gray-800">
       
@@ -301,28 +315,61 @@ const AdminDashboard = () => {
             </div>
             <div className="relative">
               <button 
-                onClick={() => setIsDoctorFilterOpen(!isDoctorFilterOpen)}
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
                 className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
               >
-                <FiFilter className="text-gray-400" /> {doctorFilter === "All" ? "Filter" : doctorFilter}
+                <FiFilter className="text-gray-400" /> Filter
               </button>
               
-              {isDoctorFilterOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-20 py-2">
-                  {uniqueSpecialties.map(specialty => (
-                    <button
-                      key={specialty}
-                      onClick={() => {
-                        setDoctorFilter(specialty);
-                        setIsDoctorFilterOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                        doctorFilter === specialty ? 'bg-[#ecfdf5] text-[#10b981] font-bold' : 'text-gray-700 hover:bg-gray-50'
-                      }`}
+              {isFilterOpen && (
+                <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-100 rounded-xl shadow-lg z-20 p-4 space-y-4">
+                  <div>
+                    <label className="text-xs font-semibold text-gray-500 mb-1 block">Specialty</label>
+                    <select 
+                      value={filters.specialty}
+                      onChange={(e) => setFilters({...filters, specialty: e.target.value})}
+                      className="w-full text-sm border border-gray-200 rounded-lg p-2 focus:ring-[#10b981] focus:border-[#10b981] outline-none"
                     >
-                      {specialty}
+                      {uniqueSpecialties.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-gray-500 mb-1 block">Qualification</label>
+                    <select 
+                      value={filters.qualification}
+                      onChange={(e) => setFilters({...filters, qualification: e.target.value})}
+                      className="w-full text-sm border border-gray-200 rounded-lg p-2 focus:ring-[#10b981] focus:border-[#10b981] outline-none"
+                    >
+                      {uniqueQualifications.map(q => <option key={q} value={q}>{q}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-gray-500 mb-1 block">Availability (Work Type)</label>
+                    <select 
+                      value={filters.workType}
+                      onChange={(e) => setFilters({...filters, workType: e.target.value})}
+                      className="w-full text-sm border border-gray-200 rounded-lg p-2 focus:ring-[#10b981] focus:border-[#10b981] outline-none"
+                    >
+                      <option value="All">All</option>
+                      <option value="Online">Online</option>
+                      <option value="Onsite">Onsite</option>
+                      <option value="Both">Both</option>
+                    </select>
+                  </div>
+                  <div className="flex justify-between items-center pt-2">
+                    <button 
+                      onClick={() => setFilters({ specialty: "All", qualification: "All", workType: "All" })}
+                      className="text-xs text-red-500 hover:text-red-700 font-semibold"
+                    >
+                      Clear All
                     </button>
-                  ))}
+                    <button 
+                      onClick={() => setIsFilterOpen(false)}
+                      className="text-xs bg-[#10b981] text-white px-3 py-1.5 rounded-lg hover:bg-[#059669] font-semibold"
+                    >
+                      Apply
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -343,7 +390,7 @@ const AdminDashboard = () => {
                     <img src={doc.profileImage || "http://localhost:8000/default-profile.png"} alt={doc.firstName} className="w-10 h-10 rounded-full border border-gray-200 object-cover" />
                     <div>
                       <h4 className="font-bold text-gray-800 text-sm">dr. {doc.firstName} {doc.lastName}</h4>
-                      <p className="text-xs text-gray-500">{doc.specialty || "General"}</p>
+                      <p className="text-xs text-gray-500">{doc.doctorDetails?.specialtyType || doc.specialty || "General"}</p>
                     </div>
                   </div>
                   <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-[#ecfdf5] text-[#10b981]">
@@ -400,7 +447,7 @@ const AdminDashboard = () => {
                 bookingsList.map((booking, idx) => (
                   <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
                     <td className="px-4 py-4"><input type="checkbox" className="rounded border-gray-300 text-[#10b981] focus:ring-[#10b981]" /></td>
-                    <td className="px-4 py-4 font-bold text-gray-800">{booking.patientId?.firstName} {booking.patientId?.lastName}</td>
+                    <td className="px-4 py-4 font-bold text-gray-800">{booking.patientName || "-"}</td>
                     <td className="px-4 py-4 text-gray-500 font-medium">{booking.diseaseName || "-"}</td>
                     <td className="px-4 py-4 text-gray-800 font-medium">{moment(booking.appointmentDate).format("DD MMM YYYY, hh:mm A")}</td>
                     <td className="px-4 py-4">
@@ -417,12 +464,15 @@ const AdminDashboard = () => {
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
-                        <img src={booking.doctorId?.profileImage || "http://localhost:8000/default-profile.png"} alt="doc" className="w-6 h-6 rounded-full border border-gray-200 object-cover" />
-                        <span className="font-semibold text-gray-700 text-xs">dr. {booking.doctorId?.firstName}</span>
+                        <img src={userImage} alt="doc" className="w-6 h-6 rounded-full border border-gray-200 object-cover" />
+                        <span className="font-semibold text-gray-700 text-xs">dr. {booking.doctorName !== "N/A" ? booking.doctorName : "-"}</span>
                       </div>
                     </td>
                     <td className="px-4 py-4 text-right">
-                      <button className="px-4 py-1.5 bg-[#10b981] text-white text-xs font-bold rounded-full hover:bg-[#059669] transition-colors shadow-sm shadow-[#10b981]/20">
+                      <button 
+                        onClick={() => setSelectedBooking(booking)}
+                        className="px-4 py-1.5 bg-[#10b981] text-white text-xs font-bold rounded-full hover:bg-[#059669] transition-colors shadow-sm shadow-[#10b981]/20"
+                      >
                         See Details
                       </button>
                     </td>
@@ -523,6 +573,13 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Patient Details Modal */}
+      <PatientDetailsModal 
+        open={!!selectedBooking} 
+        handleClose={() => setSelectedBooking(null)} 
+        patient={selectedBooking} 
+      />
 
     </div>
   );

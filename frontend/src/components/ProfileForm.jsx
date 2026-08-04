@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import api from "../api/api"; // Import your centralized API instance
+import api from "../api/api";
 
 const ProfileForm = ({ role }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,7 +17,6 @@ const ProfileForm = ({ role }) => {
     bloodGroup: "",
   });
 
-  // Fetch the user profile data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -29,19 +28,16 @@ const ProfileForm = ({ role }) => {
     };
     fetchProfile();
   }, []);
-  console.log(formValues)
-  // Handle input field changes
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
-  // Toggle between edit and cancel modes
   const handleEdit = () => {
     setIsEditing(!isEditing);
   };
 
-  // Save changes
   const handleSaveChanges = async () => {
     try {
       await api.patch("/users/profile", formValues);
@@ -51,114 +47,104 @@ const ProfileForm = ({ role }) => {
     }
   };
 
+  const inputClass = `w-full p-3 border outline-none transition-all duration-300 rounded-xl text-sm ${
+    isEditing 
+      ? "bg-white border-gray-200 focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981]/20 text-gray-800" 
+      : "bg-gray-50 border-transparent text-gray-500 cursor-not-allowed"
+  }`;
+
+  const labelClass = "block text-xs font-semibold text-gray-600 mb-1.5 tracking-wide uppercase";
+
   return (
-    <div className="flex-1 bg-white h-full p-8 rounded-r-3xl shadow-md">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Profile</h2>
+    <div className="flex-1 bg-white h-full p-8 md:p-12">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-2xl font-extrabold text-gray-800 tracking-tight">Profile Details</h2>
+          <p className="text-gray-500 text-sm mt-1">Update your personal information.</p>
+        </div>
         <button
           onClick={handleEdit}
-          className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition duration-200"
+          className={`px-5 py-2.5 rounded-xl font-semibold transition-all duration-300 shadow-sm ${
+            isEditing 
+              ? "bg-gray-100 text-gray-700 hover:bg-gray-200" 
+              : "bg-[#10b981] text-white hover:bg-green-600 hover:shadow-md hover:-translate-y-0.5"
+          }`}
         >
-          {isEditing ? "Cancel" : "Edit Profile"}
+          {isEditing ? "Cancel Edit" : "Edit Profile"}
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        {/* First Name */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            First Name
-          </label>
+          <label className={labelClass}>First Name</label>
           <input
             type="text"
             name="firstName"
             value={formValues.firstName || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={inputClass}
           />
         </div>
 
-        {/* Last Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Last Name
-          </label>
+          <label className={labelClass}>Last Name</label>
           <input
             type="text"
             name="lastName"
             value={formValues.lastName || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={inputClass}
           />
         </div>
 
-        {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email Address
-          </label>
+          <label className={labelClass}>Email Address</label>
           <input
             type="email"
             name="email"
             value={formValues.email || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={inputClass}
           />
         </div>
 
-        {/* Phone Number */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Phone Number
-          </label>
+          <label className={labelClass}>Phone Number</label>
           <input
             type="text"
             name="phoneNumber"
             value={formValues.phoneNumber || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={inputClass}
           />
         </div>
 
-        {/* Hospital Name */}
         {role !== "patient" && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Hospital Name
-            </label>
+            <label className={labelClass}>Hospital Name</label>
             <input
               type="text"
               name="hospitalName"
-              value={formValues?.doctorDetails?.hospital.hospitalName || ""}
+              value={formValues?.doctorDetails?.hospital?.hospitalName || ""}
               onChange={handleChange}
               readOnly={!isEditing}
-              className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-                } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
-                }`}
+              className={inputClass}
             />
           </div>
         )}
 
-        {/* Gender */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Gender
-          </label>
+          <label className={labelClass}>Gender</label>
           <select
             name="gender"
             value={formValues.gender || ""}
             onChange={handleChange}
             disabled={!isEditing}
-            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={inputClass}
           >
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -166,85 +152,64 @@ const ProfileForm = ({ role }) => {
           </select>
         </div>
 
-        {/* City */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            City
-          </label>
+          <label className={labelClass}>City</label>
           <input
             type="text"
             name="city"
             value={formValues.city || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={inputClass}
           />
         </div>
 
-        {/* State */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            State
-          </label>
+          <label className={labelClass}>State</label>
           <input
             type="text"
             name="state"
             value={formValues.state || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={inputClass}
           />
         </div>
 
-        {/* Country */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Country
-          </label>
+          <label className={labelClass}>Country</label>
           <input
             type="text"
             name="country"
             value={formValues.country || ""}
             onChange={handleChange}
             readOnly={!isEditing}
-            className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-              } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"}`}
+            className={inputClass}
           />
         </div>
 
-        {/* Additional Fields for Patient Role */}
         {role === "patient" && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Date of Birth
-              </label>
+              <label className={labelClass}>Date of Birth</label>
               <input
                 type="date"
                 name="dob"
                 value={formValues.dob || ""}
                 onChange={handleChange}
                 readOnly={!isEditing}
-                className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-                  } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
-                  }`}
+                className={inputClass}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Blood Group
-              </label>
+              <label className={labelClass}>Blood Group</label>
               <select
                 name="bloodGroup"
                 value={formValues.bloodGroup || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`w-full p-2 border ${isEditing ? "border-gray-300" : "border-transparent"
-                  } rounded-xl bg-gray-100 ${isEditing ? "bg-white" : "bg-gray-100"
-                  }`}
+                className={inputClass}
               >
                 <option value="A+">A+</option>
                 <option value="A-">A-</option>
@@ -261,12 +226,14 @@ const ProfileForm = ({ role }) => {
       </div>
 
       {isEditing && (
-        <button
-          onClick={handleSaveChanges}
-          className="mt-6 bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition duration-200"
-        >
-          Save Changes
-        </button>
+        <div className="mt-10 flex justify-end">
+          <button
+            onClick={handleSaveChanges}
+            className="bg-[#10b981] text-white px-8 py-3 rounded-xl hover:bg-green-600 transition-all duration-300 font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5"
+          >
+            Save Changes
+          </button>
+        </div>
       )}
     </div>
   );

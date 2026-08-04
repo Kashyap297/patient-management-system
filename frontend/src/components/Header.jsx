@@ -72,7 +72,7 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
   return (
     <div className="w-full px-6 py-4 bg-white border-b border-gray-100 flex items-center justify-between sticky top-0 z-20">
       {/* Left Section - Hamburger Menu & Search */}
-      <div className="flex items-center gap-4 flex-1">
+      <div className="flex items-center gap-4 flex-1 min-w-0">
         {/* Sidebar Toggle Button */}
         <div className="p-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors md:hidden text-gray-500" onClick={toggleSidebar}>
           <AiOutlineMenu className="text-xl" />
@@ -98,7 +98,7 @@ const Header = ({ activeMenu, onSearch, toggleSidebar }) => {
       </div>
 
       {/* Right Section - Icons & Profile */}
-      <div className="flex items-center gap-3 sm:gap-5">
+      <div className="flex items-center gap-3 sm:gap-5 flex-shrink-0">
         
         <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 cursor-pointer transition-colors">
           <FiMail className="text-lg" />

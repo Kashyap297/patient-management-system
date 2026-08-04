@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/api";
+import { FaChevronLeft } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 const EditBill = () => {
@@ -120,7 +121,16 @@ const EditBill = () => {
 
       <div className="relative z-10 animate-slide-up max-w-6xl mx-auto">
         <div className="glass p-8 md:p-10 rounded-3xl shadow-sm border border-white/50">
-          <h2 className="text-3xl font-extrabold text-secondary tracking-tight mb-8 border-b border-gray-200/50 pb-6">Edit Bill Details</h2>
+          <div className="flex items-center gap-4 mb-8 border-b border-gray-200/50 pb-6">
+            <button 
+              type="button"
+              onClick={() => navigate(-1)}
+              className="p-2.5 rounded-full bg-white shadow-sm hover:bg-gray-50 text-gray-600 transition-colors border border-gray-100 flex items-center justify-center"
+            >
+              <FaChevronLeft size={16} />
+            </button>
+            <h2 className="text-3xl font-extrabold text-secondary tracking-tight">Edit Bill Details</h2>
+          </div>
           
           <form onSubmit={handleSubmit} className="bg-white/40 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/60 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

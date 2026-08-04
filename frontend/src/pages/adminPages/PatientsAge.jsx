@@ -49,7 +49,7 @@ const PatientsAge = () => {
   }, []);
 
   return (
-    <div className="glass p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group h-[400px] flex flex-col">
+    <div className="glass p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group min-h-[400px] flex flex-col">
       {/* Decorative gradient */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-500/10 to-transparent rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-110"></div>
       

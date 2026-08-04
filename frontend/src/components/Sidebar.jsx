@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Collapse } from "@mui/material";
 import { AiOutlineDown } from "react-icons/ai";
-import { HiOutlineLogout, HiOutlineMoon, HiOutlineCog, HiOutlineQuestionMarkCircle } from "react-icons/hi";
+import { HiOutlineLogout } from "react-icons/hi";
 import { useNavigate, NavLink } from "react-router-dom";
 import { FaHeartbeat } from "react-icons/fa";
 import { ReactComponent as DashboardIcon } from "../assets/images/Dashboard.svg";
@@ -25,7 +25,6 @@ const Sidebar = ({ role, onLogout, isSidebarOpen, setIsSidebarOpen }) => {
   const navigate = useNavigate();
   const [openBilling, setOpenBilling] = useState(false);
   const [activeTab, setActiveTab] = useState(null);
-  const [isLightMode, setIsLightMode] = useState(true);
 
   const tabs = {
     admin: [
@@ -37,7 +36,7 @@ const Sidebar = ({ role, onLogout, isSidebarOpen, setIsSidebarOpen }) => {
       {
         label: "Appointments",
         icon: calendariconIcon,
-        path: "#", // Temporary placeholder to match UI
+        path: "/admin/appointments",
       },
       {
         label: "Patient Flow",
@@ -222,29 +221,14 @@ const Sidebar = ({ role, onLogout, isSidebarOpen, setIsSidebarOpen }) => {
           <div className="mt-auto pt-6 pb-6 border-t border-gray-100 hidden md:block">
             <span className="px-4 text-xs font-semibold text-gray-400 mb-2 block tracking-wider">Others</span>
             <ul className="space-y-1">
+
               <li>
                 <button
-                  onClick={() => setIsLightMode(!isLightMode)}
-                  className="flex items-center w-full px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-4 py-3 rounded-xl font-medium text-red-500 hover:bg-red-50 transition-colors"
                 >
-                  <HiOutlineMoon className="mr-3 w-5 h-5 text-gray-500" />
-                  <span className="text-sm tracking-wide flex-1 text-left">Light Mode</span>
-                  {/* Toggle Switch */}
-                  <div className={`w-9 h-5 rounded-full flex items-center transition-colors p-0.5 ${isLightMode ? 'bg-[#10b981]' : 'bg-gray-300'}`}>
-                    <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform ${isLightMode ? 'translate-x-4' : 'translate-x-0'}`}></div>
-                  </div>
-                </button>
-              </li>
-              <li>
-                <button className="flex items-center w-full px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-                  <HiOutlineCog className="mr-3 w-5 h-5 text-gray-500" />
-                  <span className="text-sm tracking-wide">Settings</span>
-                </button>
-              </li>
-              <li>
-                <button className="flex items-center w-full px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-                  <HiOutlineQuestionMarkCircle className="mr-3 w-5 h-5 text-gray-500" />
-                  <span className="text-sm tracking-wide">Help Center</span>
+                  <HiOutlineLogout className="mr-3 w-5 h-5" />
+                  <span className="text-sm tracking-wide">Logout</span>
                 </button>
               </li>
             </ul>

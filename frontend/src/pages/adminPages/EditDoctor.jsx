@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineCamera, AiOutlineClockCircle } from "react-icons/ai";
 import { FiUpload } from "react-icons/fi";
+import { FaChevronLeft } from "react-icons/fa";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import Swal from "sweetalert2";
@@ -212,11 +213,20 @@ const EditDoctor = () => {
           encType="multipart/form-data"
           className="glass p-6 md:p-8 rounded-3xl shadow-sm border border-white/50"
         >
-          <div className="mb-8">
-            <h2 className="text-3xl font-extrabold text-secondary tracking-tight">
-              Edit Doctor Detail
-            </h2>
-            <p className="text-sm text-gray-500 mt-2 font-medium">Update the details of the doctor in the system.</p>
+          <div className="mb-8 flex items-center gap-4">
+            <button 
+              type="button"
+              onClick={() => navigate(-1)}
+              className="p-2.5 rounded-full bg-white shadow-sm hover:bg-gray-50 text-gray-600 transition-colors border border-gray-100 flex items-center justify-center"
+            >
+              <FaChevronLeft size={16} />
+            </button>
+            <div>
+              <h2 className="text-3xl font-extrabold text-secondary tracking-tight">
+                Edit Doctor Detail
+              </h2>
+              <p className="text-sm text-gray-500 mt-2 font-medium">Update the details of the doctor in the system.</p>
+            </div>
           </div>
 
           <div className="flex flex-col xl:flex-row gap-8">

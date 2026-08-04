@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEdit, FaPlus, FaSearch } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import api from "../../api/api";
-import noRecordImage from "../../assets/images/NoBill.png";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const MonitorBilling = () => {
@@ -43,33 +42,25 @@ const MonitorBilling = () => {
     navigate(`/admin/invoice/${bill._id}/${bill.patient?.firstName}`);
   };
 
-  const statusStyles = {
-    Paid: "bg-green-100 text-green-600 px-4 py-2 rounded-full",
-    Unpaid: "bg-red-100 text-red-600 px-4 py-2 rounded-full",
-  };
-
   return (
-    <div className="min-h-screen bg-background p-6 md:p-8 space-y-8 relative overflow-hidden">
-      {/* Decorative Blur Backgrounds */}
-      <div className="absolute top-[-5%] left-[-5%] w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
-      
-      <div className="glass shadow-sm p-6 md:p-8 rounded-3xl relative z-10 animate-slide-up">
+    <div className="min-h-screen bg-[#fafbfc] p-6 md:p-8 space-y-6 font-sans text-gray-800">
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 relative">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
-          <h2 className="text-xl sm:text-2xl font-extrabold text-secondary tracking-tight">Monitor Billing</h2>
-          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-            <div className="relative flex items-center bg-white/60 backdrop-blur-md rounded-2xl px-4 py-3 w-full sm:w-64 border border-white/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus-within:shadow-md focus-within:bg-white transition-all duration-300">
-              <FaSearch className="text-gray-400 text-lg mr-3" />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h2 className="text-xl font-bold text-gray-800 tracking-tight">Monitor Billing</h2>
+          <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
+            <div className="relative flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 w-full sm:w-64 focus-within:border-[#10b981] focus-within:ring-1 focus-within:ring-[#10b981] transition-all">
+              <FaSearch className="text-gray-400 text-sm mr-2" />
               <input
                 type="text"
                 placeholder="Search Patient"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-transparent focus:outline-none w-full text-gray-700 font-medium placeholder-gray-400"
+                className="bg-transparent focus:outline-none w-full text-sm text-gray-700 placeholder-gray-400"
               />
             </div>
             <button
-              className="w-full sm:w-auto text-sm font-bold border-2 border-primary text-primary px-6 py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all duration-300 whitespace-nowrap"
+              className="w-full sm:w-auto text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
               onClick={() =>
                 navigate("/admin/select-template", { state: { editMode: true } })
               }
@@ -78,7 +69,7 @@ const MonitorBilling = () => {
               Edit Design Invoice
             </button>
             <button
-              className="w-full sm:w-auto text-sm bg-gradient-to-r from-primary to-blue-500 hover:shadow-lg hover:shadow-blue-500/30 px-6 py-3 rounded-2xl text-white font-bold transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 whitespace-nowrap"
+              className="w-full sm:w-auto text-sm bg-[#10b981] hover:bg-[#059669] px-4 py-2 rounded-lg text-white font-semibold transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
               onClick={() => navigate("/admin/create-bill")}
             >
               <FaPlus />
@@ -89,11 +80,11 @@ const MonitorBilling = () => {
 
         {/* Billing Table */}
         <div className="overflow-x-auto max-h-[580px] custom-scroll">
-          <table className="w-full text-left table-auto border-separate border-spacing-y-3">
-            <thead className="sticky top-0 bg-white/90 backdrop-blur-sm z-20 shadow-sm">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-gray-400 font-semibold border-b border-gray-100 bg-white sticky top-0 z-10">
               <tr>
-                {["Bill Number", "Patient Name", "Disease Name", "Phone Number", "Status", "Date", "Time", "Action"].map((header, idx) => (
-                  <th key={header} className={`p-4 text-xs font-bold text-gray-400 uppercase tracking-wider ${idx === 0 ? 'rounded-l-2xl' : ''} ${idx === 7 ? 'rounded-r-2xl' : ''}`}>
+                {["Bill Number", "Patient Name", "Disease Name", "Phone Number", "Status", "Date", "Time", "Action"].map((header) => (
+                  <th key={header} className="px-4 py-3 uppercase tracking-wider">
                     {header}
                   </th>
                 ))}
@@ -102,9 +93,9 @@ const MonitorBilling = () => {
             <tbody>
               {loading ? (
                 [...Array(5)].map((_, index) => (
-                  <tr key={index} className="bg-white/50">
-                    {["100", "120", "120", "120", "60", "80", "60", "30"].map((width, i) => (
-                      <td key={i} className={`p-4 ${i === 0 ? 'rounded-l-2xl' : ''} ${i === 7 ? 'rounded-r-2xl' : ''}`}>
+                  <tr key={index} className="border-b border-gray-50">
+                    {[100, 120, 120, 120, 60, 80, 60, 30].map((width, i) => (
+                      <td key={i} className="px-4 py-4">
                         <Skeleton width={width} height={20} />
                       </td>
                     ))}
@@ -112,31 +103,33 @@ const MonitorBilling = () => {
                 ))
               ) : filteredBillingData.length > 0 ? (
                 filteredBillingData.map((entry, index) => (
-                  <tr key={index} className="bg-white/50 hover:bg-white shadow-sm hover:shadow transition-all duration-300">
-                    <td className="p-4 rounded-l-2xl">
-                      <span className="px-4 py-1.5 bg-blue-50/80 text-primary rounded-lg font-bold text-sm border border-blue-100">
+                  <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                    <td className="px-4 py-4">
+                      <span className="px-2.5 py-1 bg-gray-50 text-gray-600 rounded-lg font-semibold text-xs border border-gray-200">
                         {entry.billNumber}
                       </span>
                     </td>
-                    <td className="p-4 font-bold text-gray-800">
+                    <td className="px-4 py-4 font-bold text-gray-800">
                       {entry.patient
                         ? `${entry.patient.firstName} ${entry.patient.lastName}`
                         : "N/A"}
                     </td>
-                    <td className="p-4 font-medium text-gray-600">{entry.diseaseName}</td>
-                    <td className="p-4 font-medium text-gray-600">{entry.phoneNumber}</td>
-                    <td className="p-4">
-                      <span className={`px-4 py-1.5 text-xs font-bold rounded-lg border ${entry.status === 'Paid' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
+                    <td className="px-4 py-4 text-gray-600">{entry.diseaseName}</td>
+                    <td className="px-4 py-4 text-gray-600">{entry.phoneNumber}</td>
+                    <td className="px-4 py-4">
+                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-lg ${entry.status === 'Paid' ? 'bg-[#ecfdf5] text-[#10b981]' : 'bg-red-50 text-red-500'}`}>
                         {entry.status || "Unpaid"}
                       </span>
                     </td>
-                    <td className="p-4 font-medium text-gray-600">
+                    <td className="px-4 py-4 text-gray-600">
                       {new Date(entry.billDate).toLocaleDateString()}
                     </td>
-                    <td className="p-4 font-medium text-gray-600">{entry.billTime}</td>
-                    <td className="p-4 rounded-r-2xl text-center">
+                    <td className="px-4 py-4 text-gray-600">
+                      <span className="text-gray-500">{entry.billTime}</span>
+                    </td>
+                    <td className="px-4 py-4">
                       <button
-                        className="text-primary bg-primary/10 hover:bg-primary hover:text-white p-2.5 rounded-xl transition-colors"
+                        className="text-gray-400 bg-gray-50 hover:bg-[#ecfdf5] hover:text-[#10b981] p-2 rounded-lg transition-colors border border-gray-100 hover:border-[#10b981]/30"
                         onClick={() => handleViewInvoice(entry)}
                         title="View Invoice"
                       >
@@ -147,13 +140,8 @@ const MonitorBilling = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8" className="text-center py-16">
-                    <div className="flex flex-col items-center">
-                      <div className="p-8 bg-primary/5 rounded-full mb-6">
-                        <img src={noRecordImage} alt="No Record Found" className="w-32 sm:w-48 opacity-80" />
-                      </div>
-                      <p className="text-gray-500 font-medium text-lg">No records found</p>
-                    </div>
+                  <td colSpan="8" className="text-center py-16 text-gray-500 font-medium">
+                    No matching records found
                   </td>
                 </tr>
               )}

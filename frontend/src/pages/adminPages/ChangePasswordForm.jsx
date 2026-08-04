@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { TextField, Button, IconButton, InputAdornment } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
-import api from "../../api/api"; // Import your centralized API instance
+import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
+import api from "../../api/api";
 import toast from "react-hot-toast";
 
-// Updated validation schema with only required validation
 const validationSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Current password is required"),
   newPassword: Yup.string().required("New password is required"),
@@ -22,7 +20,6 @@ const ChangePasswordForm = () => {
 
   const handleSubmit = async (values, { resetForm, setSubmitting }) => {
     try {
-      // Make API call to change the password
       const response = await api.post("/users/change-password", {
         currentPassword: values.currentPassword,
         newPassword: values.newPassword,
@@ -30,7 +27,7 @@ const ChangePasswordForm = () => {
 
       if (response.status === 200) {
         toast.success("Password changed successfully!");
-        resetForm(); // Reset the form on successful password change
+        resetForm();
       } else {
         toast.error("Failed to change password");
       }
@@ -42,12 +39,44 @@ const ChangePasswordForm = () => {
     }
   };
 
+  const labelClass = "block text-xs font-semibold text-gray-600 mb-1.5 tracking-wide uppercase";
+
+  const renderInput = (name, label, showPassword, setShowPassword, type, touched, errors) => (
+    <div className="mb-6 relative">
+      <label className={labelClass}>{label}</label>
+      <div className="relative">
+        <Field
+          name={name}
+          type={showPassword ? "text" : "password"}
+          className={`w-full p-3 border outline-none transition-all duration-300 rounded-xl text-sm pr-12 ${
+            touched[name] && errors[name]
+              ? "border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500/20 bg-red-50"
+              : "bg-white border-gray-200 focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981]/20 text-gray-800"
+          }`}
+          placeholder={`Enter ${label.toLowerCase()}`}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+        >
+          {showPassword ? <HiOutlineEyeOff className="w-5 h-5" /> : <HiOutlineEye className="w-5 h-5" />}
+        </button>
+      </div>
+      {touched[name] && errors[name] && (
+        <p className="mt-1.5 text-xs text-red-500 font-medium">{errors[name]}</p>
+      )}
+    </div>
+  );
+
   return (
-    <div className="flex-1 bg-transparent h-full p-8 md:p-12">
-      <h2 className="text-3xl font-extrabold text-secondary tracking-tight mb-4">Change Password</h2>
-      <p className="mb-8 text-sm md:text-base text-gray-500 max-w-xl">
-        To change your password, please fill in the fields below. Make sure to use a strong and secure new password.
-      </p>
+    <div className="flex-1 bg-white h-full p-8 md:p-12">
+      <div className="mb-8">
+        <h2 className="text-2xl font-extrabold text-gray-800 tracking-tight">Change Password</h2>
+        <p className="text-gray-500 text-sm mt-1 max-w-xl">
+          To change your password, please fill in the fields below. Make sure to use a strong and secure new password.
+        </p>
+      </div>
 
       <Formik
         initialValues={{
@@ -59,122 +88,46 @@ const ChangePasswordForm = () => {
         onSubmit={handleSubmit}
       >
         {({ errors, touched, isSubmitting }) => (
-          <Form className="grid grid-cols-1 gap-6 max-w-2xl">
-            {/* Current Password */}
-            <div className="relative group">
-              <Field
-                as={TextField}
-                label="Current Password"
-                variant="outlined"
-                fullWidth
-                name="currentPassword"
-                type={showCurrentPassword ? "text" : "password"}
-                error={touched.currentPassword && Boolean(errors.currentPassword)}
-                helperText={touched.currentPassword && errors.currentPassword}
-                InputProps={{
-                  className: "bg-white/50 backdrop-blur-md rounded-2xl transition-all duration-300 group-hover:bg-white focus-within:bg-white border-white/20",
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() =>
-                          setShowCurrentPassword(!showCurrentPassword)
-                        }
-                      >
-                        {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "1rem",
-                    "& fieldset": { borderColor: "rgba(0,0,0,0.1)" },
-                    "&:hover fieldset": { borderColor: "var(--primary)" },
-                    "&.Mui-focused fieldset": { borderColor: "var(--primary)" },
-                  },
-                }}
-              />
-            </div>
+          <Form className="max-w-xl">
+            {renderInput(
+              "currentPassword",
+              "Current Password",
+              showCurrentPassword,
+              setShowCurrentPassword,
+              "password",
+              touched,
+              errors
+            )}
 
-            {/* New Password */}
-            <div className="relative group">
-              <Field
-                as={TextField}
-                label="New Password"
-                variant="outlined"
-                fullWidth
-                name="newPassword"
-                type={showNewPassword ? "text" : "password"}
-                error={touched.newPassword && Boolean(errors.newPassword)}
-                helperText={touched.newPassword && errors.newPassword}
-                InputProps={{
-                  className: "bg-white/50 backdrop-blur-md rounded-2xl transition-all duration-300 group-hover:bg-white focus-within:bg-white border-white/20",
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                      >
-                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "1rem",
-                    "& fieldset": { borderColor: "rgba(0,0,0,0.1)" },
-                    "&:hover fieldset": { borderColor: "var(--primary)" },
-                    "&.Mui-focused fieldset": { borderColor: "var(--primary)" },
-                  },
-                }}
-              />
-            </div>
+            {renderInput(
+              "newPassword",
+              "New Password",
+              showNewPassword,
+              setShowNewPassword,
+              "password",
+              touched,
+              errors
+            )}
 
-            {/* Confirm Password */}
-            <div className="relative group">
-              <Field
-                as={TextField}
-                label="Confirm Password"
-                variant="outlined"
-                fullWidth
-                name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-                helperText={touched.confirmPassword && errors.confirmPassword}
-                InputProps={{
-                  className: "bg-white/50 backdrop-blur-md rounded-2xl transition-all duration-300 group-hover:bg-white focus-within:bg-white border-white/20",
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                      >
-                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "1rem",
-                    "& fieldset": { borderColor: "rgba(0,0,0,0.1)" },
-                    "&:hover fieldset": { borderColor: "var(--primary)" },
-                    "&.Mui-focused fieldset": { borderColor: "var(--primary)" },
-                  },
-                }}
-              />
-            </div>
+            {renderInput(
+              "confirmPassword",
+              "Confirm Password",
+              showConfirmPassword,
+              setShowConfirmPassword,
+              "password",
+              touched,
+              errors
+            )}
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              variant="contained"
-              className="!mt-4 !bg-primary hover:!bg-primary/90 !text-white !font-bold !py-3 !rounded-2xl !shadow-lg !shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Changing..." : "Change Password"}
-            </Button>
+            <div className="mt-8">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-[#10b981] text-white px-8 py-3 rounded-xl hover:bg-green-600 transition-all duration-300 font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Changing..." : "Change Password"}
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

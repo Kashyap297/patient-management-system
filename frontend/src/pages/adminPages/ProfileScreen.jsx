@@ -38,28 +38,25 @@ const ProfileScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
-      {/* Decorative Blur Backgrounds */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow delay-1000"></div>
-
-      {/* Header section with modern gradient */}
-      <div className="relative z-10 w-full h-[250px] bg-gradient-to-r from-primary to-blue-600 rounded-b-[40px] shadow-lg flex items-center px-16">
-        <Typography variant="h3" className="font-extrabold text-white tracking-tight drop-shadow-md">
+    <div className="min-h-screen bg-[#fafbfc] relative overflow-hidden flex flex-col font-sans">
+      {/* Header section */}
+      <div className="relative z-10 w-full h-[200px] bg-white border-b border-gray-100 flex flex-col justify-center px-10 md:px-20 mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">
           Profile Settings
-        </Typography>
+        </h1>
+        <p className="text-gray-500 font-medium mt-2">Manage your account settings and preferences.</p>
       </div>
 
-      {/* Content Section overlapping the header */}
-      <div className="relative z-20 flex flex-col md:flex-row mt-[-80px] mx-6 md:mx-12 lg:mx-20 pb-12 gap-8">
-        <div className="w-full md:w-1/4 animate-fade-in">
+      {/* Content Section */}
+      <div className="relative z-20 flex flex-col md:flex-row mx-6 md:mx-12 lg:mx-20 pb-12 gap-8 -mt-20">
+        <div className="w-full md:w-1/4">
           <ProfileSidebar
             activeSection={activeSection}
             setActiveSection={setActiveSection}
           />
         </div>
-        <div className="w-full md:w-3/4 animate-slide-up">
-          <div className="glass h-full rounded-3xl shadow-sm border border-white/50 overflow-hidden">
+        <div className="w-full md:w-3/4">
+          <div className="bg-white h-full rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             {renderContent()}
           </div>
         </div>

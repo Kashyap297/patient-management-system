@@ -84,10 +84,10 @@ router.patch(
 );
 
 // Get All Doctors
-router.get("/doctors", getAllDoctors);
+router.get("/doctors", protect, getAllDoctors);
 
 // Get All Patients
-router.get("/patients", getAllPatients);
+router.get("/patients", protect, getAllPatients);
 
 // Doctor Routes
 router.get("/doctors/:id", getDoctorById);

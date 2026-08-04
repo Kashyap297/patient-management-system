@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { FaChevronLeft } from "react-icons/fa";
 import api from "../../api/api"; // Import your API utility
 
 const InsuranceDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams(); // Get the invoice ID from the URL
   const [invoiceData, setInvoiceData] = useState(null); // State to store the fetched invoice data
   const [loading, setLoading] = useState(true); // Loading state
@@ -44,9 +46,18 @@ const InsuranceDetail = () => {
       <div className="relative z-10 animate-slide-up">
         <div className="glass p-8 md:p-10 rounded-3xl shadow-sm border border-white/50">
           <div className="flex justify-between items-center mb-8 border-b border-gray-200/50 pb-6">
-            <h2 className="text-3xl font-extrabold text-secondary tracking-tight">
-              Invoice Details
-            </h2>
+            <div className="flex items-center gap-4">
+              <button 
+                type="button"
+                onClick={() => navigate(-1)}
+                className="p-2.5 rounded-full bg-white shadow-sm hover:bg-gray-50 text-gray-600 transition-colors border border-gray-100 flex items-center justify-center"
+              >
+                <FaChevronLeft size={16} />
+              </button>
+              <h2 className="text-3xl font-extrabold text-secondary tracking-tight">
+                Invoice Details
+              </h2>
+            </div>
             <div className="bg-primary/10 px-4 py-2 rounded-xl border border-primary/20">
               <span className="text-primary font-bold">Bill No:</span> 
               <span className="ml-2 text-secondary font-semibold">{invoiceData.billNumber}</span>
